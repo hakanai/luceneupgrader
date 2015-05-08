@@ -17,15 +17,15 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.search.Query;
+import org.trypticon.lucene3.util.RamUsageEstimator;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.trypticon.lucene3.search.Query;
-import org.trypticon.lucene3.util.RamUsageEstimator;
+import java.util.concurrent.atomic.AtomicLong;
 
 /* Holds buffered deletes, by docID, term or query for a
  * single segment. This is used to hold buffered pending

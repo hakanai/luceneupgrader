@@ -17,9 +17,9 @@ package org.trypticon.lucene3.analysis.tokenattributes;
  * limitations under the License.
  */
 
-import java.io.Serializable;
-
 import org.trypticon.lucene3.util.AttributeImpl;
+
+import java.io.Serializable;
 
 /**
  * This attribute can be used to pass different flags down the tokenizer chain,
@@ -32,8 +32,8 @@ public class FlagsAttributeImpl extends AttributeImpl implements FlagsAttribute,
   /**
    * <p/>
    *
-   * Get the bitset for any bits that have been set.  This is completely distinct from {@link TypeAttribute#type()}, although they do share similar purposes.
-   * The flags can be used to encode information about the token for use by other {@link org.trypticon.lucene3.analysis.TokenFilter}s.
+   * Get the bitset for any bits that have been set.  This is completely distinct from {@code TypeAttribute#type()}, although they do share similar purposes.
+   * The flags can be used to encode information about the token for use by other {@code org.trypticon.lucene3.analysis.TokenFilter}s.
    *
    *
    * @return The bits
@@ -43,7 +43,7 @@ public class FlagsAttributeImpl extends AttributeImpl implements FlagsAttribute,
   }
 
   /**
-   * @see #getFlags()
+   *
    */
   public void setFlags(int flags) {
     this.flags = flags;

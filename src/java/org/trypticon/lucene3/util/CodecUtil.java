@@ -18,13 +18,13 @@ package org.trypticon.lucene3.util;
  */
 
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.index.CorruptIndexException;
 import org.trypticon.lucene3.index.IndexFormatTooNewException;
 import org.trypticon.lucene3.index.IndexFormatTooOldException;
 import org.trypticon.lucene3.store.DataInput;
 import org.trypticon.lucene3.store.DataOutput;
+
+import java.io.IOException;
 
 /**
  * Utility class for reading and writing versioned headers.

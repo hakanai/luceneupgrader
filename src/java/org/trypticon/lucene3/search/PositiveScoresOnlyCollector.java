@@ -17,13 +17,13 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.index.IndexReader;
 
+import java.io.IOException;
+
 /**
- * A {@link Collector} implementation which wraps another
- * {@link Collector} and makes sure only documents with
+ * A {@code Collector} implementation which wraps another
+ * {@code Collector} and makes sure only documents with
  * scores &gt; 0 are collected.
  */
 public class PositiveScoresOnlyCollector extends Collector {

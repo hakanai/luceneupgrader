@@ -17,8 +17,8 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
-import java.nio.CharBuffer;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 
 /**
  * Provides support for converting byte sequences to Strings and back again.
@@ -49,7 +49,7 @@ import java.nio.ByteBuffer;
  * <p/>
  * WARNING: This means that the deprecated Buffer-based methods 
  * only work correctly with buffers that have an offset of 0. For example, they
- * will not correctly interpret buffers returned by {@link ByteBuffer#slice}.  
+ * will not correctly interpret buffers returned by {@code ByteBuffer#slice}.
  *
  * @lucene.experimental
  */
@@ -79,7 +79,7 @@ public final class IndexableBinaryStringTools {
    * @return The number of chars required to encode the given byte sequence
    * @throws IllegalArgumentException If the given ByteBuffer is not backed by
    *         an array
-   * @deprecated Use {@link #getEncodedLength(byte[], int, int)} instead. This
+   * @deprecated Use {@code #getEncodedLength(byte[], int, int)} instead. This
    *             method will be removed in Lucene 4.0
    */
   @Deprecated
@@ -115,7 +115,7 @@ public final class IndexableBinaryStringTools {
    * @return The number of bytes required to decode the given char sequence
    * @throws IllegalArgumentException If the given CharBuffer is not backed by
    *         an array
-   * @deprecated Use {@link #getDecodedLength(char[], int, int)} instead. This
+   * @deprecated Use {@code #getDecodedLength(char[], int, int)} instead. This
    *             method will be removed in Lucene 4.0
    */
   @Deprecated
@@ -152,14 +152,14 @@ public final class IndexableBinaryStringTools {
   /**
    * Encodes the input byte sequence into the output char sequence. Before
    * calling this method, ensure that the output CharBuffer has sufficient
-   * capacity by calling {@link #getEncodedLength(java.nio.ByteBuffer)}.
+   * capacity by calling {@code #getEncodedLength(java.nio.ByteBuffer)}.
    * 
    * @param input The byte sequence to encode
    * @param output Where the char sequence encoding result will go. The limit is
    *        set to one past the position of the final char.
    * @throws IllegalArgumentException If either the input or the output buffer
    *         is not backed by an array
-   * @deprecated Use {@link #encode(byte[], int, int, char[], int, int)}
+   * @deprecated Use {@code #encode(byte[], int, int, char[], int, int)}
    *             instead. This method will be removed in Lucene 4.0
    */
   @Deprecated
@@ -182,7 +182,7 @@ public final class IndexableBinaryStringTools {
   /**
    * Encodes the input byte sequence into the output char sequence.  Before
    * calling this method, ensure that the output array has sufficient
-   * capacity by calling {@link #getEncodedLength(byte[], int, int)}.
+   * capacity by calling {@code #getEncodedLength(byte[], int, int)}.
    * 
    * @param inputArray byte sequence to be encoded
    * @param inputOffset initial offset into inputArray
@@ -236,14 +236,14 @@ public final class IndexableBinaryStringTools {
   /**
    * Decodes the input char sequence into the output byte sequence. Before
    * calling this method, ensure that the output ByteBuffer has sufficient
-   * capacity by calling {@link #getDecodedLength(java.nio.CharBuffer)}.
+   * capacity by calling {@code #getDecodedLength(java.nio.CharBuffer)}.
    * 
    * @param input The char sequence to decode
    * @param output Where the byte sequence decoding result will go. The limit is
    *        set to one past the position of the final char.
    * @throws IllegalArgumentException If either the input or the output buffer
    *         is not backed by an array
-   * @deprecated Use {@link #decode(char[], int, int, byte[], int, int)}
+   * @deprecated Use {@code #decode(char[], int, int, byte[], int, int)}
    *             instead. This method will be removed in Lucene 4.0
    */
   @Deprecated
@@ -266,7 +266,7 @@ public final class IndexableBinaryStringTools {
   /**
    * Decodes the input char sequence into the output byte sequence. Before
    * calling this method, ensure that the output array has sufficient capacity
-   * by calling {@link #getDecodedLength(char[], int, int)}.
+   * by calling {@code #getDecodedLength(char[], int, int)}.
    * 
    * @param inputArray char sequence to be decoded
    * @param inputOffset initial offset into inputArray
@@ -332,15 +332,15 @@ public final class IndexableBinaryStringTools {
 
   /**
    * Decodes the given char sequence, which must have been encoded by
-   * {@link #encode(java.nio.ByteBuffer)} or
-   * {@link #encode(java.nio.ByteBuffer, java.nio.CharBuffer)}.
+   * {@code #encode(java.nio.ByteBuffer)} or
+   * {@code #encode(java.nio.ByteBuffer, java.nio.CharBuffer)}.
    * 
    * @param input The char sequence to decode
    * @return A byte sequence containing the decoding result. The limit is set to
    *         one past the position of the final char.
    * @throws IllegalArgumentException If the input buffer is not backed by an
    *         array
-   * @deprecated Use {@link #decode(char[], int, int, byte[], int, int)}
+   * @deprecated Use {@code #decode(char[], int, int, byte[], int, int)}
    *             instead. This method will be removed in Lucene 4.0
    */
   @Deprecated
@@ -359,7 +359,7 @@ public final class IndexableBinaryStringTools {
    *         one past the position of the final char.
    * @throws IllegalArgumentException If the input buffer is not backed by an
    *         array
-   * @deprecated Use {@link #encode(byte[], int, int, char[], int, int)}
+   * @deprecated Use {@code #encode(byte[], int, int, char[], int, int)}
    *             instead. This method will be removed in Lucene 4.0
    */
   @Deprecated

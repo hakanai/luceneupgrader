@@ -17,8 +17,8 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
 import java.io.Closeable;
+import java.io.IOException;
 
 /** TermDocs provides an interface for enumerating &lt;document, frequency&gt;
  pairs for a term.  <p> The document portion names each document containing
@@ -26,7 +26,7 @@ import java.io.Closeable;
  the number of times the term occurred in each document.  <p> The pairs are
  ordered by document number.
 
- @see IndexReader#termDocs()
+
  */
 
 public interface TermDocs extends Closeable {
@@ -35,17 +35,17 @@ public interface TermDocs extends Closeable {
    */
   void seek(Term term) throws IOException;
 
-  /** Sets this to the data for the current term in a {@link TermEnum}.
+  /** Sets this to the data for the current term in a {@code TermEnum}.
    * This may be optimized in some implementations.
    */
   void seek(TermEnum termEnum) throws IOException;
 
-  /** Returns the current document number.  <p> This is invalid until {@link
+  /** Returns the current document number.  <p> This is invalid until {@code
    #next()} is called for the first time.*/
   int doc();
 
   /** Returns the frequency of the term within the current document.  <p> This
-   is invalid until {@link #next()} is called for the first time.*/
+   is invalid until {@code #next()} is called for the first time.*/
   int freq();
 
   /** Moves to the next pair in the enumeration.  <p> Returns true iff there is

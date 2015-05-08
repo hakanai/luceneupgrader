@@ -17,11 +17,12 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
-import java.io.IOException;
 import org.trypticon.lucene3.search.DocIdSetIterator;
 
+import java.io.IOException;
+
 /** OpenBitSet with added methods to bulk-update the bits
- *  from a {@link DocIdSetIterator}. */ 
+ *  from a {@code DocIdSetIterator}. */
 public class OpenBitSetDISI extends OpenBitSet {
 
   /** Construct an OpenBitSetDISI with its bits set

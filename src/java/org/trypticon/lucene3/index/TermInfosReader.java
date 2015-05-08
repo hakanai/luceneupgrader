@@ -17,13 +17,13 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.Closeable;
-import java.io.IOException;
-
 import org.trypticon.lucene3.store.Directory;
 import org.trypticon.lucene3.util.BytesRef;
-import org.trypticon.lucene3.util.DoubleBarrelLRUCache;
 import org.trypticon.lucene3.util.CloseableThreadLocal;
+import org.trypticon.lucene3.util.DoubleBarrelLRUCache;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 /** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
  * Directory.  Pairs are accessed either by Term or by ordinal position the

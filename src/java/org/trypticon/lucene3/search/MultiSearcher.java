@@ -20,10 +20,10 @@ package org.trypticon.lucene3.search;
 import org.trypticon.lucene3.document.Document;
 import org.trypticon.lucene3.document.FieldSelector;
 import org.trypticon.lucene3.index.CorruptIndexException;
-import org.trypticon.lucene3.index.Term;
 import org.trypticon.lucene3.index.IndexReader;
-import org.trypticon.lucene3.util.ReaderUtil;
+import org.trypticon.lucene3.index.Term;
 import org.trypticon.lucene3.util.DummyConcurrentLock;
+import org.trypticon.lucene3.util.ReaderUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -35,8 +35,8 @@ import java.util.concurrent.locks.Lock;
 
 /** Implements search over a set of <code>Searchables</code>.
  *
- * <p>Applications usually need only call the inherited {@link #search(Query,int)}
- * or {@link #search(Query,Filter,int)} methods.
+ * <p>Applications usually need only call the inherited {@code #search(Query,int)}
+ * or {@code #search(Query,Filter,int)} methods.
  *
  * @deprecated If you are using MultiSearcher over
  * IndexSearchers, please use MultiReader instead; this class
@@ -148,7 +148,7 @@ public class MultiSearcher extends Searcher {
     starts[searchables.length] = maxDoc;
   }
   
-  /** Return the array of {@link Searchable}s this searches. */
+  /** Return the array of {@code Searchable}s this searches. */
   public Searchable[] getSearchables() {
     return searchables;
   }
@@ -333,7 +333,7 @@ public class MultiSearcher extends Searcher {
    *        searchables 
    * @return a map with a term as the key and the terms aggregated document
    *         frequency as a value  
-   * @throws IOException if a searchable throws an {@link IOException}
+   * @throws IOException if a searchable throws an {@code IOException}
    */
    Map<Term, Integer> createDocFrequencyMap(final Set<Term> terms) throws IOException  {
     final Term[] allTermsArray = terms.toArray(new Term[terms.size()]);

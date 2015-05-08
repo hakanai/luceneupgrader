@@ -17,17 +17,6 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
-import java.util.Map;
-
 import org.trypticon.lucene3.document.Document;
 import org.trypticon.lucene3.document.FieldSelector;
 import org.trypticon.lucene3.search.Similarity;
@@ -35,6 +24,10 @@ import org.trypticon.lucene3.store.Directory;
 import org.trypticon.lucene3.store.Lock;
 import org.trypticon.lucene3.store.LockObtainFailedException;
 import org.trypticon.lucene3.util.IOUtils;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
 
 /** 
  * An IndexReader which reads indexes with multiple segments.
@@ -161,7 +154,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
     initialize(readers.toArray(new SegmentReader[readers.size()]));
   }
 
-  /** This constructor is only used for {@link #doOpenIfChanged()} */
+  /** This constructor is only used for {@code #doOpenIfChanged()} */
   DirectoryReader(Directory directory, SegmentInfos infos, SegmentReader[] oldReaders, int[] oldStarts,
                   Map<String,byte[]> oldNormsCache, boolean readOnly, boolean doClone, int termInfosIndexDivisor) throws IOException {
     this.directory = directory;
@@ -948,7 +941,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
     return new ReaderCommit(segmentInfos, directory);
   }
 
-  /** @see org.trypticon.lucene3.index.IndexReader#listCommits */
+  /** */
   public static Collection<IndexCommit> listCommits(Directory dir) throws IOException {
     final String[] files = dir.listAll();
 

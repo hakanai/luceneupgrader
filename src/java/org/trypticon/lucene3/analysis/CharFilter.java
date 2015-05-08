@@ -21,8 +21,8 @@ import java.io.IOException;
 
 /**
  * Subclasses of CharFilter can be chained to filter CharStream.
- * They can be used as {@link java.io.Reader} with additional offset
- * correction. {@link Tokenizer}s will automatically use {@link #correctOffset}
+ * They can be used as {@code java.io.Reader} with additional offset
+ * correction. {@code Tokenizer}s will automatically use {@code #correctOffset}
  * if a CharFilter/CharStream subclass is used.
  */
 public abstract class CharFilter extends CharStream {

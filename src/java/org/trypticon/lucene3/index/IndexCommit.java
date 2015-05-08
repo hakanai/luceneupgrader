@@ -17,15 +17,15 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
 */
 
+import org.trypticon.lucene3.store.Directory;
+
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-import java.io.IOException;
-
-import org.trypticon.lucene3.store.Directory;
 
 /**
  * <p>Expert: represents a single commit into an index as seen by the
- * {@link IndexDeletionPolicy} or {@link IndexReader}.</p>
+ * {@code IndexDeletionPolicy} or {@code IndexReader}.</p>
  *
  * <p> Changes to the content of an index are made visible
  * only after the writer who made that change commits by
@@ -55,7 +55,7 @@ public abstract class IndexCommit implements Comparable<IndexCommit> {
   public abstract Collection<String> getFileNames() throws IOException;
 
   /**
-   * Returns the {@link Directory} for the index.
+   * Returns the {@code Directory} for the index.
    */
   public abstract Directory getDirectory();
   
@@ -67,9 +67,9 @@ public abstract class IndexCommit implements Comparable<IndexCommit> {
    * Upon calling this, the writer is notified that this commit 
    * point should be deleted. 
    * <p>
-   * Decision that a commit-point should be deleted is taken by the {@link IndexDeletionPolicy} in effect
-   * and therefore this should only be called by its {@link IndexDeletionPolicy#onInit onInit()} or 
-   * {@link IndexDeletionPolicy#onCommit onCommit()} methods.
+   * Decision that a commit-point should be deleted is taken by the {@code IndexDeletionPolicy} in effect
+   * and therefore this should only be called by its {@code IndexDeletionPolicy#onInit onInit()} or
+   * {@code IndexDeletionPolicy#onCommit onCommit()} methods.
   */
   public abstract void delete();
 
@@ -95,9 +95,9 @@ public abstract class IndexCommit implements Comparable<IndexCommit> {
   }
 
   /** Returns the version for this IndexCommit.  This is the
-   *  same value that {@link IndexReader#getVersion} would
+   *  same value that {@code IndexReader#getVersion} would
    *  return if it were opened on this commit.
-   * @deprecated use {@link #getGeneration} instead */
+   * @deprecated use {@code #getGeneration} instead */
   @Deprecated
   public abstract long getVersion();
 
@@ -111,14 +111,14 @@ public abstract class IndexCommit implements Comparable<IndexCommit> {
    *  getDirectory().fileModified(getSegmentsFileName()).
    * @deprecated If you need to track commit time of
    * an index, you can store it in the commit data (see
-   * {@link IndexWriter#commit(Map)}
+   * {@code IndexWriter#commit(Map)}
    */
   @Deprecated
   public long getTimestamp() throws IOException {
     return getDirectory().fileModified(getSegmentsFileName());
   }
 
-  /** Returns userData, previously passed to {@link
+  /** Returns userData, previously passed to {@code
    *  IndexWriter#commit(Map)} for this commit.  Map is
    *  String -> String. */
   public abstract Map<String,String> getUserData() throws IOException;

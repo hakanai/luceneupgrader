@@ -17,14 +17,14 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.Arrays;
-
 import org.trypticon.lucene3.analysis.tokenattributes.CharTermAttribute;
 import org.trypticon.lucene3.document.Fieldable;
-import org.trypticon.lucene3.util.UnicodeUtil;
 import org.trypticon.lucene3.util.RamUsageEstimator;
 import org.trypticon.lucene3.util.SorterTemplate;
+import org.trypticon.lucene3.util.UnicodeUtil;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 final class TermsHashPerField extends InvertedDocConsumerPerField {
 

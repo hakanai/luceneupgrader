@@ -17,17 +17,17 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.index.IndexReader;
 import org.trypticon.lucene3.index.Term;
+
+import java.io.IOException;
 
 /**
  * Subclass of FilteredTermEnum for enumerating a single term.
  * <p>
- * This can be used by {@link MultiTermQuery}s that need only visit one term,
+ * This can be used by {@code MultiTermQuery}s that need only visit one term,
  * but want to preserve MultiTermQuery semantics such as
- * {@link MultiTermQuery#rewriteMethod}.
+ * {@code MultiTermQuery#rewriteMethod}.
  */
 public class SingleTermEnum extends FilteredTermEnum {
   private Term singleTerm;

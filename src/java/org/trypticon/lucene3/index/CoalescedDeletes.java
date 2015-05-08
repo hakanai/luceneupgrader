@@ -17,15 +17,11 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.trypticon.lucene3.index.BufferedDeletesStream.QueryAndLimit;
 import org.trypticon.lucene3.search.Query;
 import org.trypticon.lucene3.util.PriorityQueue;
-import org.trypticon.lucene3.index.BufferedDeletesStream.QueryAndLimit;
+
+import java.util.*;
 
 class CoalescedDeletes {
   final Map<Query,Integer> queries = new HashMap<Query,Integer>();

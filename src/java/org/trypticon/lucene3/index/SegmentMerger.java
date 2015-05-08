@@ -17,11 +17,6 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.trypticon.lucene3.document.Document;
 import org.trypticon.lucene3.index.FieldInfo.IndexOptions;
 import org.trypticon.lucene3.index.MergePolicy.MergeAbortedException;
@@ -32,13 +27,18 @@ import org.trypticon.lucene3.store.IndexOutput;
 import org.trypticon.lucene3.util.IOUtils;
 import org.trypticon.lucene3.util.ReaderUtil;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
- * The SegmentMerger class combines two or more Segments, represented by an IndexReader ({@link #add},
+ * The SegmentMerger class combines two or more Segments, represented by an IndexReader ({@code #add},
  * into a single Segment.  After adding the appropriate readers, call the merge method to combine the 
  * segments.
  * 
- * @see #merge
- * @see #add
+ *
+ *
  */
 final class SegmentMerger {
   private Directory directory;
@@ -91,7 +91,7 @@ final class SegmentMerger {
   }
 
   /**
-   * Merges the readers specified by the {@link #add} method into the directory passed to the constructor
+   * Merges the readers specified by the {@code #add} method into the directory passed to the constructor
    * @return The number of documents that were merged
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error

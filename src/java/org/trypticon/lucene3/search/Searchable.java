@@ -17,13 +17,13 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.Closeable;
-
 import org.trypticon.lucene3.document.Document;
 import org.trypticon.lucene3.document.FieldSelector;
 import org.trypticon.lucene3.index.CorruptIndexException;
 import org.trypticon.lucene3.index.Term;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * The interface for search implementations.
@@ -52,12 +52,12 @@ public interface Searchable extends Closeable {
    * Lower-level search API.
    * 
    * <p>
-   * {@link Collector#collect(int)} is called for every document. <br>
+   * {@code Collector#collect(int)} is called for every document. <br>
    * Collector-based access to remote indexes is discouraged.
    * 
    * <p>
    * Applications should only use this if they need <i>all</i> of the matching
-   * documents. The high-level search API ({@link Searcher#search(Query,int)}) is
+   * documents. The high-level search API ({@code Searcher#search(Query,int)}) is
    * usually more efficient, as it skips non-high-scoring hits.
    * 
    * @param weight
@@ -78,7 +78,7 @@ public interface Searchable extends Closeable {
 
   /** Expert: Returns the number of documents containing <code>term</code>.
    * 
-   * @see org.trypticon.lucene3.index.IndexReader#docFreq(Term)
+   *
    */
   int docFreq(Term term) throws IOException;
 
@@ -90,15 +90,15 @@ public interface Searchable extends Closeable {
 
   /** Expert: Returns one greater than the largest possible document number.
    * 
-   * @see org.trypticon.lucene3.index.IndexReader#maxDoc()
+   *
    */
   int maxDoc() throws IOException;
 
   /** Expert: Low-level search implementation.  Finds the top <code>n</code>
    * hits for <code>query</code>, applying <code>filter</code> if non-null.
    *
-   * <p>Applications should usually call {@link Searcher#search(Query,int)} or
-   * {@link Searcher#search(Query,Filter,int)} instead.
+   * <p>Applications should usually call {@code Searcher#search(Query,int)} or
+   * {@code Searcher#search(Query,Filter,int)} instead.
    * @throws BooleanQuery.TooManyClauses
    */
   TopDocs search(Weight weight, Filter filter, int n) throws IOException;
@@ -106,32 +106,32 @@ public interface Searchable extends Closeable {
   /**
    * Returns the stored fields of document <code>i</code>.
    * 
-   * @see org.trypticon.lucene3.index.IndexReader#document(int)
+   *
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
    */
   Document doc(int i) throws CorruptIndexException, IOException;
 
   /**
-   * Get the {@link org.trypticon.lucene3.document.Document} at the <code>n</code><sup>th</sup> position. The {@link org.trypticon.lucene3.document.FieldSelector}
-   * may be used to determine what {@link org.trypticon.lucene3.document.Field}s to load and how they should be loaded.
+   * Get the {@code org.trypticon.lucene3.document.Document} at the <code>n</code><sup>th</sup> position. The {@code org.trypticon.lucene3.document.FieldSelector}
+   * may be used to determine what {@code org.trypticon.lucene3.document.Field}s to load and how they should be loaded.
    * 
-   * <b>NOTE:</b> If the underlying Reader (more specifically, the underlying <code>FieldsReader</code>) is closed before the lazy {@link org.trypticon.lucene3.document.Field} is
-   * loaded an exception may be thrown.  If you want the value of a lazy {@link org.trypticon.lucene3.document.Field} to be available after closing you must
+   * <b>NOTE:</b> If the underlying Reader (more specifically, the underlying <code>FieldsReader</code>) is closed before the lazy {@code org.trypticon.lucene3.document.Field} is
+   * loaded an exception may be thrown.  If you want the value of a lazy {@code org.trypticon.lucene3.document.Field} to be available after closing you must
    * explicitly load it or fetch the Document again with a new loader.
    * 
    *  
    * @param n Get the document at the <code>n</code><sup>th</sup> position
-   * @param fieldSelector The {@link org.trypticon.lucene3.document.FieldSelector} to use to determine what Fields should be loaded on the Document.  May be null, in which case all Fields will be loaded.
-   * @return The stored fields of the {@link org.trypticon.lucene3.document.Document} at the nth position
+   * @param fieldSelector The {@code org.trypticon.lucene3.document.FieldSelector} to use to determine what Fields should be loaded on the Document.  May be null, in which case all Fields will be loaded.
+   * @return The stored fields of the {@code org.trypticon.lucene3.document.Document} at the nth position
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
    * 
-   * @see org.trypticon.lucene3.index.IndexReader#document(int, FieldSelector)
-   * @see org.trypticon.lucene3.document.Fieldable
-   * @see org.trypticon.lucene3.document.FieldSelector
-   * @see org.trypticon.lucene3.document.SetBasedFieldSelector
-   * @see org.trypticon.lucene3.document.LoadFirstFieldSelector
+   *
+   *
+   *
+   *
+   *
    */
   Document doc(int n, FieldSelector fieldSelector) throws CorruptIndexException, IOException;
   
@@ -148,7 +148,7 @@ public interface Searchable extends Closeable {
    * and, for good performance, should not be displayed with every hit.
    * Computing an explanation is as expensive as executing the query over the
    * entire index.
-   * <p>Applications should call {@link Searcher#explain(Query, int)}.
+   * <p>Applications should call {@code Searcher#explain(Query, int)}.
    * @throws BooleanQuery.TooManyClauses
    */
   Explanation explain(Weight weight, int doc) throws IOException;
@@ -158,7 +158,7 @@ public interface Searchable extends Closeable {
    * <code>filter</code> if non-null, and sorting the hits by the criteria in
    * <code>sort</code>.
    *
-   * <p>Applications should usually call {@link
+   * <p>Applications should usually call {@code
    * Searcher#search(Query,Filter,int,Sort)} instead.
    * 
    * @throws BooleanQuery.TooManyClauses

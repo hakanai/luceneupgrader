@@ -20,7 +20,7 @@ package org.trypticon.lucene3.store;
 import java.io.IOException;
 
 /**
- * A memory-resident {@link IndexOutput} implementation.
+ * A memory-resident {@code IndexOutput} implementation.
  *
  * @lucene.internal
  */

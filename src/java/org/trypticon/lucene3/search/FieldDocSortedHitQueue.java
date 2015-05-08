@@ -18,6 +18,7 @@ package org.trypticon.lucene3.search;
  */
 
 import org.trypticon.lucene3.util.PriorityQueue;
+
 import java.io.IOException;
 import java.text.Collator;
 import java.util.Locale;

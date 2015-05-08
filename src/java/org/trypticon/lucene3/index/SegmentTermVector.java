@@ -17,7 +17,7 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.util.*;
+import java.util.Arrays;
 
 
 class SegmentTermVector implements TermFreqVector {

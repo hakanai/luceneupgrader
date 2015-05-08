@@ -17,15 +17,14 @@ package org.trypticon.lucene3.analysis.tokenattributes;
  * limitations under the License.
  */
 
-import org.trypticon.lucene3.analysis.TokenStream;
 import org.trypticon.lucene3.util.AttributeImpl;
 
 /**
  *This attribute can be used to mark a token as a keyword. Keyword aware
- * {@link TokenStream}s can decide to modify a token based on the return value
- * of {@link #isKeyword()} if the token is modified. Stemming filters for
+ * {@code TokenStream}s can decide to modify a token based on the return value
+ * of {@code #isKeyword()} if the token is modified. Stemming filters for
  * instance can use this attribute to conditionally skip a term if
- * {@link #isKeyword()} returns <code>true</code>.
+ * {@code #isKeyword()} returns <code>true</code>.
  */
 public final class KeywordAttributeImpl extends AttributeImpl implements
     KeywordAttribute {

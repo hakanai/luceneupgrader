@@ -17,22 +17,21 @@ package org.trypticon.lucene3.document;
  * limitations under the License.
  */
 
-import java.util.*;             // for javadoc
-import org.trypticon.lucene3.search.ScoreDoc; // for javadoc
-import org.trypticon.lucene3.search.Searcher;  // for javadoc
-import org.trypticon.lucene3.index.IndexReader;  // for javadoc
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /** Documents are the unit of indexing and search.
  *
  * A Document is a set of fields.  Each field has a name and a textual value.
- * A field may be {@link Fieldable#isStored() stored} with the document, in which
+ * A field may be {@code Fieldable#isStored() stored} with the document, in which
  * case it is returned with search hits on the document.  Thus each document
  * should typically contain one or more stored fields which uniquely identify
  * it.
  *
- * <p>Note that fields which are <i>not</i> {@link Fieldable#isStored() stored} are
- * <i>not</i> available in documents retrieved from the index, e.g. with {@link
- * ScoreDoc#doc}, {@link Searcher#doc(int)} or {@link
+ * <p>Note that fields which are <i>not</i> {@code Fieldable#isStored() stored} are
+ * <i>not</i> available in documents retrieved from the index, e.g. with {@code
+ * ScoreDoc#doc}, {@code Searcher#doc(int)} or {@code
  * IndexReader#document(int)}.
  */
 
@@ -49,17 +48,17 @@ public final class Document implements java.io.Serializable {
    *
    * <p>The default value is 1.0.
    * 
-   * <p>Values are multiplied into the value of {@link Fieldable#getBoost()} of
+   * <p>Values are multiplied into the value of {@code Fieldable#getBoost()} of
    * each field in this document.  Thus, this method in effect sets a default
    * boost for the fields of this document.
    *
-   * @see Fieldable#setBoost(float)
+   *
    */
   public void setBoost(float boost) {
     this.boost = boost;
   }
 
-  /** Returns, at indexing time, the boost factor as set by {@link #setBoost(float)}. 
+  /** Returns, at indexing time, the boost factor as set by {@code #setBoost(float)}.
    *
    * <p>Note that once a document is indexed this value is no longer available
    * from the index.  At search time, for retrieved documents, this method always 
@@ -67,9 +66,9 @@ public final class Document implements java.io.Serializable {
    * time was ignored - it was just combined with other indexing time factors and 
    * stored elsewhere, for better indexing and search performance. (For more 
    * information see the "norm(t,d)" part of the scoring formula in 
-   * {@link org.trypticon.lucene3.search.Similarity Similarity}.)
+   * {@code org.trypticon.lucene3.search.Similarity Similarity}.)
    *
-   * @see #setBoost(float)
+   *
    */
   public float getBoost() {
     return boost;
@@ -132,8 +131,8 @@ public final class Document implements java.io.Serializable {
   /** Returns a field with the given name if any exist in this document, or
    * null.  If multiple fields exists with this name, this method returns the
    * first value added.
-   * Do not use this method with lazy loaded fields or {@link NumericField}.
-   * @deprecated use {@link #getFieldable} instead and cast depending on
+   * Do not use this method with lazy loaded fields or {@code NumericField}.
+   * @deprecated use {@code #getFieldable} instead and cast depending on
    * data type.
    * @throws ClassCastException if you try to retrieve a numerical or
    * lazy loaded field.
@@ -160,8 +159,8 @@ public final class Document implements java.io.Serializable {
    * this document, or null.  If multiple fields exist with this name, this
    * method returns the first value added. If only binary fields with this name
    * exist, returns null.
-   * For {@link NumericField} it returns the string value of the number. If you want
-   * the actual {@code NumericField} instance back, use {@link #getFieldable}.
+   * For {@code NumericField} it returns the string value of the number. If you want
+   * the actual {@code NumericField} instance back, use {@code #getFieldable}.
    */
   public final String get(String name) {
    for (Fieldable field : fields) {
@@ -172,9 +171,9 @@ public final class Document implements java.io.Serializable {
   }
 
   /** Returns a List of all the fields in a document.
-   * <p>Note that fields which are <i>not</i> {@link Fieldable#isStored() stored} are
+   * <p>Note that fields which are <i>not</i> {@code Fieldable#isStored() stored} are
    * <i>not</i> available in documents retrieved from the
-   * index, e.g. {@link Searcher#doc(int)} or {@link
+   * index, e.g. {@code Searcher#doc(int)} or {@code
    * IndexReader#document(int)}.
    */
   public final List<Fieldable> getFields() {
@@ -184,14 +183,14 @@ public final class Document implements java.io.Serializable {
   private final static Field[] NO_FIELDS = new Field[0];
   
   /**
-   * Returns an array of {@link Field}s with the given name.
+   * Returns an array of {@code Field}s with the given name.
    * This method returns an empty array when there are no
    * matching fields.  It never returns null.
-   * Do not use this method with lazy loaded fields or {@link NumericField}.
+   * Do not use this method with lazy loaded fields or {@code NumericField}.
    *
    * @param name the name of the field
    * @return a <code>Field[]</code> array
-   * @deprecated use {@link #getFieldable} instead and cast depending on
+   * @deprecated use {@code #getFieldable} instead and cast depending on
    * data type.
    * @throws ClassCastException if you try to retrieve a numerical or
    * lazy loaded field.
@@ -215,7 +214,7 @@ public final class Document implements java.io.Serializable {
    private final static Fieldable[] NO_FIELDABLES = new Fieldable[0];
 
    /**
-   * Returns an array of {@link Fieldable}s with the given name.
+   * Returns an array of {@code Fieldable}s with the given name.
    * This method returns an empty array when there are no
    * matching fields.  It never returns null.
    *
@@ -243,8 +242,8 @@ public final class Document implements java.io.Serializable {
    * Returns an array of values of the field specified as the method parameter.
    * This method returns an empty array when there are no
    * matching fields.  It never returns null.
-   * For {@link NumericField}s it returns the string value of the number. If you want
-   * the actual {@code NumericField} instances back, use {@link #getFieldables}.
+   * For {@code NumericField}s it returns the string value of the number. If you want
+   * the actual {@code NumericField} instances back, use {@code #getFieldables}.
    * @param name the name of the field
    * @return a <code>String[]</code> of field values
    */

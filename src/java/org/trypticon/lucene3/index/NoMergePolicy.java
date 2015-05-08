@@ -21,24 +21,24 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * A {@link MergePolicy} which never returns merges to execute (hence it's
+ * A {@code MergePolicy} which never returns merges to execute (hence it's
  * name). It is also a singleton and can be accessed through
- * {@link NoMergePolicy#NO_COMPOUND_FILES} if you want to indicate the index
- * does not use compound files, or through {@link NoMergePolicy#COMPOUND_FILES}
- * otherwise. Use it if you want to prevent an {@link IndexWriter} from ever
+ * {@code NoMergePolicy#NO_COMPOUND_FILES} if you want to indicate the index
+ * does not use compound files, or through {@code NoMergePolicy#COMPOUND_FILES}
+ * otherwise. Use it if you want to prevent an {@code IndexWriter} from ever
  * executing merges, without going through the hassle of tweaking a merge
  * policy's settings to achieve that, such as changing its merge factor.
  */
 public final class NoMergePolicy extends MergePolicy {
 
   /**
-   * A singleton {@link NoMergePolicy} which indicates the index does not use
+   * A singleton {@code NoMergePolicy} which indicates the index does not use
    * compound files.
    */
   public static final MergePolicy NO_COMPOUND_FILES = new NoMergePolicy(false);
 
   /**
-   * A singleton {@link NoMergePolicy} which indicates the index uses compound
+   * A singleton {@code NoMergePolicy} which indicates the index uses compound
    * files.
    */
   public static final MergePolicy COMPOUND_FILES = new NoMergePolicy(true);

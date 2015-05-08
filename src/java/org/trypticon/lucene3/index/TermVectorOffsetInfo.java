@@ -20,13 +20,13 @@ import java.io.Serializable;
  */
 
 /**
- * The TermVectorOffsetInfo class holds information pertaining to a Term in a {@link org.trypticon.lucene3.index.TermPositionVector}'s
+ * The TermVectorOffsetInfo class holds information pertaining to a Term in a {@code org.trypticon.lucene3.index.TermPositionVector}'s
  * offset information.  This offset information is the character offset as set during the Analysis phase (and thus may not be the actual offset in the
  * original content).
  */
 public class TermVectorOffsetInfo implements Serializable {
   /**
-   * Convenience declaration when creating a {@link org.trypticon.lucene3.index.TermPositionVector} that stores only position information.
+   * Convenience declaration when creating a {@code org.trypticon.lucene3.index.TermPositionVector} that stores only position information.
    */
   public transient static final TermVectorOffsetInfo[] EMPTY_OFFSET_INFO = new TermVectorOffsetInfo[0];
   private int startOffset;
@@ -68,7 +68,7 @@ public class TermVectorOffsetInfo implements Serializable {
   /**
    * Two TermVectorOffsetInfos are equals if both the start and end offsets are the same
    * @param o The comparison Object
-   * @return true if both {@link #getStartOffset()} and {@link #getEndOffset()} are the same for both objects.
+   * @return true if both {@code #getStartOffset()} and {@code #getEndOffset()} are the same for both objects.
    */
   @Override
   public boolean equals(Object o) {

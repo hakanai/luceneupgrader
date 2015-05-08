@@ -17,16 +17,12 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.store.*;
+
 import java.io.EOFException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-
-import org.trypticon.lucene3.store.BufferedIndexInput;
-import org.trypticon.lucene3.store.Directory;
-import org.trypticon.lucene3.store.IndexInput;
-import org.trypticon.lucene3.store.IndexOutput;
-import org.trypticon.lucene3.store.Lock;
 
 /**
  * Class for accessing a compound stream.
@@ -276,8 +272,8 @@ class CompoundFileReader extends Directory {
     }
     
     /** Expert: implements seek.  Sets current position in this file, where
-     *  the next {@link #readInternal(byte[],int,int)} will occur.
-     * @see #readInternal(byte[],int,int)
+     *  the next {@code #readInternal(byte[],int,int)} will occur.
+     *
      */
     @Override
     protected void seekInternal(long pos) {}

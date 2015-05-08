@@ -17,13 +17,13 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.analysis.tokenattributes.OffsetAttribute;
 import org.trypticon.lucene3.document.Fieldable;
 import org.trypticon.lucene3.store.IndexOutput;
-import org.trypticon.lucene3.util.UnicodeUtil;
 import org.trypticon.lucene3.util.RamUsageEstimator;
+import org.trypticon.lucene3.util.UnicodeUtil;
+
+import java.io.IOException;
 
 final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
 

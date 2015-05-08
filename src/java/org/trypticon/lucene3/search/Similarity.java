@@ -305,13 +305,13 @@ import java.util.Collection;
  *      two term-queries with that same term and hence the computation would still be correct (although
  *      not very efficient).
  *      The default computation for <i>tf(t in d)</i> in
- *      {@link org.trypticon.lucene3.search.DefaultSimilarity#tf(float) DefaultSimilarity} is:
+ *      {@code org.trypticon.lucene3.search.DefaultSimilarity#tf(float) DefaultSimilarity} is:
  *
  *      <br>&nbsp;<br>
  *      <table cellpadding="2" cellspacing="2" border="0" align="center" style="width:auto">
  *        <tr>
  *          <td valign="middle" align="right" rowspan="1">
- *            {@link org.trypticon.lucene3.search.DefaultSimilarity#tf(float) tf(t in d)} &nbsp; = &nbsp;
+ *            {@code org.trypticon.lucene3.search.DefaultSimilarity#tf(float) tf(t in d)} &nbsp; = &nbsp;
  *          </td>
  *          <td valign="top" align="center" rowspan="1">
  *               frequency<sup><big>&frac12;</big></sup>
@@ -330,13 +330,13 @@ import java.util.Collection;
  *      <i>idf(t)</i> appears for <i>t</i> in both the query and the document,
  *      hence it is squared in the equation.
  *      The default computation for <i>idf(t)</i> in
- *      {@link org.trypticon.lucene3.search.DefaultSimilarity#idf(int, int) DefaultSimilarity} is:
+ *      {@code org.trypticon.lucene3.search.DefaultSimilarity#idf(int, int) DefaultSimilarity} is:
  *
  *      <br>&nbsp;<br>
  *      <table cellpadding="2" cellspacing="2" border="0" align="center" style="width:auto">
  *        <tr>
  *          <td valign="middle" align="right">
- *            {@link org.trypticon.lucene3.search.DefaultSimilarity#idf(int, int) idf(t)}&nbsp; = &nbsp;
+ *            {@code org.trypticon.lucene3.search.DefaultSimilarity#idf(int, int) idf(t)}&nbsp; = &nbsp;
  *          </td>
  *          <td valign="middle" align="center">
  *            1 + log <big>(</big>
@@ -363,7 +363,7 @@ import java.util.Collection;
  *      Typically, a document that contains more of the query's terms will receive a higher score
  *      than another document with fewer query terms.
  *      This is a search time factor computed in
- *      {@link #coord(int, int) coord(q,d)}
+ *      {@code #coord(int, int) coord(q,d)}
  *      by the Similarity in effect at search time.
  *      <br>&nbsp;<br>
  *    </li>
@@ -378,14 +378,14 @@ import java.util.Collection;
  *      This is a search time factor computed by the Similarity in effect at search time.
  *
  *      The default computation in
- *      {@link org.trypticon.lucene3.search.DefaultSimilarity#queryNorm(float) DefaultSimilarity}
+ *      {@code org.trypticon.lucene3.search.DefaultSimilarity#queryNorm(float) DefaultSimilarity}
  *      produces a <a href="http://en.wikipedia.org/wiki/Euclidean_norm#Euclidean_norm">Euclidean norm</a>:
  *      <br>&nbsp;<br>
  *      <table cellpadding="1" cellspacing="0" border="0" align="center" style="width:auto">
  *        <tr>
  *          <td valign="middle" align="right" rowspan="1">
  *            queryNorm(q)  &nbsp; = &nbsp;
- *            {@link org.trypticon.lucene3.search.DefaultSimilarity#queryNorm(float) queryNorm(sumOfSquaredWeights)}
+ *            {@code org.trypticon.lucene3.search.DefaultSimilarity#queryNorm(float) queryNorm(sumOfSquaredWeights)}
  *            &nbsp; = &nbsp;
  *          </td>
  *          <td valign="middle" align="center" rowspan="1">
@@ -402,16 +402,16 @@ import java.util.Collection;
  *      <br>&nbsp;<br>
  *
  *      The sum of squared weights (of the query terms) is
- *      computed by the query {@link org.trypticon.lucene3.search.Weight} object.
- *      For example, a {@link org.trypticon.lucene3.search.BooleanQuery}
+ *      computed by the query {@code org.trypticon.lucene3.search.Weight} object.
+ *      For example, a {@code org.trypticon.lucene3.search.BooleanQuery}
  *      computes this value as:
  *
  *      <br>&nbsp;<br>
  *      <table cellpadding="1" cellspacing="0" border="0"n align="center" style="width:auto">
  *        <tr>
  *          <td valign="middle" align="right" rowspan="1">
- *            {@link org.trypticon.lucene3.search.Weight#sumOfSquaredWeights() sumOfSquaredWeights} &nbsp; = &nbsp;
- *            {@link org.trypticon.lucene3.search.Query#getBoost() q.getBoost()} <sup><big>2</big></sup>
+ *            {@code org.trypticon.lucene3.search.Weight#sumOfSquaredWeights() sumOfSquaredWeights} &nbsp; = &nbsp;
+ *            {@code org.trypticon.lucene3.search.Query#getBoost() q.getBoost()} <sup><big>2</big></sup>
  *            &nbsp;&middot;&nbsp;
  *          </td>
  *          <td valign="bottom" align="center" rowspan="1" style="text-align: center">
@@ -441,12 +441,12 @@ import java.util.Collection;
  *      specified in the query text
  *      (see <A HREF="../../../../../../queryparsersyntax.html#Boosting a Term">query syntax</A>),
  *      or as set by application calls to
- *      {@link org.trypticon.lucene3.search.Query#setBoost(float) setBoost()}.
+ *      {@code org.trypticon.lucene3.search.Query#setBoost(float) setBoost()}.
  *      Notice that there is really no direct API for accessing a boost of one term in a multi term query,
  *      but rather multi terms are represented in a query as multi
- *      {@link org.trypticon.lucene3.search.TermQuery TermQuery} objects,
+ *      {@code org.trypticon.lucene3.search.TermQuery TermQuery} objects,
  *      and so the boost of a term in the query is accessible by calling the sub-query
- *      {@link org.trypticon.lucene3.search.Query#getBoost() getBoost()}.
+ *      {@code org.trypticon.lucene3.search.Query#getBoost() getBoost()}.
  *      <br>&nbsp;<br>
  *    </li>
  *
@@ -456,11 +456,11 @@ import java.util.Collection;
  *
  *      <ul>
  *        <li><b>Document boost</b> - set by calling
- *        {@link org.trypticon.lucene3.document.Document#setBoost(float) doc.setBoost()}
+ *        {@code org.trypticon.lucene3.document.Document#setBoost(float) doc.setBoost()}
  *        before adding the document to the index.
  *        </li>
  *        <li><b>Field boost</b> - set by calling
- *        {@link org.trypticon.lucene3.document.Fieldable#setBoost(float) field.setBoost()}
+ *        {@code org.trypticon.lucene3.document.Fieldable#setBoost(float) field.setBoost()}
  *        before adding the field to a document.
  *        </li>
  *        <li><b>lengthNorm</b> - computed
@@ -469,7 +469,7 @@ import java.util.Collection;
  *        LengthNorm is computed by the Similarity class in effect at indexing.
  *        </li>
  *      </ul>
- *      The {@link #computeNorm} method is responsible for
+ *      The {@code #computeNorm} method is responsible for
  *      combining all of these factors into a single float.
  *
  *      <p>
@@ -481,7 +481,7 @@ import java.util.Collection;
  *        <tr>
  *          <td valign="middle" align="right" rowspan="1">
  *            norm(t,d) &nbsp; = &nbsp;
- *            {@link org.trypticon.lucene3.document.Document#getBoost() doc.getBoost()}
+ *            {@code org.trypticon.lucene3.document.Document#getBoost() doc.getBoost()}
  *            &nbsp;&middot;&nbsp;
  *            lengthNorm
  *            &nbsp;&middot;&nbsp;
@@ -490,7 +490,7 @@ import java.util.Collection;
  *            <big><big><big>&prod;</big></big></big>
  *          </td>
  *          <td valign="middle" align="right" rowspan="1">
- *            {@link org.trypticon.lucene3.document.Fieldable#getBoost() f.getBoost}()
+ *            {@code org.trypticon.lucene3.document.Fieldable#getBoost() f.getBoost}()
  *          </td>
  *        </tr>
  *        <tr valigh="top">
@@ -500,11 +500,11 @@ import java.util.Collection;
  *        </tr>
  *      </table>
  *      <br>&nbsp;<br>
- *      However the resulted <i>norm</i> value is {@link #encodeNormValue(float) encoded} as a single byte
+ *      However the resulted <i>norm</i> value is {@code #encodeNormValue(float) encoded} as a single byte
  *      before being stored.
  *      At search time, the norm byte value is read from the index
- *      {@link org.trypticon.lucene3.store.Directory directory} and
- *      {@link #decodeNormValue(byte) decoded} back to a float <i>norm</i> value.
+ *      {@code org.trypticon.lucene3.store.Directory directory} and
+ *      {@code #decodeNormValue(byte) decoded} back to a float <i>norm</i> value.
  *      This encoding/decoding, while reducing index size, comes with the price of
  *      precision loss - it is not guaranteed that <i>decode(encode(x)) = x</i>.
  *      For instance, <i>decode(encode(0.89)) = 0.75</i>.
@@ -518,14 +518,14 @@ import java.util.Collection;
  *      need by a query, only big differences matter.
  *      <br>&nbsp;<br>
  *      Last, note that search time is too late to modify this <i>norm</i> part of scoring, e.g. by
- *      using a different {@link Similarity} for search.
+ *      using a different {@code Similarity} for search.
  *      <br>&nbsp;<br>
  *    </li>
  * </ol>
  *
- * @see #setDefault(Similarity)
- * @see org.trypticon.lucene3.index.IndexWriter#setSimilarity(Similarity)
- * @see Searcher#setSimilarity(Similarity)
+ *
+ *
+ *
  */
 public abstract class Similarity implements Serializable {
 
@@ -548,8 +548,8 @@ public abstract class Similarity implements Serializable {
   /** Set the default Similarity implementation used by indexing and search
    * code.
    *
-   * @see Searcher#setSimilarity(Similarity)
-   * @see org.trypticon.lucene3.index.IndexWriter#setSimilarity(Similarity)
+   *
+   *
    */
   public static void setDefault(Similarity similarity) {
     Similarity.defaultImpl = similarity;
@@ -558,10 +558,10 @@ public abstract class Similarity implements Serializable {
   /** Return the default Similarity implementation used by indexing and search
    * code.
    *
-   * <p>This is initially an instance of {@link DefaultSimilarity}.
+   * <p>This is initially an instance of {@code DefaultSimilarity}.
    *
-   * @see Searcher#setSimilarity(Similarity)
-   * @see org.trypticon.lucene3.index.IndexWriter#setSimilarity(Similarity)
+   *
+   *
    */
   public static Similarity getDefault() {
     return Similarity.defaultImpl;
@@ -577,8 +577,8 @@ public abstract class Similarity implements Serializable {
 
   /**
    * Decodes a normalization factor stored in an index.
-   * @see #decodeNormValue(byte)
-   * @deprecated Use {@link #decodeNormValue} instead.
+   *
+   * @deprecated Use {@code #decodeNormValue} instead.
    */
   @Deprecated
   public static float decodeNorm(byte b) {
@@ -588,18 +588,18 @@ public abstract class Similarity implements Serializable {
   /** Decodes a normalization factor stored in an index.
    * <p>
    * <b>WARNING: If you override this method, you should change the default
-   *    Similarity to your implementation with {@link Similarity#setDefault(Similarity)}. 
+   *    Similarity to your implementation with {@code Similarity#setDefault(Similarity)}.
    *    Otherwise, your method may not always be called, especially if you omit norms 
    *    for some fields.</b>
-   * @see #encodeNormValue(float)
+   *
    */
   public float decodeNormValue(byte b) {
     return NORM_TABLE[b & 0xFF];  // & 0xFF maps negative bytes to positive above 127
   }
 
   /** Returns a table for decoding normalization bytes.
-   * @see #encodeNormValue(float)
-   * @see #decodeNormValue(byte)
+   *
+   *
    * 
    * @deprecated Use instance methods for encoding/decoding norm values to enable customization.
    */
@@ -610,7 +610,7 @@ public abstract class Similarity implements Serializable {
 
   /**
    * Computes the normalization value for a field, given the accumulated
-   * state of term processing for this field (see {@link FieldInvertState}).
+   * state of term processing for this field (see {@code FieldInvertState}).
    * 
    * <p>Implementations should calculate a float value based on the field
    * state and then return that value.
@@ -620,16 +620,16 @@ public abstract class Similarity implements Serializable {
    * and larger values when <code>state.getLength()</code> is small.
    * 
    * <p>Note that the return values are computed under 
-   * {@link org.trypticon.lucene3.index.IndexWriter#addDocument(org.trypticon.lucene3.document.Document)}
+   * {@code org.trypticon.lucene3.index.IndexWriter#addDocument(org.trypticon.lucene3.document.Document)}
    * and then stored using
-   * {@link #encodeNormValue(float)}.  
+   * {@code #encodeNormValue(float)}.
    * Thus they have limited precision, and documents
    * must be re-indexed if this method is altered.
    *
    * <p>For backward compatibility this method by default calls
-   * {@link #lengthNorm(String, int)} passing
-   * {@link FieldInvertState#getLength()} as the second argument, and
-   * then multiplies this value by {@link FieldInvertState#getBoost()}.</p>
+   * {@code #lengthNorm(String, int)} passing
+   * {@code FieldInvertState#getLength()} as the second argument, and
+   * then multiplies this value by {@code FieldInvertState#getBoost()}.</p>
    * 
    * @lucene.experimental
    * 
@@ -649,9 +649,9 @@ public abstract class Similarity implements Serializable {
    * and larger values when <code>numTokens</code> is small.
    * 
    * <p>Note that the return values are computed under 
-   * {@link org.trypticon.lucene3.index.IndexWriter#addDocument(org.trypticon.lucene3.document.Document)}
+   * {@code org.trypticon.lucene3.index.IndexWriter#addDocument(org.trypticon.lucene3.document.Document)}
    * and then stored using
-   * {@link #encodeNormValue(float)}.  
+   * {@code #encodeNormValue(float)}.
    * Thus they have limited precision, and documents
    * must be re-indexed if this method is altered.
    *
@@ -660,7 +660,7 @@ public abstract class Similarity implements Serializable {
    * <i>fieldName</i> of <i>doc</i>.
    * @return a normalization factor for hits on this field of this document
    *
-   * @see org.trypticon.lucene3.document.Field#setBoost(float)
+   *
    *
    * @deprecated Please override computeNorm instead
    */
@@ -696,11 +696,11 @@ public abstract class Similarity implements Serializable {
    * value.
    * <p>
    * <b>WARNING: If you override this method, you should change the default
-   * Similarity to your implementation with {@link Similarity#setDefault(Similarity)}. 
+   * Similarity to your implementation with {@code Similarity#setDefault(Similarity)}.
    * Otherwise, your method may not always be called, especially if you omit norms 
    * for some fields.</b>
-   * @see org.trypticon.lucene3.document.Field#setBoost(float)
-   * @see org.trypticon.lucene3.util.SmallFloat
+   *
+   *
    */
   public byte encodeNormValue(float f) {
     return SmallFloat.floatToByte315(f);
@@ -710,9 +710,9 @@ public abstract class Similarity implements Serializable {
    * Static accessor kept for backwards compability reason, use encodeNormValue instead.
    * @param f norm-value to encode
    * @return byte representing the given float
-   * @deprecated Use {@link #encodeNormValue} instead.
+   * @deprecated Use {@code #encodeNormValue} instead.
    * 
-   * @see #encodeNormValue(float)
+   *
    */
   @Deprecated
   public static byte encodeNorm(float f) {
@@ -721,7 +721,7 @@ public abstract class Similarity implements Serializable {
 
 
   /** Computes a score factor based on a term or phrase's frequency in a
-   * document.  This value is multiplied by the {@link #idf(int, int)}
+   * document.  This value is multiplied by the {@code #idf(int, int)}
    * factor for each term in the query and these products are then summed to
    * form the initial score for a document.
    *
@@ -730,7 +730,7 @@ public abstract class Similarity implements Serializable {
    * when <code>freq</code> is large, and smaller values when <code>freq</code>
    * is small.
    *
-   * <p>The default implementation calls {@link #tf(float)}.
+   * <p>The default implementation calls {@code #tf(float)}.
    *
    * @param freq the frequency of a term within a document
    * @return a score factor based on a term's within-document frequency
@@ -741,21 +741,21 @@ public abstract class Similarity implements Serializable {
 
   /** Computes the amount of a sloppy phrase match, based on an edit distance.
    * This value is summed for each sloppy phrase match in a document to form
-   * the frequency that is passed to {@link #tf(float)}.
+   * the frequency that is passed to {@code #tf(float)}.
    *
    * <p>A phrase match with a small edit distance to a document passage more
    * closely matches the document, so implementations of this method usually
    * return larger values when the edit distance is small and smaller values
    * when it is large.
    *
-   * @see PhraseQuery#setSlop(int)
+   *
    * @param distance the edit distance of this sloppy phrase match
    * @return the frequency increment for this match
    */
   public abstract float sloppyFreq(int distance);
 
   /** Computes a score factor based on a term or phrase's frequency in a
-   * document.  This value is multiplied by the {@link #idf(int, int)}
+   * document.  This value is multiplied by the {@code #idf(int, int)}
    * factor for each term in the query and these products are then summed to
    * form the initial score for a document.
    *
@@ -781,11 +781,11 @@ public abstract class Similarity implements Serializable {
    * idf(searcher.docFreq(term), searcher.maxDoc());
    * </pre>
    * 
-   * Note that {@link Searcher#maxDoc()} is used instead of
-   * {@link org.trypticon.lucene3.index.IndexReader#numDocs() IndexReader#numDocs()} because also
-   * {@link Searcher#docFreq(Term)} is used, and when the latter 
-   * is inaccurate, so is {@link Searcher#maxDoc()}, and in the same direction.
-   * In addition, {@link Searcher#maxDoc()} is more efficient to compute
+   * Note that {@code Searcher#maxDoc()} is used instead of
+   * {@code org.trypticon.lucene3.index.IndexReader#numDocs() IndexReader#numDocs()} because also
+   * {@code Searcher#docFreq(Term)} is used, and when the latter
+   * is inaccurate, so is {@code Searcher#maxDoc()}, and in the same direction.
+   * In addition, {@code Searcher#maxDoc()} is more efficient to compute
    *   
    * @param term the term in question
    * @param searcher the document collection being searched
@@ -815,13 +815,13 @@ public abstract class Similarity implements Serializable {
   }
 
   /**
-   * This method forwards to {@link
+   * This method forwards to {@code
    * #idfExplain(Term,Searcher,int)} by passing
    * <code>searcher.docFreq(term)</code> as the docFreq.
    *
    * WARNING: if you subclass Similariary and override this
    * method then you may hit a peformance hit for certain
-   * queries.  Better to override {@link
+   * queries.  Better to override {@code
    * #idfExplain(Term,Searcher,int)} instead.
    */
   public IDFExplanation idfExplain(final Term term, final Searcher searcher) throws IOException {
@@ -869,7 +869,7 @@ public abstract class Similarity implements Serializable {
 
   /** Computes a score factor based on a term's document frequency (the number
    * of documents which contain the term).  This value is multiplied by the
-   * {@link #tf(int)} factor for each term in the query and these products are
+   * {@code #tf(int)} factor for each term in the query and these products are
    * then summed to form the initial score for a document.
    *
    * <p>Terms that occur in fewer documents are better indicators of topic, so
@@ -903,7 +903,7 @@ public abstract class Similarity implements Serializable {
    * <p>
    * The default implementation returns 1.
    *
-   * @param docId The docId currently being scored.  If this value is {@link #NO_DOC_ID_PROVIDED}, then it should be assumed that the PayloadQuery implementation does not provide document information
+   * @param docId The docId currently being scored.  If this value is {@code #NO_DOC_ID_PROVIDED}, then it should be assumed that the PayloadQuery implementation does not provide document information
    * @param fieldName The fieldName of the term this payload belongs to
    * @param start The start position of the payload
    * @param end The end position of the payload

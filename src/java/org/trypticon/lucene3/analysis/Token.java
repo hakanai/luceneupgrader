@@ -17,19 +17,12 @@ package org.trypticon.lucene3.analysis;
  * limitations under the License.
  */
 
-import org.trypticon.lucene3.analysis.tokenattributes.TermAttributeImpl;
-import org.trypticon.lucene3.analysis.tokenattributes.OffsetAttribute;
-import org.trypticon.lucene3.analysis.tokenattributes.FlagsAttribute;
-import org.trypticon.lucene3.analysis.tokenattributes.PayloadAttribute;
-import org.trypticon.lucene3.analysis.tokenattributes.PositionIncrementAttribute;
-import org.trypticon.lucene3.analysis.tokenattributes.PositionLengthAttribute;
-import org.trypticon.lucene3.analysis.tokenattributes.TypeAttribute;
+import org.trypticon.lucene3.analysis.tokenattributes.*;
 import org.trypticon.lucene3.index.Payload;
-import org.trypticon.lucene3.index.TermPositions;     // for javadoc
 import org.trypticon.lucene3.util.Attribute;
-import org.trypticon.lucene3.util.AttributeSource;
 import org.trypticon.lucene3.util.AttributeImpl;
 import org.trypticon.lucene3.util.AttributeReflector;
+import org.trypticon.lucene3.util.AttributeSource;
 
 /** 
   A Token is an occurrence of a term from the text of a field.  It consists of
@@ -47,59 +40,59 @@ import org.trypticon.lucene3.util.AttributeReflector;
   with type "eos".  The default token type is "word".  
   <p>
   A Token can optionally have metadata (a.k.a. Payload) in the form of a variable
-  length byte array. Use {@link TermPositions#getPayloadLength()} and 
-  {@link TermPositions#getPayload(byte[], int)} to retrieve the payloads from the index.
+  length byte array. Use {@code TermPositions#getPayloadLength()} and
+  {@code TermPositions#getPayload(byte[], int)} to retrieve the payloads from the index.
   
   <br><br>
   
-  <p><b>NOTE:</b> As of 2.9, Token implements all {@link Attribute} interfaces
+  <p><b>NOTE:</b> As of 2.9, Token implements all {@code Attribute} interfaces
   that are part of core Lucene and can be found in the {@code tokenattributes} subpackage.
   Even though it is not necessary to use Token anymore, with the new TokenStream API it can
-  be used as convenience class that implements all {@link Attribute}s, which is especially useful
+  be used as convenience class that implements all {@code Attribute}s, which is especially useful
   to easily switch from the old to the new TokenStream API.
   
   <br><br>
   
   <p>Tokenizers and TokenFilters should try to re-use a Token
   instance when possible for best performance, by
-  implementing the {@link TokenStream#incrementToken()} API.
+  implementing the {@code TokenStream#incrementToken()} API.
   Failing that, to create a new Token you should first use
   one of the constructors that starts with null text.  To load
-  the token from a char[] use {@link #copyBuffer(char[], int, int)}.
-  To load from a String use {@link #setEmpty} followed by {@link #append(CharSequence)} or {@link #append(CharSequence, int, int)}.
-  Alternatively you can get the Token's termBuffer by calling either {@link #buffer()},
+  the token from a char[] use {@code #copyBuffer(char[], int, int)}.
+  To load from a String use {@code #setEmpty} followed by {@code #append(CharSequence)} or {@code #append(CharSequence, int, int)}.
+  Alternatively you can get the Token's termBuffer by calling either {@code #buffer()},
   if you know that your text is shorter than the capacity of the termBuffer
-  or {@link #resizeBuffer(int)}, if there is any possibility
+  or {@code #resizeBuffer(int)}, if there is any possibility
   that you may need to grow the buffer. Fill in the characters of your term into this
-  buffer, with {@link String#getChars(int, int, char[], int)} if loading from a string,
-  or with {@link System#arraycopy(Object, int, Object, int, int)}, and finally call {@link #setLength(int)} to
+  buffer, with {@code String#getChars(int, int, char[], int)} if loading from a string,
+  or with {@code System#arraycopy(Object, int, Object, int, int)}, and finally call {@code #setLength(int)} to
   set the length of the term text.  See <a target="_top"
   href="https://issues.apache.org/jira/browse/LUCENE-969">LUCENE-969</a>
   for details.</p>
   <p>Typical Token reuse patterns:
   <ul>
-  <li> Copying text from a string (type is reset to {@link #DEFAULT_TYPE} if not specified):<br/>
+  <li> Copying text from a string (type is reset to {@code #DEFAULT_TYPE} if not specified):<br/>
   <pre>
     return reusableToken.reinit(string, startOffset, endOffset[, type]);
   </pre>
   </li>
-  <li> Copying some text from a string (type is reset to {@link #DEFAULT_TYPE} if not specified):<br/>
+  <li> Copying some text from a string (type is reset to {@code #DEFAULT_TYPE} if not specified):<br/>
   <pre>
     return reusableToken.reinit(string, 0, string.length(), startOffset, endOffset[, type]);
   </pre>
   </li>
   </li>
-  <li> Copying text from char[] buffer (type is reset to {@link #DEFAULT_TYPE} if not specified):<br/>
+  <li> Copying text from char[] buffer (type is reset to {@code #DEFAULT_TYPE} if not specified):<br/>
   <pre>
     return reusableToken.reinit(buffer, 0, buffer.length, startOffset, endOffset[, type]);
   </pre>
   </li>
-  <li> Copying some text from a char[] buffer (type is reset to {@link #DEFAULT_TYPE} if not specified):<br/>
+  <li> Copying some text from a char[] buffer (type is reset to {@code #DEFAULT_TYPE} if not specified):<br/>
   <pre>
     return reusableToken.reinit(buffer, start, end - start, startOffset, endOffset[, type]);
   </pre>
   </li>
-  <li> Copying from one one Token to another (type is reset to {@link #DEFAULT_TYPE} if not specified):<br/>
+  <li> Copying from one one Token to another (type is reset to {@code #DEFAULT_TYPE} if not specified):<br/>
   <pre>
     return reusableToken.reinit(source.buffer(), 0, source.length(), source.startOffset(), source.endOffset()[, source.type()]);
   </pre>
@@ -114,11 +107,11 @@ import org.trypticon.lucene3.util.AttributeReflector;
   </ul>
   </p>
   <p>
-  <b>Please note:</b> With Lucene 3.1, the <code>{@linkplain #toString toString()}</code> method had to be changed to match the
-  {@link CharSequence} interface introduced by the interface {@link org.trypticon.lucene3.analysis.tokenattributes.CharTermAttribute}.
+  <b>Please note:</b> With Lucene 3.1, the <code>{@codeplain #toString toString()}</code> method had to be changed to match the
+  {@code CharSequence} interface introduced by the interface {@code org.trypticon.lucene3.analysis.tokenattributes.CharTermAttribute}.
   This method now only prints the term text, no additional information anymore.
   </p>
-  @see org.trypticon.lucene3.index.Payload
+
 */
 // TODO: change superclass to CharTermAttribute in 4.0! Maybe deprecate the whole class?
 public class Token extends TermAttributeImpl 
@@ -234,7 +227,7 @@ public class Token extends TermAttributeImpl
   }
 
   /** Set the position increment.  This determines the position of this token
-   * relative to the previous Token in a {@link TokenStream}, used in phrase
+   * relative to the previous Token in a {@code TokenStream}, used in phrase
    * searching.
    *
    * <p>The default value is one.
@@ -257,7 +250,7 @@ public class Token extends TermAttributeImpl
    *
    * </ul>
    * @param positionIncrement the distance from the prior term
-   * @see org.trypticon.lucene3.index.TermPositions
+   *
    */
   public void setPositionIncrement(int positionIncrement) {
     if (positionIncrement < 0)
@@ -267,20 +260,18 @@ public class Token extends TermAttributeImpl
   }
 
   /** Returns the position increment of this Token.
-   * @see #setPositionIncrement
+   *
    */
   public int getPositionIncrement() {
     return positionIncrement;
   }
 
-  /** Set the position length.
-   * @see PositionLengthAttribute */
+  /** Set the position length. */
   public void setPositionLength(int positionLength) {
     this.positionLength = positionLength;
   }
 
-  /** Get the position length.
-   * @see PositionLengthAttribute */
+  /** Get the position length. */
   public int getPositionLength() {
     return positionLength;
   }
@@ -289,14 +280,13 @@ public class Token extends TermAttributeImpl
     corresponding to this token in the source text.
 
     Note that the difference between endOffset() and startOffset() may not be
-    equal to {@link #length}, as the term text may have been altered by a
+    equal to {@code #length}, as the term text may have been altered by a
     stemmer or some other filter. */
   public final int startOffset() {
     return startOffset;
   }
 
-  /** Set the starting offset.
-      @see #startOffset() */
+  /** Set the starting offset. */
   public void setStartOffset(int offset) {
     this.startOffset = offset;
   }
@@ -308,14 +298,14 @@ public class Token extends TermAttributeImpl
     return endOffset;
   }
 
-  /** Set the ending offset.
-      @see #endOffset() */
+  /** Set the ending offset.*/
+
   public void setEndOffset(int offset) {
     this.endOffset = offset;
   }
   
   /** Set the starting and ending offset.
-  @see #startOffset() and #endOffset()*/
+  */
   public void setOffset(int startOffset, int endOffset) {
     this.startOffset = startOffset;
     this.endOffset = endOffset;
@@ -327,7 +317,7 @@ public class Token extends TermAttributeImpl
   }
 
   /** Set the lexical type.
-      @see #type() */
+      */
   public final void setType(String type) {
     this.type = type;
   }
@@ -335,8 +325,8 @@ public class Token extends TermAttributeImpl
   /**
    * <p/>
    *
-   * Get the bitset for any bits that have been set.  This is completely distinct from {@link #type()}, although they do share similar purposes.
-   * The flags can be used to encode information about the token for use by other {@link org.trypticon.lucene3.analysis.TokenFilter}s.
+   * Get the bitset for any bits that have been set.  This is completely distinct from {@code #type()}, although they do share similar purposes.
+   * The flags can be used to encode information about the token for use by other {@code org.trypticon.lucene3.analysis.TokenFilter}s.
    *
    * 
    * @return The bits
@@ -347,7 +337,7 @@ public class Token extends TermAttributeImpl
   }
 
   /**
-   * @see #getFlags()
+   *
    */
   public void setFlags(int flags) {
     this.flags = flags;
@@ -393,7 +383,7 @@ public class Token extends TermAttributeImpl
   /** Makes a clone, but replaces the term buffer &
    * start/end offset in the process.  This is more
    * efficient than doing a full clone (and then calling
-   * {@link #copyBuffer}) because it saves a wasted copy of the old
+   * {@code #copyBuffer}) because it saves a wasted copy of the old
    * termBuffer. */
   public Token clone(char[] newTermBuffer, int newTermOffset, int newTermLength, int newStartOffset, int newEndOffset) {
     final Token t = new Token(newTermBuffer, newTermOffset, newTermLength, newStartOffset, newEndOffset);
@@ -447,11 +437,11 @@ public class Token extends TermAttributeImpl
     type = DEFAULT_TYPE;
   }
 
-  /** Shorthand for calling {@link #clear},
-   *  {@link #copyBuffer(char[], int, int)},
-   *  {@link #setStartOffset},
-   *  {@link #setEndOffset},
-   *  {@link #setType}
+  /** Shorthand for calling {@code #clear},
+   *  {@code #copyBuffer(char[], int, int)},
+   *  {@code #setStartOffset},
+   *  {@code #setEndOffset},
+   *  {@code #setType}
    *  @return this Token instance */
   public Token reinit(char[] newTermBuffer, int newTermOffset, int newTermLength, int newStartOffset, int newEndOffset, String newType) {
     clearNoTermBuffer();
@@ -464,11 +454,11 @@ public class Token extends TermAttributeImpl
     return this;
   }
 
-  /** Shorthand for calling {@link #clear},
-   *  {@link #copyBuffer(char[], int, int)},
-   *  {@link #setStartOffset},
-   *  {@link #setEndOffset}
-   *  {@link #setType} on Token.DEFAULT_TYPE
+  /** Shorthand for calling {@code #clear},
+   *  {@code #copyBuffer(char[], int, int)},
+   *  {@code #setStartOffset},
+   *  {@code #setEndOffset}
+   *  {@code #setType} on Token.DEFAULT_TYPE
    *  @return this Token instance */
   public Token reinit(char[] newTermBuffer, int newTermOffset, int newTermLength, int newStartOffset, int newEndOffset) {
     clearNoTermBuffer();
@@ -479,11 +469,11 @@ public class Token extends TermAttributeImpl
     return this;
   }
 
-  /** Shorthand for calling {@link #clear},
-   *  {@link #append(CharSequence)},
-   *  {@link #setStartOffset},
-   *  {@link #setEndOffset}
-   *  {@link #setType}
+  /** Shorthand for calling {@code #clear},
+   *  {@code #append(CharSequence)},
+   *  {@code #setStartOffset},
+   *  {@code #setEndOffset}
+   *  {@code #setType}
    *  @return this Token instance */
   public Token reinit(String newTerm, int newStartOffset, int newEndOffset, String newType) {
     clear();
@@ -494,11 +484,11 @@ public class Token extends TermAttributeImpl
     return this;
   }
 
-  /** Shorthand for calling {@link #clear},
-   *  {@link #append(CharSequence, int, int)},
-   *  {@link #setStartOffset},
-   *  {@link #setEndOffset}
-   *  {@link #setType}
+  /** Shorthand for calling {@code #clear},
+   *  {@code #append(CharSequence, int, int)},
+   *  {@code #setStartOffset},
+   *  {@code #setEndOffset}
+   *  {@code #setType}
    *  @return this Token instance */
   public Token reinit(String newTerm, int newTermOffset, int newTermLength, int newStartOffset, int newEndOffset, String newType) {
     clear();
@@ -509,11 +499,11 @@ public class Token extends TermAttributeImpl
     return this;
   }
 
-  /** Shorthand for calling {@link #clear},
-   *  {@link #append(CharSequence)},
-   *  {@link #setStartOffset},
-   *  {@link #setEndOffset}
-   *  {@link #setType} on Token.DEFAULT_TYPE
+  /** Shorthand for calling {@code #clear},
+   *  {@code #append(CharSequence)},
+   *  {@code #setStartOffset},
+   *  {@code #setEndOffset}
+   *  {@code #setType} on Token.DEFAULT_TYPE
    *  @return this Token instance */
   public Token reinit(String newTerm, int newStartOffset, int newEndOffset) {
     clear();
@@ -524,11 +514,11 @@ public class Token extends TermAttributeImpl
     return this;
   }
 
-  /** Shorthand for calling {@link #clear},
-   *  {@link #append(CharSequence, int, int)},
-   *  {@link #setStartOffset},
-   *  {@link #setEndOffset}
-   *  {@link #setType} on Token.DEFAULT_TYPE
+  /** Shorthand for calling {@code #clear},
+   *  {@code #append(CharSequence, int, int)},
+   *  {@code #setStartOffset},
+   *  {@code #setEndOffset}
+   *  {@code #setType} on Token.DEFAULT_TYPE
    *  @return this Token instance */
   public Token reinit(String newTerm, int newTermOffset, int newTermLength, int newStartOffset, int newEndOffset) {
     clear();
@@ -623,7 +613,7 @@ public class Token extends TermAttributeImpl
   public static final AttributeSource.AttributeFactory TOKEN_ATTRIBUTE_FACTORY =
     new TokenAttributeFactory(AttributeSource.AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
   
-  /** <b>Expert:</b> Creates a TokenAttributeFactory returning {@link Token} as instance for the basic attributes
+  /** <b>Expert:</b> Creates a TokenAttributeFactory returning {@code Token} as instance for the basic attributes
    * and for all other attributes calls the given delegate factory.
    * @since 3.0
    */
@@ -631,7 +621,7 @@ public class Token extends TermAttributeImpl
     
     private final AttributeSource.AttributeFactory delegate;
     
-    /** <b>Expert</b>: Creates an AttributeFactory returning {@link Token} as instance for the basic attributes
+    /** <b>Expert</b>: Creates an AttributeFactory returning {@code Token} as instance for the basic attributes
      * and for all other attributes calls the given delegate factory. */
     public TokenAttributeFactory(AttributeSource.AttributeFactory delegate) {
       this.delegate = delegate;

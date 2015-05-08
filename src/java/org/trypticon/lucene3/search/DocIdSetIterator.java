@@ -22,24 +22,24 @@ import java.io.IOException;
 /**
  * This abstract class defines methods to iterate over a set of non-decreasing
  * doc ids. Note that this class assumes it iterates on doc Ids, and therefore
- * {@link #NO_MORE_DOCS} is set to {@value #NO_MORE_DOCS} in order to be used as
+ * {@code #NO_MORE_DOCS} is set to {@value #NO_MORE_DOCS} in order to be used as
  * a sentinel object. Implementations of this class are expected to consider
- * {@link Integer#MAX_VALUE} as an invalid value.
+ * {@code Integer#MAX_VALUE} as an invalid value.
  */
 public abstract class DocIdSetIterator {
   
   /**
-   * When returned by {@link #nextDoc()}, {@link #advance(int)} and
-   * {@link #docID()} it means there are no more docs in the iterator.
+   * When returned by {@code #nextDoc()}, {@code #advance(int)} and
+   * {@code #docID()} it means there are no more docs in the iterator.
    */
   public static final int NO_MORE_DOCS = Integer.MAX_VALUE;
 
   /**
    * Returns the following:
    * <ul>
-   * <li>-1 or {@link #NO_MORE_DOCS} if {@link #nextDoc()} or
-   * {@link #advance(int)} were not called yet.
-   * <li>{@link #NO_MORE_DOCS} if the iterator has exhausted.
+   * <li>-1 or {@code #NO_MORE_DOCS} if {@code #nextDoc()} or
+   * {@code #advance(int)} were not called yet.
+   * <li>{@code #NO_MORE_DOCS} if the iterator has exhausted.
    * <li>Otherwise it should return the doc ID it is currently on.
    * </ul>
    * <p>
@@ -50,7 +50,7 @@ public abstract class DocIdSetIterator {
 
   /**
    * Advances to the next document in the set and returns the doc it is
-   * currently on, or {@link #NO_MORE_DOCS} if there are no more docs in the
+   * currently on, or {@code #NO_MORE_DOCS} if there are no more docs in the
    * set.<br>
    * 
    * <b>NOTE:</b> after the iterator has exhausted you should not call this
@@ -63,7 +63,7 @@ public abstract class DocIdSetIterator {
   /**
    * Advances to the first beyond (see NOTE below) the current whose document
    * number is greater than or equal to <i>target</i>. Returns the current
-   * document number or {@link #NO_MORE_DOCS} if there are no more docs in the
+   * document number or {@code #NO_MORE_DOCS} if there are no more docs in the
    * set.
    * <p>
    * Behaves as if written:
@@ -80,9 +80,9 @@ public abstract class DocIdSetIterator {
    * Some implementations are considerably more efficient than that.
    * <p>
    * <b>NOTE:</b> when <code> target &le; current</code> implementations may opt
-   * not to advance beyond their current {@link #docID()}.
+   * not to advance beyond their current {@code #docID()}.
    * <p>
-   * <b>NOTE:</b> this method may be called with {@link #NO_MORE_DOCS} for
+   * <b>NOTE:</b> this method may be called with {@code #NO_MORE_DOCS} for
    * efficiency by some Scorers. If your implementation cannot efficiently
    * determine that it should exhaust, it is recommended that you check for that
    * value in each call to this method.

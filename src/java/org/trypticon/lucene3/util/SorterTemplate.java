@@ -61,7 +61,7 @@ public abstract class SorterTemplate {
   }
 
   /** Sorts via in-place, but unstable, QuickSort algorithm.
-   * For small collections falls back to {@link #insertionSort(int,int)}. */
+   * For small collections falls back to {@code #insertionSort(int,int)}. */
   public final void quickSort(final int lo, final int hi) {
     if (hi <= lo) return;
     // from Integer's Javadocs: ceil(log2(x)) = 32 - numberOfLeadingZeros(x - 1)
@@ -119,7 +119,7 @@ public abstract class SorterTemplate {
   }
   
   /** Sorts via stable in-place MergeSort algorithm
-   * For small collections falls back to {@link #insertionSort(int,int)}. */
+   * For small collections falls back to {@code #insertionSort(int,int)}. */
   public final void mergeSort(int lo, int hi) {
     final int diff = hi - lo;
     if (diff <= MERGESORT_THRESHOLD) {

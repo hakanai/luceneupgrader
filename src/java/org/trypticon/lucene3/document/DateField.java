@@ -17,13 +17,7 @@ package org.trypticon.lucene3.document;
  * limitations under the License.
  */
 
-import org.trypticon.lucene3.search.PrefixQuery;
-import org.trypticon.lucene3.search.TermRangeQuery;
-import org.trypticon.lucene3.search.NumericRangeQuery; // for javadocs
-import org.trypticon.lucene3.util.NumericUtils; // for javadocs
-
-import java.util.Date;   // for javadoc
-import java.util.Calendar;   // for javadoc
+import java.util.Date;
 
 // do not remove in 3.0, needed for reading old indexes!
 
@@ -33,27 +27,27 @@ import java.util.Calendar;   // for javadoc
  * which makes them suitable for use as field values and search terms.
  *
  * <P>Note that this class saves dates with millisecond granularity,
- * which is bad for {@link TermRangeQuery} and {@link PrefixQuery}, as those
+ * which is bad for {@code TermRangeQuery} and {@code PrefixQuery}, as those
  * queries are expanded to a BooleanQuery with a potentially large number
  * of terms when searching. Thus you might want to use
- * {@link DateTools} instead.
+ * {@code DateTools} instead.
  *
  * <P>
  * Note: dates before 1970 cannot be used, and therefore cannot be
- * indexed when using this class. See {@link DateTools} for an
+ * indexed when using this class. See {@code DateTools} for an
  * alternative without such a limitation.
  *
  * <P>
- * Another approach is {@link NumericUtils}, which provides
+ * Another approach is {@code NumericUtils}, which provides
  * a sortable binary representation (prefix encoded) of numeric values, which
  * date/time are.
- * For indexing a {@link Date} or {@link Calendar}, just get the unix timestamp as
- * <code>long</code> using {@link Date#getTime} or {@link Calendar#getTimeInMillis} and
- * index this as a numeric value with {@link NumericField}
- * and use {@link NumericRangeQuery} to query it.
+ * For indexing a {@code Date} or {@code Calendar}, just get the unix timestamp as
+ * <code>long</code> using {@code Date#getTime} or {@code Calendar#getTimeInMillis} and
+ * index this as a numeric value with {@code NumericField}
+ * and use {@code NumericRangeQuery} to query it.
  *
- * @deprecated If you build a new index, use {@link DateTools} or 
- * {@link NumericField} instead.
+ * @deprecated If you build a new index, use {@code DateTools} or
+ * {@code NumericField} instead.
  * This class is included for use with existing
  * indices and will be removed in a future release (possibly Lucene 4.0).
  */

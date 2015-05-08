@@ -17,18 +17,18 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.index.FieldInfo;
+import org.trypticon.lucene3.index.FieldInfos;
+import org.trypticon.lucene3.index.IndexReader;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import org.trypticon.lucene3.index.FieldInfo;
-import org.trypticon.lucene3.index.FieldInfos;
-import org.trypticon.lucene3.index.IndexReader;
-
 /**
- * Common util methods for dealing with {@link IndexReader}s.
+ * Common util methods for dealing with {@code IndexReader}s.
  *
  * @lucene.internal
  */

@@ -49,7 +49,7 @@ import java.util.Set;
  *  final boolean isDeprecatedMethodOverridden =
  *   VirtualMethod.compareImplementationDistance(this.getClass(), oldMethod, newMethod) > 0
  * </pre> 
- * <p>{@link #getImplementationDistance} returns the distance of the subclass that overrides this method.
+ * <p>{@code #getImplementationDistance} returns the distance of the subclass that overrides this method.
  * The one with the larger distance should be used preferable.
  * This way also more complicated method rename scenarios can be handled
  * (think of 2.9 {@code TokenStream} deprecations).</p>

@@ -17,10 +17,10 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.PrintStream;
-
 import org.trypticon.lucene3.store.Directory;
 import org.trypticon.lucene3.util.BitVector;
+
+import java.io.PrintStream;
 
 /**
  * Holder class for common parameters used during write.
@@ -52,7 +52,7 @@ public class SegmentWriteState {
   public final int termIndexInterval;
 
   /** Expert: The fraction of TermDocs entries stored in skip tables,
-   * used to accelerate {@link TermDocs#skipTo(int)}.  Larger values result in
+   * used to accelerate {@code TermDocs#skipTo(int)}.  Larger values result in
    * smaller indexes, greater acceleration, but fewer accelerable cases, while
    * smaller values result in bigger indexes, less acceleration and more
    * accelerable cases. More detailed experiments would be useful here. */

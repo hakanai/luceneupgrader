@@ -17,13 +17,12 @@ package org.trypticon.lucene3.analysis.tokenattributes;
  * limitations under the License.
  */
 
-import java.io.Serializable;
-
-import org.trypticon.lucene3.analysis.TokenStream;
 import org.trypticon.lucene3.util.AttributeImpl;
 
+import java.io.Serializable;
+
 /** The positionIncrement determines the position of this token
- * relative to the previous Token in a {@link TokenStream}, used in phrase
+ * relative to the previous Token in a {@code TokenStream}, used in phrase
  * searching.
  *
  * <p>The default value is one.
@@ -62,7 +61,7 @@ public class PositionIncrementAttributeImpl extends AttributeImpl implements Pos
   }
 
   /** Returns the position increment of this Token.
-   * @see #setPositionIncrement
+   *
    */
   public int getPositionIncrement() {
     return positionIncrement;

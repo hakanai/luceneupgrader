@@ -19,21 +19,24 @@ package org.trypticon.lucene3.search;
 
 import org.trypticon.lucene3.index.IndexReader;
 import org.trypticon.lucene3.index.Term;
-import org.trypticon.lucene3.util.ToStringUtils;
 import org.trypticon.lucene3.search.BooleanClause.Occur;
+import org.trypticon.lucene3.util.ToStringUtils;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /** A Query that matches documents matching boolean combinations of other
-  * queries, e.g. {@link TermQuery}s, {@link PhraseQuery}s or other
+  * queries, e.g. {@code TermQuery}s, {@code PhraseQuery}s or other
   * BooleanQuerys.
   */
 public class BooleanQuery extends Query implements Iterable<BooleanClause> {
 
   private static int maxClauseCount = 1024;
 
-  /** Thrown when an attempt is made to add more than {@link
+  /** Thrown when an attempt is made to add more than {@code
    * #getMaxClauseCount()} clauses. This typically happens if
    * a PrefixQuery, FuzzyQuery, WildcardQuery, or TermRangeQuery 
    * is expanded to many terms during search. 
@@ -45,9 +48,9 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
   }
 
   /** Return the maximum number of clauses permitted, 1024 by default.
-   * Attempts to add more than the permitted number of clauses cause {@link
+   * Attempts to add more than the permitted number of clauses cause {@code
    * TooManyClauses} to be thrown.
-   * @see #setMaxClauseCount(int)
+   *
    */
   public static int getMaxClauseCount() { return maxClauseCount; }
 
@@ -71,20 +74,20 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
 
   /** Constructs an empty boolean query.
    *
-   * {@link Similarity#coord(int,int)} may be disabled in scoring, as
+   * {@code Similarity#coord(int,int)} may be disabled in scoring, as
    * appropriate. For example, this score factor does not make sense for most
-   * automatically generated queries, like {@link WildcardQuery} and {@link
+   * automatically generated queries, like {@code WildcardQuery} and {@code
    * FuzzyQuery}.
    *
-   * @param disableCoord disables {@link Similarity#coord(int,int)} in scoring.
+   * @param disableCoord disables {@code Similarity#coord(int,int)} in scoring.
    */
   public BooleanQuery(boolean disableCoord) {
     this.disableCoord = disableCoord;
   }
 
-  /** Returns true iff {@link Similarity#coord(int,int)} is disabled in
+  /** Returns true iff {@code Similarity#coord(int,int)} is disabled in
    * scoring for this query instance.
-   * @see #BooleanQuery(boolean)
+   *
    */
   public boolean isCoordDisabled() { return disableCoord; }
 
@@ -121,7 +124,7 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
   /** Adds a clause to a boolean query.
    *
    * @throws TooManyClauses if the new number of clauses exceeds the maximum clause number
-   * @see #getMaxClauseCount()
+   *
    */
   public void add(Query query, BooleanClause.Occur occur) {
     add(new BooleanClause(query, occur));
@@ -129,7 +132,7 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
 
   /** Adds a clause to a boolean query.
    * @throws TooManyClauses if the new number of clauses exceeds the maximum clause number
-   * @see #getMaxClauseCount()
+   *
    */
   public void add(BooleanClause clause) {
     if (clauses.size() >= maxClauseCount)
@@ -146,7 +149,7 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
   /** Returns the list of clauses in this query. */
   public List<BooleanClause> clauses() { return clauses; }
 
-  /** Returns an iterator on the clauses in this query. It implements the {@link Iterable} interface to
+  /** Returns an iterator on the clauses in this query. It implements the {@code Iterable} interface to
    * make it possible to do:
    * <pre>for (BooleanClause clause : booleanQuery) {}</pre>
    */

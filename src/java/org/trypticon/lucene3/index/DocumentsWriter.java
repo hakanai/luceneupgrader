@@ -17,16 +17,6 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.trypticon.lucene3.analysis.Analyzer;
 import org.trypticon.lucene3.document.Document;
 import org.trypticon.lucene3.search.Query;
@@ -39,6 +29,12 @@ import org.trypticon.lucene3.util.BitVector;
 import org.trypticon.lucene3.util.RamUsageEstimator;
 import org.trypticon.lucene3.util.ThreadInterruptedException;
 
+import java.io.IOException;
+import java.io.PrintStream;
+import java.text.NumberFormat;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+
 
 /**
  * This class accepts multiple added documents and directly
@@ -47,17 +43,17 @@ import org.trypticon.lucene3.util.ThreadInterruptedException;
  * (with DocumentWriter) and doing standard merges on those
  * segments.
  *
- * Each added document is passed to the {@link DocConsumer},
+ * Each added document is passed to the {@code DocConsumer},
  * which in turn processes the document and interacts with
  * other consumers in the indexing chain.  Certain
- * consumers, like {@link StoredFieldsWriter} and {@link
+ * consumers, like {@code StoredFieldsWriter} and {@code
  * TermVectorsTermsWriter}, digest a document and
  * immediately write bytes to the "doc store" files (ie,
  * they do not consume RAM per document, except while they
  * are processing the document).
  *
- * Other consumers, eg {@link FreqProxTermsWriter} and
- * {@link NormsWriter}, buffer bytes in RAM and flush only
+ * Other consumers, eg {@code FreqProxTermsWriter} and
+ * {@code NormsWriter}, buffer bytes in RAM and flush only
  * when a new segment is produced.
 
  * Once we have used our allowed RAM buffer, or the number
@@ -213,7 +209,7 @@ final class DocumentsWriter {
   }
   
   /**
-   * The IndexingChain must define the {@link #getChain(DocumentsWriter)} method
+   * The IndexingChain must define the {@code #getChain(DocumentsWriter)} method
    * which returns the DocConsumer that the DocumentsWriter calls to process the
    * documents. 
    */

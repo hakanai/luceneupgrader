@@ -17,30 +17,28 @@ package org.trypticon.lucene3.store;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.index.ConcurrentMergeScheduler;
+import org.trypticon.lucene3.index.IndexFileNames;
+import org.trypticon.lucene3.index.MergePolicy;
+import org.trypticon.lucene3.index.MergeScheduler;
+import org.trypticon.lucene3.util.IOUtils;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.trypticon.lucene3.index.ConcurrentMergeScheduler;
-import org.trypticon.lucene3.index.IndexFileNames;
-import org.trypticon.lucene3.index.IndexWriter;       // javadocs
-import org.trypticon.lucene3.index.MergePolicy;
-import org.trypticon.lucene3.index.MergeScheduler;
-import org.trypticon.lucene3.store.RAMDirectory;      // javadocs
-import org.trypticon.lucene3.util.IOUtils;
-
 // TODO
 //   - let subclass dictate policy...?
 //   - rename to MergeCacheingDir?  NRTCachingDir
 
 /**
- * Wraps a {@link RAMDirectory}
+ * Wraps a {@code RAMDirectory}
  * around any provided delegate directory, to
  * be used during NRT search.  Make sure you pull the merge
- * scheduler using {@link #getMergeScheduler} and pass that to your
- * {@link IndexWriter}; this class uses that to keep track of which
+ * scheduler using {@code #getMergeScheduler} and pass that to your
+ * {@code IndexWriter}; this class uses that to keep track of which
  * merges are being done by which threads, to decide when to
  * cache each written file.
  *

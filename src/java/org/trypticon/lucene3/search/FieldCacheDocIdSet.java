@@ -16,14 +16,15 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
 import org.trypticon.lucene3.index.IndexReader;
 import org.trypticon.lucene3.index.TermDocs;
+
+import java.io.IOException;
 
 /**
  * Base class for DocIdSet to be used with FieldCache. The implementation
  * of its iterator is very stupid and slow if the implementation of the
- * {@link #matchDoc} method is not optimized, as iterators simply increment
+ * {@code #matchDoc} method is not optimized, as iterators simply increment
  * the document id until {@code matchDoc(int)} returns true. Because of this
  * {@code matchDoc(int)} must be as fast as possible and in no case do any
  * I/O.

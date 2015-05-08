@@ -17,12 +17,12 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.util.PriorityQueue;
 
-/** Represents hits returned by {@link
- * Searcher#search(Query,Filter,int)} and {@link
+import java.io.IOException;
+
+/** Represents hits returned by {@code
+ * Searcher#search(Query,Filter,int)} and {@code
  * Searcher#search(Query,int)}. */
 public class TopDocs implements java.io.Serializable {
 
@@ -37,7 +37,7 @@ public class TopDocs implements java.io.Serializable {
   
   /**
    * Returns the maximum score value encountered. Note that in case
-   * scores are not tracked, this returns {@link Float#NaN}.
+   * scores are not tracked, this returns {@code Float#NaN}.
    */
   public float getMaxScore() {
     return maxScore;
@@ -193,11 +193,11 @@ public class TopDocs implements java.io.Serializable {
   }
 
   /** Returns a new TopDocs, containing topN results across
-   *  the provided TopDocs, sorting by the specified {@link
+   *  the provided TopDocs, sorting by the specified {@code
    *  Sort}.  Each of the TopDocs must have been sorted by
    *  the same Sort, and sort field values must have been
    *  filled (ie, <code>fillFields=true</code> must be
-   *  passed to {@link
+   *  passed to {@code
    *  TopFieldCollector#create}.
    *
    * <p>Pass sort=null to merge sort by score descending.

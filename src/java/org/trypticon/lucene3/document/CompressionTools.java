@@ -17,11 +17,12 @@ package org.trypticon.lucene3.document;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.util.UnicodeUtil;
+
+import java.io.ByteArrayOutputStream;
+import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
-import java.util.zip.DataFormatException;
-import java.io.ByteArrayOutputStream;
-import org.trypticon.lucene3.util.UnicodeUtil;
 
 /** Simple utility class providing static methods to
  *  compress and decompress binary data for stored fields.

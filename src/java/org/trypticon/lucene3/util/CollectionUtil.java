@@ -17,8 +17,8 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
-import java.util.Comparator;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.RandomAccess;
 
@@ -35,7 +35,7 @@ public final class CollectionUtil {
 
   private CollectionUtil() {} // no instance
   
-  /** SorterTemplate with custom {@link Comparator} */
+  /** SorterTemplate with custom {@code Comparator} */
   private static <T> SorterTemplate getSorter(final List<T> list, final Comparator<? super T> comp) {
     if (!(list instanceof RandomAccess))
       throw new IllegalArgumentException("CollectionUtil can only sort random access lists in-place.");
@@ -94,8 +94,8 @@ public final class CollectionUtil {
   }
 
   /**
-   * Sorts the given random access {@link List} using the {@link Comparator}.
-   * The list must implement {@link RandomAccess}. This method uses the quick sort
+   * Sorts the given random access {@code List} using the {@code Comparator}.
+   * The list must implement {@code RandomAccess}. This method uses the quick sort
    * algorithm, but falls back to insertion sort for small lists.
    * @throws IllegalArgumentException if list is e.g. a linked list without random access.
    */
@@ -106,8 +106,8 @@ public final class CollectionUtil {
   }
   
   /**
-   * Sorts the given random access {@link List} in natural order.
-   * The list must implement {@link RandomAccess}. This method uses the quick sort
+   * Sorts the given random access {@code List} in natural order.
+   * The list must implement {@code RandomAccess}. This method uses the quick sort
    * algorithm, but falls back to insertion sort for small lists.
    * @throws IllegalArgumentException if list is e.g. a linked list without random access.
    */
@@ -120,8 +120,8 @@ public final class CollectionUtil {
   // mergeSorts:
   
   /**
-   * Sorts the given random access {@link List} using the {@link Comparator}.
-   * The list must implement {@link RandomAccess}. This method uses the merge sort
+   * Sorts the given random access {@code List} using the {@code Comparator}.
+   * The list must implement {@code RandomAccess}. This method uses the merge sort
    * algorithm, but falls back to insertion sort for small lists.
    * @throws IllegalArgumentException if list is e.g. a linked list without random access.
    */
@@ -132,8 +132,8 @@ public final class CollectionUtil {
   }
   
   /**
-   * Sorts the given random access {@link List} in natural order.
-   * The list must implement {@link RandomAccess}. This method uses the merge sort
+   * Sorts the given random access {@code List} in natural order.
+   * The list must implement {@code RandomAccess}. This method uses the merge sort
    * algorithm, but falls back to insertion sort for small lists.
    * @throws IllegalArgumentException if list is e.g. a linked list without random access.
    */
@@ -146,8 +146,8 @@ public final class CollectionUtil {
   // insertionSorts:
   
   /**
-   * Sorts the given random access {@link List} using the {@link Comparator}.
-   * The list must implement {@link RandomAccess}. This method uses the insertion sort
+   * Sorts the given random access {@code List} using the {@code Comparator}.
+   * The list must implement {@code RandomAccess}. This method uses the insertion sort
    * algorithm. It is only recommended to use this algorithm for partially sorted small lists!
    * @throws IllegalArgumentException if list is e.g. a linked list without random access.
    */
@@ -158,8 +158,8 @@ public final class CollectionUtil {
   }
   
   /**
-   * Sorts the given random access {@link List} in natural order.
-   * The list must implement {@link RandomAccess}. This method uses the insertion sort
+   * Sorts the given random access {@code List} in natural order.
+   * The list must implement {@code RandomAccess}. This method uses the insertion sort
    * algorithm. It is only recommended to use this algorithm for partially sorted small lists!
    * @throws IllegalArgumentException if list is e.g. a linked list without random access.
    */

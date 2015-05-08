@@ -21,14 +21,14 @@ import java.io.IOException;
 import java.util.HashSet;
 
 /**
- * Implements {@link LockFactory} for a single in-process instance,
+ * Implements {@code LockFactory} for a single in-process instance,
  * meaning all locking will take place through this one instance.
- * Only use this {@link LockFactory} when you are certain all
+ * Only use this {@code LockFactory} when you are certain all
  * IndexReaders and IndexWriters for a given index are running
  * against a single shared in-process Directory instance.  This is
  * currently the default locking for RAMDirectory.
  *
- * @see LockFactory
+ *
  */
 
 public class SingleInstanceLockFactory extends LockFactory {

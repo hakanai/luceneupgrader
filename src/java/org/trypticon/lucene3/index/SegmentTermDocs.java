@@ -17,10 +17,11 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import org.trypticon.lucene3.util.BitVector;
 import org.trypticon.lucene3.index.FieldInfo.IndexOptions;
 import org.trypticon.lucene3.store.IndexInput;
+import org.trypticon.lucene3.util.BitVector;
+
+import java.io.IOException;
 
 class SegmentTermDocs implements TermDocs {
   protected SegmentReader parent;

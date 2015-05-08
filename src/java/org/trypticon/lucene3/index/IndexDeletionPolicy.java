@@ -17,18 +17,18 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.util.List;
 import java.io.IOException;
+import java.util.List;
 
 /**
- * <p>Expert: policy for deletion of stale {@link IndexCommit index commits}. 
+ * <p>Expert: policy for deletion of stale {@code IndexCommit index commits}.
  * 
  * <p>Implement this interface, and pass it to one
- * of the {@link IndexWriter} or {@link IndexReader}
+ * of the {@code IndexWriter} or {@code IndexReader}
  * constructors, to customize when older
- * {@link IndexCommit point-in-time commits}
+ * {@code IndexCommit point-in-time commits}
  * are deleted from the index directory.  The default deletion policy
- * is {@link KeepOnlyLastCommitDeletionPolicy}, which always
+ * is {@code KeepOnlyLastCommitDeletionPolicy}, which always
  * removes old commits as soon as a new commit is done (this
  * matches the behavior before 2.2).</p>
  *
@@ -40,7 +40,7 @@ import java.io.IOException;
  * By implementing a custom deletion policy, such as "a
  * commit is only removed once it has been stale for more
  * than X minutes", you can give your readers time to
- * refresh to the new commit before {@link IndexWriter}
+ * refresh to the new commit before {@code IndexWriter}
  * removes the old commits.  Note that doing so will
  * increase the storage requirements of the index.  See <a
  * target="top"
@@ -58,8 +58,8 @@ public interface IndexDeletionPolicy {
    * <p>The writer locates all index commits present in the 
    * index directory and calls this method.  The policy may 
    * choose to delete some of the commit points, doing so by
-   * calling method {@link IndexCommit#delete delete()} 
-   * of {@link IndexCommit}.</p>
+   * calling method {@code IndexCommit#delete delete()}
+   * of {@code IndexCommit}.</p>
    * 
    * <p><u>Note:</u> the last CommitPoint is the most recent one,
    * i.e. the "front index state". Be careful not to delete it,
@@ -67,10 +67,10 @@ public interface IndexDeletionPolicy {
    * you can afford to lose the index content while doing that. 
    *
    * @param commits List of current 
-   * {@link IndexCommit point-in-time commits},
+   * {@code IndexCommit point-in-time commits},
    *  sorted by age (the 0th one is the oldest commit).
    */
-  public void onInit(List<? extends IndexCommit> commits) throws IOException;
+  void onInit(List<? extends IndexCommit> commits) throws IOException;
 
   /**
    * <p>This is called each time the writer completed a commit.
@@ -78,12 +78,12 @@ public interface IndexDeletionPolicy {
    * with each commit.</p>
    *
    * <p>The policy may now choose to delete old commit points 
-   * by calling method {@link IndexCommit#delete delete()} 
-   * of {@link IndexCommit}.</p>
+   * by calling method {@code IndexCommit#delete delete()}
+   * of {@code IndexCommit}.</p>
    * 
-   * <p>This method is only called when {@link
-   * IndexWriter#commit} or {@link IndexWriter#close} is
-   * called, or possibly not at all if the {@link
+   * <p>This method is only called when {@code
+   * IndexWriter#commit} or {@code IndexWriter#close} is
+   * called, or possibly not at all if the {@code
    * IndexWriter#rollback} is called.
    *
    * <p><u>Note:</u> the last CommitPoint is the most recent one,
@@ -91,8 +91,8 @@ public interface IndexDeletionPolicy {
    * unless you know for sure what you are doing, and unless 
    * you can afford to lose the index content while doing that.
    *  
-   * @param commits List of {@link IndexCommit},
+   * @param commits List of {@code IndexCommit},
    *  sorted by age (the 0th one is the oldest commit).
    */
-  public void onCommit(List<? extends IndexCommit> commits) throws IOException;
+  void onCommit(List<? extends IndexCommit> commits) throws IOException;
 }

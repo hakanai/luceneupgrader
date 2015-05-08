@@ -38,7 +38,7 @@ import java.util.Arrays;
  *
  * <p>There are four possible kinds of term values which may be put into
  * sorting fields: Integers, Longs, Floats, or Strings.  Unless
- * {@link SortField SortField} objects are specified, the type of value
+ * {@code SortField SortField} objects are specified, the type of value
  * in the field is determined by parsing the first term in the field.
  *
  * <p>Integer term values should contain only digits and an optional
@@ -56,14 +56,14 @@ import java.util.Arrays;
  * should have low value integers, later documents high values.
  * 
  * <p>Float term values should conform to values accepted by
- * {@link Float Float.valueOf(String)} (except that <code>NaN</code>
+ * {@code Float Float.valueOf(String)} (except that <code>NaN</code>
  * and <code>Infinity</code> are not supported).
  * Documents which should appear first in the sort
  * should have low values, later documents high values.
  *
  * <p>String term values can contain any valid String, but should
  * not be tokenized.  The values are sorted according to their
- * {@link Comparable natural order}.  Note that using this type
+ * {@code Comparable natural order}.  Note that using this type
  * of term value has higher memory requirements than the other
  * two types.
  *
@@ -103,7 +103,7 @@ implements Serializable {
   /**
    * Represents sorting by computed relevance. Using this sort criteria returns
    * the same results as calling
-   * {@link Searcher#search(Query,int) Searcher#search()}without a sort criteria,
+   * {@code Searcher#search(Query,int) Searcher#search()}without a sort criteria,
    * only with slightly more overhead.
    */
   public static final Sort RELEVANCE = new Sort();
@@ -116,7 +116,7 @@ implements Serializable {
 
   /**
    * Sorts by computed relevance. This is the same sort criteria as calling
-   * {@link Searcher#search(Query,int) Searcher#search()}without a sort criteria,
+   * {@code Searcher#search(Query,int) Searcher#search()}without a sort criteria,
    * only with slightly more overhead.
    */
   public Sort() {

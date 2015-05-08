@@ -17,8 +17,10 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.index.Term;
+import org.trypticon.lucene3.index.TermPositions;
+
 import java.io.IOException;
-import org.trypticon.lucene3.index.*;
 
 /**
  * Position of a term in a document that takes into account the term offset within the phrase. 

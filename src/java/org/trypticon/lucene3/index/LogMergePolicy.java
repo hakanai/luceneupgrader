@@ -23,20 +23,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-/** <p>This class implements a {@link MergePolicy} that tries
+/** <p>This class implements a {@code MergePolicy} that tries
  *  to merge segments into levels of exponentially
  *  increasing size, where each level has fewer segments than
  *  the value of the merge factor. Whenever extra segments
  *  (beyond the merge factor upper bound) are encountered,
  *  all segments within the level are merged. You can get or
- *  set the merge factor using {@link #getMergeFactor()} and
- *  {@link #setMergeFactor(int)} respectively.</p>
+ *  set the merge factor using {@code #getMergeFactor()} and
+ *  {@code #setMergeFactor(int)} respectively.</p>
  *
  *  <p>This class is abstract and requires a subclass to
- *  define the {@link #size} method which specifies how a
- *  segment's size is determined.  {@link LogDocMergePolicy}
+ *  define the {@code #size} method which specifies how a
+ *  segment's size is determined.  {@code LogDocMergePolicy}
  *  is one subclass that measures size by document count in
- *  the segment.  {@link LogByteSizeMergePolicy} is another
+ *  the segment.  {@code LogByteSizeMergePolicy} is another
  *  subclass that measures size as the total byte size of the
  *  file(s) for the segment.</p>
  */
@@ -54,12 +54,12 @@ public abstract class LogMergePolicy extends MergePolicy {
   public static final int DEFAULT_MERGE_FACTOR = 10;
 
   /** Default maximum segment size.  A segment of this size
-   *  or larger will never be merged.  @see setMaxMergeDocs */
+   *  or larger will never be merged.  */
   public static final int DEFAULT_MAX_MERGE_DOCS = Integer.MAX_VALUE;
 
   /** Default noCFSRatio.  If a merge's size is >= 10% of
    *  the index, then we disable compound file for it.
-   *  @see #setNoCFSRatio */
+   *  */
   public static final double DEFAULT_NO_CFS_RATIO = 0.1;
 
   protected int mergeFactor = DEFAULT_MERGE_FACTOR;
@@ -86,7 +86,7 @@ public abstract class LogMergePolicy extends MergePolicy {
     return w != null && w.verbose();
   }
 
-  /** @see #setNoCFSRatio */
+  /** */
   public double getNoCFSRatio() {
     return noCFSRatio;
   }
@@ -340,13 +340,13 @@ public abstract class LogMergePolicy extends MergePolicy {
   
   /** Returns the merges necessary to merge the index down
    *  to a specified number of segments.
-   *  This respects the {@link #maxMergeSizeForForcedMerge} setting.
+   *  This respects the {@code #maxMergeSizeForForcedMerge} setting.
    *  By default, and assuming {@code maxNumSegments=1}, only
    *  one segment will be left in the index, where that segment
    *  has no deletions pending nor separate norms, and it is in
    *  compound file format if the current useCompoundFile
    *  setting is true.  This method returns multiple merges
-   *  (mergeFactor at a time) so the {@link MergeScheduler}
+   *  (mergeFactor at a time) so the {@code MergeScheduler}
    *  in use may make use of concurrency. */
   @Override
   public MergeSpecification findForcedMerges(SegmentInfos infos,
@@ -482,11 +482,11 @@ public abstract class LogMergePolicy extends MergePolicy {
   }
 
   /** Checks if any merges are now necessary and returns a
-   *  {@link MergePolicy.MergeSpecification} if so.  A merge
-   *  is necessary when there are more than {@link
+   *  {@code MergePolicy.MergeSpecification} if so.  A merge
+   *  is necessary when there are more than {@code
    *  #setMergeFactor} segments at a given level.  When
    *  multiple levels have too many segments, this method
-   *  will return multiple merges, allowing the {@link
+   *  will return multiple merges, allowing the {@code
    *  MergeScheduler} to use concurrency. */
   @Override
   public MergeSpecification findMerges(SegmentInfos infos) throws IOException {
@@ -627,11 +627,11 @@ public abstract class LogMergePolicy extends MergePolicy {
    * are best for batched indexing and speedier
    * searches.</p>
    *
-   * <p>The default value is {@link Integer#MAX_VALUE}.</p>
+   * <p>The default value is {@code Integer#MAX_VALUE}.</p>
    *
-   * <p>The default merge policy ({@link
+   * <p>The default merge policy ({@code
    * LogByteSizeMergePolicy}) also allows you to set this
-   * limit by net size (in MB) of the segment, using {@link
+   * limit by net size (in MB) of the segment, using {@code
    * LogByteSizeMergePolicy#setMaxMergeMB}.</p>
    */
   public void setMaxMergeDocs(int maxMergeDocs) {
@@ -640,7 +640,7 @@ public abstract class LogMergePolicy extends MergePolicy {
 
   /** Returns the largest segment (measured by document
    *  count) that may be merged with other segments.
-   *  @see #setMaxMergeDocs */
+   *  */
   public int getMaxMergeDocs() {
     return maxMergeDocs;
   }

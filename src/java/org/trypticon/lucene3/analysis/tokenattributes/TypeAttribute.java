@@ -25,12 +25,12 @@ import org.trypticon.lucene3.util.Attribute;
 public interface TypeAttribute extends Attribute {
 
   /** the default type */
-  public static final String DEFAULT_TYPE = "word";
+  String DEFAULT_TYPE = "word";
 
   /** Returns this Token's lexical type.  Defaults to "word". */
-  public String type();
+  String type();
 
   /** Set the lexical type.
-      @see #type() */
-  public void setType(String type);
+      */
+  void setType(String type);
 }

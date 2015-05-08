@@ -17,7 +17,7 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-/** Holds one hit in {@link TopDocs}. */
+/** Holds one hit in {@code TopDocs}. */
 
 public class ScoreDoc implements java.io.Serializable {
 
@@ -25,10 +25,10 @@ public class ScoreDoc implements java.io.Serializable {
   public float score;
 
   /** Expert: A hit document's number.
-   * @see Searcher#doc(int) */
+   * */
   public int doc;
 
-  /** Only set by {@link TopDocs#merge} */
+  /** Only set by {@code TopDocs#merge} */
   public int shardIndex;
 
   /** Constructs a ScoreDoc. */

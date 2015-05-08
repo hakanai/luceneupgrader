@@ -17,11 +17,11 @@ package org.trypticon.lucene3.store;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.Map;
-
 import org.trypticon.lucene3.util.BytesRef;
 import org.trypticon.lucene3.util.UnicodeUtil;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Abstract base class for performing write operations of Lucene's low-level
@@ -30,14 +30,14 @@ import org.trypticon.lucene3.util.UnicodeUtil;
 public abstract class DataOutput {
 
   /** Writes a single byte.
-   * @see IndexInput#readByte()
+   *
    */
   public abstract void writeByte(byte b) throws IOException;
 
   /** Writes an array of bytes.
    * @param b the bytes to write
    * @param length the number of bytes to write
-   * @see DataInput#readBytes(byte[],int,int)
+   *
    */
   public void writeBytes(byte[] b, int length) throws IOException {
     writeBytes(b, 0, length);
@@ -47,12 +47,12 @@ public abstract class DataOutput {
    * @param b the bytes to write
    * @param offset the offset in the byte array
    * @param length the number of bytes to write
-   * @see DataInput#readBytes(byte[],int,int)
+   *
    */
   public abstract void writeBytes(byte[] b, int offset, int length) throws IOException;
 
   /** Writes an int as four bytes.
-   * @see DataInput#readInt()
+   *
    */
   public void writeInt(int i) throws IOException {
     writeByte((byte)(i >> 24));
@@ -62,7 +62,7 @@ public abstract class DataOutput {
   }
 
   /** Writes a short as two bytes.
-   * @see DataInput#readShort()
+   *
    */
   public void writeShort(short i) throws IOException {
     writeByte((byte)(i >>  8));
@@ -72,7 +72,7 @@ public abstract class DataOutput {
   /** Writes an int in a variable-length format.  Writes between one and
    * five bytes.  Smaller values take fewer bytes.  Negative numbers are
    * supported, but should be avoided.
-   * @see DataInput#readVInt()
+   *
    */
   public final void writeVInt(int i) throws IOException {
     while ((i & ~0x7F) != 0) {
@@ -83,7 +83,7 @@ public abstract class DataOutput {
   }
 
   /** Writes a long as eight bytes.
-   * @see DataInput#readLong()
+   *
    */
   public void writeLong(long i) throws IOException {
     writeInt((int) (i >> 32));
@@ -93,7 +93,7 @@ public abstract class DataOutput {
   /** Writes an long in a variable-length format.  Writes between one and nine
    * bytes.  Smaller values take fewer bytes.  Negative numbers are not
    * supported.
-   * @see DataInput#readVLong()
+   *
    */
   public final void writeVLong(long i) throws IOException {
     assert i >= 0L;
@@ -105,7 +105,7 @@ public abstract class DataOutput {
   }
 
   /** Writes a string.
-   * @see DataInput#readString()
+   *
    */
   public void writeString(String s) throws IOException {
     final BytesRef utf8Result = new BytesRef(10);
@@ -141,7 +141,7 @@ public abstract class DataOutput {
    * @param start the first character in the sequence
    * @param length the number of characters in the sequence
    * @deprecated -- please pre-convert to utf8 bytes
-   * instead or use {@link #writeString}
+   * instead or use {@code #writeString}
    */
   @Deprecated
   public void writeChars(String s, int start, int length)
@@ -167,7 +167,7 @@ public abstract class DataOutput {
    * @param s the source of the characters
    * @param start the first character in the sequence
    * @param length the number of characters in the sequence
-   * @deprecated -- please pre-convert to utf8 bytes instead or use {@link #writeString}
+   * @deprecated -- please pre-convert to utf8 bytes instead or use {@code #writeString}
    */
   @Deprecated
   public void writeChars(char[] s, int start, int length)

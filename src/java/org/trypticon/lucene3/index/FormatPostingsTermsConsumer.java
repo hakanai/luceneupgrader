@@ -17,10 +17,10 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.util.ArrayUtil;
 import org.trypticon.lucene3.util.RamUsageEstimator;
+
+import java.io.IOException;
 
 /**
  * @lucene.experimental

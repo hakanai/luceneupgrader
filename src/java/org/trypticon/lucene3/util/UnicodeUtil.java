@@ -704,7 +704,7 @@ public final class UnicodeUtil {
   }
   
   /**
-   * Interprets the given byte array as UTF-8 and converts to UTF-16. The {@link CharsRef} will be extended if 
+   * Interprets the given byte array as UTF-8 and converts to UTF-16. The {@code CharsRef} will be extended if
    * it doesn't provide enough space to hold the worst case of each byte becoming a UTF-16 codepoint.
    * <p>
    * NOTE: Full characters are read, even if this reads past the length passed (and
@@ -743,8 +743,8 @@ public final class UnicodeUtil {
   }
 
   /**
-   * Utility method for {@link #UTF8toUTF16(byte[], int, int, CharsRef)}
-   * @see #UTF8toUTF16(byte[], int, int, CharsRef)
+   * Utility method for {@code #UTF8toUTF16(byte[], int, int, CharsRef)}
+   *
    */
   public static void UTF8toUTF16(BytesRef bytesRef, CharsRef chars) {
     UTF8toUTF16(bytesRef.bytes, bytesRef.offset, bytesRef.length, chars);

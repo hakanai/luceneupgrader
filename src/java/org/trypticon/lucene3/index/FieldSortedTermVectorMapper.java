@@ -19,7 +19,7 @@ import java.util.*;
  */
 
 /**
- * For each Field, store a sorted collection of {@link TermVectorEntry}s
+ * For each Field, store a sorted collection of {@code TermVectorEntry}s
  * <p/>
  * This is not thread-safe.
  */
@@ -31,7 +31,7 @@ public class FieldSortedTermVectorMapper extends TermVectorMapper{
 
   /**
    *
-   * @param comparator A Comparator for sorting {@link TermVectorEntry}s
+   * @param comparator A Comparator for sorting {@code TermVectorEntry}s
    */
   public FieldSortedTermVectorMapper(Comparator<TermVectorEntry> comparator) {
     this(false, false, comparator);
@@ -59,7 +59,7 @@ public class FieldSortedTermVectorMapper extends TermVectorMapper{
   /**
    * Get the mapping between fields and terms, sorted by the comparator
    *
-   * @return A map between field names and {@link java.util.SortedSet}s per field.  SortedSet entries are {@link TermVectorEntry}
+   * @return A map between field names and {@code java.util.SortedSet}s per field.  SortedSet entries are {@code TermVectorEntry}
    */
   public Map<String,SortedSet<TermVectorEntry>> getFieldToTerms() {
     return fieldToTerms;

@@ -17,8 +17,9 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import static org.trypticon.lucene3.util.RamUsageEstimator.NUM_BYTES_OBJECT_REF;
 import org.trypticon.lucene3.util.ArrayUtil;
+
+import static org.trypticon.lucene3.util.RamUsageEstimator.NUM_BYTES_OBJECT_REF;
 
 final class CharBlockPool {
 

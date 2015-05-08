@@ -17,8 +17,9 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
 import org.trypticon.lucene3.document.Fieldable;
+
+import java.io.IOException;
 
 abstract class DocFieldConsumerPerField {
   /** Processes all occurrences of a single field */

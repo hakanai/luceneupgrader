@@ -17,13 +17,13 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.trypticon.lucene3.store.DataInput;
 import org.trypticon.lucene3.store.DataOutput;
 import org.trypticon.lucene3.store.IndexInput;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Represents a logical byte[] as a series of pages.  You
  *  can write-once into the logical byte[] (append only),
@@ -48,7 +48,7 @@ public final class PagedBytes {
   /** Provides methods to read BytesRefs from a frozen
    *  PagedBytes.
    *
-   * @see #freeze */
+   * */
   public final static class Reader {
     private final byte[][] blocks;
     private final int[] blockEnds;
@@ -71,7 +71,7 @@ public final class PagedBytes {
     }
 
     /**
-     * Gets a slice out of {@link PagedBytes} starting at <i>start</i> with a
+     * Gets a slice out of {@code PagedBytes} starting at <i>start</i> with a
      * given length. Iff the slice spans across a block border this method will
      * allocate sufficient resources and copy the paged data.
      * <p>
@@ -106,7 +106,7 @@ public final class PagedBytes {
      * borders.
      * </p>
      * 
-     * @return the given {@link BytesRef}
+     * @return the given {@code BytesRef}
      * 
      * @lucene.internal
      **/
@@ -155,7 +155,7 @@ public final class PagedBytes {
     /**
      * Reads length as 1 or 2 byte vInt prefix, starting at <i>start</i> and
      * returns the start offset of the next part, suitable as start parameter on
-     * next call to sequentially read all {@link BytesRef}.
+     * next call to sequentially read all {@code BytesRef}.
      * 
      * <p>
      * <b>Note:</b> this method does not support slices spanning across block
@@ -163,7 +163,7 @@ public final class PagedBytes {
      * </p>
      * 
      * @return the start offset of the next part, suitable as start parameter on
-     *         next call to sequentially read all {@link BytesRef}.
+     *         next call to sequentially read all {@code BytesRef}.
      * @lucene.internal
      **/
     public long fillAndGetStart(BytesRef b, long start) {
@@ -186,7 +186,7 @@ public final class PagedBytes {
     
   
     /**
-     * Gets a slice out of {@link PagedBytes} starting at <i>start</i>, the
+     * Gets a slice out of {@code PagedBytes} starting at <i>start</i>, the
      * length is read as 1 or 2 byte vInt prefix. Iff the slice spans across a
      * block border this method will allocate sufficient resources and copy the
      * paged data.
@@ -415,7 +415,7 @@ public final class PagedBytes {
     }
   
     /** Seek to a position previously obtained from
-     *  {@link #getPosition}. */
+     *  {@code #getPosition}. */
     public void setPosition(long pos) {
       currentBlockIndex = (int) (pos >> blockBits);
       currentBlock = blocks.get(currentBlockIndex);

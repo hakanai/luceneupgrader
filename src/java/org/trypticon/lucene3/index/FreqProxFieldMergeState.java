@@ -17,10 +17,10 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.index.FieldInfo.IndexOptions;
 import org.trypticon.lucene3.index.FreqProxTermsWriterPerField.FreqProxPostingsArray;
+
+import java.io.IOException;
 
 // TODO FI: some of this is "generic" to TermsHash* so we
 // should factor it out so other consumers don't have to

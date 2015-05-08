@@ -17,14 +17,7 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
@@ -37,13 +30,13 @@ public final class IOUtils {
   
   /**
    * UTF-8 charset string
-   * @see Charset#forName(String)
+   *
    */
   public static final String UTF_8 = "UTF-8";
   
   /**
-   * UTF-8 {@link Charset} instance to prevent repeated
-   * {@link Charset#forName(String)} lookups
+   * UTF-8 {@code Charset} instance to prevent repeated
+   * {@code Charset#forName(String)} lookups
    */
   public static final Charset CHARSET_UTF_8 = Charset.forName("UTF-8");
   private IOUtils() {} // no instance
@@ -95,7 +88,7 @@ public final class IOUtils {
     }
   }
 
-  /** @see #closeWhileHandlingException(Exception, Closeable...) */
+  /** */
   public static <E extends Exception> void closeWhileHandlingException(E priorException, Iterable<? extends Closeable> objects) throws E, IOException {
     Throwable th = null;
 
@@ -157,7 +150,7 @@ public final class IOUtils {
   }
   
   /**
-   * @see #close(Closeable...)
+   *
    */
   public static void close(Iterable<? extends Closeable> objects) throws IOException {
     Throwable th = null;
@@ -202,7 +195,7 @@ public final class IOUtils {
   }
   
   /**
-   * @see #closeWhileHandlingException(Closeable...)
+   *
    */
   public static void closeWhileHandlingException(Iterable<? extends Closeable> objects) throws IOException {
     for (Closeable object : objects) {
@@ -215,7 +208,7 @@ public final class IOUtils {
     }
   }
   
-  /** This reflected {@link Method} is {@code null} before Java 7 */
+  /** This reflected {@code Method} is {@code null} before Java 7 */
   private static final Method SUPPRESS_METHOD;
   static {
     Method m;
@@ -242,9 +235,9 @@ public final class IOUtils {
   }
   
   /**
-   * Wrapping the given {@link InputStream} in a reader using a {@link CharsetDecoder}.
+   * Wrapping the given {@code InputStream} in a reader using a {@code CharsetDecoder}.
    * Unlike Java's defaults this reader will throw an exception if your it detects 
-   * the read charset doesn't match the expected {@link Charset}. 
+   * the read charset doesn't match the expected {@code Charset}.
    * <p>
    * Decoding readers are useful to load configuration files, stopword lists or synonym files
    * to detect character set problems. However, its not recommended to use as a common purpose 
@@ -262,9 +255,9 @@ public final class IOUtils {
   }
   
   /**
-   * Opens a Reader for the given {@link File} using a {@link CharsetDecoder}.
+   * Opens a Reader for the given {@code File} using a {@code CharsetDecoder}.
    * Unlike Java's defaults this reader will throw an exception if your it detects 
-   * the read charset doesn't match the expected {@link Charset}. 
+   * the read charset doesn't match the expected {@code Charset}.
    * <p>
    * Decoding readers are useful to load configuration files, stopword lists or synonym files
    * to detect character set problems. However, its not recommended to use as a common purpose 
@@ -290,9 +283,9 @@ public final class IOUtils {
   }
 
   /**
-   * Opens a Reader for the given resource using a {@link CharsetDecoder}.
+   * Opens a Reader for the given resource using a {@code CharsetDecoder}.
    * Unlike Java's defaults this reader will throw an exception if your it detects 
-   * the read charset doesn't match the expected {@link Charset}. 
+   * the read charset doesn't match the expected {@code Charset}.
    * <p>
    * Decoding readers are useful to load configuration files, stopword lists or synonym files
    * to detect character set problems. However, its not recommended to use as a common purpose 

@@ -17,20 +17,19 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.Serializable;
-
-import org.trypticon.lucene3.analysis.TokenStream;
 import org.trypticon.lucene3.util.ArrayUtil;
+
+import java.io.Serializable;
 
 /**
  *  A Payload is metadata that can be stored together with each occurrence 
  *  of a term. This metadata is stored inline in the posting list of the
  *  specific term.  
  *  <p>
- *  To store payloads in the index a {@link TokenStream} has to be used that
+ *  To store payloads in the index a {@code TokenStream} has to be used that
  *  produces payload data.
  *  <p>
- *  Use {@link TermPositions#getPayloadLength()} and {@link TermPositions#getPayload(byte[], int)}
+ *  Use {@code TermPositions#getPayloadLength()} and {@code TermPositions#getPayload(byte[], int)}
  *  to retrieve the payloads from the index.<br>
  *
  */

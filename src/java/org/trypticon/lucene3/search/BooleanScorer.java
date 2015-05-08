@@ -17,12 +17,12 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.List;
-
 import org.trypticon.lucene3.index.IndexReader;
 import org.trypticon.lucene3.search.BooleanClause.Occur;
 import org.trypticon.lucene3.search.BooleanQuery.BooleanWeight;
+
+import java.io.IOException;
+import java.util.List;
 
 /* Description from Doug Cutting (excerpted from
  * LUCENE-1483):

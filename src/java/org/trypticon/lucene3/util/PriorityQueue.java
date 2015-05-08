@@ -22,7 +22,7 @@ package org.trypticon.lucene3.util;
  * require log(size) time.
  *
  * <p><b>NOTE</b>: This class pre-allocates a full array of
- * length <code>maxSize+1</code>, in {@link #initialize}.
+ * length <code>maxSize+1</code>, in {@code #initialize}.
  * 
  * @lucene.internal
 */
@@ -39,12 +39,12 @@ public abstract class PriorityQueue<T> {
 
   /**
    * This method can be overridden by extending classes to return a sentinel
-   * object which will be used by {@link #initialize(int)} to fill the queue, so
+   * object which will be used by {@code #initialize(int)} to fill the queue, so
    * that the code which uses that queue can always assume it's full and only
    * change the top without attempting to insert any new object.<br>
    * 
    * Those sentinel values should always compare worse than any non-sentinel
-   * value (i.e., {@link #lessThan} should always favor the
+   * value (i.e., {@code #lessThan} should always favor the
    * non-sentinel values).<br>
    * 
    * By default, this method returns false, which means the queue will not be
@@ -67,7 +67,7 @@ public abstract class PriorityQueue<T> {
    * </pre>
    * 
    * <b>NOTE:</b> if this method returns a non-null value, it will be called by
-   * {@link #initialize(int)} {@link #size()} times, relying on a new object to
+   * {@code #initialize(int)} {@code #size()} times, relying on a new object to
    * be returned and will not check if it's null again. Therefore you should
    * ensure any call to this method creates a new instance and behaves
    * consistently, e.g., it cannot return null if it previously returned
@@ -122,7 +122,7 @@ public abstract class PriorityQueue<T> {
   /**
    * Adds an Object to a PriorityQueue in log(size) time. If one tries to add
    * more objects than maxSize from initialize an
-   * {@link ArrayIndexOutOfBoundsException} is thrown.
+   * {@code ArrayIndexOutOfBoundsException} is thrown.
    * 
    * @return the new 'top' element in the queue.
    */

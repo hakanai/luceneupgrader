@@ -20,13 +20,13 @@ package org.trypticon.lucene3.index;
 /** Consumes doc & freq, writing them using the current
  *  index file format */
 
-import java.io.Closeable;
-import java.io.IOException;
-
-import org.trypticon.lucene3.util.IOUtils;
-import org.trypticon.lucene3.util.UnicodeUtil;
 import org.trypticon.lucene3.index.FieldInfo.IndexOptions;
 import org.trypticon.lucene3.store.IndexOutput;
+import org.trypticon.lucene3.util.IOUtils;
+import org.trypticon.lucene3.util.UnicodeUtil;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 final class FormatPostingsDocsWriter extends FormatPostingsDocsConsumer implements Closeable {
 

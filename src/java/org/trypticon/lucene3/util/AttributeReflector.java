@@ -18,17 +18,17 @@ package org.trypticon.lucene3.util;
  */
 
 /**
- * This interface is used to reflect contents of {@link AttributeSource} or {@link AttributeImpl}.
+ * This interface is used to reflect contents of {@code AttributeSource} or {@code AttributeImpl}.
  */
 public interface AttributeReflector {
 
   /**
-   * This method gets called for every property in an {@link AttributeImpl}/{@link AttributeSource}
-   * passing the class name of the {@link Attribute}, a key and the actual value.
-   * E.g., an invocation of {@link org.trypticon.lucene3.analysis.tokenattributes.CharTermAttributeImpl#reflectWith}
+   * This method gets called for every property in an {@code AttributeImpl}/{@code AttributeSource}
+   * passing the class name of the {@code Attribute}, a key and the actual value.
+   * E.g., an invocation of {@code org.trypticon.lucene3.analysis.tokenattributes.CharTermAttributeImpl#reflectWith}
    * would call this method once using {@code org.trypticon.lucene3.analysis.tokenattributes.CharTermAttribute.class}
    * as attribute class, {@code "term"} as key and the actual value as a String.
    */
-  public void reflect(Class<? extends Attribute> attClass, String key, Object value);
+  void reflect(Class<? extends Attribute> attClass, String key, Object value);
   
 }

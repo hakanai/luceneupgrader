@@ -17,8 +17,8 @@ package org.trypticon.lucene3.store;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /** @lucene.internal */
 public class RAMFile implements Serializable {

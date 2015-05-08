@@ -20,12 +20,10 @@ package org.trypticon.lucene3.util;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.trypticon.lucene3.util.Version;
-
 /**
- * {@link CharacterUtils} provides a unified interface to Character-related
+ * {@code CharacterUtils} provides a unified interface to Character-related
  * operations to implement backwards compatible character operations based on a
- * {@link Version} instance.
+ * {@code Version} instance.
  * 
  * @lucene.internal
  */
@@ -34,13 +32,13 @@ public abstract class CharacterUtils {
   private static final Java5CharacterUtils JAVA_5 = new Java5CharacterUtils();
 
   /**
-   * Returns a {@link CharacterUtils} implementation according to the given
-   * {@link Version} instance.
+   * Returns a {@code CharacterUtils} implementation according to the given
+   * {@code Version} instance.
    * 
    * @param matchVersion
    *          a version instance
-   * @return a {@link CharacterUtils} implementation according to the given
-   *         {@link Version} instance.
+   * @return a {@code CharacterUtils} implementation according to the given
+   *         {@code Version} instance.
    */
   public static CharacterUtils getInstance(final Version matchVersion) {
     return matchVersion.onOrAfter(Version.LUCENE_31) ? JAVA_5 : JAVA_4;
@@ -48,9 +46,9 @@ public abstract class CharacterUtils {
 
   /**
    * Returns the code point at the given index of the char array.
-   * Depending on the {@link Version} passed to
-   * {@link CharacterUtils#getInstance(Version)} this method mimics the behavior
-   * of {@link Character#codePointAt(char[], int)} as it would have been
+   * Depending on the {@code Version} passed to
+   * {@code CharacterUtils#getInstance(Version)} this method mimics the behavior
+   * of {@code Character#codePointAt(char[], int)} as it would have been
    * available on a Java 1.4 JVM or on a later virtual machine version.
    * 
    * @param chars
@@ -68,10 +66,10 @@ public abstract class CharacterUtils {
   public abstract int codePointAt(final char[] chars, final int offset);
 
   /**
-   * Returns the code point at the given index of the {@link CharSequence}.
-   * Depending on the {@link Version} passed to
-   * {@link CharacterUtils#getInstance(Version)} this method mimics the behavior
-   * of {@link Character#codePointAt(char[], int)} as it would have been
+   * Returns the code point at the given index of the {@code CharSequence}.
+   * Depending on the {@code Version} passed to
+   * {@code CharacterUtils#getInstance(Version)} this method mimics the behavior
+   * of {@code Character#codePointAt(char[], int)} as it would have been
    * available on a Java 1.4 JVM or on a later virtual machine version.
    * 
    * @param seq
@@ -91,9 +89,9 @@ public abstract class CharacterUtils {
   /**
    * Returns the code point at the given index of the char array where only elements
    * with index less than the limit are used.
-   * Depending on the {@link Version} passed to
-   * {@link CharacterUtils#getInstance(Version)} this method mimics the behavior
-   * of {@link Character#codePointAt(char[], int)} as it would have been
+   * Depending on the {@code Version} passed to
+   * {@code CharacterUtils#getInstance(Version)} this method mimics the behavior
+   * of {@code Character#codePointAt(char[], int)} as it would have been
    * available on a Java 1.4 JVM or on a later virtual machine version.
    * 
    * @param chars
@@ -113,12 +111,12 @@ public abstract class CharacterUtils {
   public abstract int codePointAt(final char[] chars, final int offset, final int limit);
   
   /**
-   * Creates a new {@link CharacterBuffer} and allocates a <code>char[]</code>
+   * Creates a new {@code CharacterBuffer} and allocates a <code>char[]</code>
    * of the given bufferSize.
    * 
    * @param bufferSize
    *          the internal char buffer size, must be <code>&gt;= 2</code>
-   * @return a new {@link CharacterBuffer} instance.
+   * @return a new {@code CharacterBuffer} instance.
    */
   public static CharacterBuffer newCharacterBuffer(final int bufferSize) {
     if (bufferSize < 2) {
@@ -128,17 +126,17 @@ public abstract class CharacterUtils {
   }
 
   /**
-   * Fills the {@link CharacterBuffer} with characters read from the given
-   * reader {@link Reader}. This method tries to read as many characters into
-   * the {@link CharacterBuffer} as possible, each call to fill will start
+   * Fills the {@code CharacterBuffer} with characters read from the given
+   * reader {@code Reader}. This method tries to read as many characters into
+   * the {@code CharacterBuffer} as possible, each call to fill will start
    * filling the buffer from offset <code>0</code> up to the length of the size
    * of the internal character array.
    * <p>
-   * Depending on the {@link Version} passed to
-   * {@link CharacterUtils#getInstance(Version)} this method implements
+   * Depending on the {@code Version} passed to
+   * {@code CharacterUtils#getInstance(Version)} this method implements
    * supplementary character awareness when filling the given buffer. For all
-   * {@link Version} &gt; 3.0 {@link #fill(CharacterBuffer, Reader)} guarantees
-   * that the given {@link CharacterBuffer} will never contain a high surrogate
+   * {@code Version} &gt; 3.0 {@code #fill(CharacterBuffer, Reader)} guarantees
+   * that the given {@code CharacterBuffer} will never contain a high surrogate
    * character as the last element in the buffer unless it is the last available
    * character in the reader. In other words, high and low surrogate pairs will
    * always be preserved across buffer boarders.
@@ -151,7 +149,7 @@ public abstract class CharacterUtils {
    * @return <code>true</code> if and only if no more characters are available
    *         in the reader, otherwise <code>false</code>.
    * @throws IOException
-   *           if the reader throws an {@link IOException}.
+   *           if the reader throws an {@code IOException}.
    */
   public abstract boolean fill(CharacterBuffer buffer, Reader reader) throws IOException;
 
@@ -262,7 +260,7 @@ public abstract class CharacterUtils {
   
   /**
    * A simple IO buffer to use with
-   * {@link CharacterUtils#fill(CharacterBuffer, Reader)}.
+   * {@code CharacterUtils#fill(CharacterBuffer, Reader)}.
    */
   public static final class CharacterBuffer {
     
@@ -299,7 +297,7 @@ public abstract class CharacterUtils {
     
     /**
      * Return the length of the data in the internal buffer starting at
-     * {@link #getOffset()}
+     * {@code #getOffset()}
      * 
      * @return the length
      */

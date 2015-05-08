@@ -17,26 +17,19 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.zip.DataFormatException;
-
 import org.trypticon.lucene3.analysis.TokenStream;
-import org.trypticon.lucene3.document.AbstractField;
-import org.trypticon.lucene3.document.CompressionTools;
-import org.trypticon.lucene3.document.Document;
-import org.trypticon.lucene3.document.Field;
-import org.trypticon.lucene3.document.FieldSelector;
-import org.trypticon.lucene3.document.FieldSelectorResult;
-import org.trypticon.lucene3.document.Fieldable;
-import org.trypticon.lucene3.document.NumericField;
+import org.trypticon.lucene3.document.*;
 import org.trypticon.lucene3.store.AlreadyClosedException;
 import org.trypticon.lucene3.store.BufferedIndexInput;
 import org.trypticon.lucene3.store.Directory;
 import org.trypticon.lucene3.store.IndexInput;
 import org.trypticon.lucene3.util.CloseableThreadLocal;
 import org.trypticon.lucene3.util.IOUtils;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.zip.DataFormatException;
 
 /**
  * Class responsible for access to stored document fields.
@@ -194,7 +187,7 @@ final class FieldsReader implements Cloneable, Closeable {
   }
 
   /**
-   * Closes the underlying {@link org.trypticon.lucene3.store.IndexInput} streams, including any ones associated with a
+   * Closes the underlying {@code org.trypticon.lucene3.store.IndexInput} streams, including any ones associated with a
    * lazy implementation of a Field.  This means that the Fields values will not be accessible.
    *
    * @throws IOException

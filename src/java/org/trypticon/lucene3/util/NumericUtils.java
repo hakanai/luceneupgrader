@@ -17,11 +17,6 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
-import org.trypticon.lucene3.analysis.NumericTokenStream; // for javadocs
-import org.trypticon.lucene3.document.NumericField; // for javadocs
-import org.trypticon.lucene3.search.NumericRangeQuery; // for javadocs
-import org.trypticon.lucene3.search.NumericRangeFilter; // for javadocs
-
 /**
  * This is a helper class to generate prefix-encoded representations for numerical values
  * and supplies converters to represent float/double values as sortable integers/longs.
@@ -39,20 +34,20 @@ import org.trypticon.lucene3.search.NumericRangeFilter; // for javadocs
  * during encoding.
  *
  * <p>To also index floating point numbers, this class supplies two methods to convert them
- * to integer values by changing their bit layout: {@link #doubleToSortableLong},
- * {@link #floatToSortableInt}. You will have no precision loss by
+ * to integer values by changing their bit layout: {@code #doubleToSortableLong},
+ * {@code #floatToSortableInt}. You will have no precision loss by
  * converting floating point numbers to integers and back (only that the integer form
  * is not usable). Other data types like dates can easily converted to longs or ints (e.g.
- * date to long: {@link java.util.Date#getTime}).
+ * date to long: {@code java.util.Date#getTime}).
  *
  * <p>For easy usage, the trie algorithm is implemented for indexing inside
- * {@link NumericTokenStream} that can index <code>int</code>, <code>long</code>,
+ * {@code NumericTokenStream} that can index <code>int</code>, <code>long</code>,
  * <code>float</code>, and <code>double</code>. For querying,
- * {@link NumericRangeQuery} and {@link NumericRangeFilter} implement the query part
+ * {@code NumericRangeQuery} and {@code NumericRangeFilter} implement the query part
  * for the same data types.
  *
  * <p>This class can also be used, to generate lexicographically sortable (according
- * {@link String#compareTo(String)}) representations of numeric data types for other
+ * {@code String#compareTo(String)}) representations of numeric data types for other
  * usages (e.g. sorting).
  *
  * @lucene.internal
@@ -64,8 +59,8 @@ public final class NumericUtils {
   private NumericUtils() {} // no instance!
   
   /**
-   * The default precision step used by {@link NumericField}, {@link NumericTokenStream},
-   * {@link NumericRangeQuery}, and {@link NumericRangeFilter} as default
+   * The default precision step used by {@code NumericField}, {@code NumericTokenStream},
+   * {@code NumericRangeQuery}, and {@code NumericRangeFilter} as default
    */
   public static final int PRECISION_STEP_DEFAULT = 4;
   
@@ -78,7 +73,7 @@ public final class NumericUtils {
   /**
    * Expert: The maximum term length (used for <code>char[]</code> buffer size)
    * for encoding <code>long</code> values.
-   * @see #longToPrefixCoded(long,int,char[])
+   *
    */
   public static final int BUF_SIZE_LONG = 63/7 + 2;
 
@@ -91,16 +86,16 @@ public final class NumericUtils {
   /**
    * Expert: The maximum term length (used for <code>char[]</code> buffer size)
    * for encoding <code>int</code> values.
-   * @see #intToPrefixCoded(int,int,char[])
+   *
    */
   public static final int BUF_SIZE_INT = 31/7 + 2;
 
   /**
    * Expert: Returns prefix coded bits after reducing the precision by <code>shift</code> bits.
-   * This is method is used by {@link NumericTokenStream}.
+   * This is method is used by {@code NumericTokenStream}.
    * @param val the numeric value
    * @param shift how many bits to strip from the right
-   * @param buffer that will contain the encoded chars, must be at least of {@link #BUF_SIZE_LONG}
+   * @param buffer that will contain the encoded chars, must be at least of {@code #BUF_SIZE_LONG}
    * length
    * @return number of chars written to buffer
    */
@@ -123,7 +118,7 @@ public final class NumericUtils {
 
   /*
    * Expert: Returns prefix coded bits after reducing the precision by <code>shift</code> bits.
-   * This is method is used by {@link LongRangeBuilder}.
+   * This is method is used by {@code LongRangeBuilder}.
    * @param val the numeric value
    * @param shift how many bits to strip from the right
    */
@@ -137,7 +132,7 @@ public final class NumericUtils {
    * This is a convenience method, that returns prefix coded bits of a long without
    * reducing the precision. It can be used to store the full precision value as a
    * stored field in index.
-   * <p>To decode, use {@link #prefixCodedToLong}.
+   * <p>To decode, use {@code #prefixCodedToLong}.
    */
   public static String longToPrefixCoded(final long val) {
     return longToPrefixCoded(val, 0);
@@ -145,10 +140,10 @@ public final class NumericUtils {
   
   /**
    * Expert: Returns prefix coded bits after reducing the precision by <code>shift</code> bits.
-   * This is method is used by {@link NumericTokenStream}.
+   * This is method is used by {@code NumericTokenStream}.
    * @param val the numeric value
    * @param shift how many bits to strip from the right
-   * @param buffer that will contain the encoded chars, must be at least of {@link #BUF_SIZE_INT}
+   * @param buffer that will contain the encoded chars, must be at least of {@code #BUF_SIZE_INT}
    * length
    * @return number of chars written to buffer
    */
@@ -171,7 +166,7 @@ public final class NumericUtils {
 
   /*
    * Expert: Returns prefix coded bits after reducing the precision by <code>shift</code> bits.
-   * This is method is used by {@link IntRangeBuilder}.
+   * This is method is used by {@code IntRangeBuilder}.
    * @param val the numeric value
    * @param shift how many bits to strip from the right
    */
@@ -185,7 +180,7 @@ public final class NumericUtils {
    * This is a convenience method, that returns prefix coded bits of an int without
    * reducing the precision. It can be used to store the full precision value as a
    * stored field in index.
-   * <p>To decode, use {@link #prefixCodedToInt}.
+   * <p>To decode, use {@code #prefixCodedToInt}.
    */
   public static String intToPrefixCoded(final int val) {
     return intToPrefixCoded(val, 0);
@@ -197,7 +192,7 @@ public final class NumericUtils {
    * This method can be used to decode e.g. a stored field.
    * @throws NumberFormatException if the supplied string is
    * not correctly prefix encoded.
-   * @see #longToPrefixCoded(long)
+   *
    */
   public static long prefixCodedToLong(final String prefixCoded) {
     final int shift = prefixCoded.charAt(0)-SHIFT_START_LONG;
@@ -224,7 +219,7 @@ public final class NumericUtils {
    * This method can be used to decode e.g. a stored field.
    * @throws NumberFormatException if the supplied string is
    * not correctly prefix encoded.
-   * @see #intToPrefixCoded(int)
+   *
    */
   public static int prefixCodedToInt(final String prefixCoded) {
     final int shift = prefixCoded.charAt(0)-SHIFT_START_INT;
@@ -250,9 +245,9 @@ public final class NumericUtils {
    * The value is converted by getting their IEEE 754 floating-point &quot;double format&quot;
    * bit layout and then some bits are swapped, to be able to compare the result as long.
    * By this the precision is not reduced, but the value can easily used as a long.
-   * The sort order (including {@link Double#NaN}) is defined by
-   * {@link Double#compareTo}; {@code NaN} is greater than positive infinity.
-   * @see #sortableLongToDouble
+   * The sort order (including {@code Double#NaN}) is defined by
+   * {@code Double#compareTo}; {@code NaN} is greater than positive infinity.
+   *
    */
   public static long doubleToSortableLong(double val) {
     long f = Double.doubleToLongBits(val);
@@ -270,7 +265,7 @@ public final class NumericUtils {
 
   /**
    * Converts a sortable <code>long</code> back to a <code>double</code>.
-   * @see #doubleToSortableLong
+   *
    */
   public static double sortableLongToDouble(long val) {
     if (val<0) val ^= 0x7fffffffffffffffL;
@@ -290,9 +285,9 @@ public final class NumericUtils {
    * The value is converted by getting their IEEE 754 floating-point &quot;float format&quot;
    * bit layout and then some bits are swapped, to be able to compare the result as int.
    * By this the precision is not reduced, but the value can easily used as an int.
-   * The sort order (including {@link Float#NaN}) is defined by
-   * {@link Float#compareTo}; {@code NaN} is greater than positive infinity.
-   * @see #sortableIntToFloat
+   * The sort order (including {@code Float#NaN}) is defined by
+   * {@code Float#compareTo}; {@code NaN} is greater than positive infinity.
+   *
    */
   public static int floatToSortableInt(float val) {
     int f = Float.floatToIntBits(val);
@@ -310,7 +305,7 @@ public final class NumericUtils {
 
   /**
    * Converts a sortable <code>int</code> back to a <code>float</code>.
-   * @see #floatToSortableInt
+   *
    */
   public static float sortableIntToFloat(int val) {
     if (val<0) val ^= 0x7fffffff;
@@ -328,10 +323,10 @@ public final class NumericUtils {
   /**
    * Expert: Splits a long range recursively.
    * You may implement a builder that adds clauses to a
-   * {@link org.trypticon.lucene3.search.BooleanQuery} for each call to its
-   * {@link LongRangeBuilder#addRange(String,String)}
+   * {@code org.trypticon.lucene3.search.BooleanQuery} for each call to its
+   * {@code LongRangeBuilder#addRange(String,String)}
    * method.
-   * <p>This method is used by {@link NumericRangeQuery}.
+   * <p>This method is used by {@code NumericRangeQuery}.
    */
   public static void splitLongRange(final LongRangeBuilder builder,
     final int precisionStep,  final long minBound, final long maxBound
@@ -342,10 +337,10 @@ public final class NumericUtils {
   /**
    * Expert: Splits an int range recursively.
    * You may implement a builder that adds clauses to a
-   * {@link org.trypticon.lucene3.search.BooleanQuery} for each call to its
-   * {@link IntRangeBuilder#addRange(String,String)}
+   * {@code org.trypticon.lucene3.search.BooleanQuery} for each call to its
+   * {@code IntRangeBuilder#addRange(String,String)}
    * method.
-   * <p>This method is used by {@link NumericRangeQuery}.
+   * <p>This method is used by {@code NumericRangeQuery}.
    */
   public static void splitIntRange(final IntRangeBuilder builder,
     final int precisionStep,  final int minBound, final int maxBound
@@ -419,7 +414,7 @@ public final class NumericUtils {
   }
 
   /**
-   * Expert: Callback for {@link #splitLongRange}.
+   * Expert: Callback for {@code #splitLongRange}.
    * You need to overwrite only one of the methods.
    * <p><font color="red"><b>NOTE:</b> This is a very low-level interface,
    * the method signatures may change in later versions.</font>
@@ -445,7 +440,7 @@ public final class NumericUtils {
   }
   
   /**
-   * Expert: Callback for {@link #splitIntRange}.
+   * Expert: Callback for {@code #splitIntRange}.
    * You need to overwrite only one of the methods.
    * <p><font color="red"><b>NOTE:</b> This is a very low-level interface,
    * the method signatures may change in later versions.</font>

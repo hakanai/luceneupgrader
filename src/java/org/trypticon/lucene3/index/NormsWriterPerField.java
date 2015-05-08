@@ -18,7 +18,6 @@ package org.trypticon.lucene3.index;
  */
 
 import org.trypticon.lucene3.util.ArrayUtil;
-import org.trypticon.lucene3.search.Similarity;
 
 /** Taps into DocInverter, as an InvertedDocEndConsumer,
  *  which is called at the end of inverting each field.  We

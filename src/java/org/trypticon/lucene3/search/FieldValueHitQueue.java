@@ -17,9 +17,9 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.util.PriorityQueue;
+
+import java.io.IOException;
 
 /**
  * Expert: A hit queue for sorting by hits by terms in more than one field.
@@ -28,8 +28,8 @@ import org.trypticon.lucene3.util.PriorityQueue;
  * 
  * @lucene.experimental
  * @since 2.9
- * @see Searcher#search(Query,Filter,int,Sort)
- * @see FieldCache
+ *
+ *
  */
 public abstract class FieldValueHitQueue<T extends FieldValueHitQueue.Entry> extends PriorityQueue<T> {
 
@@ -48,7 +48,7 @@ public abstract class FieldValueHitQueue<T extends FieldValueHitQueue.Entry> ext
   }
 
   /**
-   * An implementation of {@link FieldValueHitQueue} which is optimized in case
+   * An implementation of {@code FieldValueHitQueue} which is optimized in case
    * there is just one comparator.
    */
   private static final class OneComparatorFieldValueHitQueue<T extends FieldValueHitQueue.Entry> extends FieldValueHitQueue<T> {
@@ -94,7 +94,7 @@ public abstract class FieldValueHitQueue<T extends FieldValueHitQueue.Entry> ext
   }
   
   /**
-   * An implementation of {@link FieldValueHitQueue} which is optimized in case
+   * An implementation of {@code FieldValueHitQueue} which is optimized in case
    * there is more than one comparator.
    */
   private static final class MultiComparatorsFieldValueHitQueue<T extends FieldValueHitQueue.Entry> extends FieldValueHitQueue<T> {
@@ -201,7 +201,7 @@ public abstract class FieldValueHitQueue<T extends FieldValueHitQueue.Entry> ext
    * 
    * @param entry The Entry used to create a FieldDoc
    * @return The newly created FieldDoc
-   * @see Searchable#search(Weight,Filter,int,Sort)
+   *
    */
   FieldDoc fillFields(final Entry entry) {
     final int n = comparators.length;

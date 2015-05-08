@@ -21,13 +21,13 @@ package org.trypticon.lucene3.search;
 import org.trypticon.lucene3.util.PriorityQueue;
 
 /**
- * A base class for all collectors that return a {@link TopDocs} output. This
+ * A base class for all collectors that return a {@code TopDocs} output. This
  * collector allows easy extension by providing a single constructor which
- * accepts a {@link PriorityQueue} as well as protected members for that
+ * accepts a {@code PriorityQueue} as well as protected members for that
  * priority queue and a counter of the number of total hits.<br>
  * Extending classes can override any of the methods to provide their own
  * implementation, as well as avoid the use of the priority queue entirely by
- * passing null to {@link #TopDocsCollector(PriorityQueue)}. In that case
+ * passing null to {@code #TopDocsCollector(PriorityQueue)}. In that case
  * however, you might want to consider overriding all methods, in order to avoid
  * a NullPointerException.
  */
@@ -63,7 +63,7 @@ public abstract class TopDocsCollector<T extends ScoreDoc> extends Collector {
   }
 
   /**
-   * Returns a {@link TopDocs} instance containing the given results. If
+   * Returns a {@code TopDocs} instance containing the given results. If
    * <code>results</code> is null it means there are no results to return,
    * either because there were 0 calls to collect() or because the arguments to
    * topDocs were invalid.
@@ -101,8 +101,8 @@ public abstract class TopDocsCollector<T extends ScoreDoc> extends Collector {
    * last results, starting from the last 'page'.<br>
    * <b>NOTE:</b> you cannot call this method more than once for each search
    * execution. If you need to call it more than once, passing each time a
-   * different <code>start</code>, you should call {@link #topDocs()} and work
-   * with the returned {@link TopDocs} object, which will contain all the
+   * different <code>start</code>, you should call {@code #topDocs()} and work
+   * with the returned {@code TopDocs} object, which will contain all the
    * results this search execution collected.
    */
   public TopDocs topDocs(int start) {
@@ -122,8 +122,8 @@ public abstract class TopDocsCollector<T extends ScoreDoc> extends Collector {
    * memory used by allocating only as much as requested by howMany.<br>
    * <b>NOTE:</b> you cannot call this method more than once for each search
    * execution. If you need to call it more than once, passing each time a
-   * different range, you should call {@link #topDocs()} and work with the
-   * returned {@link TopDocs} object, which will contain all the results this
+   * different range, you should call {@code #topDocs()} and work with the
+   * returned {@code TopDocs} object, which will contain all the results this
    * search execution collected.
    */
   public TopDocs topDocs(int start, int howMany) {

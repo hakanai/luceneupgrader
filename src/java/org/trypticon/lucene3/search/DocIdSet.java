@@ -21,7 +21,7 @@ import java.io.IOException;
 
 /**
  * A DocIdSet contains a set of doc ids. Implementing classes must
- * only implement {@link #iterator} to provide access to the set. 
+ * only implement {@code #iterator} to provide access to the set.
  */
 public abstract class DocIdSet {
 
@@ -48,14 +48,14 @@ public abstract class DocIdSet {
     }
   };
     
-  /** Provides a {@link DocIdSetIterator} to access the set.
+  /** Provides a {@code DocIdSetIterator} to access the set.
    * This implementation can return <code>null</code> or
-   * <code>{@linkplain #EMPTY_DOCIDSET}.iterator()</code> if there
+   * <code>{@codeplain #EMPTY_DOCIDSET}.iterator()</code> if there
    * are no docs that match. */
   public abstract DocIdSetIterator iterator() throws IOException;
 
   /**
-   * This method is a hint for {@link CachingWrapperFilter}, if this <code>DocIdSet</code>
+   * This method is a hint for {@code CachingWrapperFilter}, if this <code>DocIdSet</code>
    * should be cached without copying it into a BitSet. The default is to return
    * <code>false</code>. If you have an own <code>DocIdSet</code> implementation
    * that does its iteration very effective and fast without doing disk I/O,

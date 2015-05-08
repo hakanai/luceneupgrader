@@ -20,18 +20,18 @@ package org.trypticon.lucene3.index;
 import java.io.IOException;
 
 /**
- * A {@link MergeScheduler} which never executes any merges. It is also a
- * singleton and can be accessed through {@link NoMergeScheduler#INSTANCE}. Use
- * it if you want to prevent an {@link IndexWriter} from ever executing merges,
- * irregardless of the {@link MergePolicy} used. Note that you can achieve the
- * same thing by using {@link NoMergePolicy}, however with
- * {@link NoMergeScheduler} you also ensure that no unnecessary code of any
- * {@link MergeScheduler} implementation is ever executed. Hence it is
+ * A {@code MergeScheduler} which never executes any merges. It is also a
+ * singleton and can be accessed through {@code NoMergeScheduler#INSTANCE}. Use
+ * it if you want to prevent an {@code IndexWriter} from ever executing merges,
+ * irregardless of the {@code MergePolicy} used. Note that you can achieve the
+ * same thing by using {@code NoMergePolicy}, however with
+ * {@code NoMergeScheduler} you also ensure that no unnecessary code of any
+ * {@code MergeScheduler} implementation is ever executed. Hence it is
  * recommended to use both if you want to disable merges from ever happening.
  */
 public final class NoMergeScheduler extends MergeScheduler {
 
-  /** The single instance of {@link NoMergeScheduler} */
+  /** The single instance of {@code NoMergeScheduler} */
   public static final MergeScheduler INSTANCE = new NoMergeScheduler();
 
   private NoMergeScheduler() {

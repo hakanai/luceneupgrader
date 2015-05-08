@@ -17,10 +17,10 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.index.IndexReader;
 import org.trypticon.lucene3.index.Term;
+
+import java.io.IOException;
 
 /**
  * Subclass of FilteredTermEnum for enumerating all terms that match the

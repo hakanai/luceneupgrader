@@ -19,16 +19,16 @@ package org.trypticon.lucene3.index;
 
 import java.io.IOException;
 
-/** <p>Expert: {@link IndexWriter} uses an instance
+/** <p>Expert: {@code IndexWriter} uses an instance
  *  implementing this interface to execute the merges
- *  selected by a {@link MergePolicy}.  The default
- *  MergeScheduler is {@link ConcurrentMergeScheduler}.</p>
+ *  selected by a {@code MergePolicy}.  The default
+ *  MergeScheduler is {@code ConcurrentMergeScheduler}.</p>
  *
  * @lucene.experimental
 */
 public abstract class MergeScheduler {
 
-  /** Run the merges provided by {@link IndexWriter#getNextMerge()}. */
+  /** Run the merges provided by {@code IndexWriter#getNextMerge()}. */
   public abstract void merge(IndexWriter writer)
     throws CorruptIndexException, IOException;
 

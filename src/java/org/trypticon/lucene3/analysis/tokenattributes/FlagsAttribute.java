@@ -17,11 +17,10 @@ package org.trypticon.lucene3.analysis.tokenattributes;
  * limitations under the License.
  */
 
-import org.trypticon.lucene3.analysis.Tokenizer;
 import org.trypticon.lucene3.util.Attribute;
 
 /**
- * This attribute can be used to pass different flags down the {@link Tokenizer} chain,
+ * This attribute can be used to pass different flags down the {@code Tokenizer} chain,
  * eg from one TokenFilter to another one. 
  * @lucene.experimental While we think this is here to stay, we may want to change it to be a long.
  */
@@ -29,16 +28,16 @@ public interface FlagsAttribute extends Attribute {
   /**
    * <p/>
    *
-   * Get the bitset for any bits that have been set.  This is completely distinct from {@link TypeAttribute#type()}, although they do share similar purposes.
-   * The flags can be used to encode information about the token for use by other {@link org.trypticon.lucene3.analysis.TokenFilter}s.
+   * Get the bitset for any bits that have been set.  This is completely distinct from {@code TypeAttribute#type()}, although they do share similar purposes.
+   * The flags can be used to encode information about the token for use by other {@code org.trypticon.lucene3.analysis.TokenFilter}s.
    *
    *
    * @return The bits
    */
-  public int getFlags();
+  int getFlags();
 
   /**
-   * @see #getFlags()
+   *
    */
-  public void setFlags(int flags);  
+  void setFlags(int flags);
 }

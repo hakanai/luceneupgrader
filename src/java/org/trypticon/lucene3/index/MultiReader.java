@@ -17,17 +17,17 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.trypticon.lucene3.document.Document;
 import org.trypticon.lucene3.document.FieldSelector;
 import org.trypticon.lucene3.index.DirectoryReader.MultiTermDocs;
 import org.trypticon.lucene3.index.DirectoryReader.MultiTermEnum;
 import org.trypticon.lucene3.index.DirectoryReader.MultiTermPositions;
 import org.trypticon.lucene3.search.Similarity;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /** An IndexReader which reads multiple indexes, appending
  * their content. */
@@ -100,7 +100,7 @@ public class MultiReader extends IndexReader implements Cloneable {
   /**
    * @throws UnsupportedOperationException MultiReaders cannot support changing the readOnly flag
    * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@link #doOpenIfChanged()} instead.
+   * Use {@code #doOpenIfChanged()} instead.
    */
   @Deprecated @Override
   protected IndexReader doOpenIfChanged(boolean openReadOnly) throws CorruptIndexException, IOException {
@@ -120,7 +120,7 @@ public class MultiReader extends IndexReader implements Cloneable {
   /**
    * @throws UnsupportedOperationException MultiReaders cannot support changing the readOnly flag
    * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@link #clone()} instead.
+   * Use {@code #clone()} instead.
    */
   @Override @Deprecated
   public IndexReader clone(boolean openReadOnly) throws CorruptIndexException, IOException {

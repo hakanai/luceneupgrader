@@ -18,17 +18,16 @@ package org.trypticon.lucene3.util;
  */
 
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Lock;
 
 /**
- * A dummy lock as a replacement for {@link ReentrantLock} to disable locking
+ * A dummy lock as a replacement for {@code ReentrantLock} to disable locking
  * @lucene.internal
  */
 public final class DummyConcurrentLock implements Lock {
 
-  /** a default instance, can be always used, as this {@link Lock} is stateless. */
+  /** a default instance, can be always used, as this {@code Lock} is stateless. */
   public static final DummyConcurrentLock INSTANCE = new DummyConcurrentLock();
 
   public void lock() {}

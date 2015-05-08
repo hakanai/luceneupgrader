@@ -18,6 +18,7 @@ package org.trypticon.lucene3.search;
  */
 
 import org.trypticon.lucene3.util.ArrayUtil;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;

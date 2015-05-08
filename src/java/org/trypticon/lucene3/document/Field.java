@@ -18,13 +18,11 @@ package org.trypticon.lucene3.document;
  */
 
 import org.trypticon.lucene3.analysis.TokenStream;
-import org.trypticon.lucene3.index.IndexWriter;   // for javadoc
+import org.trypticon.lucene3.index.FieldInfo.IndexOptions;
 import org.trypticon.lucene3.util.StringHelper;
 
 import java.io.Reader;
 import java.io.Serializable;
-
-import org.trypticon.lucene3.index.FieldInfo.IndexOptions;
 
 /**
   A field is a section of a Document.  Each field has two parts, a name and a
@@ -63,7 +61,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
 
     /** Do not index the field value. This field can thus not be searched,
      * but one can still access its contents provided it is
-     * {@link Field.Store stored}. */
+     * {@code Field.Store stored}. */
     NO {
       @Override
       public boolean isIndexed()  { return false; }
@@ -101,7 +99,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     /** Expert: Index the field's value without an Analyzer,
      * and also disable the indexing of norms.  Note that you
      * can also separately enable/disable norms by calling
-     * {@link Field#setOmitNorms}.  No norms means that
+     * {@code Field#setOmitNorms}.  No norms means that
      * index-time field and document boosting and field
      * length normalization are disabled.  The benefit is
      * less memory usage as norms take up one byte of RAM
@@ -124,7 +122,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     /** Expert: Index the tokens produced by running the
      *  field's value through an Analyzer, and also
      *  separately disable the storing of norms.  See
-     *  {@link #NOT_ANALYZED_NO_NORMS} for what norms are
+     *  {@code #NOT_ANALYZED_NO_NORMS} for what norms are
      *  and why you may want to disable them. */
     ANALYZED_NO_NORMS {
       @Override
@@ -196,7 +194,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     /**
      * Store the term vector + token position information
      * 
-     * @see #YES
+     *
      */ 
     WITH_POSITIONS {
       @Override
@@ -210,7 +208,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     /**
      * Store the term vector + Token offset information
      * 
-     * @see #YES
+     *
      */ 
     WITH_OFFSETS {
       @Override
@@ -224,9 +222,9 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     /**
      * Store the term vector + Token position and offset information
      * 
-     * @see #YES
-     * @see #WITH_POSITIONS
-     * @see #WITH_OFFSETS
+     *
+     *
+     *
      */ 
     WITH_POSITIONS_OFFSETS {
       @Override
@@ -283,11 +281,11 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
    *  be used during indexing to re-use a single Field
    *  instance to improve indexing speed by avoiding GC cost
    *  of new'ing and reclaiming Field instances.  Typically
-   *  a single {@link Document} instance is re-used as
+   *  a single {@code Document} instance is re-used as
    *  well.  This helps most on small documents.</p>
    * 
    *  <p>Each Field instance should only be used once
-   *  within a single {@link Document} instance.  See <a
+   *  within a single {@code Document} instance.  See <a
    *  href="http://wiki.apache.org/lucene-java/ImproveIndexingSpeed">ImproveIndexingSpeed</a>
    *  for details.</p> */
   public void setValue(String value) {
@@ -428,7 +426,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
   /**
    * Create a tokenized and indexed field that is not stored. Term vectors will
    * not be stored.  The Reader is read only when the Document is added to the index,
-   * i.e. you may not close the Reader until {@link IndexWriter#addDocument(Document)}
+   * i.e. you may not close the Reader until {@code IndexWriter#addDocument(Document)}
    * has been called.
    * 
    * @param name The name of the field
@@ -442,7 +440,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
   /**
    * Create a tokenized and indexed field that is not stored, optionally with 
    * storing term vectors.  The Reader is read only when the Document is added to the index,
-   * i.e. you may not close the Reader until {@link IndexWriter#addDocument(Document)}
+   * i.e. you may not close the Reader until {@code IndexWriter#addDocument(Document)}
    * has been called.
    * 
    * @param name The name of the field
@@ -473,7 +471,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
    * Create a tokenized and indexed field that is not stored. Term vectors will
    * not be stored. This is useful for pre-analyzed fields.
    * The TokenStream is read only when the Document is added to the index,
-   * i.e. you may not close the TokenStream until {@link IndexWriter#addDocument(Document)}
+   * i.e. you may not close the TokenStream until {@code IndexWriter#addDocument(Document)}
    * has been called.
    * 
    * @param name The name of the field
@@ -488,7 +486,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
    * Create a tokenized and indexed field that is not stored, optionally with 
    * storing term vectors.  This is useful for pre-analyzed fields.
    * The TokenStream is read only when the Document is added to the index,
-   * i.e. you may not close the TokenStream until {@link IndexWriter#addDocument(Document)}
+   * i.e. you may not close the TokenStream until {@code IndexWriter#addDocument(Document)}
    * has been called.
    * 
    * @param name The name of the field
@@ -524,7 +522,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
    * @param value The binary value
    * @param store Must be Store.YES
    * @throws IllegalArgumentException if store is <code>Store.NO</code> 
-   * @deprecated Use {@link #Field(String, byte[]) instead}
+   * @deprecated Use {@code #Field(String, byte[]) instead}
    */
   @Deprecated
   public Field(String name, byte[] value, Store store) {
@@ -554,7 +552,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
    * @param length Number of bytes to use for this Field, starting at offset
    * @param store How <code>value</code> should be stored (compressed or not)
    * @throws IllegalArgumentException if store is <code>Store.NO</code> 
-   * @deprecated Use {@link #Field(String, byte[], int, int) instead}
+   * @deprecated Use {@code #Field(String, byte[], int, int) instead}
    */
   @Deprecated
   public Field(String name, byte[] value, int offset, int length, Store store) {

@@ -17,13 +17,13 @@ package org.trypticon.lucene3.store;
  * limitations under the License.
  */
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Closeable;
-import java.util.Collection;
-
 import org.trypticon.lucene3.index.IndexFileNameFilter;
 import org.trypticon.lucene3.util.IOUtils;
+
+import java.io.Closeable;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Collection;
 
 /** A Directory is a flat list of files.  Files may be written once, when they
  * are created.  Once a file is created it may only be opened for read, or
@@ -36,9 +36,9 @@ import org.trypticon.lucene3.util.IOUtils;
  * <li> implementation of an index as a single file;
  * </ul>
  *
- * Directory locking is implemented by an instance of {@link
+ * Directory locking is implemented by an instance of {@code
  * LockFactory}, and can be changed for each Directory
- * instance using {@link #setLockFactory}.
+ * instance using {@code #setLockFactory}.
  *
  */
 public abstract class Directory implements Closeable {
@@ -53,7 +53,7 @@ public abstract class Directory implements Closeable {
    * Returns an array of strings, one for each file in the directory.
    * 
    * @throws NoSuchDirectoryException if the directory is not prepared for any
-   *         write operations (such as {@link #createOutput(String)}).
+   *         write operations (such as {@code #createOutput(String)}).
    * @throws IOException in case of other IO errors
    */
   public abstract String[] listAll() throws IOException;
@@ -84,7 +84,7 @@ public abstract class Directory implements Closeable {
    * Returns the length of a file in the directory. This method follows the
    * following contract:
    * <ul>
-   * <li>Throws {@link FileNotFoundException} if the file does not exist
+   * <li>Throws {@code FileNotFoundException} if the file does not exist
    * <li>Returns a value &ge;0 if the file exists, which specifies its length.
    * </ul>
    * 
@@ -106,7 +106,7 @@ public abstract class Directory implements Closeable {
    * stable storage.  Lucene uses this to properly commit
    * changes to the index, to prevent a machine/OS crash
    * from corrupting the index.
-   * @deprecated use {@link #sync(Collection)} instead.
+   * @deprecated use {@code #sync(Collection)} instead.
    * For easy migration you can change your code to call
    * sync(Collections.singleton(name))
    */
@@ -138,14 +138,14 @@ public abstract class Directory implements Closeable {
    * specified read buffer size.  The particular Directory
    * implementation may ignore the buffer size.  Currently
    * the only Directory implementations that respect this
-   * parameter are {@link FSDirectory} and {@link
+   * parameter are {@code FSDirectory} and {@code
    * org.trypticon.lucene3.index.CompoundFileReader}.
   */
   public IndexInput openInput(String name, int bufferSize) throws IOException {
     return openInput(name);
   }
 
-  /** Construct a {@link Lock}.
+  /** Construct a {@code Lock}.
    * @param name the name of the lock file
    */
   public Lock makeLock(String name) {
@@ -174,7 +174,7 @@ public abstract class Directory implements Closeable {
    * do not share a single instance across multiple
    * Directories).
    *
-   * @param lockFactory instance of {@link LockFactory}.
+   * @param lockFactory instance of {@code LockFactory}.
    */
   public void setLockFactory(LockFactory lockFactory) throws IOException {
     assert lockFactory != null;
@@ -210,7 +210,7 @@ public abstract class Directory implements Closeable {
   }
 
   /**
-   * Copies the file <i>src</i> to {@link Directory} <i>to</i> under the new
+   * Copies the file <i>src</i> to {@code Directory} <i>to</i> under the new
    * file name <i>dest</i>.
    * <p>
    * If you want to copy the entire source directory to the destination one, you
@@ -254,10 +254,10 @@ public abstract class Directory implements Closeable {
    * 
    * @param src source directory
    * @param dest destination directory
-   * @param closeDirSrc if <code>true</code>, call {@link #close()} method on 
+   * @param closeDirSrc if <code>true</code>, call {@code #close()} method on
    *        source directory
    * @deprecated should be replaced with calls to
-   *             {@link #copy(Directory, String, String)} for every file that
+   *             {@code #copy(Directory, String, String)} for every file that
    *             needs copying. You can use the following code:
    * 
    * <pre>

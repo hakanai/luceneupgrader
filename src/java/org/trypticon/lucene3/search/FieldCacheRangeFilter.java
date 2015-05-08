@@ -16,31 +16,30 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.index.IndexReader;
 import org.trypticon.lucene3.util.NumericUtils;
-import org.trypticon.lucene3.document.NumericField; // for javadocs
+
+import java.io.IOException;
 
 /**
- * A range filter built on top of a cached single term field (in {@link FieldCache}).
+ * A range filter built on top of a cached single term field (in {@code FieldCache}).
  * 
  * <p>{@code FieldCacheRangeFilter} builds a single cache for the field the first time it is used.
  * Each subsequent {@code FieldCacheRangeFilter} on the same field then reuses this cache,
  * even if the range itself changes. 
  * 
  * <p>This means that {@code FieldCacheRangeFilter} is much faster (sometimes more than 100x as fast) 
- * as building a {@link TermRangeFilter}, if using a {@link #newStringRange}.
+ * as building a {@code TermRangeFilter}, if using a {@code #newStringRange}.
  * However, if the range never changes it is slower (around 2x as slow) than building
- * a CachingWrapperFilter on top of a single {@link TermRangeFilter}.
+ * a CachingWrapperFilter on top of a single {@code TermRangeFilter}.
  *
- * For numeric data types, this filter may be significantly faster than {@link NumericRangeFilter}.
- * Furthermore, it does not need the numeric values encoded by {@link NumericField}. But
+ * For numeric data types, this filter may be significantly faster than {@code NumericRangeFilter}.
+ * Furthermore, it does not need the numeric values encoded by {@code NumericField}. But
  * it has the problem that it only works with exact one value/document (see below).
  *
- * <p>As with all {@link FieldCache} based functionality, {@code FieldCacheRangeFilter} is only valid for 
- * fields which exact one term for each document (except for {@link #newStringRange}
- * where 0 terms are also allowed). Due to a restriction of {@link FieldCache}, for numeric ranges
+ * <p>As with all {@code FieldCache} based functionality, {@code FieldCacheRangeFilter} is only valid for
+ * fields which exact one term for each document (except for {@code #newStringRange}
+ * where 0 terms are also allowed). Due to a restriction of {@code FieldCache}, for numeric ranges
  * all terms that do not have a numeric value, 0 is assumed.
  *
  * <p>Thus it works on dates, prices and other single value fields but will not work on
@@ -48,7 +47,7 @@ import org.trypticon.lucene3.document.NumericField; // for javadocs
  * there is only a single term. 
  *
  * <p>This class does not have an constructor, use one of the static factory methods available,
- * that create a correct instance for different data types supported by {@link FieldCache}.
+ * that create a correct instance for different data types supported by {@code FieldCache}.
  */
 
 public abstract class FieldCacheRangeFilter<T> extends Filter {
@@ -73,7 +72,7 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
   public abstract DocIdSet getDocIdSet(IndexReader reader) throws IOException;
 
   /**
-   * Creates a string range filter using {@link FieldCache#getStringIndex}. This works with all
+   * Creates a string range filter using {@code FieldCache#getStringIndex}. This works with all
    * fields containing zero or one term in the field. The range can be half-open by setting one
    * of the values to <code>null</code>.
    */
@@ -129,7 +128,7 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
   }
   
   /**
-   * Creates a numeric range filter using {@link FieldCache#getBytes(IndexReader,String)}. This works with all
+   * Creates a numeric range filter using {@code FieldCache#getBytes(IndexReader,String)}. This works with all
    * byte fields containing exactly one numeric term in the field. The range can be half-open by setting one
    * of the values to <code>null</code>.
    */
@@ -138,7 +137,7 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
   }
   
   /**
-   * Creates a numeric range filter using {@link FieldCache#getBytes(IndexReader,String,FieldCache.ByteParser)}. This works with all
+   * Creates a numeric range filter using {@code FieldCache#getBytes(IndexReader,String,FieldCache.ByteParser)}. This works with all
    * byte fields containing exactly one numeric term in the field. The range can be half-open by setting one
    * of the values to <code>null</code>.
    */
@@ -179,7 +178,7 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
   }
   
   /**
-   * Creates a numeric range filter using {@link FieldCache#getShorts(IndexReader,String)}. This works with all
+   * Creates a numeric range filter using {@code FieldCache#getShorts(IndexReader,String)}. This works with all
    * short fields containing exactly one numeric term in the field. The range can be half-open by setting one
    * of the values to <code>null</code>.
    */
@@ -188,7 +187,7 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
   }
   
   /**
-   * Creates a numeric range filter using {@link FieldCache#getShorts(IndexReader,String,FieldCache.ShortParser)}. This works with all
+   * Creates a numeric range filter using {@code FieldCache#getShorts(IndexReader,String,FieldCache.ShortParser)}. This works with all
    * short fields containing exactly one numeric term in the field. The range can be half-open by setting one
    * of the values to <code>null</code>.
    */
@@ -229,7 +228,7 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
   }
   
   /**
-   * Creates a numeric range filter using {@link FieldCache#getInts(IndexReader,String)}. This works with all
+   * Creates a numeric range filter using {@code FieldCache#getInts(IndexReader,String)}. This works with all
    * int fields containing exactly one numeric term in the field. The range can be half-open by setting one
    * of the values to <code>null</code>.
    */
@@ -238,7 +237,7 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
   }
   
   /**
-   * Creates a numeric range filter using {@link FieldCache#getInts(IndexReader,String,FieldCache.IntParser)}. This works with all
+   * Creates a numeric range filter using {@code FieldCache#getInts(IndexReader,String,FieldCache.IntParser)}. This works with all
    * int fields containing exactly one numeric term in the field. The range can be half-open by setting one
    * of the values to <code>null</code>.
    */
@@ -279,7 +278,7 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
   }
   
   /**
-   * Creates a numeric range filter using {@link FieldCache#getLongs(IndexReader,String)}. This works with all
+   * Creates a numeric range filter using {@code FieldCache#getLongs(IndexReader,String)}. This works with all
    * long fields containing exactly one numeric term in the field. The range can be half-open by setting one
    * of the values to <code>null</code>.
    */
@@ -288,7 +287,7 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
   }
   
   /**
-   * Creates a numeric range filter using {@link FieldCache#getLongs(IndexReader,String,FieldCache.LongParser)}. This works with all
+   * Creates a numeric range filter using {@code FieldCache#getLongs(IndexReader,String,FieldCache.LongParser)}. This works with all
    * long fields containing exactly one numeric term in the field. The range can be half-open by setting one
    * of the values to <code>null</code>.
    */
@@ -329,7 +328,7 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
   }
   
   /**
-   * Creates a numeric range filter using {@link FieldCache#getFloats(IndexReader,String)}. This works with all
+   * Creates a numeric range filter using {@code FieldCache#getFloats(IndexReader,String)}. This works with all
    * float fields containing exactly one numeric term in the field. The range can be half-open by setting one
    * of the values to <code>null</code>.
    */
@@ -338,7 +337,7 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
   }
   
   /**
-   * Creates a numeric range filter using {@link FieldCache#getFloats(IndexReader,String,FieldCache.FloatParser)}. This works with all
+   * Creates a numeric range filter using {@code FieldCache#getFloats(IndexReader,String,FieldCache.FloatParser)}. This works with all
    * float fields containing exactly one numeric term in the field. The range can be half-open by setting one
    * of the values to <code>null</code>.
    */
@@ -383,7 +382,7 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
   }
   
   /**
-   * Creates a numeric range filter using {@link FieldCache#getDoubles(IndexReader,String)}. This works with all
+   * Creates a numeric range filter using {@code FieldCache#getDoubles(IndexReader,String)}. This works with all
    * double fields containing exactly one numeric term in the field. The range can be half-open by setting one
    * of the values to <code>null</code>.
    */
@@ -392,7 +391,7 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
   }
   
   /**
-   * Creates a numeric range filter using {@link FieldCache#getDoubles(IndexReader,String,FieldCache.DoubleParser)}. This works with all
+   * Creates a numeric range filter using {@code FieldCache#getDoubles(IndexReader,String,FieldCache.DoubleParser)}. This works with all
    * double fields containing exactly one numeric term in the field. The range can be half-open by setting one
    * of the values to <code>null</code>.
    */

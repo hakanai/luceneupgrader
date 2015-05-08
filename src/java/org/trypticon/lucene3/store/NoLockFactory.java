@@ -20,11 +20,11 @@ package org.trypticon.lucene3.store;
 import java.io.IOException;
 
 /**
- * Use this {@link LockFactory} to disable locking entirely.
- * Only one instance of this lock is created.  You should call {@link
+ * Use this {@code LockFactory} to disable locking entirely.
+ * Only one instance of this lock is created.  You should call {@code
  * #getNoLockFactory()} to get the instance.
  *
- * @see LockFactory
+ *
  */
 
 public class NoLockFactory extends LockFactory {
@@ -36,7 +36,7 @@ public class NoLockFactory extends LockFactory {
   /**
    * @deprecated This constructor was not intended to be public and should not be used.
    *  It will be made private in Lucene 4.0
-   * @see #getNoLockFactory()
+   *
    */
   // make private in 4.0!
   @Deprecated

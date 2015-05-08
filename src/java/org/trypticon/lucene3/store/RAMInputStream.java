@@ -17,10 +17,10 @@ package org.trypticon.lucene3.store;
  * limitations under the License.
  */
 
-import java.io.IOException;
 import java.io.EOFException;
+import java.io.IOException;
 
-/** A memory-resident {@link IndexInput} implementation. 
+/** A memory-resident {@code IndexInput} implementation.
  *  
  *  @lucene.internal */
 public class RAMInputStream extends IndexInput implements Cloneable {

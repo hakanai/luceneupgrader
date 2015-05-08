@@ -17,10 +17,10 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.store.IndexOutput;
+
 import java.io.IOException;
 import java.util.Arrays;
-
-import org.trypticon.lucene3.store.IndexOutput;
 
 
 /**

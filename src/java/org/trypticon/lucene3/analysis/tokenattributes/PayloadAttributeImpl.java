@@ -17,13 +17,13 @@ package org.trypticon.lucene3.analysis.tokenattributes;
  * limitations under the License.
  */
 
-import java.io.Serializable;
-
 import org.trypticon.lucene3.index.Payload;
 import org.trypticon.lucene3.util.AttributeImpl;
 
+import java.io.Serializable;
+
 /**
- * The payload of a Token. See also {@link Payload}.
+ * The payload of a Token. See also {@code Payload}.
  */
 public class PayloadAttributeImpl extends AttributeImpl implements PayloadAttribute, Cloneable, Serializable {
   private Payload payload;  

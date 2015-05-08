@@ -21,17 +21,15 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ClosedChannelException; // javadoc
 import java.nio.channels.FileChannel;
-import java.util.concurrent.Future; // javadoc
 
 /**
- * An {@link FSDirectory} implementation that uses java.nio's FileChannel's
+ * An {@code FSDirectory} implementation that uses java.nio's FileChannel's
  * positional read, which allows multiple threads to read from the same file
  * without synchronizing.
  * <p>
  * This class only uses FileChannel when reading; writing is achieved with
- * {@link FSDirectory.FSIndexOutput}.
+ * {@code FSDirectory.FSIndexOutput}.
  * <p>
  * <b>NOTE</b>: NIOFSDirectory is not recommended on Windows because of a bug in
  * how FileChannel.read is implemented in Sun's JRE. Inside of the
@@ -44,10 +42,10 @@ import java.util.concurrent.Future; // javadoc
  * indirectly from a thread while it's interrupted can close the
  * underlying file descriptor immediately if at the same time the thread is
  * blocked on IO. The file descriptor will remain closed and subsequent access
- * to {@link NIOFSDirectory} will throw a {@link ClosedChannelException}. If
- * your application uses either {@link Thread#interrupt()} or
- * {@link Future#cancel(boolean)} you should use {@link SimpleFSDirectory} in
- * favor of {@link NIOFSDirectory}.</font>
+ * to {@code NIOFSDirectory} will throw a {@code ClosedChannelException}. If
+ * your application uses either {@code Thread#interrupt()} or
+ * {@code Future#cancel(boolean)} you should use {@code SimpleFSDirectory} in
+ * favor of {@code NIOFSDirectory}.</font>
  * </p>
  */
 public class NIOFSDirectory extends FSDirectory {
@@ -56,14 +54,14 @@ public class NIOFSDirectory extends FSDirectory {
    * 
    * @param path the path of the directory
    * @param lockFactory the lock factory to use, or null for the default
-   * ({@link NativeFSLockFactory});
+   * ({@code NativeFSLockFactory});
    * @throws IOException
    */
   public NIOFSDirectory(File path, LockFactory lockFactory) throws IOException {
     super(path, lockFactory);
   }
 
-  /** Create a new NIOFSDirectory for the named location and {@link NativeFSLockFactory}.
+  /** Create a new NIOFSDirectory for the named location and {@code NativeFSLockFactory}.
    *
    * @param path the path of the directory
    * @throws IOException

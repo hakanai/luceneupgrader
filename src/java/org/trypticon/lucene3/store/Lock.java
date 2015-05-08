@@ -18,6 +18,7 @@ package org.trypticon.lucene3.store;
  */
 
 import org.trypticon.lucene3.util.ThreadInterruptedException;
+
 import java.io.IOException;
 
 /** An interprocess mutex lock.
@@ -29,15 +30,15 @@ import java.io.IOException;
  *   }.run();
  * </pre>
  *
- * @see Directory#makeLock(String)
+ *
  */
 public abstract class Lock {
 
-  /** How long {@link #obtain(long)} waits, in milliseconds,
+  /** How long {@code #obtain(long)} waits, in milliseconds,
    *  in between attempts to acquire the lock. */
   public static long LOCK_POLL_INTERVAL = 1000;
 
-  /** Pass this value to {@link #obtain(long)} to try
+  /** Pass this value to {@code #obtain(long)} to try
    *  forever to obtain the lock. */
   public static final long LOCK_OBTAIN_WAIT_FOREVER = -1;
 
@@ -55,11 +56,11 @@ public abstract class Lock {
   protected Throwable failureReason;
 
   /** Attempts to obtain an exclusive lock within amount of
-   *  time given. Polls once per {@link #LOCK_POLL_INTERVAL}
+   *  time given. Polls once per {@code #LOCK_POLL_INTERVAL}
    *  (currently 1000) milliseconds until lockWaitTimeout is
    *  passed.
    * @param lockWaitTimeout length of time to wait in
-   *        milliseconds or {@link
+   *        milliseconds or {@code
    *        #LOCK_OBTAIN_WAIT_FOREVER} to retry forever
    * @return true if lock was obtained
    * @throws LockObtainFailedException if lock wait times out
@@ -101,7 +102,7 @@ public abstract class Lock {
   public abstract void release() throws IOException;
 
   /** Returns true if the resource is currently locked.  Note that one must
-   * still call {@link #obtain()} before using the resource. */
+   * still call {@code #obtain()} before using the resource. */
   public abstract boolean isLocked() throws IOException;
 
 
@@ -120,13 +121,13 @@ public abstract class Lock {
     /** Code to execute with exclusive access. */
     protected abstract Object doBody() throws IOException;
 
-    /** Calls {@link #doBody} while <i>lock</i> is obtained.  Blocks if lock
+    /** Calls {@code #doBody} while <i>lock</i> is obtained.  Blocks if lock
      * cannot be obtained immediately.  Retries to obtain lock once per second
      * until it is obtained, or until it has tried ten times. Lock is released when
-     * {@link #doBody} exits.
+     * {@code #doBody} exits.
      * @throws LockObtainFailedException if lock could not
      * be obtained
-     * @throws IOException if {@link Lock#obtain} throws IOException
+     * @throws IOException if {@code Lock#obtain} throws IOException
      */
     public Object run() throws LockObtainFailedException, IOException {
       boolean locked = false;

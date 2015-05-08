@@ -20,17 +20,16 @@ package org.trypticon.lucene3.store;
 import java.io.IOException;
 
 /**
- * <p>Base class for Locking implementation.  {@link Directory} uses
+ * <p>Base class for Locking implementation.  {@code Directory} uses
  * instances of this class to implement locking.</p>
  *
  * <p>Note that there are some useful tools to verify that
- * your LockFactory is working correctly: {@link
- * VerifyingLockFactory}, {@link LockStressTest}, {@link
+ * your LockFactory is working correctly: {@code
+ * VerifyingLockFactory}, {@code LockStressTest}, {@code
  * LockVerifyServer}.</p>
  *
- * @see LockVerifyServer
- * @see LockStressTest
- * @see VerifyingLockFactory
+ *
+ *
  */
 
 public abstract class LockFactory {

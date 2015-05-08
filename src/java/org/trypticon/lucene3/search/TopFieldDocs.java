@@ -18,7 +18,7 @@ package org.trypticon.lucene3.search;
  */
 
 
-/** Represents hits returned by {@link
+/** Represents hits returned by {@code
  * Searcher#search(Query,Filter,int,Sort)}.
  */
 public class TopFieldDocs

@@ -17,9 +17,9 @@ package org.trypticon.lucene3.analysis.tokenattributes;
  * limitations under the License.
  */
 
-import java.io.Serializable;
-
 import org.trypticon.lucene3.util.AttributeImpl;
+
+import java.io.Serializable;
 
 /**
  * A Token's lexical type. The Default value is "word". 
@@ -41,7 +41,7 @@ public class TypeAttributeImpl extends AttributeImpl implements TypeAttribute, C
   }
 
   /** Set the lexical type.
-      @see #type() */
+      */
   public void setType(String type) {
     this.type = type;
   }

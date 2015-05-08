@@ -17,17 +17,17 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.index.IndexReader;
 import org.trypticon.lucene3.search.FieldValueHitQueue.Entry;
 import org.trypticon.lucene3.util.PriorityQueue;
 
+import java.io.IOException;
+
 /**
- * A {@link Collector} that sorts by {@link SortField} using
- * {@link FieldComparator}s.
+ * A {@code Collector} that sorts by {@code SortField} using
+ * {@code FieldComparator}s.
  * <p/>
- * See the {@link #create(org.trypticon.lucene3.search.Sort, int, boolean, boolean, boolean, boolean)} method
+ * See the {@code #create(org.trypticon.lucene3.search.Sort, int, boolean, boolean, boolean, boolean)} method
  * for instantiating a TopFieldCollector.
  * 
  * @lucene.experimental
@@ -866,7 +866,7 @@ public abstract class TopFieldCollector extends TopDocsCollector<Entry> {
   }
 
   /**
-   * Creates a new {@link TopFieldCollector} from the given
+   * Creates a new {@code TopFieldCollector} from the given
    * arguments.
    *
    * <p><b>NOTE</b>: The instances returned by this method
@@ -889,15 +889,15 @@ public abstract class TopFieldCollector extends TopDocsCollector<Entry> {
    *          it is recommended to set it to false.
    * @param trackMaxScore
    *          specifies whether the query's maxScore should be tracked and set
-   *          on the resulting {@link TopDocs}. Note that if set to false,
-   *          {@link TopDocs#getMaxScore()} returns Float.NaN. Setting this to
+   *          on the resulting {@code TopDocs}. Note that if set to false,
+   *          {@code TopDocs#getMaxScore()} returns Float.NaN. Setting this to
    *          true affects performance as it incurs the score computation on
    *          each result. Also, setting this true automatically sets
    *          <code>trackDocScores</code> to true as well.
    * @param docsScoredInOrder
    *          specifies whether documents are scored in doc Id order or not by
-   *          the given {@link Scorer} in {@link #setScorer(Scorer)}.
-   * @return a {@link TopFieldCollector} instance which will sort the results by
+   *          the given {@code Scorer} in {@code #setScorer(Scorer)}.
+   * @return a {@code TopFieldCollector} instance which will sort the results by
    *         the sort criteria.
    * @throws IOException
    */

@@ -29,13 +29,13 @@ import java.io.IOException;
  * Technically, this same functionality could be achieved
  * with ChainedFilter (under contrib/misc), however the
  * benefit of this class is it never materializes the full
- * bitset for the filter.  Instead, the {@link #match}
+ * bitset for the filter.  Instead, the {@code #match}
  * method is invoked on-demand, per docID visited during
  * searching.  If you know few docIDs will be visited, and
- * the logic behind {@link #match} is relatively costly,
+ * the logic behind {@code #match} is relatively costly,
  * this may be a better way to filter than ChainedFilter.
  *
- * @see DocIdSet
+ *
  */
 
 public abstract class FilteredDocIdSet extends DocIdSet {
@@ -64,8 +64,8 @@ public abstract class FilteredDocIdSet extends DocIdSet {
 	
   /**
    * Implementation of the contract to build a DocIdSetIterator.
-   * @see DocIdSetIterator
-   * @see FilteredDocIdSetIterator
+   *
+   *
    */
   @Override
   public DocIdSetIterator iterator() throws IOException {

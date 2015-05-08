@@ -17,9 +17,10 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
 import org.trypticon.lucene3.store.IndexInput;
 import org.trypticon.lucene3.util.UnicodeUtil;
+
+import java.io.IOException;
 
 final class TermBuffer implements Cloneable {
 
@@ -51,7 +52,7 @@ final class TermBuffer implements Cloneable {
     return len1 - len2;
   }
 
-  /** Call this if the IndexInput passed to {@link #read}
+  /** Call this if the IndexInput passed to {@code #read}
    *  stores terms in the "modified UTF8" (pre LUCENE-510)
    *  format. */
   void setPreUTF8Strings() {

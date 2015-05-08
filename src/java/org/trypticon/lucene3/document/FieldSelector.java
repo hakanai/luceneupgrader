@@ -18,8 +18,8 @@ import java.io.Serializable;
  */
 
 /**
- * Similar to a {@link java.io.FileFilter}, the FieldSelector allows one to make decisions about
- * what Fields get loaded on a {@link Document} by {@link org.trypticon.lucene3.index.IndexReader#document(int,org.trypticon.lucene3.document.FieldSelector)}
+ * Similar to a {@code java.io.FileFilter}, the FieldSelector allows one to make decisions about
+ * what Fields get loaded on a {@code Document} by {@code org.trypticon.lucene3.index.IndexReader#document(int,org.trypticon.lucene3.document.FieldSelector)}
  *
  **/
 public interface FieldSelector extends Serializable {
@@ -27,8 +27,8 @@ public interface FieldSelector extends Serializable {
   /**
    * 
    * @param fieldName the field to accept or reject
-   * @return an instance of {@link FieldSelectorResult}
-   * if the {@link Field} named <code>fieldName</code> should be loaded.
+   * @return an instance of {@code FieldSelectorResult}
+   * if the {@code Field} named <code>fieldName</code> should be loaded.
    */
   FieldSelectorResult accept(String fieldName);
 }

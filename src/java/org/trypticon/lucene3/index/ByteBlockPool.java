@@ -33,10 +33,12 @@ package org.trypticon.lucene3.index;
  * its length and instead allocate a new slice once they
  * hit a non-zero byte. */
 
+import org.trypticon.lucene3.util.ArrayUtil;
+
 import java.util.Arrays;
 import java.util.List;
+
 import static org.trypticon.lucene3.util.RamUsageEstimator.NUM_BYTES_OBJECT_REF;
-import org.trypticon.lucene3.util.ArrayUtil;
 
 
 final class ByteBlockPool {

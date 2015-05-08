@@ -17,10 +17,6 @@ package org.trypticon.lucene3.document;
  * limitations under the License.
  */
 
-import org.trypticon.lucene3.document.NumericField; // for javadocs
-import org.trypticon.lucene3.search.NumericRangeQuery; // for javadocs
-import org.trypticon.lucene3.util.NumericUtils; // for javadocs
-
 // do not remove this class in 3.0, it may be needed to decode old indexes!
 
 /**
@@ -34,13 +30,13 @@ import org.trypticon.lucene3.util.NumericUtils; // for javadocs
  * 
  * <p>
  * This class handles <b>all</b> long values (unlike
- * {@link org.trypticon.lucene3.document.DateField}).
+ * {@code org.trypticon.lucene3.document.DateField}).
  * 
- * @deprecated For new indexes use {@link NumericUtils} instead, which
+ * @deprecated For new indexes use {@code NumericUtils} instead, which
  * provides a sortable binary representation (prefix encoded) of numeric
  * values.
- * To index and efficiently query numeric values use {@link NumericField}
- * and {@link NumericRangeQuery}.
+ * To index and efficiently query numeric values use {@code NumericField}
+ * and {@code NumericRangeQuery}.
  * This class is included for use with existing
  * indices and will be removed in a future release (possibly Lucene 4.0).
  */
@@ -68,7 +64,7 @@ public class NumberTools {
             + "1y2p0ij32e8e7";
 
     /**
-     * The length of (all) strings returned by {@link #longToString}
+     * The length of (all) strings returned by {@code #longToString}
      */
     public static final int STR_SIZE = MIN_STRING_VALUE.length();
 
@@ -102,7 +98,7 @@ public class NumberTools {
     }
 
     /**
-     * Converts a String that was returned by {@link #longToString} back to a
+     * Converts a String that was returned by {@code #longToString} back to a
      * long.
      * 
      * @throws IllegalArgumentException

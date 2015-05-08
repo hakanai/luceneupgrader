@@ -17,12 +17,12 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.document.Document;
+import org.trypticon.lucene3.document.FieldSelector;
 import org.trypticon.lucene3.index.CorruptIndexException;
 import org.trypticon.lucene3.index.Term;
-import org.trypticon.lucene3.document.FieldSelector;
+
+import java.io.IOException;
 
 /**
  * An abstract base class for search implementations. Implements the main search
@@ -43,7 +43,7 @@ public abstract class Searcher implements Searchable {
    * <code>sort</code>.
    * 
    * <p>NOTE: this does not compute scores by default; use
-   * {@link IndexSearcher#setDefaultFieldSortScoring} to
+   * {@code IndexSearcher#setDefaultFieldSortScoring} to
    * enable scoring.
    *
    * @throws BooleanQuery.TooManyClauses
@@ -57,8 +57,8 @@ public abstract class Searcher implements Searchable {
    * Search implementation with arbitrary sorting and no filter.
    * @param query The query to search for
    * @param n Return only the top n results
-   * @param sort The {@link org.trypticon.lucene3.search.Sort} object
-   * @return The top docs, sorted according to the supplied {@link org.trypticon.lucene3.search.Sort} instance
+   * @param sort The {@code org.trypticon.lucene3.search.Sort} object
+   * @return The top docs, sorted according to the supplied {@code org.trypticon.lucene3.search.Sort} instance
    * @throws IOException
    */
   public TopFieldDocs search(Query query, int n,
@@ -68,10 +68,10 @@ public abstract class Searcher implements Searchable {
 
   /** Lower-level search API.
   *
-  * <p>{@link Collector#collect(int)} is called for every matching document.
+  * <p>{@code Collector#collect(int)} is called for every matching document.
   *
   * <p>Applications should only use this if they need <i>all</i> of the
-  * matching documents.  The high-level search API ({@link
+  * matching documents.  The high-level search API ({@code
   * Searcher#search(Query, int)}) is usually more efficient, as it skips
   * non-high-scoring hits.
   * <p>Note: The <code>score</code> passed to this method is a raw score.
@@ -86,12 +86,12 @@ public abstract class Searcher implements Searchable {
 
   /** Lower-level search API.
    *
-   * <p>{@link Collector#collect(int)} is called for every matching
+   * <p>{@code Collector#collect(int)} is called for every matching
    * document.
    * <br>Collector-based access to remote indexes is discouraged.
    *
    * <p>Applications should only use this if they need <i>all</i> of the
-   * matching documents.  The high-level search API ({@link
+   * matching documents.  The high-level search API ({@code
    * Searcher#search(Query, Filter, int)}) is usually more efficient, as it skips
    * non-high-scoring hits.
    *
@@ -142,7 +142,7 @@ public abstract class Searcher implements Searchable {
 
   /** Expert: Set the Similarity implementation used by this Searcher.
    *
-   * @see Similarity#setDefault(Similarity)
+   *
    */
   public void setSimilarity(Similarity similarity) {
     this.similarity = similarity;
@@ -150,17 +150,17 @@ public abstract class Searcher implements Searchable {
 
   /** Expert: Return the Similarity implementation used by this Searcher.
    *
-   * <p>This defaults to the current value of {@link Similarity#getDefault()}.
+   * <p>This defaults to the current value of {@code Similarity#getDefault()}.
    */
   public Similarity getSimilarity() {
     return this.similarity;
   }
 
   /**
-   * Creates a normalized weight for a top-level {@link Query}.
-   * The query is rewritten by this method and {@link Query#createWeight} called,
-   * afterwards the {@link Weight} is normalized. The returned {@code Weight}
-   * can then directly be used to get a {@link Scorer}.
+   * Creates a normalized weight for a top-level {@code Query}.
+   * The query is rewritten by this method and {@code Query#createWeight} called,
+   * afterwards the {@code Weight} is normalized. The returned {@code Weight}
+   * can then directly be used to get a {@code Scorer}.
    * @lucene.internal
    */
   public Weight createNormalizedWeight(Query query) throws IOException {
@@ -176,12 +176,12 @@ public abstract class Searcher implements Searchable {
   }
   
   /**
-   * Expert: Creates a normalized weight for a top-level {@link Query}.
-   * The query is rewritten by this method and {@link Query#createWeight} called,
-   * afterwards the {@link Weight} is normalized. The returned {@code Weight}
-   * can then directly be used to get a {@link Scorer}.
-   * @deprecated never ever use this method in {@link Weight} implementations.
-   * Subclasses of Searcher should use {@link #createNormalizedWeight}, instead.
+   * Expert: Creates a normalized weight for a top-level {@code Query}.
+   * The query is rewritten by this method and {@code Query#createWeight} called,
+   * afterwards the {@code Weight} is normalized. The returned {@code Weight}
+   * can then directly be used to get a {@code Scorer}.
+   * @deprecated never ever use this method in {@code Weight} implementations.
+   * Subclasses of Searcher should use {@code #createNormalizedWeight}, instead.
    */
   @Deprecated
   protected final Weight createWeight(Query query) throws IOException {

@@ -16,9 +16,6 @@ package org.trypticon.lucene3.index;
  * the License.
  */
 
-import java.io.IOException;
-import java.util.List;
-
 import org.trypticon.lucene3.document.Document;
 import org.trypticon.lucene3.document.Fieldable;
 import org.trypticon.lucene3.document.NumericField;
@@ -27,6 +24,9 @@ import org.trypticon.lucene3.store.IndexInput;
 import org.trypticon.lucene3.store.IndexOutput;
 import org.trypticon.lucene3.store.RAMOutputStream;
 import org.trypticon.lucene3.util.IOUtils;
+
+import java.io.IOException;
+import java.util.List;
 
 final class FieldsWriter {
   static final int FIELD_IS_TOKENIZED = 1 << 0;

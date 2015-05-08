@@ -2,352 +2,480 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="736e230f-2817-43f3-8f39-4bcb3954f125" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/TestAssertions.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/TestDemo.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/TestMergeSchedulerExternal.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/TestSearch.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/TestSearchForDuplicates.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/LuceneResourcesWikiPage.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/LuceneResourcesWikiPageURLs.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestASCIIFoldingFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestAnalyzers.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestCachingTokenFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestCharArrayMap.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestCharArraySet.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestCharFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestCharTokenizers.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestClassicAnalyzer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestDuelingAnalyzers.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestGraphTokenizers.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestISOLatin1AccentFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestKeywordAnalyzer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestKeywordMarkerFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestLengthFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestLookaheadTokenFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestMappingCharFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestMockAnalyzer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestMockCharFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestNumericTokenStream.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestPerFieldAnalzyerWrapper.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestPorterStemFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestStandardAnalyzer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestStopAnalyzer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestStopFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestTeeSinkTokenFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestToken.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestTypeTokenFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestUAX29URLEmailAnalyzer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestUAX29URLEmailTokenizer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/TestWordlistLoader.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/WordBreakTestUnicode_6_0_0.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/email.addresses.from.random.text.with.email.addresses.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/generateJavaUnicodeWordBreakTest.pl" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/porterTestData.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/random.text.with.email.addresses.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/random.text.with.urls.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/tokenattributes/TestCharTermAttributeImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/tokenattributes/TestSimpleAttributeImpls.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/tokenattributes/TestTermAttributeImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/analysis/urls.from.random.text.with.urls.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/collation/TestCollationKeyAnalyzer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/collation/TestCollationKeyFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/document/TestBinaryDocument.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/document/TestDateTools.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/document/TestDocument.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/document/TestNumberTools.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/Test2BPostings.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/Test2BTerms.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestAddIndexes.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestAllZerosSegmentsFile.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestAtomicUpdate.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestBackwardsCompatibility.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestByteSlices.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestCheckIndex.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestCompoundFile.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestConcurrentMergeScheduler.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestCrash.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestCrashCausesCorruptIndex.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestDeletionPolicy.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestDirectoryReader.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestDoc.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestDocumentWriter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestFieldInfos.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestFieldsReader.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestFilterIndexReader.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestForTooMuchCloning.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestForceMergeForever.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexCommit.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexFileDeleter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexInput.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexReader.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexReaderClone.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexReaderCloneNorms.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexReaderDelete.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexReaderOnDiskFull.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexReaderReopen.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriterCommit.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriterConfig.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriterDelete.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriterExceptions.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriterForceMerge.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriterLockRelease.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriterMergePolicy.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriterMerging.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriterNRTIsCurrent.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriterOnDiskFull.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriterOnJRECrash.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriterReader.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriterUnicode.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIndexWriterWithThreads.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestIsCurrent.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestLazyBug.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestLazyProxSkipping.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestLongPostings.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestMaxTermFrequency.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestMultiLevelSkipList.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestMultiReader.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestNRTReaderWithThreads.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestNRTThreads.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestNeverDelete.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestNewestSegment.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestNoDeletionPolicy.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestNoMergePolicy.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestNoMergeScheduler.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestNorms.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestOmitPositions.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestOmitTf.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestParallelReader.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestParallelReaderEmptyIndex.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestParallelTermEnum.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestPayloadProcessorProvider.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestPayloads.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestPerSegmentDeletes.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestPersistentSnapshotDeletionPolicy.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestPositionBasedTermVectorMapper.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestPrefixCodedTerms.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestRandomStoredFields.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestReaderClosed.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestRollback.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestRollingUpdates.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestSameTokenSamePosition.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestSegmentInfo.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestSegmentMerger.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestSegmentReader.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestSegmentTermDocs.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestSegmentTermEnum.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestSizeBoundedForceMerge.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestSnapshotDeletionPolicy.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestStressAdvance.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestStressIndexing.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestStressIndexing2.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestStressNRT.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestTerm.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestTermInfosReaderIndex.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestTermVectorsReader.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestTermVectorsWriter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestTermdocPerf.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestTermsEnum.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestThreadedForceMerge.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestTieredMergePolicy.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestTransactionRollback.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestTransactions.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/TestUniqueTermCount.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.19.cfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.19.nocfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.20.cfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.20.nocfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.21.cfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.21.nocfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.22.cfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.22.nocfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.23.cfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.23.nocfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.24.cfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.24.nocfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.29.cfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.29.nocfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.30.cfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.30.nocfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.31.cfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.31.nocfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.31.optimized.cfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.31.optimized.nocfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.32.cfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/index.32.nocfs.zip" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/wordliststopwords.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/index/wordliststopwords_nocomment.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/queryParser/TestMultiAnalyzer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/queryParser/TestMultiFieldQueryParser.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/queryParser/TestQueryParser.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/BaseTestRangeFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/JustCompileSearch.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/MockFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/MultiCollectorTest.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/SingleDocTestFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestBoolean2.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestBooleanMinShouldMatch.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestBooleanOr.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestBooleanQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestBooleanQueryVisitSubscorers.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestBooleanScorer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestCachingCollector.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestCachingSpanFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestCachingWrapperFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestComplexExplanations.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestComplexExplanationsOfNonMatches.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestConstantScoreQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestCustomSearcherSort.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestDateFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestDateSort.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestDisjunctionMaxQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestDocBoost.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestDocIdSet.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestElevationComparator.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestExplanations.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestFieldCache.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestFieldCacheRangeFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestFieldCacheTermsFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestFieldValueFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestFilteredQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestFilteredSearch.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestFuzzyQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestLocaleMethods.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestMatchAllDocsQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestMultiPhraseQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestMultiSearcher.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestMultiSearcherRanking.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestMultiTermConstantScore.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestMultiThreadTermVectors.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestMultiValuedNumericRangeQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestNGramPhraseQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestNRTManager.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestNot.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestNumericRangeQuery32.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestNumericRangeQuery64.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestParallelMultiSearcher.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestPhrasePrefixQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestPhraseQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestPositionIncrement.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestPositiveScoresOnlyCollector.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestPrefixFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestPrefixInBooleanQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestPrefixQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestPrefixRandom.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestQueryTermVector.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestQueryWrapperFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestScoreCachingWrappingScorer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestScorerPerf.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestSearchAfter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestSearchWithThreads.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestSearcherManager.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestSetNorm.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestSimilarity.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestSimpleExplanations.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestSimpleExplanationsOfNonMatches.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestSimpleSearchEquivalence.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestSloppyPhraseQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestSloppyPhraseQuery2.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestSort.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestSpanQueryFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestSubScorerFreqs.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestTermRangeFilter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestTermRangeQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestTermScorer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestTermVectors.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestThreadSafe.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestTimeLimitingCollector.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestTopDocsCollector.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestTopDocsMerge.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestTopScoreDocCollector.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestWildcard.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/TestWildcardRandom.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/function/FunctionTestSetup.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/function/JustCompileSearchSpans.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/function/TestCustomScoreQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/function/TestDocValues.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/function/TestFieldScoreQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/function/TestOrdValues.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/payloads/PayloadHelper.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/payloads/TestPayloadExplanations.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/payloads/TestPayloadNearQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/payloads/TestPayloadTermQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/spans/JustCompileSearchSpans.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/spans/TestBasics.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/spans/TestFieldMaskingSpanQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/spans/TestNearSpansOrdered.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/spans/TestPayloadSpans.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/spans/TestSpanExplanations.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/spans/TestSpanExplanationsOfNonMatches.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/spans/TestSpanFirstQuery.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/spans/TestSpanMultiTermQueryWrapper.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/spans/TestSpanSearchEquivalence.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/spans/TestSpans.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/spans/TestSpansAdvanced.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/search/spans/TestSpansAdvanced2.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/store/TestBufferedIndexInput.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/store/TestByteArrayDataInput.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/store/TestCopyBytes.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/store/TestDirectory.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/store/TestFileSwitchDirectory.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/store/TestHugeRamFile.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/store/TestLock.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/store/TestLockFactory.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/store/TestMultiMMap.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/store/TestNRTCachingDirectory.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/store/TestRAMDirectory.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/store/TestWindowsMMap.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/StressRamUsageEstimator.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/Test2BPagedBytes.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestArrayUtil.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestAttributeSource.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestBitUtil.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestBitVector.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestByteBlockPool.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestBytesRef.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestBytesRefHash.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestCharacterUtils.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestCharsRef.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestCloseableThreadLocal.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestCollectionUtil.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestDoubleBarrelLRUCache.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestFieldCacheSanityChecker.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestFixedBitSet.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestIOUtils.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestIdentityHashSet.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestIndexableBinaryStringTools.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestIntsRef.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestNumericUtils.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestOpenBitSet.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestPagedBytes.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestPriorityQueue.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestRamUsageEstimator.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestRamUsageEstimatorOnWildAnimals.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestRecyclingByteBlockAllocator.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestRollingBuffer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestRollingCharBuffer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestSetOnce.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestSmallFloat.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestSortedVIntList.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestStringIntern.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestTwoPhaseCommitTool.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestVersion.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestVersionComparator.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestVirtualMethod.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/TestWeakIdentityMap.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/fst/TestFSTs.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/junitcompat/SorePoint.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/junitcompat/SoreType.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/junitcompat/TestExceptionInBeforeClassHooks.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/junitcompat/TestJUnitRuleOrder.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/junitcompat/TestReproduceMessage.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/junitcompat/TestSeedFromUncaught.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/junitcompat/TestSetupTeardownChaining.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/junitcompat/TestSystemPropertiesInvariantRule.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/junitcompat/WithNestedTests.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/makeEuroparlLineFile.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/org/trypticon/lucene3/util/packed/TestPackedInts.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/lucene3.iml" afterPath="$PROJECT_DIR$/.idea/lucene3.iml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/ASCIIFoldingFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/BaseCharFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CachingTokenFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CharArrayMap.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CharArraySet.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CharReader.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CharTokenizer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/FilteringTokenFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/ISOLatin1AccentFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/KeywordAnalyzer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/KeywordMarkerFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/KeywordTokenizer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/LengthFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/LetterTokenizer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/LimitTokenCountAnalyzer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/LimitTokenCountFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/LowerCaseFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/LowerCaseTokenizer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/MappingCharFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/NormalizeCharMap.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/PerFieldAnalyzerWrapper.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/PorterStemFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/PorterStemmer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/ReusableAnalyzerBase.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/SimpleAnalyzer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/StopAnalyzer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/StopFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/StopwordAnalyzerBase.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/TeeSinkTokenFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/TokenFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/Tokenizer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/TypeTokenFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/WhitespaceAnalyzer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/WhitespaceTokenizer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/WordlistLoader.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/ASCIITLD.jflex-macro" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/ClassicAnalyzer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/ClassicFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/ClassicTokenizer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/ClassicTokenizerImpl.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/ClassicTokenizerImpl.jflex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/READ_BEFORE_REGENERATING.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/SUPPLEMENTARY.jflex-macro" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/StandardAnalyzer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/StandardFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/StandardTokenizer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/StandardTokenizerImpl.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/StandardTokenizerImpl.jflex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/StandardTokenizerInterface.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/UAX29URLEmailAnalyzer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/UAX29URLEmailTokenizer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/UAX29URLEmailTokenizerImpl.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/UAX29URLEmailTokenizerImpl.jflex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/std31/ASCIITLD.jflex-macro" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/std31/SUPPLEMENTARY.jflex-macro" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/std31/StandardTokenizerImpl31.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/std31/StandardTokenizerImpl31.jflex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/std31/UAX29URLEmailTokenizerImpl31.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/std31/UAX29URLEmailTokenizerImpl31.jflex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/std31/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/std34/ASCIITLD.jflex-macro" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/std34/SUPPLEMENTARY.jflex-macro" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/std34/UAX29URLEmailTokenizerImpl34.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/std34/UAX29URLEmailTokenizerImpl34.jflex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/std34/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/collation/CollationKeyAnalyzer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/collation/CollationKeyFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/collation/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/SetBasedFieldSelector.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/CheckIndex.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SerialMergeScheduler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SortedTermVectorMapper.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorEntryFreqSortedComparator.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/queryParser/CharStream.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/queryParser/FastCharStream.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/queryParser/MultiFieldQueryParser.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/queryParser/ParseException.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/queryParser/QueryParser.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/queryParser/QueryParser.jj" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/queryParser/QueryParserConstants.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/queryParser/QueryParserTokenManager.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/queryParser/Token.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/queryParser/TokenMgrError.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/queryParser/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/CachingCollector.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ConstantScoreAutoRewrite.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ConstantScoreQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/DisjunctionMaxQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/DisjunctionMaxScorer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ExactPhraseScorer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldCacheTermsFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldValueFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FilterManager.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FuzzyQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FuzzyTermEnum.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/MatchAllDocsQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/MultiPhraseQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/MultiTermQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/MultiTermQueryWrapperFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/NGramPhraseQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/NRTManager.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/NRTManagerReopenThread.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/NumericRangeFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/NumericRangeQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/PhraseQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/PhraseScorer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/PrefixFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/PrefixQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/PrefixTermEnum.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/QueryTermVector.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ReferenceManager.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ScoringRewrite.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SearcherLifetimeManager.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SearcherManager.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SimilarityDelegator.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SloppyPhraseScorer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SpanQueryFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TermCollectingRewrite.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TermQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TermRangeFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TermRangeQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TimeLimitingCollector.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TopTermsRewrite.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TotalHitCountCollector.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/WildcardQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/ByteFieldSource.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/CustomScoreProvider.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/CustomScoreQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/DocValues.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/FieldCacheSource.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/FieldScoreQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/FloatFieldSource.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/IntFieldSource.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/OrdFieldSource.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/ReverseOrdFieldSource.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/ShortFieldSource.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/ValueSource.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/ValueSourceQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/payloads/AveragePayloadFunction.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/payloads/MaxPayloadFunction.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/payloads/MinPayloadFunction.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/payloads/PayloadFunction.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/payloads/PayloadNearQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/payloads/PayloadSpanUtil.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/payloads/PayloadTermQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/payloads/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/FieldMaskingSpanQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/NearSpansOrdered.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/NearSpansUnordered.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/SpanFirstQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/SpanMultiTermQueryWrapper.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/SpanNearPayloadCheckQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/SpanNearQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/SpanNotQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/SpanOrQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/SpanPayloadCheckQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/SpanPositionCheckQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/SpanPositionRangeQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/SpanQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/SpanScorer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/SpanTermQuery.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/SpanWeight.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/Spans.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/TermSpans.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/spans/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/LockStressTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/VerifyingLockFactory.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/RecyclingByteBlockAllocator.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/RollingCharBuffer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/ScorerDocQueue.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/SortedVIntList.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/TwoPhaseCommitTool.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/Builder.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/ByteSequenceOutputs.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/BytesRefFSTEnum.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/FST.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/FSTEnum.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/IntSequenceOutputs.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/IntsRefFSTEnum.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/NoOutputs.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/NodeHash.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/Outputs.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/PairOutputs.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/PositiveIntOutputs.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/TODO" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/UpToTwoPositiveIntOutputs.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/Util.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/packed/package.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/overview.html" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/lucene3-upgrader.jar" afterPath="$PROJECT_DIR$/build/lucene3-upgrader.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/AbstractField.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/AbstractField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/Analyzer.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/Analyzer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/ArrayUtil.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/ArrayUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/AttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/AttributeImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/AttributeReflector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/AttributeReflector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/AttributeSource.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/AttributeSource.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/BitVector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/BitVector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/Bits.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/Bits.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/BooleanClause.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/BooleanClause.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/BooleanQuery.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/BooleanQuery.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/BooleanScorer.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/BooleanScorer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/BooleanScorer2.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/BooleanScorer2.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/BufferedDeletes.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/BufferedDeletes.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/BufferedDeletesStream.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/BufferedDeletesStream.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/BufferedIndexInput.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/BufferedIndexInput.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/BufferedIndexOutput.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/BufferedIndexOutput.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/ByteBlockPool.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/ByteBlockPool.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/ByteBlockPool.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/ByteBlockPool.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/ByteSliceReader.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/ByteSliceReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/BytesRef.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/BytesRef.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/BytesRefHash.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/BytesRefHash.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/BytesRefIterator.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/BytesRefIterator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/CachingSpanFilter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/CachingSpanFilter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/CachingWrapperFilter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/CachingWrapperFilter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/CharBlockPool.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/CharBlockPool.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CharFilter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CharFilter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CharStream.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CharStream.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/CharTermAttribute.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/CharTermAttribute.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/CharTermAttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/CharTermAttributeImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/CharacterUtils.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/CharacterUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/CharsRef.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/CharsRef.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/ChecksumIndexOutput.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/ChecksumIndexOutput.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/CloseableThreadLocal.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/CloseableThreadLocal.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/CoalescedDeletes.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/CoalescedDeletes.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/CodecUtil.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/CodecUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/CollectionUtil.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/CollectionUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Collector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Collector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/CommandLineUtil.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/CommandLineUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ComplexExplanation.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ComplexExplanation.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/CompoundFileReader.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/CompoundFileReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/CompoundFileWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/CompoundFileWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/CompressionTools.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/CompressionTools.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/ConcurrentMergeScheduler.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/ConcurrentMergeScheduler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ConjunctionScorer.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ConjunctionScorer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/Constants.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/Constants.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/DataInput.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/DataInput.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/DataOutput.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/DataOutput.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/DateField.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/DateField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/DateTools.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/DateTools.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/DefaultSimilarity.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/DefaultSimilarity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DefaultSkipListReader.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DefaultSkipListReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DefaultSkipListWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DefaultSkipListWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/Directory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/Directory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DirectoryReader.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DirectoryReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/DisjunctionSumScorer.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/DisjunctionSumScorer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DocFieldConsumerPerField.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DocFieldConsumerPerField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DocFieldProcessor.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DocFieldProcessor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DocFieldProcessorPerThread.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DocFieldProcessorPerThread.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/DocIdBitSet.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/DocIdBitSet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/DocIdSet.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/DocIdSet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/DocIdSetIterator.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/DocIdSetIterator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DocInverter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DocInverter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DocInverterPerField.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DocInverterPerField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DocInverterPerThread.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DocInverterPerThread.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/Document.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/Document.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DocumentsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/DocumentsWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/DoubleBarrelLRUCache.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/DoubleBarrelLRUCache.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/DummyConcurrentLock.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/DummyConcurrentLock.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Explanation.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Explanation.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/FSDirectory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/FSDirectory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/FSLockFactory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/FSLockFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/Field.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/Field.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldCache.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldCache.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldCacheDocIdSet.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldCacheDocIdSet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldCacheImpl.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldCacheImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldCacheRangeFilter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldCacheRangeFilter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/FieldCacheSanityChecker.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/FieldCacheSanityChecker.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldComparator.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldComparator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldComparatorSource.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldComparatorSource.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldDoc.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldDoc.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldDocSortedHitQueue.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldDocSortedHitQueue.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FieldInfos.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FieldInfos.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FieldReaderException.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FieldReaderException.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/FieldSelector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/FieldSelector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/FieldSelectorResult.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/FieldSelectorResult.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FieldSortedTermVectorMapper.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FieldSortedTermVectorMapper.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldValueHitQueue.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FieldValueHitQueue.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/Fieldable.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/Fieldable.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FieldsReader.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FieldsReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FieldsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FieldsWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/FileSwitchDirectory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/FileSwitchDirectory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Filter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Filter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FilterIndexReader.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FilterIndexReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FilteredDocIdSet.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FilteredDocIdSet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FilteredDocIdSetIterator.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FilteredDocIdSetIterator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FilteredQuery.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FilteredQuery.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FilteredTermEnum.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FilteredTermEnum.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/FixedBitSet.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/FixedBitSet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/FlagsAttribute.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/FlagsAttribute.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/FlagsAttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/FlagsAttributeImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FormatPostingsDocsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FormatPostingsDocsWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FormatPostingsFieldsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FormatPostingsFieldsWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FormatPostingsPositionsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FormatPostingsPositionsWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FormatPostingsTermsConsumer.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FormatPostingsTermsConsumer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FreqProxFieldMergeState.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FreqProxFieldMergeState.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FreqProxTermsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FreqProxTermsWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FreqProxTermsWriterPerField.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FreqProxTermsWriterPerField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FrozenBufferedDeletes.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/FrozenBufferedDeletes.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/packed/GrowableWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/packed/GrowableWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/HitQueue.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/HitQueue.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/IOUtils.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/IOUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexCommit.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexCommit.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexDeletionPolicy.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexDeletionPolicy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexFileDeleter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexFileDeleter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexFileNameFilter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexFileNameFilter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexFileNames.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexFileNames.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/IndexInput.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/IndexInput.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/IndexOutput.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/IndexOutput.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexReader.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/IndexSearcher.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/IndexSearcher.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexUpgrader.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexUpgrader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexWriterConfig.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexWriterConfig.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/IndexableBinaryStringTools.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/IndexableBinaryStringTools.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/InputStreamDataInput.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/InputStreamDataInput.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/InvertedDocConsumer.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/InvertedDocConsumer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/InvertedDocConsumerPerField.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/InvertedDocConsumerPerField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/InvertedDocEndConsumer.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/InvertedDocEndConsumer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/KeepOnlyLastCommitDeletionPolicy.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/KeepOnlyLastCommitDeletionPolicy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/KeywordAttribute.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/KeywordAttribute.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/KeywordAttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/KeywordAttributeImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/LoadFirstFieldSelector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/LoadFirstFieldSelector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/Lock.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/Lock.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/LockFactory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/LockFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/LockObtainFailedException.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/LockObtainFailedException.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/LockReleaseFailedException.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/LockReleaseFailedException.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/LockVerifyServer.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/LockVerifyServer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/LogByteSizeMergePolicy.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/LogByteSizeMergePolicy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/LogDocMergePolicy.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/LogDocMergePolicy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/LogMergePolicy.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/LogMergePolicy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/MMapDirectory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/MMapDirectory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/MapFieldSelector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/MapFieldSelector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/MapOfSets.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/MapOfSets.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/MergePolicy.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/MergePolicy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/MergeScheduler.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/MergeScheduler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/MultiCollector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/MultiCollector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/MultiLevelSkipListReader.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/MultiLevelSkipListReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/MultiLevelSkipListWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/MultiLevelSkipListWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/MultiReader.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/MultiReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/MultiSearcher.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/MultiSearcher.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/MultipleTermPositions.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/MultipleTermPositions.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/NIOFSDirectory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/NIOFSDirectory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/NRTCachingDirectory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/NRTCachingDirectory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/NamedThreadFactory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/NamedThreadFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/NativeFSLockFactory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/NativeFSLockFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/NoDeletionPolicy.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/NoDeletionPolicy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/NoLockFactory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/NoLockFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/NoMergePolicy.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/NoMergePolicy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/NoMergeScheduler.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/NoMergeScheduler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/NormsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/NormsWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/NormsWriterPerField.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/NormsWriterPerField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/NumberTools.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/NumberTools.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/NumericField.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/NumericField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/NumericTokenStream.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/NumericTokenStream.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/NumericUtils.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/NumericUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/OffsetAttribute.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/OffsetAttribute.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/OffsetAttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/OffsetAttributeImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/OpenBitSet.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/OpenBitSet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/OpenBitSetDISI.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/OpenBitSetDISI.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/OutputStreamDataOutput.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/OutputStreamDataOutput.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/packed/Packed32.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/packed/Packed32.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/packed/Packed64.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/packed/Packed64.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/packed/PackedInts.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/packed/PackedInts.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/PagedBytes.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/PagedBytes.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ParallelMultiSearcher.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ParallelMultiSearcher.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/ParallelReader.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/ParallelReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/Payload.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/Payload.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/PayloadAttribute.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/PayloadAttribute.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/PayloadAttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/PayloadAttributeImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/PayloadProcessorProvider.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/PayloadProcessorProvider.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/PersistentSnapshotDeletionPolicy.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/PersistentSnapshotDeletionPolicy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/PhrasePositions.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/PhrasePositions.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/PositionBasedTermVectorMapper.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/PositionBasedTermVectorMapper.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/PositionIncrementAttribute.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/PositionIncrementAttribute.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/PositionIncrementAttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/PositionIncrementAttributeImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/PositionLengthAttribute.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/PositionLengthAttribute.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/PositionLengthAttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/PositionLengthAttributeImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/PositiveScoresOnlyCollector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/PositiveScoresOnlyCollector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/PrefixCodedTerms.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/PrefixCodedTerms.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/PriorityQueue.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/PriorityQueue.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Query.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Query.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/QueryWrapperFilter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/QueryWrapperFilter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/RAMDirectory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/RAMDirectory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/RAMFile.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/RAMFile.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/RAMInputStream.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/RAMInputStream.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/RAMOutputStream.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/RAMOutputStream.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/RamUsageEstimator.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/RamUsageEstimator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/ReaderUtil.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/ReaderUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ReqExclScorer.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ReqExclScorer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ReqOptSumScorer.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ReqOptSumScorer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ScoreCachingWrappingScorer.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ScoreCachingWrappingScorer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ScoreDoc.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ScoreDoc.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Scorer.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Scorer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Searchable.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Searchable.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Searcher.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Searcher.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SearcherFactory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SearcherFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentCoreReaders.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentCoreReaders.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentInfo.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentInfos.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentInfos.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentMergeInfo.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentMergeInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentMergeQueue.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentMergeQueue.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentMerger.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentMerger.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentNorms.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentNorms.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentReader.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentTermDocs.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentTermDocs.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentTermEnum.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentTermEnum.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentTermPositionVector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentTermPositionVector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentTermVector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentTermVector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentWriteState.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentWriteState.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/SetOnce.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/SetOnce.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Similarity.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Similarity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/SimpleFSDirectory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/SimpleFSDirectory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/SimpleFSLockFactory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/SimpleFSLockFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/SingleInstanceLockFactory.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/SingleInstanceLockFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SingleTermEnum.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SingleTermEnum.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/SmallFloat.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/SmallFloat.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SnapshotDeletionPolicy.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SnapshotDeletionPolicy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Sort.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Sort.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SortField.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SortField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/SorterTemplate.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/SorterTemplate.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SpanFilter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SpanFilter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SpanFilterResult.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SpanFilterResult.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/StaleReaderException.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/StaleReaderException.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/StoredFieldsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/StoredFieldsWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/StoredFieldsWriterPerThread.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/StoredFieldsWriterPerThread.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/TermAttribute.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/TermAttribute.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermBuffer.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermBuffer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermDocs.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermDocs.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermEnum.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermEnum.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermFreqVector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermFreqVector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermInfosReader.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermInfosReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermInfosReaderIndex.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermInfosReaderIndex.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermInfosWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermInfosWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermPositionVector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermPositionVector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermPositions.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermPositions.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TermRangeTermEnum.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TermRangeTermEnum.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TermScorer.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TermScorer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorMapper.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorMapper.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorOffsetInfo.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorOffsetInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorsReader.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorsReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorsTermsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorsTermsWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorsTermsWriterPerField.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorsTermsWriterPerField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermsHash.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermsHash.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermsHashConsumerPerField.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermsHashConsumerPerField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermsHashPerField.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermsHashPerField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TieredMergePolicy.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TieredMergePolicy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/ToStringUtils.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/ToStringUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/Token.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/Token.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/TokenStream.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/TokenStream.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TopDocs.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TopDocs.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TopDocsCollector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TopDocsCollector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TopFieldCollector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TopFieldCollector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TopFieldDocs.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TopFieldDocs.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TopScoreDocCollector.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/TopScoreDocCollector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/TwoPhaseCommit.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/TwoPhaseCommit.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/TypeAttribute.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/TypeAttribute.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/TypeAttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/TypeAttributeImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/UnicodeUtil.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/UnicodeUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/UpgradeIndexMergePolicy.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/UpgradeIndexMergePolicy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/VirtualMethod.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/VirtualMethod.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/WeakIdentityMap.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/WeakIdentityMap.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Weight.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Weight.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/WildcardTermEnum.java" afterPath="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/WildcardTermEnum.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -398,7 +526,6 @@
         <option value="$PROJECT_DIR$/build.xml" />
         <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/LucenePackage.java" />
         <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/ASCIIFoldingFilter.java" />
-        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/Analyzer.java" />
         <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/BaseCharFilter.java" />
         <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CachingTokenFilter.java" />
         <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CharArrayMap.java" />
@@ -407,6 +534,31 @@
         <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CharReader.java" />
         <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/_TestUtil.java" />
         <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/LuceneTestCase.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/WhitespaceAnalyzer.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/Bits.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/ArrayUtil.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/queryParser/QueryParser.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/MultiPhraseQuery.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/AbstractField.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/Fieldable.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Query.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/Analyzer.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/function/CustomScoreQuery.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/StopFilter.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/ClassicTokenizer.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/UAX29URLEmailTokenizer.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/StandardTokenizer.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/SmallFloat.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/LockStressTest.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/LockFactory.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/LockVerifyServer.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/VerifyingLockFactory.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/NumericTokenStream.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/Token.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/standard/StandardFilter.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/ToStringUtils.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/SimpleFSLockFactory.java" />
+        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/IndexSearcher.java" />
       </list>
     </option>
   </component>
@@ -421,8 +573,8 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="123" />
-    <option name="y" value="48" />
+    <option name="x" value="242" />
+    <option name="y" value="109" />
     <option name="width" value="1821" />
     <option name="height" value="1194" />
   </component>
@@ -486,24 +638,6 @@
               <option name="myItemId" value="java" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lucene3" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lucene3-upgrader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="lucene3" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
@@ -531,7 +665,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="util" />
+              <option name="myItemId" value="search" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -549,9 +683,9 @@
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -725,33 +859,39 @@
       <option name="project" value="LOCAL" />
       <updated>1431066105652</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Kill off tests too. It looks like IndexUpgrader itself is not actually tested anyway.">
+      <created>1431066512800</created>
+      <option name="number" value="00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1431066512800</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="123" y="48" width="1821" height="1194" extended-state="0" />
+    <frame x="242" y="109" width="1821" height="1194" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32931355" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899627" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32992566" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32992566" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24957842" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39962825" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout>
   </component>
@@ -760,7 +900,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Renaming packages so they don't clash with Lucene proper." />
-    <option name="LAST_COMMIT_MESSAGE" value="Renaming packages so they don't clash with Lucene proper." />
+    <MESSAGE value="Kill off tests too. It looks like IndexUpgrader itself is not actually tested anyway." />
+    <option name="LAST_COMMIT_MESSAGE" value="Kill off tests too. It looks like IndexUpgrader itself is not actually tested anyway." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -771,164 +912,413 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/TODO">
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/Token.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="116" column="13" selection-start-line="116" selection-start-column="13" selection-end-line="116" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build.xml">
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorsTermsWriterPerField.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="27" column="12" selection-start-line="27" selection-start-column="12" selection-end-line="27" selection-end-column="12" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/LICENSE.txt">
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TieredMergePolicy.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="67" column="13" selection-start-line="67" selection-start-column="13" selection-end-line="67" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorsReader.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <caret line="29" column="6" selection-start-line="29" selection-start-column="6" selection-end-line="29" selection-end-column="6" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/fst/TODO">
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorOffsetInfo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="34" column="9" selection-start-line="34" selection-start-column="9" selection-end-line="34" selection-end-column="9" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/LICENSE.txt">
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermVectorEntry.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermsHashPerField.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <caret line="28" column="12" selection-start-line="28" selection-start-column="12" selection-end-line="28" selection-end-column="12" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build.xml">
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermPositions.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.8">
-          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="30" column="17" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/ASCIIFoldingFilter.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermInfosWriter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.96">
-          <caret line="23" column="7" selection-start-line="23" selection-start-column="7" selection-end-line="23" selection-end-column="7" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="33" column="12" selection-start-line="33" selection-start-column="12" selection-end-line="33" selection-end-column="12" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/Analyzer.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermInfosReaderIndex.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.96">
-          <caret line="27" column="7" selection-start-line="27" selection-start-column="7" selection-end-line="27" selection-end-column="7" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="38" column="6" selection-start-line="38" selection-start-column="6" selection-end-line="38" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermInfosReader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="31" column="12" selection-start-line="31" selection-start-column="12" selection-end-line="31" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="6" selection-start-line="21" selection-start-column="6" selection-end-line="21" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/TermFreqVector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="24" column="17" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/TermAttributeImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/tokenattributes/TermAttribute.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="26" column="17" selection-start-line="26" selection-start-column="17" selection-end-line="26" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/Term.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="29" column="19" selection-start-line="29" selection-start-column="19" selection-end-line="29" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/StringInterner.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SpanFilterResult.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="27" column="13" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SortField.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="34" column="13" selection-start-line="34" selection-start-column="13" selection-end-line="34" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SnapshotDeletionPolicy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.32045087">
+          <caret line="45" column="13" selection-start-line="45" selection-start-column="13" selection-end-line="45" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Sort.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="99" column="13" selection-start-line="99" selection-start-column="13" selection-end-line="99" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/SingleInstanceLockFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="33" column="13" selection-start-line="33" selection-start-column="13" selection-end-line="33" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/SimpleFSLockFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/SimpleFSDirectory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="30" column="13" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Similarity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="529" column="22" selection-start-line="529" selection-start-column="22" selection-end-line="529" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/SetOnce.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.32045087">
+          <caret line="30" column="19" selection-start-line="30" selection-start-column="19" selection-end-line="30" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentWriteState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentTermEnum.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="22" column="12" selection-start-line="22" selection-start-column="12" selection-end-line="22" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentReader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="40" column="13" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentNorms.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="34" column="12" selection-start-line="34" selection-start-column="12" selection-end-line="34" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentInfos.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="34" column="19" selection-start-line="34" selection-start-column="19" selection-end-line="34" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SearcherFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="45" column="13" selection-start-line="45" selection-start-column="13" selection-end-line="45" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Searcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="38" column="22" selection-start-line="38" selection-start-column="22" selection-end-line="38" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/SegmentInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="40" column="19" selection-start-line="40" selection-start-column="19" selection-end-line="40" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Scorer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="41" column="22" selection-start-line="41" selection-start-column="22" selection-end-line="41" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/ReaderUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="34" column="19" selection-start-line="34" selection-start-column="19" selection-end-line="34" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/RamUsageEstimator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="46" column="19" selection-start-line="46" selection-start-column="19" selection-end-line="46" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/RAMOutputStream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/RAMInputStream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/RAMFile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/RAMDirectory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="49" column="13" selection-start-line="49" selection-start-column="13" selection-end-line="49" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/PhraseQueue.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3543759">
+          <caret line="21" column="12" selection-start-line="21" selection-start-column="12" selection-end-line="21" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/ScoreCachingWrappingScorer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3328551">
+          <caret line="32" column="13" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/BooleanQuery.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3328551">
+          <caret line="34" column="19" selection-start-line="34" selection-start-column="19" selection-end-line="34" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Query.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="46" column="22" selection-start-line="46" selection-start-column="22" selection-end-line="46" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/FilteredQuery.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="39" column="21" selection-start-line="39" selection-start-column="21" selection-end-line="39" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/BufferedDeletesStream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="374" column="44" selection-start-line="374" selection-start-column="44" selection-end-line="374" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/QueryWrapperFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.37643677">
+          <caret line="45" column="35" selection-start-line="45" selection-start-column="35" selection-end-line="45" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/IndexSearcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="476" column="73" selection-start-line="476" selection-start-column="73" selection-end-line="476" selection-end-column="73" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/document/NumericField.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/NumericTokenStream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.24568966">
+          <caret line="220" column="4" selection-start-line="220" selection-start-column="4" selection-end-line="220" selection-end-column="4" />
           <folding>
-            <element signature="e#3372#3380#0" expanded="false" />
+            <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/BaseCharFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.4">
-          <caret line="19" column="7" selection-start-line="19" selection-start-column="7" selection-end-line="19" selection-end-column="7" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CachingTokenFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.96">
-          <caret line="24" column="7" selection-start-line="24" selection-start-column="7" selection-end-line="24" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CharArrayMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.64">
-          <caret line="27" column="7" selection-start-line="27" selection-start-column="7" selection-end-line="27" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CharArraySet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="8" selection-start-line="0" selection-start-column="8" selection-end-line="0" selection-end-column="8" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#2505#2513#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CharFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.2">
-          <caret line="17" column="8" selection-start-line="17" selection-start-column="8" selection-end-line="17" selection-end-column="8" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/analysis/CharReader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4694486">
-          <caret line="37" column="23" selection-start-line="37" selection-start-column="23" selection-end-line="37" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/LucenePackage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.30172414">
-          <caret line="14" column="18" selection-start-line="14" selection-start-column="18" selection-end-line="14" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexUpgrader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6135057">
-          <caret line="149" column="40" selection-start-line="149" selection-start-column="40" selection-end-line="149" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/UpgradeIndexMergePolicy.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.8232758">
-          <caret line="137" column="11" selection-start-line="137" selection-start-column="11" selection-end-line="137" selection-end-column="11" />
-          <folding />
         </state>
       </provider>
     </entry>

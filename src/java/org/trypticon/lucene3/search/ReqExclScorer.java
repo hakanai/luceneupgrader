@@ -23,7 +23,7 @@ import java.io.IOException;
 /** A Scorer for queries with a required subscorer
  * and an excluding (prohibited) sub DocIdSetIterator.
  * <br>
- * This <code>Scorer</code> implements {@link Scorer#skipTo(int)},
+ * This <code>Scorer</code> implements {@code Scorer#skipTo(int)},
  * and it uses the skipTo() on the given scorers.
  */
 class ReqExclScorer extends Scorer {
@@ -95,7 +95,7 @@ class ReqExclScorer extends Scorer {
   }
 
   /** Returns the score of the current document matching the query.
-   * Initially invalid, until {@link #nextDoc()} is called the first time.
+   * Initially invalid, until {@code #nextDoc()} is called the first time.
    * @return The score of the required scorer.
    */
   @Override

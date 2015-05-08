@@ -17,10 +17,10 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.store.Directory;
 import org.trypticon.lucene3.util.IOUtils;
+
+import java.io.IOException;
 
 final class FormatPostingsFieldsWriter extends FormatPostingsFieldsConsumer {
 

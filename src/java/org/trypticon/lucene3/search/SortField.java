@@ -17,11 +17,11 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.util.StringHelper;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Locale;
-
-import org.trypticon.lucene3.util.StringHelper;
 
 /**
  * Stores information about how to sort documents by terms in an individual
@@ -30,7 +30,7 @@ import org.trypticon.lucene3.util.StringHelper;
  * <p>Created: Feb 11, 2004 1:25:29 PM
  *
  * @since   lucene 1.4
- * @see Sort
+ *
  */
 public class SortField
 implements Serializable {
@@ -79,7 +79,7 @@ implements Serializable {
   
   /** Sort using term values as Strings, but comparing by
    * value (using String.compareTo) for all comparisons.
-   * This is typically slower than {@link #STRING}, which
+   * This is typically slower than {@code #STRING}, which
    * uses ordinals to do the sorting. */
   public static final int STRING_VAL = 11;
   
@@ -127,11 +127,11 @@ implements Serializable {
   }
 
   /** Creates a sort by terms in the given field, parsed
-   * to numeric values using a custom {@link FieldCache.Parser}.
+   * to numeric values using a custom {@code FieldCache.Parser}.
    * @param field  Name of field to sort by.  Must not be null.
-   * @param parser Instance of a {@link FieldCache.Parser},
+   * @param parser Instance of a {@code FieldCache.Parser},
    *  which must subclass one of the existing numeric
-   *  parsers from {@link FieldCache}. Sort type is inferred
+   *  parsers from {@code FieldCache}. Sort type is inferred
    *  by testing which numeric parser the parser subclasses.
    * @throws IllegalArgumentException if the parser fails to
    *  subclass an existing numeric parser, or field is null
@@ -141,11 +141,11 @@ implements Serializable {
   }
 
   /** Creates a sort, possibly in reverse, by terms in the given field, parsed
-   * to numeric values using a custom {@link FieldCache.Parser}.
+   * to numeric values using a custom {@code FieldCache.Parser}.
    * @param field  Name of field to sort by.  Must not be null.
-   * @param parser Instance of a {@link FieldCache.Parser},
+   * @param parser Instance of a {@code FieldCache.Parser},
    *  which must subclass one of the existing numeric
-   *  parsers from {@link FieldCache}. Sort type is inferred
+   *  parsers from {@code FieldCache}. Sort type is inferred
    *  by testing which numeric parser the parser subclasses.
    * @param reverse True if natural order should be reversed.
    * @throws IllegalArgumentException if the parser fails to
@@ -251,9 +251,9 @@ implements Serializable {
     return locale;
   }
 
-  /** Returns the instance of a {@link FieldCache} parser that fits to the given sort type.
+  /** Returns the instance of a {@code FieldCache} parser that fits to the given sort type.
    * May return <code>null</code> if no parser was specified. Sorting is using the default parser then.
-   * @return An instance of a {@link FieldCache} parser, or <code>null</code>.
+   * @return An instance of a {@code FieldCache} parser, or <code>null</code>.
    */
   public FieldCache.Parser getParser() {
     return parser;
@@ -266,7 +266,7 @@ implements Serializable {
     return reverse;
   }
 
-  /** Returns the {@link FieldComparatorSource} used for
+  /** Returns the {@code FieldComparatorSource} used for
    * custom sorting
    */
   public FieldComparatorSource getComparatorSource() {
@@ -334,7 +334,7 @@ implements Serializable {
   }
 
   /** Returns true if <code>o</code> is equal to this.  If a
-   *  {@link FieldComparatorSource} or {@link
+   *  {@code FieldComparatorSource} or {@code
    *  FieldCache.Parser} was provided, it must properly
    *  implement equals (unless a singleton is always used). */
   @Override
@@ -353,7 +353,7 @@ implements Serializable {
   }
 
   /** Returns true if <code>o</code> is equal to this.  If a
-   *  {@link FieldComparatorSource} or {@link
+   *  {@code FieldComparatorSource} or {@code
    *  FieldCache.Parser} was provided, it must properly
    *  implement hashCode (unless a singleton is always
    *  used). */
@@ -374,17 +374,17 @@ implements Serializable {
       field = StringHelper.intern(field);
   }
 
-  /** Returns the {@link FieldComparator} to use for
+  /** Returns the {@code FieldComparator} to use for
    * sorting.
    *
    * @lucene.experimental
    *
    * @param numHits number of top hits the queue will store
-   * @param sortPos position of this SortField within {@link
+   * @param sortPos position of this SortField within {@code
    *   Sort}.  The comparator is primary if sortPos==0,
    *   secondary if sortPos==1, etc.  Some comparators can
    *   optimize themselves when they are the primary sort.
-   * @return {@link FieldComparator} to use when sorting
+   * @return {@code FieldComparator} to use when sorting
    */
   public FieldComparator<?> getComparator(final int numHits, final int sortPos) throws IOException {
 

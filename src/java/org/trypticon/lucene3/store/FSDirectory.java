@@ -17,22 +17,16 @@ package org.trypticon.lucene3.store;
  * limitations under the License.
  */
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import org.trypticon.lucene3.util.Constants;
+import org.trypticon.lucene3.util.ThreadInterruptedException;
 
+import java.io.*;
 import java.util.Collection;
-import static java.util.Collections.synchronizedSet;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Future;
 
-import org.trypticon.lucene3.util.ThreadInterruptedException;
-import org.trypticon.lucene3.util.Constants;
+import static java.util.Collections.synchronizedSet;
 
 /**
  * <a name="subclasses"/>
@@ -42,28 +36,28 @@ import org.trypticon.lucene3.util.Constants;
  *
  * <ul>
  *
- *  <li> {@link SimpleFSDirectory} is a straightforward
+ *  <li> {@code SimpleFSDirectory} is a straightforward
  *       implementation using java.io.RandomAccessFile.
  *       However, it has poor concurrent performance
  *       (multiple threads will bottleneck) as it
  *       synchronizes when multiple threads read from the
  *       same file.
  *
- *  <li> {@link NIOFSDirectory} uses java.nio's
+ *  <li> {@code NIOFSDirectory} uses java.nio's
  *       FileChannel's positional io when reading to avoid
  *       synchronization when reading from the same file.
  *       Unfortunately, due to a Windows-only <a
  *       href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6265734">Sun
  *       JRE bug</a> this is a poor choice for Windows, but
  *       on all other platforms this is the preferred
- *       choice. Applications using {@link Thread#interrupt()} or
- *       {@link Future#cancel(boolean)} should use
- *       {@link SimpleFSDirectory} instead. See {@link NIOFSDirectory} java doc
+ *       choice. Applications using {@code Thread#interrupt()} or
+ *       {@code Future#cancel(boolean)} should use
+ *       {@code SimpleFSDirectory} instead. See {@code NIOFSDirectory} java doc
  *       for details.
  *        
  *        
  *
- *  <li> {@link MMapDirectory} uses memory-mapped IO when
+ *  <li> {@code MMapDirectory} uses memory-mapped IO when
  *       reading. This is a good choice if you have plenty
  *       of virtual memory relative to your index size, eg
  *       if you are running on a 64 bit JRE, or you are
@@ -73,7 +67,7 @@ import org.trypticon.lucene3.util.Constants;
  *       unmap files from user code. The files are unmapped, when GC
  *       releases the byte buffers. Due to
  *       <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4724038">
- *       this bug</a> in Sun's JRE, MMapDirectory's {@link IndexInput#close}
+ *       this bug</a> in Sun's JRE, MMapDirectory's {@code IndexInput#close}
  *       is unable to close the underlying OS file handle. Only when
  *       GC finally collects the underlying objects, which could be
  *       quite some time later, will the file handle be closed.
@@ -88,27 +82,27 @@ import org.trypticon.lucene3.util.Constants;
  *       (possibly dangerous) workaround mentioned in the bug report,
  *       which may fail on non-Sun JVMs.
  *       
- *       Applications using {@link Thread#interrupt()} or
- *       {@link Future#cancel(boolean)} should use
- *       {@link SimpleFSDirectory} instead. See {@link MMapDirectory}
+ *       Applications using {@code Thread#interrupt()} or
+ *       {@code Future#cancel(boolean)} should use
+ *       {@code SimpleFSDirectory} instead. See {@code MMapDirectory}
  *       java doc for details.
  * </ul>
  *
  * Unfortunately, because of system peculiarities, there is
  * no single overall best implementation.  Therefore, we've
- * added the {@link #open} method, to allow Lucene to choose
+ * added the {@code #open} method, to allow Lucene to choose
  * the best FSDirectory implementation given your
  * environment, and the known limitations of each
  * implementation.  For users who have no reason to prefer a
- * specific implementation, it's best to simply use {@link
+ * specific implementation, it's best to simply use {@code
  * #open}.  For all others, you should instantiate the
  * desired implementation directly.
  *
- * <p>The locking implementation is by default {@link
+ * <p>The locking implementation is by default {@code
  * NativeFSLockFactory}, but can be changed by
- * passing in a custom {@link LockFactory} instance.
+ * passing in a custom {@code LockFactory} instance.
  *
- * @see Directory
+ *
  */
 public abstract class FSDirectory extends Directory {
 
@@ -116,7 +110,7 @@ public abstract class FSDirectory extends Directory {
    * Default read chunk size.  This is a conditional default: on 32bit JVMs, it defaults to 100 MB.  On 64bit JVMs, it's
    * <code>Integer.MAX_VALUE</code>.
    *
-   * @see #setReadChunkSize
+   *
    */
   public static final int DEFAULT_READ_CHUNK_SIZE = Constants.JRE_IS_64BIT ? Integer.MAX_VALUE : 100 * 1024 * 1024;
 
@@ -132,7 +126,7 @@ public abstract class FSDirectory extends Directory {
   /** Create a new FSDirectory for the named location (ctor for subclasses).
    * @param path the path of the directory
    * @param lockFactory the lock factory to use, or null for the default
-   * ({@link NativeFSLockFactory});
+   * ({@code NativeFSLockFactory});
    * @throws IOException
    */
   protected FSDirectory(File path, LockFactory lockFactory) throws IOException {
@@ -150,11 +144,11 @@ public abstract class FSDirectory extends Directory {
 
   /** Creates an FSDirectory instance, trying to pick the
    *  best implementation given the current environment.
-   *  The directory returned uses the {@link NativeFSLockFactory}.
+   *  The directory returned uses the {@code NativeFSLockFactory}.
    *
-   *  <p>Currently this returns {@link MMapDirectory} for most Solaris
-   *  and Windows 64-bit JREs, {@link NIOFSDirectory} for other
-   *  non-Windows JREs, and {@link SimpleFSDirectory} for other
+   *  <p>Currently this returns {@code MMapDirectory} for most Solaris
+   *  and Windows 64-bit JREs, {@code NIOFSDirectory} for other
+   *  non-Windows JREs, and {@code SimpleFSDirectory} for other
    *  JREs on Windows. It is highly recommended that you consult the
    *  implementation's documentation for your platform before
    *  using this method.
@@ -165,15 +159,15 @@ public abstract class FSDirectory extends Directory {
    * possible; if the precise implementation is important to
    * your application, please instantiate it directly,
    * instead. For optimal performance you should consider using
-   * {@link MMapDirectory} on 64 bit JVMs.
+   * {@code MMapDirectory} on 64 bit JVMs.
    *
    * <p>See <a href="#subclasses">above</a> */
   public static FSDirectory open(File path) throws IOException {
     return open(path, null);
   }
 
-  /** Just like {@link #open(File)}, but allows you to
-   *  also specify a custom {@link LockFactory}. */
+  /** Just like {@code #open(File)}, but allows you to
+   *  also specify a custom {@code LockFactory}. */
   public static FSDirectory open(File path, LockFactory lockFactory) throws IOException {
     if ((Constants.WINDOWS || Constants.SUN_OS || Constants.LINUX)
           && Constants.JRE_IS_64BIT && MMapDirectory.UNMAP_SUPPORTED) {
@@ -207,7 +201,7 @@ public abstract class FSDirectory extends Directory {
   
   /** Lists all files (not subdirectories) in the
    *  directory.  This method never returns null (throws
-   *  {@link IOException} instead).
+   *  {@code IOException} instead).
    *
    *  @throws NoSuchDirectoryException if the directory
    *   does not exist, or does exist but is not a
@@ -234,7 +228,7 @@ public abstract class FSDirectory extends Directory {
 
   /** Lists all files (not subdirectories) in the
    * directory.
-   * @see #listAll(File) */
+   * */
   @Override
   public String[] listAll() throws IOException {
     ensureOpen();
@@ -369,7 +363,7 @@ public abstract class FSDirectory extends Directory {
     isOpen = false;
   }
 
-  /** @deprecated Use {@link #getDirectory} instead. */
+  /** @deprecated Use {@code #getDirectory} instead. */
   @Deprecated
   public File getFile() {
     return getDirectory();
@@ -389,8 +383,8 @@ public abstract class FSDirectory extends Directory {
 
   /**
    * Sets the maximum number of bytes read at once from the
-   * underlying file during {@link IndexInput#readBytes}.
-   * The default value is {@link #DEFAULT_READ_CHUNK_SIZE};
+   * underlying file during {@code IndexInput#readBytes}.
+   * The default value is {@code #DEFAULT_READ_CHUNK_SIZE};
    *
    * <p> This was introduced due to <a
    * href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6478546">Sun
@@ -400,7 +394,7 @@ public abstract class FSDirectory extends Directory {
    * maximum heap size.</p>
    *
    * <p>Changes to this value will not impact any
-   * already-opened {@link IndexInput}s.  You should call
+   * already-opened {@code IndexInput}s.  You should call
    * this before attempting to open an index on the
    * directory.</p>
    *
@@ -421,8 +415,8 @@ public abstract class FSDirectory extends Directory {
 
   /**
    * The maximum number of bytes to read at once from the
-   * underlying file during {@link IndexInput#readBytes}.
-   * @see #setReadChunkSize
+   * underlying file during {@code IndexInput#readBytes}.
+   *
    */
   public final int getReadChunkSize() {
     // LUCENE-1566

@@ -17,19 +17,19 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.Arrays;
-
 import org.trypticon.lucene3.store.BufferedIndexInput;
 import org.trypticon.lucene3.store.IndexInput;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * This abstract class reads skip lists with multiple levels.
  * 
- * See {@link MultiLevelSkipListWriter} for the information about the encoding 
+ * See {@code MultiLevelSkipListWriter} for the information about the encoding
  * of the multi level skip lists. 
  * 
- * Subclasses must implement the abstract method {@link #readSkipData(int, IndexInput)}
+ * Subclasses must implement the abstract method {@code #readSkipData(int, IndexInput)}
  * which defines the actual format of the skip data.
  */
 abstract class MultiLevelSkipListReader {
@@ -81,7 +81,7 @@ abstract class MultiLevelSkipListReader {
   }
 
   
-  /** Returns the id of the doc to which the last call of {@link #skipTo(int)}
+  /** Returns the id of the doc to which the last call of {@code #skipTo(int)}
    *  has skipped.  */
   int getDoc() {
     return lastDoc;

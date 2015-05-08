@@ -17,11 +17,11 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.trypticon.lucene3.store.IndexInput;
 import org.trypticon.lucene3.store.IndexOutput;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Byte[] referencing is used because a new norm object needs 

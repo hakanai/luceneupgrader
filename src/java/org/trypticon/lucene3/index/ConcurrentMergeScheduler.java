@@ -18,27 +18,27 @@ package org.trypticon.lucene3.index;
  */
 
 import org.trypticon.lucene3.store.Directory;
-import org.trypticon.lucene3.util.ThreadInterruptedException;
 import org.trypticon.lucene3.util.CollectionUtil;
+import org.trypticon.lucene3.util.ThreadInterruptedException;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
-/** A {@link MergeScheduler} that runs each merge using a
+/** A {@code MergeScheduler} that runs each merge using a
  *  separate thread.
  *
  *  <p>Specify the max number of threads that may run at
- *  once with {@link #setMaxThreadCount}.</p>
+ *  once with {@code #setMaxThreadCount}.</p>
  *
  *  <p>Separately specify the maximum number of simultaneous
- *  merges with {@link #setMaxMergeCount}.  If the number of
+ *  merges with {@code #setMaxMergeCount}.  If the number of
  *  merges exceeds the max number of threads then the
  *  largest merges are paused until one of the smaller
  *  merges completes.</p>
  *
- *  <p>If more than {@link #getMaxMergeCount} merges are
+ *  <p>If more than {@code #getMaxMergeCount} merges are
  *  requested then this class will forcefully throttle the
  *  incoming threads by pausing until one more more merges
  *  complete.</p>
@@ -77,7 +77,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
   }
 
   /** Sets the max # simultaneous merge threads that should
-   *  be running at once.  This must be <= {@link
+   *  be running at once.  This must be <= {@code
    *  #setMaxMergeCount}. */
   public void setMaxThreadCount(int count) {
     if (count < 1) {
@@ -89,7 +89,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     maxThreadCount = count;
   }
 
-  /** @see #setMaxThreadCount(int) */
+  /** */
   public int getMaxThreadCount() {
     return maxThreadCount;
   }
@@ -99,7 +99,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
    *  threads running, the incoming thread (that is calling
    *  add/updateDocument) will block until a merge thread
    *  has completed.  Note that we will only run the
-   *  smallest {@link #setMaxThreadCount} merges at a time. */
+   *  smallest {@code #setMaxThreadCount} merges at a time. */
   public void setMaxMergeCount(int count) {
     if (count < 1) {
       throw new IllegalArgumentException("count should be at least 1");
@@ -110,7 +110,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     maxMergeCount = count;
   }
 
-  /** See {@link #setMaxMergeCount}. */
+  /** See {@code #setMaxMergeCount}. */
   public int getMaxMergeCount() {
     return maxMergeCount;
   }
@@ -216,7 +216,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
 
   /**
    * Returns true if verbosing is enabled. This method is usually used in
-   * conjunction with {@link #message(String)}, like that:
+   * conjunction with {@code #message(String)}, like that:
    * 
    * <pre>
    * if (verbose()) {
@@ -229,7 +229,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
   }
   
   /**
-   * Outputs the given message - this method assumes {@link #verbose()} was
+   * Outputs the given message - this method assumes {@code #verbose()} was
    * called and returned true.
    */
   protected void message(String message) {
@@ -278,7 +278,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
 
   /**
    * Returns the number of merge threads that are alive. Note that this number
-   * is &le; {@link #mergeThreads} size.
+   * is &le; {@code #mergeThreads} size.
    */
   protected synchronized int mergeThreadCount() {
     int count = 0;
@@ -383,7 +383,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /** Does the actual merge, by calling {@link IndexWriter#merge} */
+  /** Does the actual merge, by calling {@code IndexWriter#merge} */
   protected void doMerge(MergePolicy.OneMerge merge) throws IOException {
     writer.merge(merge);
   }

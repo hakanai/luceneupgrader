@@ -50,7 +50,7 @@ public class ComplexExplanation extends Explanation {
    * If the match status is explicitly set (i.e.: not null) this method
    * uses it; otherwise it defers to the superclass.
    * </p>
-   * @see #getMatch
+   *
    */
   @Override
   public boolean isMatch() {

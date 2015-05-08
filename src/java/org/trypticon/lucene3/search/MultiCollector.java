@@ -17,29 +17,27 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.index.IndexReader;
+
 import java.io.IOException;
 
-import org.trypticon.lucene3.index.IndexReader;
-import org.trypticon.lucene3.search.Collector;
-import org.trypticon.lucene3.search.Scorer;
-
 /**
- * A {@link Collector} which allows running a search with several
- * {@link Collector}s. It offers a static {@link #wrap} method which accepts a
- * list of collectors and wraps them with {@link MultiCollector}, while
+ * A {@code Collector} which allows running a search with several
+ * {@code Collector}s. It offers a static {@code #wrap} method which accepts a
+ * list of collectors and wraps them with {@code MultiCollector}, while
  * filtering out the <code>null</code> null ones.
  */
 public class MultiCollector extends Collector {
 
   /**
-   * Wraps a list of {@link Collector}s with a {@link MultiCollector}. This
+   * Wraps a list of {@code Collector}s with a {@code MultiCollector}. This
    * method works as follows:
    * <ul>
    * <li>Filters out the <code>null</code> collectors, so they are not used
    * during search time.
    * <li>If the input contains 1 real collector (i.e. non-<code>null</code> ),
    * it is returned.
-   * <li>Otherwise the method returns a {@link MultiCollector} which wraps the
+   * <li>Otherwise the method returns a {@code MultiCollector} which wraps the
    * non-<code>null</code> ones.
    * </ul>
    * 

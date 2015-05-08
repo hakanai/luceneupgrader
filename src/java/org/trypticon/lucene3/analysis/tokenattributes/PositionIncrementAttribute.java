@@ -43,17 +43,17 @@ import org.trypticon.lucene3.util.Attribute;
  *
  * </ul>
  * 
- * @see org.trypticon.lucene3.index.TermPositions
+ *
  */
 public interface PositionIncrementAttribute extends Attribute {
   /** Set the position increment. The default value is one.
    *
    * @param positionIncrement the distance from the prior term
    */
-  public void setPositionIncrement(int positionIncrement);
+  void setPositionIncrement(int positionIncrement);
 
   /** Returns the position increment of this Token.
-   * @see #setPositionIncrement
+   *
    */
-  public int getPositionIncrement();
+  int getPositionIncrement();
 }

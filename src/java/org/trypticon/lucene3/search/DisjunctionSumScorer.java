@@ -17,11 +17,11 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.util.List;
 import java.io.IOException;
+import java.util.List;
 
 /** A Scorer for OR like queries, counterpart of <code>ConjunctionScorer</code>.
- * This Scorer implements {@link Scorer#skipTo(int)} and uses skipTo() on the given Scorers. 
+ * This Scorer implements {@code Scorer#skipTo(int)} and uses skipTo() on the given Scorers.
  */
 class DisjunctionSumScorer extends DisjunctionScorer { 
   /** The minimum number of scorers that should match. */
@@ -117,7 +117,7 @@ class DisjunctionSumScorer extends DisjunctionScorer {
   }
   
   /** Returns the score of the current document matching the query.
-   * Initially invalid, until {@link #nextDoc()} is called the first time.
+   * Initially invalid, until {@code #nextDoc()} is called the first time.
    */
   @Override
   public float score() throws IOException { 

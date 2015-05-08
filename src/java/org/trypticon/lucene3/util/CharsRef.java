@@ -21,8 +21,8 @@ import java.util.Comparator;
 
 /**
  * Represents char[], as a slice (offset + length) into an existing char[].
- * The {@link #chars} member should never be null; use
- * {@link #EMPTY_CHARS} if necessary.
+ * The {@code #chars} member should never be null; use
+ * {@code #EMPTY_CHARS} if necessary.
  * @lucene.internal
  */
 public final class CharsRef implements Comparable<CharsRef>, CharSequence, Cloneable {
@@ -32,14 +32,14 @@ public final class CharsRef implements Comparable<CharsRef>, CharSequence, Clone
   public int length;
 
   /**
-   * Creates a new {@link CharsRef} initialized an empty array zero-length
+   * Creates a new {@code CharsRef} initialized an empty array zero-length
    */
   public CharsRef() {
     this(EMPTY_CHARS, 0, 0);
   }
 
   /**
-   * Creates a new {@link CharsRef} initialized with an array of the given
+   * Creates a new {@code CharsRef} initialized with an array of the given
    * capacity
    */
   public CharsRef(int capacity) {
@@ -47,7 +47,7 @@ public final class CharsRef implements Comparable<CharsRef>, CharSequence, Clone
   }
 
   /**
-   * Creates a new {@link CharsRef} initialized with the given array, offset and
+   * Creates a new {@code CharsRef} initialized with the given array, offset and
    * length
    */
   public CharsRef(char[] chars, int offset, int length) {
@@ -61,7 +61,7 @@ public final class CharsRef implements Comparable<CharsRef>, CharSequence, Clone
   }
 
   /**
-   * Creates a new {@link CharsRef} initialized with the given Strings character
+   * Creates a new {@code CharsRef} initialized with the given Strings character
    * array
    */
   public CharsRef(String string) {
@@ -140,10 +140,10 @@ public final class CharsRef implements Comparable<CharsRef>, CharSequence, Clone
   }
   
   /**
-   * Copies the given {@link CharsRef} referenced content into this instance.
+   * Copies the given {@code CharsRef} referenced content into this instance.
    * 
    * @param other
-   *          the {@link CharsRef} to copy
+   *          the {@code CharsRef} to copy
    */
   public void copyChars(CharsRef other) {
     copyChars(other.chars, other.offset, other.length);

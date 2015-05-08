@@ -17,10 +17,10 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
-import java.util.BitSet;
-
 import org.trypticon.lucene3.search.DocIdSet;
 import org.trypticon.lucene3.search.DocIdSetIterator;
+
+import java.util.BitSet;
 
 
 /** Simple DocIdSet and DocIdSetIterator backed by a BitSet */

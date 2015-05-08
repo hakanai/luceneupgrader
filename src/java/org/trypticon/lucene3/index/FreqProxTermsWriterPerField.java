@@ -17,12 +17,12 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.analysis.tokenattributes.PayloadAttribute;
 import org.trypticon.lucene3.document.Fieldable;
 import org.trypticon.lucene3.index.FieldInfo.IndexOptions;
 import org.trypticon.lucene3.util.RamUsageEstimator;
+
+import java.io.IOException;
 
 // TODO: break into separate freq and prox writers as
 // codecs; make separate container (tii/tis/skip/*) that can

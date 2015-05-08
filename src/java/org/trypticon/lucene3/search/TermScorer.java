@@ -17,9 +17,9 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.index.TermDocs;
+
+import java.io.IOException;
 
 /** Expert: A <code>Scorer</code> for documents matching a <code>Term</code>.
  */
@@ -101,7 +101,7 @@ final class TermScorer extends Scorer {
   /**
    * Advances to the next document matching the query. <br>
    * The iterator over the matching documents is buffered using
-   * {@link TermDocs#read(int[],int[])}.
+   * {@code TermDocs#read(int[],int[])}.
    * 
    * @return the document matching the query or NO_MORE_DOCS if there are no more documents.
    */
@@ -136,7 +136,7 @@ final class TermScorer extends Scorer {
   /**
    * Advances to the first match beyond the current whose document number is
    * greater than or equal to a given target. <br>
-   * The implementation uses {@link TermDocs#skipTo(int)}.
+   * The implementation uses {@code TermDocs#skipTo(int)}.
    * 
    * @param target
    *          The target document number.

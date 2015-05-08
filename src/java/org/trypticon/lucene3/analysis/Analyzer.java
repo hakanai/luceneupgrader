@@ -17,15 +17,14 @@ package org.trypticon.lucene3.analysis;
  * limitations under the License.
  */
 
-import java.io.Reader;
-import java.io.IOException;
-import java.io.Closeable;
-import java.lang.reflect.Modifier;
-
-import org.trypticon.lucene3.util.CloseableThreadLocal;
-import org.trypticon.lucene3.store.AlreadyClosedException;
-
 import org.trypticon.lucene3.document.Fieldable;
+import org.trypticon.lucene3.store.AlreadyClosedException;
+import org.trypticon.lucene3.util.CloseableThreadLocal;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.Reader;
+import java.lang.reflect.Modifier;
 
 /** An Analyzer builds TokenStreams, which analyze text.  It thus represents a
  *  policy for extracting index terms from text.
@@ -34,8 +33,8 @@ import org.trypticon.lucene3.document.Fieldable;
  *  characters from the Reader into raw Tokens.  One or more TokenFilters may
  *  then be applied to the output of the Tokenizer.
  * <p>The {@code Analyzer}-API in Lucene is based on the decorator pattern.
- * Therefore all non-abstract subclasses must be final or their {@link #tokenStream}
- * and {@link #reusableTokenStream} implementations must be final! This is checked
+ * Therefore all non-abstract subclasses must be final or their {@code #tokenStream}
+ * and {@code #reusableTokenStream} implementations must be final! This is checked
  * when Java assertions are enabled.
  */
 public abstract class Analyzer implements Closeable {
@@ -123,14 +122,14 @@ public abstract class Analyzer implements Closeable {
    * exact PhraseQuery matches, for instance, across Fieldable instance boundaries.
    *
    * @param fieldName Fieldable name being indexed.
-   * @return position increment gap, added to the next token emitted from {@link #tokenStream(String,Reader)}
+   * @return position increment gap, added to the next token emitted from {@code #tokenStream(String,Reader)}
    */
   public int getPositionIncrementGap(String fieldName) {
     return 0;
   }
 
   /**
-   * Just like {@link #getPositionIncrementGap}, except for
+   * Just like {@code #getPositionIncrementGap}, except for
    * Token offsets instead.  By default this returns 1 for
    * tokenized fields and, as if the fields were joined
    * with an extra space character, and 0 for un-tokenized
@@ -138,7 +137,7 @@ public abstract class Analyzer implements Closeable {
    * produced at least one token for indexing.
    *
    * @param field the field just indexed
-   * @return offset gap, added to the next token emitted from {@link #tokenStream(String,Reader)}
+   * @return offset gap, added to the next token emitted from {@code #tokenStream(String,Reader)}
    */
   public int getOffsetGap(Fieldable field) {
     if (field.isTokenized())

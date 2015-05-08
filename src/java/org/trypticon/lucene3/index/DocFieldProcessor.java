@@ -19,8 +19,8 @@ package org.trypticon.lucene3.index;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**

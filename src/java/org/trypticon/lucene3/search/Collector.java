@@ -17,9 +17,9 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.index.IndexReader;
+
+import java.io.IOException;
 
 /**
  * <p>Expert: Collectors are primarily meant to be used to
@@ -28,34 +28,34 @@ import org.trypticon.lucene3.index.IndexReader;
  *
  * <p>Lucene's core collectors are derived from Collector.
  * Likely your application can use one of these classes, or
- * subclass {@link TopDocsCollector}, instead of
+ * subclass {@code TopDocsCollector}, instead of
  * implementing Collector directly:
  *
  * <ul>
  *      
- *   <li>{@link TopDocsCollector} is an abstract base class
+ *   <li>{@code TopDocsCollector} is an abstract base class
  *   that assumes you will retrieve the top N docs,
  *   according to some criteria, after collection is
  *   done.  </li>
  *
- *   <li>{@link TopScoreDocCollector} is a concrete subclass
- *   {@link TopDocsCollector} and sorts according to score +
- *   docID.  This is used internally by the {@link
+ *   <li>{@code TopScoreDocCollector} is a concrete subclass
+ *   {@code TopDocsCollector} and sorts according to score +
+ *   docID.  This is used internally by the {@code
  *   IndexSearcher} search methods that do not take an
- *   explicit {@link Sort}. It is likely the most frequently
+ *   explicit {@code Sort}. It is likely the most frequently
  *   used collector.</li>
  *
- *   <li>{@link TopFieldCollector} subclasses {@link
+ *   <li>{@code TopFieldCollector} subclasses {@code
  *   TopDocsCollector} and sorts according to a specified
- *   {@link Sort} object (sort by field).  This is used
- *   internally by the {@link IndexSearcher} search methods
- *   that take an explicit {@link Sort}.
+ *   {@code Sort} object (sort by field).  This is used
+ *   internally by the {@code IndexSearcher} search methods
+ *   that take an explicit {@code Sort}.
  *
- *   <li>{@link TimeLimitingCollector}, which wraps any other
+ *   <li>{@code TimeLimitingCollector}, which wraps any other
  *   Collector and aborts the search if it's taken too much
  *   time.</li>
  *
- *   <li>{@link PositiveScoresOnlyCollector} wraps any other
+ *   <li>{@code PositiveScoresOnlyCollector} wraps any other
  *   Collector and prevents collection of hits whose score
  *   is &lt;= 0.0</li>
  *
@@ -64,12 +64,12 @@ import org.trypticon.lucene3.index.IndexReader;
  * <p>Collector decouples the score from the collected doc:
  * the score computation is skipped entirely if it's not
  * needed.  Collectors that do need the score should
- * implement the {@link #setScorer} method, to hold onto the
- * passed {@link Scorer} instance, and call {@link
+ * implement the {@code #setScorer} method, to hold onto the
+ * passed {@code Scorer} instance, and call {@code
  * Scorer#score()} within the collect method to compute the
  * current hit's score.  If your collector may request the
  * score for a single hit multiple times, you should use
- * {@link ScoreCachingWrappingScorer}. </p>
+ * {@code ScoreCachingWrappingScorer}. </p>
  * 
  * <p><b>NOTE:</b> The doc that is passed to the collect
  * method is relative to the current reader. If your
@@ -113,7 +113,7 @@ import org.trypticon.lucene3.index.IndexReader;
  * no longer do that.  It's very unusual to have such hits
  * (a negative query boost, or function query returning
  * negative custom scores, could cause it to happen).  If
- * you need that behavior, use {@link
+ * you need that behavior, use {@code
  * PositiveScoresOnlyCollector}.</p>
  *
  * @lucene.experimental
@@ -123,9 +123,9 @@ import org.trypticon.lucene3.index.IndexReader;
 public abstract class Collector {
   
   /**
-   * Called before successive calls to {@link #collect(int)}. Implementations
+   * Called before successive calls to {@code #collect(int)}. Implementations
    * that need the score of the current document (passed-in to
-   * {@link #collect(int)}), should save the passed-in Scorer and call
+   * {@code #collect(int)}), should save the passed-in Scorer and call
    * scorer.score() when needed.
    */
   public abstract void setScorer(Scorer scorer) throws IOException;
@@ -136,18 +136,18 @@ public abstract class Collector {
    * 
    * <p>
    * Note: This is called in an inner search loop. For good search performance,
-   * implementations of this method should not call {@link Searcher#doc(int)} or
-   * {@link org.trypticon.lucene3.index.IndexReader#document(int)} on every hit.
+   * implementations of this method should not call {@code Searcher#doc(int)} or
+   * {@code org.trypticon.lucene3.index.IndexReader#document(int)} on every hit.
    * Doing so can slow searches by an order of magnitude or more.
    */
   public abstract void collect(int doc) throws IOException;
 
   /**
    * Called before collecting from each IndexReader. All doc ids in
-   * {@link #collect(int)} will correspond to reader.
+   * {@code #collect(int)} will correspond to reader.
    * 
    * Add docBase to the current IndexReaders internal document id to re-base ids
-   * in {@link #collect(int)}.
+   * in {@code #collect(int)}.
    * 
    * @param reader
    *          next IndexReader
@@ -158,11 +158,11 @@ public abstract class Collector {
   /**
    * Return <code>true</code> if this collector does not
    * require the matching docIDs to be delivered in int sort
-   * order (smallest to largest) to {@link #collect}.
+   * order (smallest to largest) to {@code #collect}.
    *
    * <p> Most Lucene Query implementations will visit
    * matching docIDs in order.  However, some queries
-   * (currently limited to certain cases of {@link
+   * (currently limited to certain cases of {@code
    * BooleanQuery}) can achieve faster searching if the
    * <code>Collector</code> allows them to deliver the
    * docIDs out of order.</p>

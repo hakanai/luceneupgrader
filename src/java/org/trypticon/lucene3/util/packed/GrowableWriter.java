@@ -18,7 +18,7 @@ package org.trypticon.lucene3.util.packed;
  */
 
 /**     
- * Implements {@link PackedInts.Mutable}, but grows the
+ * Implements {@code PackedInts.Mutable}, but grows the
  * bit count of the underlying packed ints on-demand.
  *
  * <p>@lucene.internal</p>

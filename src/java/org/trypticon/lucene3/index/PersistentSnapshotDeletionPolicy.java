@@ -17,36 +17,36 @@ package org.trypticon.lucene3.index;
  * the License.
  */
 
+import org.trypticon.lucene3.document.Document;
+import org.trypticon.lucene3.document.Field;
+import org.trypticon.lucene3.document.Field.Index;
+import org.trypticon.lucene3.document.Field.Store;
+import org.trypticon.lucene3.document.Fieldable;
+import org.trypticon.lucene3.index.IndexWriterConfig.OpenMode;
+import org.trypticon.lucene3.store.Directory;
+import org.trypticon.lucene3.store.LockObtainFailedException;
+import org.trypticon.lucene3.util.Version;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.trypticon.lucene3.document.Document;
-import org.trypticon.lucene3.document.Field;
-import org.trypticon.lucene3.document.Fieldable;
-import org.trypticon.lucene3.document.Field.Index;
-import org.trypticon.lucene3.document.Field.Store;
-import org.trypticon.lucene3.index.IndexWriterConfig.OpenMode;
-import org.trypticon.lucene3.store.Directory;
-import org.trypticon.lucene3.store.LockObtainFailedException;
-import org.trypticon.lucene3.util.Version;
-
 /**
- * A {@link SnapshotDeletionPolicy} which adds a persistence layer so that
+ * A {@code SnapshotDeletionPolicy} which adds a persistence layer so that
  * snapshots can be maintained across the life of an application. The snapshots
- * are persisted in a {@link Directory} and are committed as soon as
- * {@link #snapshot(String)} or {@link #release(String)} is called.
+ * are persisted in a {@code Directory} and are committed as soon as
+ * {@code #snapshot(String)} or {@code #release(String)} is called.
  * <p>
- * <b>NOTE:</b> this class receives a {@link Directory} to persist the data into
+ * <b>NOTE:</b> this class receives a {@code Directory} to persist the data into
  * a Lucene index. It is highly recommended to use a dedicated directory (and on
  * stable storage as well) for persisting the snapshots' information, and not
  * reuse the content index directory, or otherwise conflicts and index
  * corruptions will occur.
  * <p>
- * <b>NOTE:</b> you should call {@link #close()} when you're done using this
- * class for safetyness (it will close the {@link IndexWriter} instance used).
+ * <b>NOTE:</b> you should call {@code #close()} when you're done using this
+ * class for safetyness (it will close the {@code IndexWriter} instance used).
  */
 public class PersistentSnapshotDeletionPolicy extends SnapshotDeletionPolicy {
 
@@ -58,7 +58,7 @@ public class PersistentSnapshotDeletionPolicy extends SnapshotDeletionPolicy {
   private final IndexWriter writer;
 
   /**
-   * Reads the snapshots information from the given {@link Directory}. This
+   * Reads the snapshots information from the given {@code Directory}. This
    * method can be used if the snapshots information is needed, however you
    * cannot instantiate the deletion policy (because e.g., some other process
    * keeps a lock on the snapshots directory).
@@ -90,22 +90,22 @@ public class PersistentSnapshotDeletionPolicy extends SnapshotDeletionPolicy {
   }
   
   /**
-   * {@link PersistentSnapshotDeletionPolicy} wraps another
-   * {@link IndexDeletionPolicy} to enable flexible snapshotting.
+   * {@code PersistentSnapshotDeletionPolicy} wraps another
+   * {@code IndexDeletionPolicy} to enable flexible snapshotting.
    * 
    * @param primary
-   *          the {@link IndexDeletionPolicy} that is used on non-snapshotted
+   *          the {@code IndexDeletionPolicy} that is used on non-snapshotted
    *          commits. Snapshotted commits, by definition, are not deleted until
-   *          explicitly released via {@link #release(String)}.
+   *          explicitly released via {@code #release(String)}.
    * @param dir
-   *          the {@link Directory} which will be used to persist the snapshots
+   *          the {@code Directory} which will be used to persist the snapshots
    *          information.
    * @param mode
    *          specifies whether a new index should be created, deleting all
    *          existing snapshots information (immediately), or open an existing
    *          index, initializing the class with the snapshots information.
    * @param matchVersion
-   *          specifies the {@link Version} that should be used when opening the
+   *          specifies the {@code Version} that should be used when opening the
    *          IndexWriter.
    */
   public PersistentSnapshotDeletionPolicy(IndexDeletionPolicy primary,
@@ -153,7 +153,7 @@ public class PersistentSnapshotDeletionPolicy extends SnapshotDeletionPolicy {
    * Snapshots the last commit using the given ID. Once this method returns, the
    * snapshot information is persisted in the directory.
    * 
-   * @see SnapshotDeletionPolicy#snapshot(String)
+   *
    */
   @Override
   public synchronized IndexCommit snapshot(String id) throws IOException {
@@ -169,7 +169,7 @@ public class PersistentSnapshotDeletionPolicy extends SnapshotDeletionPolicy {
    * Deletes a snapshotted commit by ID. Once this method returns, the snapshot
    * information is committed to the directory.
    * 
-   * @see SnapshotDeletionPolicy#release(String)
+   *
    */
   @Override
   public synchronized void release(String id) throws IOException {

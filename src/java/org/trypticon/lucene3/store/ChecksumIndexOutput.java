@@ -74,8 +74,8 @@ public class ChecksumIndexOutput extends IndexOutput {
   /**
    * Starts but does not complete the commit of this file (=
    * writing of the final checksum at the end).  After this
-   * is called must call {@link #finishCommit} and the
-   * {@link #close} to complete the commit.
+   * is called must call {@code #finishCommit} and the
+   * {@code #close} to complete the commit.
    */
   public void prepareCommit() throws IOException {
     final long checksum = getChecksum();
@@ -90,7 +90,7 @@ public class ChecksumIndexOutput extends IndexOutput {
     main.seek(pos);
   }
 
-  /** See {@link #prepareCommit} */
+  /** See {@code #prepareCommit} */
   public void finishCommit() throws IOException {
     main.writeLong(getChecksum());
   }

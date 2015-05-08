@@ -17,10 +17,9 @@ package org.trypticon.lucene3.analysis.tokenattributes;
  * limitations under the License.
  */
 
-import org.trypticon.lucene3.analysis.TokenStream;
 import org.trypticon.lucene3.util.AttributeImpl;
 
-/** See {@link PositionLengthAttribute}. */
+/** See {@code PositionLengthAttribute}. */
 public class PositionLengthAttributeImpl extends AttributeImpl implements PositionLengthAttribute, Cloneable {
   private int positionLength = 1;
   
@@ -36,7 +35,7 @@ public class PositionLengthAttributeImpl extends AttributeImpl implements Positi
   }
 
   /** Returns the position length of this Token.
-   * @see #setPositionLength    
+   *
    */
   public int getPositionLength() {
     return positionLength;

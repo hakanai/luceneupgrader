@@ -30,7 +30,7 @@ public class BooleanClause implements java.io.Serializable {
      * matching documents. For a BooleanQuery with no <code>MUST</code> 
      * clauses one or more <code>SHOULD</code> clauses must match a document 
      * for the BooleanQuery to match.
-     * @see BooleanQuery#setMinimumNumberShouldMatch
+     *
      */
     SHOULD   { @Override public String toString() { return "";  } },
 

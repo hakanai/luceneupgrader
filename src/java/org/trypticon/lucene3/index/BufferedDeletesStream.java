@@ -17,22 +17,18 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Comparator;
-import java.util.Collections;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.trypticon.lucene3.search.DocIdSet;
 import org.trypticon.lucene3.search.DocIdSetIterator;
 import org.trypticon.lucene3.search.Query;
 import org.trypticon.lucene3.search.QueryWrapperFilter;
 
-/* Tracks the stream of {@link BuffereDeletes}.
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
+/* Tracks the stream of {@code BuffereDeletes}.
  * When DocumensWriter flushes, its buffered
  * deletes are appended to this stream.  We later
  * apply these deletes (resolve them to the actual

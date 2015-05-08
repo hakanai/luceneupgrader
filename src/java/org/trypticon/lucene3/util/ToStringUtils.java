@@ -18,7 +18,7 @@ package org.trypticon.lucene3.util;
  */
 
 /**
- * Helper methods to ease implementing {@link Object#toString()}.
+ * Helper methods to ease implementing {@code Object#toString()}.
  */
 public final class ToStringUtils {
 
@@ -31,16 +31,6 @@ public final class ToStringUtils {
     if (boost != 1.0f) {
       return "^" + Float.toString(boost);
     } else return "";
-  }
-
-  public static void byteArray(StringBuilder buffer, byte[] bytes) {
-    for (int i = 0; i < bytes.length; i++) {
-      buffer.append("b[").append(i).append("]=").append(bytes[i]);
-      if (i < bytes.length - 1) {
-        buffer.append(',');
-      }
-
-    }
   }
 
 }

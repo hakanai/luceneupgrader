@@ -17,11 +17,11 @@
 
 package org.trypticon.lucene3.util;
 
-import java.util.Arrays;
-import java.io.Serializable;
-
 import org.trypticon.lucene3.search.DocIdSet;
 import org.trypticon.lucene3.search.DocIdSetIterator;
+
+import java.io.Serializable;
+import java.util.Arrays;
 
 /** An "open" BitSet implementation that allows direct access to the array of words
  * storing the bits.
@@ -131,7 +131,7 @@ public class OpenBitSet extends DocIdSet implements Cloneable, Serializable, Bit
 
  /**
   * Returns the current capacity of this set.  Included for
-  * compatibility.  This is *not* equal to {@link #cardinality}
+  * compatibility.  This is *not* equal to {@code #cardinality}
   */
   public long size() {
       return capacity();
@@ -803,17 +803,17 @@ public class OpenBitSet extends DocIdSet implements Cloneable, Serializable, Bit
 
   // some BitSet compatability methods
 
-  //** see {@link intersect} */
+  //** see {@code intersect} */
   public void and(OpenBitSet other) {
     intersect(other);
   }
 
-  //** see {@link union} */
+  //** see {@code union} */
   public void or(OpenBitSet other) {
     union(other);
   }
 
-  //** see {@link andNot} */
+  //** see {@code andNot} */
   public void andNot(OpenBitSet other) {
     remove(other);
   }

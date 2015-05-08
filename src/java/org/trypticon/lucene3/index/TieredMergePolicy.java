@@ -18,22 +18,16 @@ package org.trypticon.lucene3.index;
  */
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  *  Merges segments of approximately equal size, subject to
  *  an allowed number of segments per tier.  This is similar
- *  to {@link LogByteSizeMergePolicy}, except this merge
+ *  to {@code LogByteSizeMergePolicy}, except this merge
  *  policy is able to merge non-adjacent segment, and
- *  separates how many segments are merged at once ({@link
+ *  separates how many segments are merged at once ({@code
  *  #setMaxMergeAtOnce}) from how many segments are allowed
- *  per tier ({@link #setSegmentsPerTier}).  This merge
+ *  per tier ({@code #setSegmentsPerTier}).  This merge
  *  policy also does not over-merge (i.e. cascade merges). 
  *
  *  <p>For normal merging, this policy first computes a
@@ -49,18 +43,18 @@ import java.util.ArrayList;
  *  favored.
  *
  *  <p>If a merge will produce a segment that's larger than
- *  {@link #setMaxMergedSegmentMB}, then the policy will
+ *  {@code #setMaxMergedSegmentMB}, then the policy will
  *  merge fewer segments (down to 1 at once, if that one has
  *  deletions) to keep the segment size under budget.
  *      
  *  <p<b>NOTE</b>: this policy freely merges non-adjacent
- *  segments; if this is a problem, use {@link
+ *  segments; if this is a problem, use {@code
  *  LogMergePolicy}.
  *
  *  <p><b>NOTE</b>: This policy always merges by byte size
  *  of the segments, always pro-rates by percent deletes,
  *  and does not apply any maximum segment size during
- *  forceMerge (unlike {@link LogByteSizeMergePolicy}).
+ *  forceMerge (unlike {@code LogByteSizeMergePolicy}).
  *
  *  @lucene.experimental
  */
@@ -86,7 +80,7 @@ public class TieredMergePolicy extends MergePolicy {
 
   /** Maximum number of segments to be merged at a time
    *  during "normal" merging.  For explicit merging (eg,
-   *  forceMerge or forceMergeDeletes was called), see {@link
+   *  forceMerge or forceMergeDeletes was called), see {@code
    *  #setMaxMergeAtOnceExplicit}.  Default is 10. */
   public TieredMergePolicy setMaxMergeAtOnce(int v) {
     if (v < 2) {
@@ -96,7 +90,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** @see #setMaxMergeAtOnce */
+  /** */
   public int getMaxMergeAtOnce() {
     return maxMergeAtOnce;
   }
@@ -114,7 +108,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** @see #setMaxMergeAtOnceExplicit */
+  /** */
   public int getMaxMergeAtOnceExplicit() {
     return maxMergeAtOnceExplicit;
   }
@@ -129,7 +123,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** @see #getMaxMergedSegmentMB */
+  /** */
   public double getMaxMergedSegmentMB() {
     return maxMergedSegmentBytes/1024/1024.;
   }
@@ -146,7 +140,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** See {@link #setReclaimDeletesWeight}. */
+  /** See {@code #setReclaimDeletesWeight}. */
   public double getReclaimDeletesWeight() {
     return reclaimDeletesWeight;
   }
@@ -164,7 +158,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** @see #setFloorSegmentMB */
+  /** */
   public double getFloorSegmentMB() {
     return floorSegmentBytes/(1024*1024.);
   }
@@ -180,7 +174,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** @see #setForceMergeDeletesPctAllowed */
+  /** */
   public double getForceMergeDeletesPctAllowed() {
     return forceMergeDeletesPctAllowed;
   }
@@ -188,7 +182,7 @@ public class TieredMergePolicy extends MergePolicy {
   /** Sets the allowed number of segments per tier.  Smaller
    *  values mean more merging but fewer segments.
    *
-   *  <p><b>NOTE</b>: this value should be >= the {@link
+   *  <p><b>NOTE</b>: this value should be >= the {@code
    *  #setMaxMergeAtOnce} otherwise you'll force too much
    *  merging to occur.</p>
    *
@@ -201,7 +195,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** @see #setSegmentsPerTier */
+  /** */
   public double getSegmentsPerTier() {
     return segsPerTier;
   }
@@ -214,7 +208,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** @see  #setUseCompoundFile */
+  /** */
   public boolean getUseCompoundFile() {
     return useCompoundFile;
   }
@@ -232,7 +226,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
   
-  /** @see #setNoCFSRatio */
+  /** */
   public double getNoCFSRatio() {
     return noCFSRatio;
   }

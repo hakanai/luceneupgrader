@@ -19,6 +19,7 @@ package org.trypticon.lucene3.index;
 
 import org.trypticon.lucene3.store.IndexInput;
 import org.trypticon.lucene3.store.IndexOutput;
+
 import java.io.IOException;
 
 /* IndexInput that knows how to read the byte slices written

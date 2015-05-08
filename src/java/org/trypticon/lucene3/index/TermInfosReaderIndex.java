@@ -17,18 +17,18 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.util.BitUtil;
+import org.trypticon.lucene3.util.BytesRef;
+import org.trypticon.lucene3.util.PagedBytes;
+import org.trypticon.lucene3.util.PagedBytes.PagedBytesDataInput;
+import org.trypticon.lucene3.util.PagedBytes.PagedBytesDataOutput;
+import org.trypticon.lucene3.util.packed.GrowableWriter;
+import org.trypticon.lucene3.util.packed.PackedInts;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import org.trypticon.lucene3.util.BitUtil;
-import org.trypticon.lucene3.util.BytesRef;
-import org.trypticon.lucene3.util.PagedBytes.PagedBytesDataInput;
-import org.trypticon.lucene3.util.PagedBytes.PagedBytesDataOutput;
-import org.trypticon.lucene3.util.PagedBytes;
-import org.trypticon.lucene3.util.packed.GrowableWriter;
-import org.trypticon.lucene3.util.packed.PackedInts;
 
 /**
  * This stores a monotonically increasing set of <Term, TermInfo> pairs in an

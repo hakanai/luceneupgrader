@@ -17,16 +17,12 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.concurrent.ExecutorService; // javadocs
-
 import org.trypticon.lucene3.index.IndexReader;
-import org.trypticon.lucene3.index.IndexWriter; // javadocs
-import org.trypticon.lucene3.index.IndexWriterConfig; // javadocs
-import org.trypticon.lucene3.search.Similarity; // javadocs
+
+import java.io.IOException;
 
 /**
- * Factory class used by {@link SearcherManager} and {@link NRTManager} to
+ * Factory class used by {@code SearcherManager} and {@code NRTManager} to
  * create new IndexSearchers. The default implementation just creates 
  * an IndexSearcher with no custom behavior:
  * 
@@ -38,11 +34,11 @@ import org.trypticon.lucene3.search.Similarity; // javadocs
  * 
  * You can pass your own factory instead if you want custom behavior, such as:
  * <ul>
- *   <li>Setting a custom scoring model: {@link IndexSearcher#setSimilarity(Similarity)}
- *   <li>Parallel per-segment search: {@link IndexSearcher#IndexSearcher(IndexReader, ExecutorService)}
+ *   <li>Setting a custom scoring model: {@code IndexSearcher#setSimilarity(Similarity)}
+ *   <li>Parallel per-segment search: {@code IndexSearcher#IndexSearcher(IndexReader, ExecutorService)}
  *   <li>Return custom subclasses of IndexSearcher (for example that implement distributed scoring)
  *   <li>Run queries to warm your IndexSearcher before it is used. Note: when using near-realtime search
- *       you may want to also {@link IndexWriterConfig#setMergedSegmentWarmer(IndexWriter.IndexReaderWarmer)} to warm
+ *       you may want to also {@code IndexWriterConfig#setMergedSegmentWarmer(IndexWriter.IndexReaderWarmer)} to warm
  *       newly merged segments in the background, outside of the reopen path.
  * </ul>
  * @lucene.experimental

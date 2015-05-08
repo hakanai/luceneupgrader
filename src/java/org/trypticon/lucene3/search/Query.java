@@ -17,33 +17,31 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
-import java.util.HashSet;
-
-import java.util.Set;
-
 import org.trypticon.lucene3.index.IndexReader;
 import org.trypticon.lucene3.index.Term;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /** The abstract base class for queries.
     <p>Instantiable subclasses are:
     <ul>
-    <li> {@link TermQuery}
-    <li> {@link MultiTermQuery}
-    <li> {@link BooleanQuery}
-    <li> {@link WildcardQuery}
-    <li> {@link PhraseQuery}
-    <li> {@link PrefixQuery}
-    <li> {@link MultiPhraseQuery}
-    <li> {@link FuzzyQuery}
-    <li> {@link TermRangeQuery}
-    <li> {@link NumericRangeQuery}
-    <li> {@link org.trypticon.lucene3.search.spans.SpanQuery}
+    <li> {@code TermQuery}
+    <li> {@code MultiTermQuery}
+    <li> {@code BooleanQuery}
+    <li> {@code WildcardQuery}
+    <li> {@code PhraseQuery}
+    <li> {@code PrefixQuery}
+    <li> {@code MultiPhraseQuery}
+    <li> {@code FuzzyQuery}
+    <li> {@code TermRangeQuery}
+    <li> {@code NumericRangeQuery}
+    <li> {@code org.trypticon.lucene3.search.spans.SpanQuery}
     </ul>
     <p>A parser for queries is contained in:
     <ul>
-    <li>{@link org.trypticon.lucene3.queryParser.QueryParser QueryParser}
+    <li>{@code org.trypticon.lucene3.queryParser.QueryParser QueryParser}
     </ul>
 */
 public abstract class Query implements java.io.Serializable, Cloneable {
@@ -64,7 +62,7 @@ public abstract class Query implements java.io.Serializable, Cloneable {
   /** Prints a query to a string, with <code>field</code> assumed to be the 
    * default field and omitted.
    * <p>The representation used is one that is supposed to be readable
-   * by {@link org.trypticon.lucene3.queryParser.QueryParser QueryParser}. However,
+   * by {@code org.trypticon.lucene3.queryParser.QueryParser QueryParser}. However,
    * there are the following limitations:
    * <ul>
    *  <li>If the query was created by the parser, the printed
@@ -95,8 +93,8 @@ public abstract class Query implements java.io.Serializable, Cloneable {
 
   /**
    * Expert: Constructs and initializes a Weight for a <b>top-level</b> query.
-   * @deprecated never ever use this method in {@link Weight} implementations.
-   * Subclasses of {@code Query} should use {@link #createWeight}, instead.
+   * @deprecated never ever use this method in {@code Weight} implementations.
+   * Subclasses of {@code Query} should use {@code #createWeight}, instead.
    */
   @Deprecated
   public final Weight weight(Searcher searcher) throws IOException {
@@ -160,7 +158,7 @@ public abstract class Query implements java.io.Serializable, Cloneable {
 
   /**
    * Expert: adds all terms occurring in this query to the terms set. Only
-   * works if this query is in its {@link #rewrite rewritten} form.
+   * works if this query is in its {@code #rewrite rewritten} form.
    * 
    * @throws UnsupportedOperationException if this query is not yet rewritten
    */
@@ -174,7 +172,7 @@ public abstract class Query implements java.io.Serializable, Cloneable {
   /** Expert: merges the clauses of a set of BooleanQuery's into a single
    * BooleanQuery.
    *
-   *<p>A utility for use by {@link #combine(Query[])} implementations.
+   *<p>A utility for use by {@code #combine(Query[])} implementations.
    */
   public static Query mergeBooleanQueries(BooleanQuery... queries) {
     HashSet<BooleanClause> allClauses = new HashSet<BooleanClause>();

@@ -23,15 +23,15 @@ package org.trypticon.lucene3.util;
  */
 
 public interface Bits {
-  public boolean get(int index);
-  public int length();
+  boolean get(int index);
+  int length();
 
-  public static final Bits[] EMPTY_ARRAY = new Bits[0];
+  Bits[] EMPTY_ARRAY = new Bits[0];
   
   /**
    * Bits impl of the specified length with all bits set. 
    */
-  public static class MatchAllBits implements Bits {
+  class MatchAllBits implements Bits {
     final int len;
     
     public MatchAllBits( int len ) {
@@ -50,7 +50,7 @@ public interface Bits {
   /**
    * Bits impl of the specified length with no bits set. 
    */
-  public static class MatchNoBits implements Bits {
+  class MatchNoBits implements Bits {
     final int len;
     
     public MatchNoBits( int len ) {

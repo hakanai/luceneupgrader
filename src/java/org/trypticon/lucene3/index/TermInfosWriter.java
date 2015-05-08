@@ -18,13 +18,14 @@ package org.trypticon.lucene3.index;
  */
 
 
-import java.io.Closeable;
-import java.io.IOException;
-import org.trypticon.lucene3.store.IndexOutput;
 import org.trypticon.lucene3.store.Directory;
+import org.trypticon.lucene3.store.IndexOutput;
+import org.trypticon.lucene3.util.ArrayUtil;
 import org.trypticon.lucene3.util.IOUtils;
 import org.trypticon.lucene3.util.UnicodeUtil;
-import org.trypticon.lucene3.util.ArrayUtil;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 
 /** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
@@ -60,8 +61,8 @@ final class TermInfosWriter implements Closeable {
    * tweaking this is rarely useful.*/
   int indexInterval = 128;
 
-  /** Expert: The fraction of {@link TermDocs} entries stored in skip tables,
-   * used to accelerate {@link TermDocs#skipTo(int)}.  Larger values result in
+  /** Expert: The fraction of {@code TermDocs} entries stored in skip tables,
+   * used to accelerate {@code TermDocs#skipTo(int)}.  Larger values result in
    * smaller indexes, greater acceleration, but fewer accelerable cases, while
    * smaller values result in bigger indexes, less acceleration and more
    * accelerable cases. More detailed experiments would be useful here. */

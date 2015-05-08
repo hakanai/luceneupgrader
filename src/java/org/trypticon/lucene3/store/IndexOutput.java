@@ -17,13 +17,13 @@ package org.trypticon.lucene3.store;
  * limitations under the License.
  */
 
-import java.io.IOException;
 import java.io.Closeable;
+import java.io.IOException;
 
 /** Abstract base class for output to a file in a Directory.  A random-access
  * output stream.  Used for all Lucene index output operations.
- * @see Directory
- * @see IndexInput
+ *
+ *
  */
 public abstract class IndexOutput extends DataOutput implements Closeable {
 
@@ -35,12 +35,12 @@ public abstract class IndexOutput extends DataOutput implements Closeable {
 
   /** Returns the current position in this file, where the next write will
    * occur.
-   * @see #seek(long)
+   *
    */
   public abstract long getFilePointer();
 
   /** Sets current position in this file, where the next write will occur.
-   * @see #getFilePointer()
+   *
    */
   public abstract void seek(long pos) throws IOException;
 
@@ -50,7 +50,7 @@ public abstract class IndexOutput extends DataOutput implements Closeable {
   /** Set the file length. By default, this method does
    * nothing (it's optional for a Directory to implement
    * it).  But, certain Directory implementations (for
-   * example @see FSDirectory) can use this to inform the
+   * example
    * underlying IO system to pre-allocate the file to the
    * specified size.  If the length is longer than the
    * current file length, the bytes added to the file are

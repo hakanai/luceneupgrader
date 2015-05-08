@@ -17,69 +17,64 @@ package org.trypticon.lucene3.analysis;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.Closeable;
-import java.lang.reflect.Modifier;
-
-import org.trypticon.lucene3.document.Document;
-import org.trypticon.lucene3.document.Field;
-import org.trypticon.lucene3.index.IndexWriter;
-import org.trypticon.lucene3.util.Attribute;
-import org.trypticon.lucene3.util.AttributeImpl;
 import org.trypticon.lucene3.util.AttributeSource;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.lang.reflect.Modifier;
 
 /**
  * A <code>TokenStream</code> enumerates the sequence of tokens, either from
- * {@link Field}s of a {@link Document} or from query text.
+ * {@code Field}s of a {@code Document} or from query text.
  * <p>
  * This is an abstract class; concrete subclasses are:
  * <ul>
- * <li>{@link Tokenizer}, a <code>TokenStream</code> whose input is a Reader; and
- * <li>{@link TokenFilter}, a <code>TokenStream</code> whose input is another
+ * <li>{@code Tokenizer}, a <code>TokenStream</code> whose input is a Reader; and
+ * <li>{@code TokenFilter}, a <code>TokenStream</code> whose input is another
  * <code>TokenStream</code>.
  * </ul>
  * A new <code>TokenStream</code> API has been introduced with Lucene 2.9. This API
- * has moved from being {@link Token}-based to {@link Attribute}-based. While
- * {@link Token} still exists in 2.9 as a convenience class, the preferred way
- * to store the information of a {@link Token} is to use {@link AttributeImpl}s.
+ * has moved from being {@code Token}-based to {@code Attribute}-based. While
+ * {@code Token} still exists in 2.9 as a convenience class, the preferred way
+ * to store the information of a {@code Token} is to use {@code AttributeImpl}s.
  * <p>
- * <code>TokenStream</code> now extends {@link AttributeSource}, which provides
- * access to all of the token {@link Attribute}s for the <code>TokenStream</code>.
- * Note that only one instance per {@link AttributeImpl} is created and reused
+ * <code>TokenStream</code> now extends {@code AttributeSource}, which provides
+ * access to all of the token {@code Attribute}s for the <code>TokenStream</code>.
+ * Note that only one instance per {@code AttributeImpl} is created and reused
  * for every token. This approach reduces object creation and allows local
- * caching of references to the {@link AttributeImpl}s. See
- * {@link #incrementToken()} for further details.
+ * caching of references to the {@code AttributeImpl}s. See
+ * {@code #incrementToken()} for further details.
  * <p>
  * <b>The workflow of the new <code>TokenStream</code> API is as follows:</b>
  * <ol>
- * <li>Instantiation of <code>TokenStream</code>/{@link TokenFilter}s which add/get
- * attributes to/from the {@link AttributeSource}.
- * <li>The consumer calls {@link TokenStream#reset()}.
+ * <li>Instantiation of <code>TokenStream</code>/{@code TokenFilter}s which add/get
+ * attributes to/from the {@code AttributeSource}.
+ * <li>The consumer calls {@code TokenStream#reset()}.
  * <li>The consumer retrieves attributes from the stream and stores local
  * references to all attributes it wants to access.
- * <li>The consumer calls {@link #incrementToken()} until it returns false
+ * <li>The consumer calls {@code #incrementToken()} until it returns false
  * consuming the attributes after each call.
- * <li>The consumer calls {@link #end()} so that any end-of-stream operations
+ * <li>The consumer calls {@code #end()} so that any end-of-stream operations
  * can be performed.
- * <li>The consumer calls {@link #close()} to release any resource when finished
+ * <li>The consumer calls {@code #close()} to release any resource when finished
  * using the <code>TokenStream</code>.
  * </ol>
  * To make sure that filters and consumers know which attributes are available,
  * the attributes must be added during instantiation. Filters and consumers are
  * not required to check for availability of attributes in
- * {@link #incrementToken()}.
+ * {@code #incrementToken()}.
  * <p>
  * You can find some example code for the new API in the analysis package level
  * Javadoc.
  * <p>
  * Sometimes it is desirable to capture a current state of a <code>TokenStream</code>,
- * e.g., for buffering purposes (see {@link CachingTokenFilter},
- * {@link TeeSinkTokenFilter}). For this usecase
- * {@link AttributeSource#captureState} and {@link AttributeSource#restoreState}
+ * e.g., for buffering purposes (see {@code CachingTokenFilter},
+ * {@code TeeSinkTokenFilter}). For this usecase
+ * {@code AttributeSource#captureState} and {@code AttributeSource#restoreState}
  * can be used.
  * <p>The {@code TokenStream}-API in Lucene is based on the decorator pattern.
  * Therefore all non-abstract subclasses must be final or have at least a final
- * implementation of {@link #incrementToken}! This is checked when Java
+ * implementation of {@code #incrementToken}! This is checked when Java
  * assertions are enabled.
  */
 public abstract class TokenStream extends AttributeSource implements Closeable {
@@ -101,7 +96,7 @@ public abstract class TokenStream extends AttributeSource implements Closeable {
   }
   
   /**
-   * A TokenStream using the supplied AttributeFactory for creating new {@link Attribute} instances.
+   * A TokenStream using the supplied AttributeFactory for creating new {@code Attribute} instances.
    */
   protected TokenStream(AttributeFactory factory) {
     super(factory);
@@ -124,26 +119,26 @@ public abstract class TokenStream extends AttributeSource implements Closeable {
   }
   
   /**
-   * Consumers (i.e., {@link IndexWriter}) use this method to advance the stream to
+   * Consumers (i.e., {@code IndexWriter}) use this method to advance the stream to
    * the next token. Implementing classes must implement this method and update
-   * the appropriate {@link AttributeImpl}s with the attributes of the next
+   * the appropriate {@code AttributeImpl}s with the attributes of the next
    * token.
    * <P>
    * The producer must make no assumptions about the attributes after the method
    * has been returned: the caller may arbitrarily change it. If the producer
    * needs to preserve the state for subsequent calls, it can use
-   * {@link #captureState} to create a copy of the current attribute state.
+   * {@code #captureState} to create a copy of the current attribute state.
    * <p>
    * This method is called for every token of a document, so an efficient
    * implementation is crucial for good performance. To avoid calls to
-   * {@link #addAttribute(Class)} and {@link #getAttribute(Class)},
-   * references to all {@link AttributeImpl}s that this stream uses should be
+   * {@code #addAttribute(Class)} and {@code #getAttribute(Class)},
+   * references to all {@code AttributeImpl}s that this stream uses should be
    * retrieved during instantiation.
    * <p>
    * To ensure that filters and consumers know which attributes are available,
    * the attributes must be added during instantiation. Filters and consumers
    * are not required to check for availability of attributes in
-   * {@link #incrementToken()}.
+   * {@code #incrementToken()}.
    * 
    * @return false for end of stream; true otherwise
    */
@@ -151,14 +146,14 @@ public abstract class TokenStream extends AttributeSource implements Closeable {
   
   /**
    * This method is called by the consumer after the last token has been
-   * consumed, after {@link #incrementToken()} returned <code>false</code>
+   * consumed, after {@code #incrementToken()} returned <code>false</code>
    * (using the new <code>TokenStream</code> API). Streams implementing the old API
    * should upgrade to use this feature.
    * <p/>
    * This method can be used to perform any end-of-stream operations, such as
    * setting the final offset of a stream. The final offset of a stream might
    * differ from the offset of the last token eg in case one or more whitespaces
-   * followed after the last token, but a {@link WhitespaceTokenizer} was used.
+   * followed after the last token, but a {@code WhitespaceTokenizer} was used.
    * 
    * @throws IOException
    */
@@ -168,13 +163,13 @@ public abstract class TokenStream extends AttributeSource implements Closeable {
 
   /**
    * Resets this stream to the beginning. This is an optional operation, so
-   * subclasses may or may not implement this method. {@link #reset()} is not needed for
+   * subclasses may or may not implement this method. {@code #reset()} is not needed for
    * the standard indexing process. However, if the tokens of a
    * <code>TokenStream</code> are intended to be consumed more than once, it is
-   * necessary to implement {@link #reset()}. Note that if your TokenStream
+   * necessary to implement {@code #reset()}. Note that if your TokenStream
    * caches tokens and feeds them back again after a reset, it is imperative
    * that you clone the tokens when you store them away (on the first pass) as
-   * well as when you return them (on future passes after {@link #reset()}).
+   * well as when you return them (on future passes after {@code #reset()}).
    */
   public void reset() throws IOException {}
   

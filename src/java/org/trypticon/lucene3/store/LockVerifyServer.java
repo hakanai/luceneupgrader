@@ -17,20 +17,19 @@ package org.trypticon.lucene3.store;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.io.OutputStream;
-import java.io.InputStream;
-import java.io.IOException;
 
 /**
  * Simple standalone server that must be running when you
- * use {@link VerifyingLockFactory}.  This server simply
+ * use {@code VerifyingLockFactory}.  This server simply
  * verifies at most one process holds the lock at a time.
  * Run without any args to see usage.
  *
- * @see VerifyingLockFactory
- * @see LockStressTest
+ *
  */
 
 public class LockVerifyServer {

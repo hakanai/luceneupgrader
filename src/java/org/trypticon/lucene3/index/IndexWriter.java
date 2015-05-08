@@ -17,92 +17,73 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.trypticon.lucene3.analysis.Analyzer;
-import org.trypticon.lucene3.analysis.LimitTokenCountAnalyzer;
 import org.trypticon.lucene3.document.Document;
 import org.trypticon.lucene3.index.IndexWriterConfig.OpenMode;
 import org.trypticon.lucene3.search.Query;
 import org.trypticon.lucene3.search.Similarity;
-import org.trypticon.lucene3.store.AlreadyClosedException;
-import org.trypticon.lucene3.store.BufferedIndexInput;
-import org.trypticon.lucene3.store.Directory;
-import org.trypticon.lucene3.store.Lock;
-import org.trypticon.lucene3.store.LockObtainFailedException;
-import org.trypticon.lucene3.util.Constants;
-import org.trypticon.lucene3.util.StringHelper;
-import org.trypticon.lucene3.util.ThreadInterruptedException;
-import org.trypticon.lucene3.util.TwoPhaseCommit;
-import org.trypticon.lucene3.util.Version;
+import org.trypticon.lucene3.store.*;
+import org.trypticon.lucene3.util.*;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
   An <code>IndexWriter</code> creates and maintains an index.
 
-  <p>The <code>create</code> argument to the {@link
+  <p>The <code>create</code> argument to the {@code
   #IndexWriter(Directory, Analyzer, boolean, MaxFieldLength) constructor} determines 
   whether a new index is created, or whether an existing index is
   opened.  Note that you can open an index with <code>create=true</code>
   even while readers are using the index.  The old readers will 
   continue to search the "point in time" snapshot they had opened, 
   and won't see the newly created index until they re-open.  There are
-  also {@link #IndexWriter(Directory, Analyzer, MaxFieldLength) constructors}
+  also {@code #IndexWriter(Directory, Analyzer, MaxFieldLength) constructors}
   with no <code>create</code> argument which will create a new index
   if there is not already an index at the provided path and otherwise 
   open the existing index.</p>
 
-  <p>In either case, documents are added with {@link #addDocument(Document)
-  addDocument} and removed with {@link #deleteDocuments(Term)} or {@link
-  #deleteDocuments(Query)}. A document can be updated with {@link
+  <p>In either case, documents are added with {@code #addDocument(Document)
+  addDocument} and removed with {@code #deleteDocuments(Term)} or {@code
+  #deleteDocuments(Query)}. A document can be updated with {@code
   #updateDocument(Term, Document) updateDocument} (which just deletes
   and then adds the entire document). When finished adding, deleting 
-  and updating documents, {@link #close() close} should be called.</p>
+  and updating documents, {@code #close() close} should be called.</p>
 
   <a name="flush"></a>
   <p>These changes are buffered in memory and periodically
-  flushed to the {@link Directory} (during the above method
+  flushed to the {@code Directory} (during the above method
   calls).  A flush is triggered when there are enough
-  buffered deletes (see {@link #setMaxBufferedDeleteTerms})
+  buffered deletes (see {@code #setMaxBufferedDeleteTerms})
   or enough added documents since the last flush, whichever
   is sooner.  For the added documents, flushing is triggered
-  either by RAM usage of the documents (see {@link
+  either by RAM usage of the documents (see {@code
   #setRAMBufferSizeMB}) or the number of added documents.
   The default is to flush when RAM usage hits 16 MB.  For
   best indexing speed you should flush by RAM usage with a
   large RAM buffer.  Note that flushing just moves the
   internal buffered state in IndexWriter into the index, but
   these changes are not visible to IndexReader until either
-  {@link #commit()} or {@link #close} is called.  A flush may
+  {@code #commit()} or {@code #close} is called.  A flush may
   also trigger one or more segment merges which by default
   run with a background thread so as not to block the
   addDocument calls (see <a href="#mergePolicy">below</a>
-  for changing the {@link MergeScheduler}).</p>
+  for changing the {@code MergeScheduler}).</p>
 
   <p>Opening an <code>IndexWriter</code> creates a lock file for the directory in use. Trying to open
   another <code>IndexWriter</code> on the same directory will lead to a
-  {@link LockObtainFailedException}. The {@link LockObtainFailedException}
+  {@code LockObtainFailedException}. The {@code LockObtainFailedException}
   is also thrown if an IndexReader on the same directory is used to delete documents
   from the index.</p>
   
   <a name="deletionPolicy"></a>
   <p>Expert: <code>IndexWriter</code> allows an optional
-  {@link IndexDeletionPolicy} implementation to be
+  {@code IndexDeletionPolicy} implementation to be
   specified.  You can use this to control when prior commits
-  are deleted from the index.  The default policy is {@link
+  are deleted from the index.  The default policy is {@code
   KeepOnlyLastCommitDeletionPolicy} which removes all prior
   commits as soon as a new commit is done (this matches
   behavior before 2.2).  Creating your own policy can allow
@@ -116,29 +97,29 @@ import org.trypticon.lucene3.util.Version;
 
   <a name="mergePolicy"></a> <p>Expert:
   <code>IndexWriter</code> allows you to separately change
-  the {@link MergePolicy} and the {@link MergeScheduler}.
-  The {@link MergePolicy} is invoked whenever there are
+  the {@code MergePolicy} and the {@code MergeScheduler}.
+  The {@code MergePolicy} is invoked whenever there are
   changes to the segments in the index.  Its role is to
-  select which merges to do, if any, and return a {@link
+  select which merges to do, if any, and return a {@code
   MergePolicy.MergeSpecification} describing the merges.
-  The default is {@link LogByteSizeMergePolicy}.  Then, the {@link
+  The default is {@code LogByteSizeMergePolicy}.  Then, the {@code
   MergeScheduler} is invoked with the requested merges and
   it decides when and how to run the merges.  The default is
-  {@link ConcurrentMergeScheduler}. </p>
+  {@code ConcurrentMergeScheduler}. </p>
 
   <a name="OOME"></a><p><b>NOTE</b>: if you hit an
   OutOfMemoryError then IndexWriter will quietly record this
   fact and block all future segment commits.  This is a
   defensive measure in case any internal state (buffered
   documents and deletions) were corrupted.  Any subsequent
-  calls to {@link #commit()} will throw an
+  calls to {@code #commit()} will throw an
   IllegalStateException.  The only course of action is to
-  call {@link #close()}, which internally will call {@link
+  call {@code #close()}, which internally will call {@code
   #rollback()}, to undo any changes to the index since the
-  last commit.  You can also just call {@link #rollback()}
+  last commit.  You can also just call {@code #rollback()}
   directly.</p>
 
-  <a name="thread-safety"></a><p><b>NOTE</b>: {@link
+  <a name="thread-safety"></a><p><b>NOTE</b>: {@code
   IndexWriter} instances are completely thread
   safe, meaning multiple threads can call any of its
   methods, concurrently.  If your application requires
@@ -151,7 +132,7 @@ import org.trypticon.lucene3.util.Version;
   <code>Thread.interrupt()</code> on a thread that's within
   IndexWriter, IndexWriter will try to catch this (eg, if
   it's in a wait() or Thread.sleep()), and will then throw
-  the unchecked exception {@link ThreadInterruptedException}
+  the unchecked exception {@code ThreadInterruptedException}
   and <b>clear</b> the interrupt status on the thread.</p>
 */
 
@@ -179,8 +160,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /**
    * Default value for the write lock timeout (1,000).
-   * @see #setDefaultWriteLockTimeout
-   * @deprecated use {@link IndexWriterConfig#WRITE_LOCK_TIMEOUT} instead
+   *
+   * @deprecated use {@code IndexWriterConfig#WRITE_LOCK_TIMEOUT} instead
    */
   @Deprecated
   public static long WRITE_LOCK_TIMEOUT = IndexWriterConfig.WRITE_LOCK_TIMEOUT;
@@ -194,46 +175,46 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /**
    * Value to denote a flush trigger is disabled
-   * @deprecated use {@link IndexWriterConfig#DISABLE_AUTO_FLUSH} instead
+   * @deprecated use {@code IndexWriterConfig#DISABLE_AUTO_FLUSH} instead
    */
   @Deprecated
   public final static int DISABLE_AUTO_FLUSH = IndexWriterConfig.DISABLE_AUTO_FLUSH;
 
   /**
    * Disabled by default (because IndexWriter flushes by RAM usage
-   * by default). Change using {@link #setMaxBufferedDocs(int)}.
-   * @deprecated use {@link IndexWriterConfig#DEFAULT_MAX_BUFFERED_DOCS} instead.
+   * by default). Change using {@code #setMaxBufferedDocs(int)}.
+   * @deprecated use {@code IndexWriterConfig#DEFAULT_MAX_BUFFERED_DOCS} instead.
    */
   @Deprecated
   public final static int DEFAULT_MAX_BUFFERED_DOCS = IndexWriterConfig.DEFAULT_MAX_BUFFERED_DOCS;
 
   /**
    * Default value is 16 MB (which means flush when buffered
-   * docs consume 16 MB RAM).  Change using {@link #setRAMBufferSizeMB}.
-   * @deprecated use {@link IndexWriterConfig#DEFAULT_RAM_BUFFER_SIZE_MB} instead.
+   * docs consume 16 MB RAM).  Change using {@code #setRAMBufferSizeMB}.
+   * @deprecated use {@code IndexWriterConfig#DEFAULT_RAM_BUFFER_SIZE_MB} instead.
    */
   @Deprecated
   public final static double DEFAULT_RAM_BUFFER_SIZE_MB = IndexWriterConfig.DEFAULT_RAM_BUFFER_SIZE_MB;
 
   /**
    * Disabled by default (because IndexWriter flushes by RAM usage
-   * by default). Change using {@link #setMaxBufferedDeleteTerms(int)}.
-   * @deprecated use {@link IndexWriterConfig#DEFAULT_MAX_BUFFERED_DELETE_TERMS} instead
+   * by default). Change using {@code #setMaxBufferedDeleteTerms(int)}.
+   * @deprecated use {@code IndexWriterConfig#DEFAULT_MAX_BUFFERED_DELETE_TERMS} instead
    */
   @Deprecated
   public final static int DEFAULT_MAX_BUFFERED_DELETE_TERMS = IndexWriterConfig.DEFAULT_MAX_BUFFERED_DELETE_TERMS;
 
   /**
-   * Default value is 10,000. Change using {@link #setMaxFieldLength(int)}.
+   * Default value is 10,000. Change using {@code #setMaxFieldLength(int)}.
    * 
-   * @deprecated see {@link IndexWriterConfig}
+   * @deprecated see {@code IndexWriterConfig}
    */
   @Deprecated
   public final static int DEFAULT_MAX_FIELD_LENGTH = MaxFieldLength.UNLIMITED.getLimit();
 
   /**
-   * Default value is 128. Change using {@link #setTermIndexInterval(int)}.
-   * @deprecated use {@link IndexWriterConfig#DEFAULT_TERM_INDEX_INTERVAL} instead.
+   * Default value is 128. Change using {@code #setTermIndexInterval(int)}.
+   * @deprecated use {@code IndexWriterConfig#DEFAULT_TERM_INDEX_INTERVAL} instead.
    */
   @Deprecated
   public final static int DEFAULT_TERM_INDEX_INTERVAL = IndexWriterConfig.DEFAULT_TERM_INDEX_INTERVAL;
@@ -242,7 +223,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * Absolute hard maximum length for a term.  If a term
    * arrives from the analyzer longer than this length, it
    * is skipped and a message is printed to infoStream, if
-   * set (see {@link #setInfoStream}).
+   * set (see {@code #setInfoStream}).
    */
   public final static int MAX_TERM_LENGTH = DocumentsWriter.MAX_TERM_LENGTH;
 
@@ -334,15 +315,15 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * This provides "near real-time" searching, in that
    * changes made during an IndexWriter session can be
    * quickly made available for searching without closing
-   * the writer nor calling {@link #commit}.
+   * the writer nor calling {@code #commit}.
    *
    * <p>Note that this is functionally equivalent to calling
-   * {#flush} and then using {@link IndexReader#open} to
+   * {#flush} and then using {@code IndexReader#open} to
    * open a new reader.  But the turarnound time of this
    * method should be faster since it avoids the potentially
-   * costly {@link #commit}.</p>
+   * costly {@code #commit}.</p>
    *
-   * <p>You must close the {@link IndexReader} returned by
+   * <p>You must close the {@code IndexReader} returned by
    * this method once you are done using it.</p>
    *
    * <p>It's <i>near</i> real-time because there is no hard
@@ -353,7 +334,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * feature, please report back on your findings so we can
    * learn, improve and iterate.</p>
    *
-   * <p>The resulting reader supports {@link
+   * <p>The resulting reader supports {@code
    * IndexReader#reopen}, but that call will simply forward
    * back to this method (though this may change in the
    * future).</p>
@@ -365,7 +346,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * file descriptors, CPU time) will be consumed.</p>
    *
    * <p>For lower latency on reopening a reader, you should
-   * call {@link #setMergedSegmentWarmer} to
+   * call {@code #setMergedSegmentWarmer} to
    * pre-warm a newly merged segment before it's committed
    * to the index.  This is important for minimizing
    * index-to-search delay after a large merge.  </p>
@@ -378,14 +359,14 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * <p><b>NOTE</b>: Once the writer is closed, any
    * outstanding readers may continue to be used.  However,
    * if you attempt to reopen any of those readers, you'll
-   * hit an {@link AlreadyClosedException}.</p>
+   * hit an {@code AlreadyClosedException}.</p>
    *
    * @lucene.experimental
    *
    * @return IndexReader that covers entire index plus all
    * changes made so far by this IndexWriter instance
    *
-   * @deprecated Please use {@link
+   * @deprecated Please use {@code
    * IndexReader#open(IndexWriter,boolean)} instead.
    *
    * @throws IOException
@@ -399,11 +380,11 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     return getReader(config.getReaderTermsIndexDivisor(), applyAllDeletes);
   }
 
-  /** Expert: like {@link #getReader}, except you can
+  /** Expert: like {@code #getReader}, except you can
    *  specify which termInfosIndexDivisor should be used for
    *  any newly opened readers.
    * @param termInfosIndexDivisor Subsamples which indexed
-   *  terms are loaded into RAM. This has the same effect as {@link
+   *  terms are loaded into RAM. This has the same effect as {@code
    *  IndexWriter#setTermIndexInterval} except that setting
    *  must be done at indexing time while this setting can be
    *  set per reader.  When set to N, then one in every
@@ -413,16 +394,16 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *  loading a TermInfo.  The default value is 1.  Set this
    *  to -1 to skip loading the terms index entirely.
    *  
-   *  @deprecated Please use {@link
+   *  @deprecated Please use {@code
    *  IndexReader#open(IndexWriter,boolean)} instead.  Furthermore,
    *  this method cannot guarantee the reader (and its
    *  sub-readers) will be opened with the
    *  termInfosIndexDivisor setting because some of them may
-   *  have already been opened according to {@link
+   *  have already been opened according to {@code
    *  IndexWriterConfig#setReaderTermsIndexDivisor}. You
    *  should set the requested termInfosIndexDivisor through 
-   *  {@link IndexWriterConfig#setReaderTermsIndexDivisor} and use 
-   *  {@link #getReader()}. */
+   *  {@code IndexWriterConfig#setReaderTermsIndexDivisor} and use
+   *  {@code #getReader()}. */
   @Deprecated
   public IndexReader getReader(int termInfosIndexDivisor) throws IOException {
     return getReader(termInfosIndexDivisor, true);
@@ -661,8 +642,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    
     /**
      * Obtain a SegmentReader from the readerPool.  The reader
-     * must be returned by calling {@link #release(SegmentReader)}
-     * @see #release(SegmentReader)
+     * must be returned by calling {@code #release(SegmentReader)}
+     *
      * @param info
      * @param doOpenStores
      * @throws IOException
@@ -673,9 +654,9 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
     /**
      * Obtain a SegmentReader from the readerPool.  The reader
-     * must be returned by calling {@link #release(SegmentReader)}
+     * must be returned by calling {@code #release(SegmentReader)}
      * 
-     * @see #release(SegmentReader)
+     *
      * @param info
      * @param doOpenStores
      * @param readBufferSize
@@ -756,7 +737,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   }
   
   /**
-   * Used internally to throw an {@link
+   * Used internally to throw an {@code
    * AlreadyClosedException} if this IndexWriter has been
    * closed.
    * @throws AlreadyClosedException if this IndexWriter is closed
@@ -801,11 +782,11 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *
    *  <p>Note that this method is a convenience method: it
    *  just calls mergePolicy.getUseCompoundFile as long as
-   *  mergePolicy is an instance of {@link LogMergePolicy}.
+   *  mergePolicy is an instance of {@code LogMergePolicy}.
    *  Otherwise an IllegalArgumentException is thrown.</p>
    *
-   *  @see #setUseCompoundFile(boolean)
-   *  @deprecated use {@link LogMergePolicy#getUseCompoundFile()}
+   *
+   *  @deprecated use {@code LogMergePolicy#getUseCompoundFile()}
    */
   @Deprecated
   public boolean getUseCompoundFile() {
@@ -821,10 +802,10 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * <p>
    * Note that this method is a convenience method: it just calls
    * mergePolicy.setUseCompoundFile as long as mergePolicy is an instance of
-   * {@link LogMergePolicy}. Otherwise an IllegalArgumentException is thrown.
+   * {@code LogMergePolicy}. Otherwise an IllegalArgumentException is thrown.
    * </p>
    * 
-   * @deprecated use {@link LogMergePolicy#setUseCompoundFile(boolean)}.
+   * @deprecated use {@code LogMergePolicy#setUseCompoundFile(boolean)}.
    */
   @Deprecated
   public void setUseCompoundFile(boolean value) {
@@ -833,8 +814,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /** Expert: Set the Similarity implementation used by this IndexWriter.
    *
-   * @see Similarity#setDefault(Similarity)
-   * @deprecated use {@link IndexWriterConfig#setSimilarity(Similarity)} instead
+   *
+   * @deprecated use {@code IndexWriterConfig#setSimilarity(Similarity)} instead
    */
   @Deprecated
   public void setSimilarity(Similarity similarity) {
@@ -848,8 +829,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /** Expert: Return the Similarity implementation used by this IndexWriter.
    *
-   * <p>This defaults to the current value of {@link Similarity#getDefault()}.
-   * @deprecated use {@link IndexWriterConfig#getSimilarity()} instead
+   * <p>This defaults to the current value of {@code Similarity#getDefault()}.
+   * @deprecated use {@code IndexWriterConfig#getSimilarity()} instead
    */
   @Deprecated
   public Similarity getSimilarity() {
@@ -876,8 +857,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * memory by an IndexReader, and, on average, <code>interval/2</code> terms
    * must be scanned for each random term access.
    *
-   * @see #DEFAULT_TERM_INDEX_INTERVAL
-   * @deprecated use {@link IndexWriterConfig#setTermIndexInterval(int)}
+   *
+   * @deprecated use {@code IndexWriterConfig#setTermIndexInterval(int)}
    */
   @Deprecated
   public void setTermIndexInterval(int interval) {
@@ -887,8 +868,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /** Expert: Return the interval between indexed terms.
    *
-   * @see #setTermIndexInterval(int)
-   * @deprecated use {@link IndexWriterConfig#getTermIndexInterval()}
+   *
+   * @deprecated use {@code IndexWriterConfig#getTermIndexInterval()}
    */
   @Deprecated
   public int getTermIndexInterval() {
@@ -918,7 +899,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *  if it does not exist and <code>create</code> is
    *  <code>false</code> or if there is any other low-level
    *  IO error
-   *  @deprecated use {@link #IndexWriter(Directory, IndexWriterConfig)} instead
+   *  @deprecated use {@code #IndexWriter(Directory, IndexWriterConfig)} instead
    */
   @Deprecated
   public IndexWriter(Directory d, Analyzer a, boolean create, MaxFieldLength mfl)
@@ -945,7 +926,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * @throws IOException if the directory cannot be
    *  read/written to or if there is any other low-level
    *  IO error
-   *  @deprecated use {@link #IndexWriter(Directory, IndexWriterConfig)} instead
+   *  @deprecated use {@code #IndexWriter(Directory, IndexWriterConfig)} instead
    */
   @Deprecated
   public IndexWriter(Directory d, Analyzer a, MaxFieldLength mfl)
@@ -955,7 +936,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   }
 
   /**
-   * Expert: constructs an IndexWriter with a custom {@link
+   * Expert: constructs an IndexWriter with a custom {@code
    * IndexDeletionPolicy}, for the index in <code>d</code>,
    * first creating it if it does not already exist.  Text
    * will be analyzed with <code>a</code>.
@@ -971,7 +952,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * @throws IOException if the directory cannot be
    *  read/written to or if there is any other low-level
    *  IO error
-   *  @deprecated use {@link #IndexWriter(Directory, IndexWriterConfig)} instead
+   *  @deprecated use {@code #IndexWriter(Directory, IndexWriterConfig)} instead
    */
   @Deprecated
   public IndexWriter(Directory d, Analyzer a, IndexDeletionPolicy deletionPolicy, MaxFieldLength mfl)
@@ -981,7 +962,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   }
 
   /**
-   * Expert: constructs an IndexWriter with a custom {@link
+   * Expert: constructs an IndexWriter with a custom {@code
    * IndexDeletionPolicy}, for the index in <code>d</code>.
    * Text will be analyzed with <code>a</code>.  If
    * <code>create</code> is true, then a new, empty index
@@ -994,7 +975,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *  the existing one; <code>false</code> to append to the existing
    *  index
    * @param deletionPolicy see <a href="#deletionPolicy">above</a>
-   * @param mfl {@link org.trypticon.lucene3.index.IndexWriter.MaxFieldLength}, whether or not to limit field lengths.  Value is in number of terms/tokens
+   * @param mfl {@code org.trypticon.lucene3.index.IndexWriter.MaxFieldLength}, whether or not to limit field lengths.  Value is in number of terms/tokens
    * @throws CorruptIndexException if the index is corrupt
    * @throws LockObtainFailedException if another writer
    *  has this index open (<code>write.lock</code> could not
@@ -1003,7 +984,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *  if it does not exist and <code>create</code> is
    *  <code>false</code> or if there is any other low-level
    *  IO error
-   *  @deprecated use {@link #IndexWriter(Directory, IndexWriterConfig)} instead
+   *  @deprecated use {@code #IndexWriter(Directory, IndexWriterConfig)} instead
    */
   @Deprecated
   public IndexWriter(Directory d, Analyzer a, boolean create, IndexDeletionPolicy deletionPolicy, MaxFieldLength mfl)
@@ -1015,26 +996,26 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   
   /**
    * Expert: constructs an IndexWriter on specific commit
-   * point, with a custom {@link IndexDeletionPolicy}, for
+   * point, with a custom {@code IndexDeletionPolicy}, for
    * the index in <code>d</code>.  Text will be analyzed
    * with <code>a</code>.
    *
-   * <p> This is only meaningful if you've used a {@link
+   * <p> This is only meaningful if you've used a {@code
    * IndexDeletionPolicy} in that past that keeps more than
    * just the last commit.
    * 
-   * <p>This operation is similar to {@link #rollback()},
+   * <p>This operation is similar to {@code #rollback()},
    * except that method can only rollback what's been done
    * with the current instance of IndexWriter since its last
    * commit, whereas this method can rollback to an
    * arbitrary commit point from the past, assuming the
-   * {@link IndexDeletionPolicy} has preserved past
+   * {@code IndexDeletionPolicy} has preserved past
    * commits.
    *
    * @param d the index directory
    * @param a the analyzer to use
    * @param deletionPolicy see <a href="#deletionPolicy">above</a>
-   * @param mfl whether or not to limit field lengths, value is in number of terms/tokens.  See {@link org.trypticon.lucene3.index.IndexWriter.MaxFieldLength}.
+   * @param mfl whether or not to limit field lengths, value is in number of terms/tokens.  See {@code org.trypticon.lucene3.index.IndexWriter.MaxFieldLength}.
    * @param commit which commit to open
    * @throws CorruptIndexException if the index is corrupt
    * @throws LockObtainFailedException if another writer
@@ -1044,7 +1025,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *  if it does not exist and <code>create</code> is
    *  <code>false</code> or if there is any other low-level
    *  IO error
-   *  @deprecated use {@link #IndexWriter(Directory, IndexWriterConfig)} instead
+   *  @deprecated use {@code #IndexWriter(Directory, IndexWriterConfig)} instead
    */
   @Deprecated
   public IndexWriter(Directory d, Analyzer a, IndexDeletionPolicy deletionPolicy, MaxFieldLength mfl, IndexCommit commit)
@@ -1056,9 +1037,9 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /**
    * Constructs a new IndexWriter per the settings given in <code>conf</code>.
-   * Note that the passed in {@link IndexWriterConfig} is
+   * Note that the passed in {@code IndexWriterConfig} is
    * privately cloned; if you need to make subsequent "live"
-   * changes to the configuration use {@link #getConfig}.
+   * changes to the configuration use {@code #getConfig}.
    * <p>
    * 
    * @param d
@@ -1243,14 +1224,14 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   }
 
   /**
-   * Returns the private {@link IndexWriterConfig}, cloned
-   * from the {@link IndexWriterConfig} passed to
-   * {@link #IndexWriter(Directory, IndexWriterConfig)}.
+   * Returns the private {@code IndexWriterConfig}, cloned
+   * from the {@code IndexWriterConfig} passed to
+   * {@code #IndexWriter(Directory, IndexWriterConfig)}.
    * <p>
    * <b>NOTE:</b> some settings may be changed on the
-   * returned {@link IndexWriterConfig}, and will take
+   * returned {@code IndexWriterConfig}, and will take
    * effect in the current IndexWriter instance.  See the
-   * javadocs for the specific setters in {@link
+   * javadocs for the specific setters in {@code
    * IndexWriterConfig} for details.
    */
   public IndexWriterConfig getConfig() {
@@ -1261,7 +1242,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   /**
    * Expert: set the merge policy used by this writer.
    * 
-   * @deprecated use {@link IndexWriterConfig#setMergePolicy(MergePolicy)} instead.
+   * @deprecated use {@code IndexWriterConfig#setMergePolicy(MergePolicy)} instead.
    */
   @Deprecated
   public void setMergePolicy(MergePolicy mp) {
@@ -1283,9 +1264,9 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /**
    * Expert: returns the current MergePolicy in use by this writer.
-   * @see #setMergePolicy
+   *
    * 
-   * @deprecated use {@link IndexWriterConfig#getMergePolicy()} instead
+   * @deprecated use {@code IndexWriterConfig#getMergePolicy()} instead
    */
   @Deprecated
   public MergePolicy getMergePolicy() {
@@ -1295,7 +1276,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /**
    * Expert: set the merge scheduler used by this writer.
-   * @deprecated use {@link IndexWriterConfig#setMergeScheduler(MergeScheduler)} instead
+   * @deprecated use {@code IndexWriterConfig#setMergeScheduler(MergeScheduler)} instead
    */
   @Deprecated
   synchronized public void setMergeScheduler(MergeScheduler mergeScheduler) throws CorruptIndexException, IOException {
@@ -1318,8 +1299,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   /**
    * Expert: returns the current MergeScheduler in use by this
    * writer.
-   * @see #setMergeScheduler(MergeScheduler)
-   * @deprecated use {@link IndexWriterConfig#getMergeScheduler()} instead
+   *
+   * @deprecated use {@code IndexWriterConfig#getMergeScheduler()} instead
    */
   @Deprecated
   public MergeScheduler getMergeScheduler() {
@@ -1335,18 +1316,18 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * are best for batched indexing and speedier
    * searches.</p>
    *
-   * <p>The default value is {@link Integer#MAX_VALUE}.</p>
+   * <p>The default value is {@code Integer#MAX_VALUE}.</p>
    *
    * <p>Note that this method is a convenience method: it
    * just calls mergePolicy.setMaxMergeDocs as long as
-   * mergePolicy is an instance of {@link LogMergePolicy}.
+   * mergePolicy is an instance of {@code LogMergePolicy}.
    * Otherwise an IllegalArgumentException is thrown.</p>
    *
-   * <p>The default merge policy ({@link
+   * <p>The default merge policy ({@code
    * LogByteSizeMergePolicy}) also allows you to set this
-   * limit by net size (in MB) of the segment, using {@link
+   * limit by net size (in MB) of the segment, using {@code
    * LogByteSizeMergePolicy#setMaxMergeMB}.</p>
-   * @deprecated use {@link LogMergePolicy#setMaxMergeDocs(int)} directly.
+   * @deprecated use {@code LogMergePolicy#setMaxMergeDocs(int)} directly.
    */
   @Deprecated
   public void setMaxMergeDocs(int maxMergeDocs) {
@@ -1359,11 +1340,11 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *
    * <p>Note that this method is a convenience method: it
    * just calls mergePolicy.getMaxMergeDocs as long as
-   * mergePolicy is an instance of {@link LogMergePolicy}.
+   * mergePolicy is an instance of {@code LogMergePolicy}.
    * Otherwise an IllegalArgumentException is thrown.</p>
    *
-   * @see #setMaxMergeDocs
-   * @deprecated use {@link LogMergePolicy#getMaxMergeDocs()} directly.
+   *
+   * @deprecated use {@code LogMergePolicy#getMaxMergeDocs()} directly.
    */
   @Deprecated
   public int getMaxMergeDocs() {
@@ -1383,10 +1364,10 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * accomodate the expected size. If you set it to Integer.MAX_VALUE, then the
    * only limit is your memory, but you should anticipate an OutOfMemoryError.
    * <p/>
-   * By default, no more than {@link #DEFAULT_MAX_FIELD_LENGTH} terms will be
+   * By default, no more than {@code #DEFAULT_MAX_FIELD_LENGTH} terms will be
    * indexed for a field.
    * 
-   * @deprecated use {@link LimitTokenCountAnalyzer} instead. Note that the
+   * @deprecated use {@code LimitTokenCountAnalyzer} instead. Note that the
    *             behvaior slightly changed - the analyzer limits the number of
    *             tokens per token stream created, while this setting limits the
    *             total number of tokens to index. This only matters if you index
@@ -1404,8 +1385,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   /**
    * Returns the maximum number of terms that will be
    * indexed for a single field in a document.
-   * @see #setMaxFieldLength
-   * @deprecated use {@link LimitTokenCountAnalyzer} to limit number of tokens.
+   *
+   * @deprecated use {@code LimitTokenCountAnalyzer} to limit number of tokens.
    */
   @Deprecated
   public int getMaxFieldLength() {
@@ -1414,7 +1395,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   }
 
   /**
-   * @deprecated use {@link
+   * @deprecated use {@code
    *  IndexWriterConfig#setReaderTermsIndexDivisor} instead.
    */
   @Deprecated
@@ -1427,7 +1408,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   }
 
   /**
-   * @deprecated use {@link
+   * @deprecated use {@code
    *  IndexWriterConfig#getReaderTermsIndexDivisor} instead.
    */
   @Deprecated
@@ -1442,7 +1423,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * indexing.
    *
    * <p>When this is set, the writer will flush every
-   * maxBufferedDocs added documents.  Pass in {@link
+   * maxBufferedDocs added documents.  Pass in {@code
    * #DISABLE_AUTO_FLUSH} to prevent triggering a flush due
    * to number of buffered documents.  Note that if flushing
    * by RAM usage is also enabled, then the flush will be
@@ -1453,8 +1434,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * @throws IllegalArgumentException if maxBufferedDocs is
    * enabled but smaller than 2, or it disables maxBufferedDocs
    * when ramBufferSize is already disabled
-   * @see #setRAMBufferSizeMB
-   * @deprecated use {@link IndexWriterConfig#setMaxBufferedDocs(int)} instead.
+   *
+   * @deprecated use {@code IndexWriterConfig#setMaxBufferedDocs(int)} instead.
    */
   @Deprecated
   public void setMaxBufferedDocs(int maxBufferedDocs) {
@@ -1491,8 +1472,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   /**
    * Returns the number of buffered added documents that will
    * trigger a flush if enabled.
-   * @see #setMaxBufferedDocs
-   * @deprecated use {@link IndexWriterConfig#getMaxBufferedDocs()} instead.
+   *
+   * @deprecated use {@code IndexWriterConfig#getMaxBufferedDocs()} instead.
    */
   @Deprecated
   public int getMaxBufferedDocs() {
@@ -1509,7 +1490,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *
    * <p>When this is set, the writer will flush whenever
    * buffered documents and deletions use this much RAM.
-   * Pass in {@link #DISABLE_AUTO_FLUSH} to prevent
+   * Pass in {@code #DISABLE_AUTO_FLUSH} to prevent
    * triggering a flush due to RAM usage.  Note that if
    * flushing by document count is also enabled, then the
    * flush will be triggered by whichever comes first.</p>
@@ -1520,7 +1501,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * the RAM usage if individual Queries so the accounting
    * will under-estimate and you should compensate by either
    * calling commit() periodically yourself, or by using
-   * {@link #setMaxBufferedDeleteTerms} to flush by count
+   * {@code #setMaxBufferedDeleteTerms} to flush by count
    * instead of RAM usage (each buffered delete Query counts
    * as one).
    *
@@ -1532,12 +1513,12 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * how many fields have norms, etc., so it's best to set
    * this value comfortably under 2048.</p>
    *
-   * <p> The default value is {@link #DEFAULT_RAM_BUFFER_SIZE_MB}.</p>
+   * <p> The default value is {@code #DEFAULT_RAM_BUFFER_SIZE_MB}.</p>
    * 
    * @throws IllegalArgumentException if ramBufferSize is
    * enabled but non-positive, or it disables ramBufferSize
    * when maxBufferedDocs is already disabled
-   * @deprecated use {@link IndexWriterConfig#setRAMBufferSizeMB(double)} instead.
+   * @deprecated use {@code IndexWriterConfig#setRAMBufferSizeMB(double)} instead.
    */
   @Deprecated
   public void setRAMBufferSizeMB(double mb) {
@@ -1550,8 +1531,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   }
 
   /**
-   * Returns the value set by {@link #setRAMBufferSizeMB} if enabled.
-   * @deprecated use {@link IndexWriterConfig#getRAMBufferSizeMB()} instead.
+   * Returns the value set by {@code #setRAMBufferSizeMB} if enabled.
+   * @deprecated use {@code IndexWriterConfig#getRAMBufferSizeMB()} instead.
    */
   @Deprecated
   public double getRAMBufferSizeMB() {
@@ -1568,8 +1549,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * 
    * @throws IllegalArgumentException if maxBufferedDeleteTerms
    * is enabled but smaller than 1
-   * @see #setRAMBufferSizeMB
-   * @deprecated use {@link IndexWriterConfig#setMaxBufferedDeleteTerms(int)} instead.
+   *
+   * @deprecated use {@code IndexWriterConfig#setMaxBufferedDeleteTerms(int)} instead.
    */
   @Deprecated
   public void setMaxBufferedDeleteTerms(int maxBufferedDeleteTerms) {
@@ -1584,8 +1565,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   /**
    * Returns the number of buffered deleted terms that will
    * trigger a flush if enabled.
-   * @see #setMaxBufferedDeleteTerms
-   * @deprecated use {@link IndexWriterConfig#getMaxBufferedDeleteTerms()} instead
+   *
+   * @deprecated use {@code IndexWriterConfig#getMaxBufferedDeleteTerms()} instead
    */
   @Deprecated
   public int getMaxBufferedDeleteTerms() {
@@ -1603,11 +1584,11 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *
    * <p>Note that this method is a convenience method: it
    * just calls mergePolicy.setMergeFactor as long as
-   * mergePolicy is an instance of {@link LogMergePolicy}.
+   * mergePolicy is an instance of {@code LogMergePolicy}.
    * Otherwise an IllegalArgumentException is thrown.</p>
    *
    * <p>This must never be less than 2.  The default value is 10.
-   * @deprecated use {@link LogMergePolicy#setMergeFactor(int)} directly.
+   * @deprecated use {@code LogMergePolicy#setMergeFactor(int)} directly.
    */
   @Deprecated
   public void setMergeFactor(int mergeFactor) {
@@ -1621,11 +1602,11 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *
    * <p>Note that this method is a convenience method: it
    * just calls mergePolicy.getMergeFactor as long as
-   * mergePolicy is an instance of {@link LogMergePolicy}.
+   * mergePolicy is an instance of {@code LogMergePolicy}.
    * Otherwise an IllegalArgumentException is thrown.</p>
    *
-   * @see #setMergeFactor
-   * @deprecated use {@link LogMergePolicy#getMergeFactor()} directly.
+   *
+   * @deprecated use {@code LogMergePolicy#getMergeFactor()} directly.
    */
   @Deprecated
   public int getMergeFactor() {
@@ -1634,7 +1615,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /** If non-null, this will be the default infoStream used
    * by a newly instantiated IndexWriter.
-   * @see #setInfoStream
+   *
    */
   public static void setDefaultInfoStream(PrintStream infoStream) {
     IndexWriter.defaultInfoStream = infoStream;
@@ -1643,7 +1624,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   /**
    * Returns the current default infoStream for newly
    * instantiated IndexWriters.
-   * @see #setDefaultInfoStream
+   *
    */
   public static PrintStream getDefaultInfoStream() {
     return IndexWriter.defaultInfoStream;
@@ -1672,7 +1653,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /**
    * Returns the current infoStream in use by this writer.
-   * @see #setInfoStream
+   *
    */
   public PrintStream getInfoStream() {
     ensureOpen();
@@ -1686,8 +1667,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   
   /**
    * Sets the maximum time to wait for a write lock (in milliseconds) for this instance of IndexWriter.  @see
-   * @see #setDefaultWriteLockTimeout to change the default value for all instances of IndexWriter.
-   * @deprecated use {@link IndexWriterConfig#setWriteLockTimeout(long)} instead
+   *
+   * @deprecated use {@code IndexWriterConfig#setWriteLockTimeout(long)} instead
    */
   @Deprecated
   public void setWriteLockTimeout(long writeLockTimeout) {
@@ -1700,8 +1681,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /**
    * Returns allowed timeout when acquiring the write lock.
-   * @see #setWriteLockTimeout
-   * @deprecated use {@link IndexWriterConfig#getWriteLockTimeout()}
+   *
+   * @deprecated use {@code IndexWriterConfig#getWriteLockTimeout()}
    */
   @Deprecated
   public long getWriteLockTimeout() {
@@ -1712,7 +1693,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   /**
    * Sets the default (for any instance of IndexWriter) maximum time to wait for a write lock (in
    * milliseconds).
-   * @deprecated use {@link IndexWriterConfig#setDefaultWriteLockTimeout(long)} instead
+   * @deprecated use {@code IndexWriterConfig#setDefaultWriteLockTimeout(long)} instead
    */
   @Deprecated
   public static void setDefaultWriteLockTimeout(long writeLockTimeout) {
@@ -1722,8 +1703,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   /**
    * Returns default write lock timeout for newly
    * instantiated IndexWriters.
-   * @see #setDefaultWriteLockTimeout
-   * @deprecated use {@link IndexWriterConfig#getDefaultWriteLockTimeout()} instead
+   *
+   * @deprecated use {@code IndexWriterConfig#getDefaultWriteLockTimeout()} instead
    */
   @Deprecated
   public static long getDefaultWriteLockTimeout() {
@@ -1734,7 +1715,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * Commits all changes to an index and closes all
    * associated files.  Note that this may be a costly
    * operation, so, try to re-use a single writer instead of
-   * closing and opening a new one.  See {@link #commit()} for
+   * closing and opening a new one.  See {@code #commit()} for
    * caveats about write caching done by some IO devices.
    *
    * <p> If an Exception is hit during close, eg due to disk
@@ -1919,7 +1900,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   /** Returns total number of docs in this index, including
    *  docs not yet flushed (still in the RAM buffer),
    *  not counting deletions.
-   *  @see #numDocs */
+   *  */
   public synchronized int maxDoc() {
     ensureOpen();
     int count;
@@ -1936,8 +1917,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *  docs not yet flushed (still in the RAM buffer), and
    *  including deletions.  <b>NOTE:</b> buffered deletions
    *  are not counted.  If you really need these to be
-   *  counted you should call {@link #commit()} first.
-   *  @see #numDocs */
+   *  counted you should call {@code #commit()} first.
+   *  */
   public synchronized int numDocs() throws IOException {
     ensureOpen();
     int count;
@@ -1980,7 +1961,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * is your memory, but you should anticipate an OutOfMemoryError.<p/>
    * By default, no more than 10,000 terms will be indexed for a field.
    *
-   * @see MaxFieldLength
+   *
    * @deprecated remove in 4.0
    */
   @Deprecated
@@ -1988,7 +1969,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /**
    * Adds a document to this index.  If the document contains more than
-   * {@link #setMaxFieldLength(int)} terms for a given field, the remainder are
+   * {@code #setMaxFieldLength(int)} terms for a given field, the remainder are
    * discarded.
    *
    * <p> Note that if an Exception is hit (for example disk full)
@@ -2001,7 +1982,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * <p> This method periodically flushes pending documents
    * to the Directory (see <a href="#flush">above</a>), and
    * also periodically triggers segment merges in the index
-   * according to the {@link MergePolicy} in use.</p>
+   * according to the {@code MergePolicy} in use.</p>
    *
    * <p>Merges temporarily consume space in the
    * directory. The amount of space required is up to 1X the
@@ -2009,7 +1990,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * readers/searchers are open against the index, and up to
    * 2X the size of all segments being merged when
    * readers/searchers are open against the index (see
-   * {@link #forceMerge(int)} for details). The sequence of
+   * {@code #forceMerge(int)} for details). The sequence of
    * primitive merge operations performed is governed by the
    * merge policy.
    *
@@ -2036,11 +2017,11 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /**
    * Adds a document to this index, using the provided analyzer instead of the
-   * value of {@link #getAnalyzer()}.  If the document contains more than
-   * {@link #setMaxFieldLength(int)} terms for a given field, the remainder are
+   * value of {@code #getAnalyzer()}.  If the document contains more than
+   * {@code #setMaxFieldLength(int)} terms for a given field, the remainder are
    * discarded.
    *
-   * <p>See {@link #addDocument(Document)} for details on
+   * <p>See {@code #addDocument(Document)} for details on
    * index and IndexWriter state after an Exception, and
    * flushing/merging temporary free space requirements.</p>
    *
@@ -2091,7 +2072,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * perhaps to obtain better index compression), in which case
    * you may need to fully re-index your documents at that time.
    *
-   * <p>See {@link #addDocument(Document)} for details on
+   * <p>See {@code #addDocument(Document)} for details on
    * index and IndexWriter state after an Exception, and
    * flushing/merging temporary free space requirements.</p>
    *
@@ -2138,7 +2119,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * assigned document IDs, such that an external reader
    * will see all or none of the documents. 
    *
-   * See {@link #addDocuments(Collection)}.
+   * See {@code #addDocuments(Collection)}.
    *
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
@@ -2157,7 +2138,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * assigned document IDs, such that an external reader
    * will see all or none of the documents. 
    *
-   * See {@link #addDocuments(Collection)}.
+   * See {@code #addDocuments(Collection)}.
    *
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
@@ -2427,7 +2408,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   /**
    * Forces merge policy to merge segments until there's <=
    * maxNumSegments.  The actual merges to be
-   * executed are determined by the {@link MergePolicy}.
+   * executed are determined by the {@code MergePolicy}.
    *
    * <p>This is a horribly costly operation, especially when
    * you pass a small {@code maxNumSegments}; usually you
@@ -2439,7 +2420,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * file format).  For example, if your index size is 10 MB
    * then you need up to 20 MB free for this to complete (30
    * MB if you're using compound file format).  Also,
-   * it's best to call {@link #commit()} afterwards,
+   * it's best to call {@code #commit()} afterwards,
    * to allow IndexWriter to free up disk space.</p>
    *
    * <p>If some but not all readers re-open while merging
@@ -2476,14 +2457,14 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * you should immediately close the writer.  See <a
    * href="#OOME">above</a> for details.</p>
    *
-   * <p><b>NOTE</b>: if you call {@link #close(boolean)}
+   * <p><b>NOTE</b>: if you call {@code #close(boolean)}
    * with <tt>false</tt>, which aborts all running merges,
    * then any thread still running this method might hit a
-   * {@link MergePolicy.MergeAbortedException}.
+   * {@code MergePolicy.MergeAbortedException}.
    *
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
-   * @see MergePolicy#findMerges
+   *
    *
    * @param maxNumSegments maximum number of segments left
    * in the index after merging finishes
@@ -2492,10 +2473,10 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     forceMerge(maxNumSegments, true);
   }
 
-  /** Just like {@link #forceMerge(int)}, except you can
+  /** Just like {@code #forceMerge(int)}, except you can
    *  specify whether the call should block until
    *  all merging completes.  This is only meaningful with a
-   *  {@link MergeScheduler} that is able to run merges in
+   *  {@code MergeScheduler} that is able to run merges in
    *  background threads.
    *
    *  <p><b>NOTE</b>: if this method hits an OutOfMemoryError
@@ -2608,20 +2589,20 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     forceMergeDeletes(doWait);
   }
 
-  /** Just like {@link #forceMergeDeletes()}, except you can
+  /** Just like {@code #forceMergeDeletes()}, except you can
    *  specify whether the call should block until the
    *  operation completes.  This is only meaningful with a
-   *  {@link MergeScheduler} that is able to run merges in
+   *  {@code MergeScheduler} that is able to run merges in
    *  background threads.
    *
    * <p><b>NOTE</b>: if this method hits an OutOfMemoryError
    * you should immediately close the writer.  See <a
    * href="#OOME">above</a> for details.</p>
    *
-   * <p><b>NOTE</b>: if you call {@link #close(boolean)}
+   * <p><b>NOTE</b>: if you call {@code #close(boolean)}
    * with <tt>false</tt>, which aborts all running merges,
    * then any thread still running this method might hit a
-   * {@link MergePolicy.MergeAbortedException}.
+   * {@code MergePolicy.MergeAbortedException}.
    */
   public void forceMergeDeletes(boolean doWait)
     throws CorruptIndexException, IOException {
@@ -2699,8 +2680,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   /**
    *  Forces merging of all segments that have deleted
    *  documents.  The actual merges to be executed are
-   *  determined by the {@link MergePolicy}.  For example,
-   *  the default {@link TieredMergePolicy} will only
+   *  determined by the {@code MergePolicy}.  For example,
+   *  the default {@code TieredMergePolicy} will only
    *  pick a segment if the percentage of
    *  deleted docs is over 10%.
    *
@@ -2709,7 +2690,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *
    *  <p>To see how
    *  many deletions you have pending in your index, call
-   *  {@link IndexReader#numDeletedDocs}.</p>
+   *  {@code IndexReader#numDeletedDocs}.</p>
    *
    *  <p><b>NOTE</b>: this method first flushes a new
    *  segment (if there are indexed documents), and applies
@@ -2783,7 +2764,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     }
   }
 
-  /** Expert: to be used by a {@link MergePolicy} to avoid
+  /** Expert: to be used by a {@code MergePolicy} to avoid
    *  selecting merges for segments already being merged.
    *  The returned collection is not cloned, and thus is
    *  only safe to access if you hold IndexWriter's lock
@@ -2795,7 +2776,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     return mergingSegments;
   }
 
-  /** Expert: the {@link MergeScheduler} calls this method
+  /** Expert: the {@code MergeScheduler} calls this method
    *  to retrieve the next merge requested by the
    *  MergePolicy
    *
@@ -2820,7 +2801,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * after which the state of the index will be the same as
    * it was when commit() was last called or when this
    * writer was first opened.  This also clears a previous
-   * call to {@link #prepareCommit}.
+   * call to {@code #prepareCommit}.
    * @throws IOException if there is a low-level IO error
    */
   public void rollback() throws IOException {
@@ -2913,16 +2894,16 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *
    * <p>This method will drop all buffered documents and will 
    *    remove all segments from the index. This change will not be
-   *    visible until a {@link #commit()} has been called. This method
-   *    can be rolled back using {@link #rollback()}.</p>
+   *    visible until a {@code #commit()} has been called. This method
+   *    can be rolled back using {@code #rollback()}.</p>
    *
    * <p>NOTE: this method is much faster than using deleteDocuments( new MatchAllDocsQuery() ).</p>
    *
    * <p>NOTE: this method will forcefully abort all merges
-   *    in progress.  If other threads are running {@link
-   *    #forceMerge}, {@link #addIndexes(IndexReader[])} or
-   *    {@link #forceMergeDeletes} methods, they may receive
-   *    {@link MergePolicy.MergeAbortedException}s.
+   *    in progress.  If other threads are running {@code
+   *    #forceMerge}, {@code #addIndexes(IndexReader[])} or
+   *    {@code #forceMergeDeletes} methods, they may receive
+   *    {@code MergePolicy.MergeAbortedException}s.
    */
   public synchronized void deleteAll() throws IOException {
     ensureOpen();
@@ -3056,7 +3037,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   }
 
   /**
-   * @deprecated use {@link #addIndexes(Directory...)} instead
+   * @deprecated use {@code #addIndexes(Directory...)} instead
    */
   @Deprecated
   public void addIndexesNoOptimize(Directory... dirs)
@@ -3074,7 +3055,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * with this method.
    *
    * <p>
-   * <b>NOTE:</b> the index in each {@link Directory} must not be
+   * <b>NOTE:</b> the index in each {@code Directory} must not be
    * changed (opened by a writer) while this method is
    * running.  This method does not acquire a write lock in
    * each input Directory, so it is up to the caller to
@@ -3087,11 +3068,11 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * will have been added or they all will have been.
    *
    * <p>Note that this requires temporary free space in the
-   * {@link Directory} up to 2X the sum of all input indexes
+   * {@code Directory} up to 2X the sum of all input indexes
    * (including the starting index). If readers/searchers
    * are open against the starting index, then temporary
    * free space required will be higher by the size of the
-   * starting index (see {@link #forceMerge(int)} for details).
+   * starting index (see {@code #forceMerge(int)} for details).
    *
    * <p>
    * <b>NOTE:</b> this method only copies the segments of the incomning indexes
@@ -3158,9 +3139,9 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /** 
    * Merges the provided indexes into this index. This method is useful 
-   * if you use extensions of {@link IndexReader}. Otherwise, using 
-   * {@link #addIndexes(Directory...)} is highly recommended for performance 
-   * reasons. It uses the {@link MergeScheduler} and {@link MergePolicy} set 
+   * if you use extensions of {@code IndexReader}. Otherwise, using
+   * {@code #addIndexes(Directory...)} is highly recommended for performance
+   * reasons. It uses the {@code MergeScheduler} and {@code MergePolicy} set
    * on this writer, which may perform merges in parallel.
    * 
    * <p>The provided IndexReaders are not closed.
@@ -3168,7 +3149,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * <p><b>NOTE:</b> this method does not merge the current segments, 
    * only the incoming ones.
    * 
-   * <p>See {@link #addIndexes(Directory...)} for details on transactional 
+   * <p>See {@code #addIndexes(Directory...)} for details on transactional
    * semantics, temporary free space required in the Directory, 
    * and non-CFS segments on an Exception.
    *
@@ -3176,10 +3157,10 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * you should immediately close the writer.  See <a
    * href="#OOME">above</a> for details.
    *
-   * <p><b>NOTE</b>: if you call {@link #close(boolean)}
+   * <p><b>NOTE</b>: if you call {@code #close(boolean)}
    * with <tt>false</tt>, which aborts all running merges,
    * then any thread still running this method might hit a
-   * {@link MergePolicy.MergeAbortedException}.
+   * {@code MergePolicy.MergeAbortedException}.
    *
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
@@ -3314,7 +3295,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * you should immediately close the writer.  See <a
    * href="#OOME">above</a> for details.</p>
    *
-   * @see #prepareCommit(Map) */
+   * */
   public final void prepareCommit() throws CorruptIndexException, IOException {
     ensureOpen();
     prepareCommit(null);
@@ -3326,12 +3307,12 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *  steps necessary to commit changes since this writer
    *  was opened: flushes pending added and deleted docs,
    *  syncs the index files, writes most of next segments_N
-   *  file.  After calling this you must call either {@link
-   *  #commit()} to finish the commit, or {@link
+   *  file.  After calling this you must call either {@code
+   *  #commit()} to finish the commit, or {@code
    *  #rollback()} to revert the commit and undo all changes
    *  done since the writer was opened.</p>
    * 
-   *  <p>You can also just call {@link #commit(Map)} directly
+   *  <p>You can also just call {@code #commit(Map)} directly
    *  without prepareCommit first in which case that method
    *  will internally call prepareCommit.
    *
@@ -3341,9 +3322,9 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *
    *  @param commitUserData Opaque Map (String->String)
    *  that's recorded into the segments file in the index,
-   *  and retrievable by {@link
+   *  and retrievable by {@code
    *  IndexCommit#getUserData}.  Note that when
-   *  IndexWriter commits itself during {@link #close}, the
+   *  IndexWriter commits itself during {@code #close}, the
    *  commitUserData is unchanged (just carried over from
    *  the prior commit).  If this is null then the previous
    *  commitUserData is kept.  Also, the commitUserData will
@@ -3444,8 +3425,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * you should immediately close the writer.  See <a
    * href="#OOME">above</a> for details.</p>
    *
-   * @see #prepareCommit
-   * @see #commit(Map)
+   *
+   *
    */
   public final void commit() throws CorruptIndexException, IOException {
     commit(null);
@@ -3453,8 +3434,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /** Commits all changes to the index, specifying a
    *  commitUserData Map (String -> String).  This just
-   *  calls {@link #prepareCommit(Map)} (if you didn't
-   *  already call it) and then {@link #finishCommit}.
+   *  calls {@code #prepareCommit(Map)} (if you didn't
+   *  already call it) and then {@code #finishCommit}.
    *
    * <p><b>NOTE</b>: if this method hits an OutOfMemoryError
    * you should immediately close the writer.  See <a
@@ -4626,10 +4607,10 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /**
    * Specifies maximum field length (in number of tokens/terms) in
-   * {@link IndexWriter} constructors. {@link #setMaxFieldLength(int)} overrides
+   * {@code IndexWriter} constructors. {@code #setMaxFieldLength(int)} overrides
    * the value set by the constructor.
    * 
-   * @deprecated use {@link LimitTokenCountAnalyzer} instead.
+   * @deprecated use {@code LimitTokenCountAnalyzer} instead.
    */
   @Deprecated
   public static final class MaxFieldLength {
@@ -4667,19 +4648,19 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
       return name + ":" + limit;
     }
 
-    /** Sets the maximum field length to {@link Integer#MAX_VALUE}. */
+    /** Sets the maximum field length to {@code Integer#MAX_VALUE}. */
     public static final MaxFieldLength UNLIMITED
         = new MaxFieldLength("UNLIMITED", Integer.MAX_VALUE);
 
     /**
      *  Sets the maximum field length to 
-     * {@link #DEFAULT_MAX_FIELD_LENGTH} 
+     * {@code #DEFAULT_MAX_FIELD_LENGTH}
      * */
     public static final MaxFieldLength LIMITED
         = new MaxFieldLength("LIMITED", 10000);
   }
 
-  /** If {@link #getReader} has been called (ie, this writer
+  /** If {@code #getReader} has been called (ie, this writer
    *  is in near real-time mode), then after a merge
    *  completes, this class can be invoked to warm the
    *  reader on the newly merged segment, before the merge
@@ -4696,10 +4677,10 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   }
 
   /**
-   * Set the merged segment warmer. See {@link IndexReaderWarmer}.
+   * Set the merged segment warmer. See {@code IndexReaderWarmer}.
    * 
    * @deprecated use
-   *             {@link IndexWriterConfig#setMergedSegmentWarmer}
+   *             {@code IndexWriterConfig#setMergedSegmentWarmer}
    *             instead.
    */
   @Deprecated
@@ -4708,9 +4689,9 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   }
 
   /**
-   * Returns the current merged segment warmer. See {@link IndexReaderWarmer}.
+   * Returns the current merged segment warmer. See {@code IndexReaderWarmer}.
    * 
-   * @deprecated use {@link IndexWriterConfig#getMergedSegmentWarmer()} instead.
+   * @deprecated use {@code IndexWriterConfig#getMergedSegmentWarmer()} instead.
    */
   @Deprecated
   public IndexReaderWarmer getMergedSegmentWarmer() {
@@ -4770,7 +4751,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *  
    *  <p> In addition, you can call this method to delete 
    *  unreferenced index commits. This might be useful if you 
-   *  are using an {@link IndexDeletionPolicy} which holds
+   *  are using an {@code IndexDeletionPolicy} which holds
    *  onto index commits until some criteria are met, but those
    *  commits are no longer needed. Otherwise, those commits will
    *  be deleted the next time commit() is called.
@@ -4787,22 +4768,22 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   }
 
   /**
-   * Sets the {@link PayloadProcessorProvider} to use when merging payloads.
+   * Sets the {@code PayloadProcessorProvider} to use when merging payloads.
    * Note that the given <code>pcp</code> will be invoked for every segment that
    * is merged, not only external ones that are given through
-   * {@link #addIndexes}. If you want only the payloads of the external segments
+   * {@code #addIndexes}. If you want only the payloads of the external segments
    * to be processed, you can return <code>null</code> whenever a
-   * {@link PayloadProcessorProvider.ReaderPayloadProcessor} is requested for the {@link Directory} of the
-   * {@link IndexWriter}.
+   * {@code PayloadProcessorProvider.ReaderPayloadProcessor} is requested for the {@code Directory} of the
+   * {@code IndexWriter}.
    * <p>
    * The default is <code>null</code> which means payloads are processed
    * normally (copied) during segment merges. You can also unset it by passing
    * <code>null</code>.
    * <p>
-   * <b>NOTE:</b> the set {@link PayloadProcessorProvider} will be in effect
+   * <b>NOTE:</b> the set {@code PayloadProcessorProvider} will be in effect
    * immediately, potentially for already running merges too. If you want to be
-   * sure it is used for further operations only, such as {@link #addIndexes} or
-   * {@link #forceMerge}, you can call {@link #waitForMerges()} before.
+   * sure it is used for further operations only, such as {@code #addIndexes} or
+   * {@code #forceMerge}, you can call {@code #waitForMerges()} before.
    */
   public void setPayloadProcessorProvider(PayloadProcessorProvider pcp) {
     ensureOpen();
@@ -4810,7 +4791,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   }
   
   /**
-   * Returns the {@link PayloadProcessorProvider} that is used during segment
+   * Returns the {@code PayloadProcessorProvider} that is used during segment
    * merges to process payloads.
    */
   public PayloadProcessorProvider getPayloadProcessorProvider() {

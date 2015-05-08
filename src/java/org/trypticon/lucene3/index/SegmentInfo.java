@@ -18,19 +18,13 @@ package org.trypticon.lucene3.index;
  */
 
 import org.trypticon.lucene3.store.Directory;
-import org.trypticon.lucene3.store.IndexOutput;
 import org.trypticon.lucene3.store.IndexInput;
+import org.trypticon.lucene3.store.IndexOutput;
 import org.trypticon.lucene3.util.BitVector;
 import org.trypticon.lucene3.util.Constants;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Information about a segment such as it's name, directory, and files related

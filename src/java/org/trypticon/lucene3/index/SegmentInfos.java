@@ -17,28 +17,14 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import org.trypticon.lucene3.store.Directory;
-import org.trypticon.lucene3.store.IndexInput;
-import org.trypticon.lucene3.store.IndexOutput;
-import org.trypticon.lucene3.store.ChecksumIndexOutput;
-import org.trypticon.lucene3.store.ChecksumIndexInput;
-import org.trypticon.lucene3.store.NoSuchDirectoryException;
+import org.trypticon.lucene3.store.*;
 import org.trypticon.lucene3.util.IOUtils;
 import org.trypticon.lucene3.util.ThreadInterruptedException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A collection of segmentInfo objects with methods for operating on
@@ -128,7 +114,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
   
   /**
    * If non-null, information about loading segments_N files
-   * will be printed here.  @see #setInfoStream.
+   * will be printed here.
    */
   private static PrintStream infoStream = null;
 
@@ -467,7 +453,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
    * Current version number from segments file.
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
-   * @deprecated Load the SegmentInfos and then call {@link
+   * @deprecated Load the SegmentInfos and then call {@code
    * #getVersion}.
    */
   @Deprecated
@@ -508,7 +494,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
     defaultGenLookaheadCount = count;
   }
   /**
-   * @see #setDefaultGenLookaheadCount
+   *
    *
    * @lucene.experimental
    */
@@ -517,7 +503,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
   }
 
   /**
-   * @see #setInfoStream
+   *
    */
   public static PrintStream getInfoStream() {
     return infoStream;
@@ -814,11 +800,11 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
   /** Call this to start a commit.  This writes the new
    *  segments file, but writes an invalid checksum at the
    *  end, so that it is not visible to readers.  Once this
-   *  is called you must call {@link #finishCommit} to complete
-   *  the commit or {@link #rollbackCommit} to abort it.
+   *  is called you must call {@code #finishCommit} to complete
+   *  the commit or {@code #rollbackCommit} to abort it.
    *  <p>
-   *  Note: {@link #changed()} should be called prior to this
-   *  method if changes have been made to this {@link SegmentInfos} instance
+   *  Note: {@code #changed()} should be called prior to this
+   *  method if changes have been made to this {@code SegmentInfos} instance
    *  </p>  
    **/
   final void prepareCommit(Directory dir) throws IOException {
@@ -925,8 +911,8 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
   /** Writes & syncs to the Directory dir, taking care to
    *  remove the segments file on exception
    *  <p>
-   *  Note: {@link #changed()} should be called prior to this
-   *  method if changes have been made to this {@link SegmentInfos} instance
+   *  Note: {@code #changed()} should be called prior to this
+   *  method if changes have been made to this {@code SegmentInfos} instance
    *  </p>  
    **/
   final void commit(Directory dir) throws IOException {
@@ -1043,13 +1029,13 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
     this.addAll(infos);
   }
   
-  /** Returns an <b>unmodifiable</b> {@link Iterator} of contained segments in order. */
+  /** Returns an <b>unmodifiable</b> {@code Iterator} of contained segments in order. */
   // @Override (comment out until Java 6)
   public Iterator<SegmentInfo> iterator() {
     return asList().iterator();
   }
   
-  /** Returns all contained segments as an <b>unmodifiable</b> {@link List} view. */
+  /** Returns all contained segments as an <b>unmodifiable</b> {@code List} view. */
   public List<SegmentInfo> asList() {
     if (cachedUnmodifiableList == null) {
       cachedUnmodifiableList = Collections.unmodifiableList(segments);
@@ -1057,8 +1043,8 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
     return cachedUnmodifiableList;
   }
   
-  /** Returns all contained segments as an <b>unmodifiable</b> {@link Set} view.
-   * The iterator is not sorted, use {@link List} view or {@link #iterator} to get all segments in order. */
+  /** Returns all contained segments as an <b>unmodifiable</b> {@code Set} view.
+   * The iterator is not sorted, use {@code List} view or {@code #iterator} to get all segments in order. */
   public Set<SegmentInfo> asSet() {
     if (cachedUnmodifiableSet == null) {
       cachedUnmodifiableSet = Collections.unmodifiableSet(segmentSet);

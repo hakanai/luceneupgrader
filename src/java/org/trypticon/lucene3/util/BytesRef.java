@@ -17,15 +17,15 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
-import java.util.Comparator;
 import java.io.UnsupportedEncodingException;
+import java.util.Comparator;
 
 /** Represents byte[], as a slice (offset + length) into an
  *  existing byte[].
  *
  * <p><b>Important note:</b> Unless otherwise noted, Lucene uses this class to
  * represent terms that are encoded as <b>UTF8</b> bytes in the index. To
- * convert them to a Java {@link String} (which is UTF16), use {@link #utf8ToString}.
+ * convert them to a Java {@code String} (which is UTF16), use {@code #utf8ToString}.
  * Using code like {@code new String(bytes, offset, length)} to do this
  * is <b>wrong</b>, as it does not respect the correct character set
  * and may return wrong results (depending on the platform's defaults)!
@@ -45,7 +45,7 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
   /** Length of used bytes. */
   public int length;
 
-  /** Create a BytesRef with {@link #EMPTY_BYTES} */
+  /** Create a BytesRef with {@code #EMPTY_BYTES} */
   public BytesRef() {
     this(EMPTY_BYTES);
   }
@@ -223,7 +223,7 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
   }
 
   /**
-   * Copies the bytes from the given {@link BytesRef}
+   * Copies the bytes from the given {@code BytesRef}
    * <p>
    * NOTE: if this would exceed the array size, this method creates a 
    * new reference array.
@@ -238,7 +238,7 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
   }
 
   /**
-   * Appends the bytes from the given {@link BytesRef}
+   * Appends the bytes from the given {@code BytesRef}
    * <p>
    * NOTE: if this would exceed the array size, this method creates a 
    * new reference array.

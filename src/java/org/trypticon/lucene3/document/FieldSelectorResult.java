@@ -23,54 +23,54 @@ package org.trypticon.lucene3.document;
 public enum FieldSelectorResult {
 
     /**
-     * Load this {@link Field} every time the {@link Document} is loaded, reading in the data as it is encountered.
-     *  {@link Document#getField(String)} and {@link Document#getFieldable(String)} should not return null.
+     * Load this {@code Field} every time the {@code Document} is loaded, reading in the data as it is encountered.
+     *  {@code Document#getField(String)} and {@code Document#getFieldable(String)} should not return null.
      *<p/>
-     * {@link Document#add(Fieldable)} should be called by the Reader.
+     * {@code Document#add(Fieldable)} should be called by the Reader.
      */
   LOAD,
 
     /**
-     * Lazily load this {@link Field}.  This means the {@link Field} is valid, but it may not actually contain its data until
-     * invoked.  {@link Document#getField(String)} SHOULD NOT BE USED.  {@link Document#getFieldable(String)} is safe to use and should
-     * return a valid instance of a {@link Fieldable}.
+     * Lazily load this {@code Field}.  This means the {@code Field} is valid, but it may not actually contain its data until
+     * invoked.  {@code Document#getField(String)} SHOULD NOT BE USED.  {@code Document#getFieldable(String)} is safe to use and should
+     * return a valid instance of a {@code Fieldable}.
      *<p/>
-     * {@link Document#add(Fieldable)} should be called by the Reader.
+     * {@code Document#add(Fieldable)} should be called by the Reader.
      */
   LAZY_LOAD,
 
     /**
-     * Do not load the {@link Field}.  {@link Document#getField(String)} and {@link Document#getFieldable(String)} should return null.
-     * {@link Document#add(Fieldable)} is not called.
+     * Do not load the {@code Field}.  {@code Document#getField(String)} and {@code Document#getFieldable(String)} should return null.
+     * {@code Document#add(Fieldable)} is not called.
      * <p/>
-     * {@link Document#add(Fieldable)} should not be called by the Reader.
+     * {@code Document#add(Fieldable)} should not be called by the Reader.
      */
   NO_LOAD,
 
     /**
-     * Load this field as in the {@link #LOAD} case, but immediately return from {@link Field} loading for the {@link Document}.  Thus, the
-     * Document may not have its complete set of Fields.  {@link Document#getField(String)} and {@link Document#getFieldable(String)} should
-     * both be valid for this {@link Field}
+     * Load this field as in the {@code #LOAD} case, but immediately return from {@code Field} loading for the {@code Document}.  Thus, the
+     * Document may not have its complete set of Fields.  {@code Document#getField(String)} and {@code Document#getFieldable(String)} should
+     * both be valid for this {@code Field}
      * <p/>
-     * {@link Document#add(Fieldable)} should be called by the Reader.
+     * {@code Document#add(Fieldable)} should be called by the Reader.
      */
   LOAD_AND_BREAK,
 
-    /** Expert:  Load the size of this {@link Field} rather than its value.
+    /** Expert:  Load the size of this {@code Field} rather than its value.
      * Size is measured as number of bytes required to store the field == bytes for a binary or any compressed value, and 2*chars for a String value.
      * The size is stored as a binary value, represented as an int in a byte[], with the higher order byte first in [0]
      */
   SIZE,
 
-    /** Expert: Like {@link #SIZE} but immediately break from the field loading loop, i.e., stop loading further fields, after the size is loaded */         
+    /** Expert: Like {@code #SIZE} but immediately break from the field loading loop, i.e., stop loading further fields, after the size is loaded */
   SIZE_AND_BREAK,
 
   /**
-     * Lazily load this {@link Field}, but do not cache the result.  This means the {@link Field} is valid, but it may not actually contain its data until
-     * invoked.  {@link Document#getField(String)} SHOULD NOT BE USED.  {@link Document#getFieldable(String)} is safe to use and should
-     * return a valid instance of a {@link Fieldable}.
+     * Lazily load this {@code Field}, but do not cache the result.  This means the {@code Field} is valid, but it may not actually contain its data until
+     * invoked.  {@code Document#getField(String)} SHOULD NOT BE USED.  {@code Document#getFieldable(String)} is safe to use and should
+     * return a valid instance of a {@code Fieldable}.
      *<p/>
-     * {@link Document#add(Fieldable)} should be called by the Reader.
+     * {@code Document#add(Fieldable)} should be called by the Reader.
      */
   LATENT
 }

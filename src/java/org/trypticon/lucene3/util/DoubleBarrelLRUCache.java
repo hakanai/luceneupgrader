@@ -17,16 +17,16 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.Map;
 
 /**
  * Simple concurrent LRU cache, using a "double barrel"
  * approach where two ConcurrentHashMaps record entries.
  *
  * <p>At any given time, one hash is primary and the other
- * is secondary.  {@link #get} first checks primary, and if
+ * is secondary.  {@code #get} first checks primary, and if
  * that's a miss, checks secondary.  If secondary has the
  * entry, it's promoted to primary (<b>NOTE</b>: the key is
  * cloned at this point).  Once primary is full, the

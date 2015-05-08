@@ -30,8 +30,8 @@ import java.io.IOException;
 public abstract class SpanFilter extends Filter{
   /** Returns a SpanFilterResult with true for documents which should be permitted in
     search results, and false for those that should not and Spans for where the true docs match.
-   * @param reader The {@link org.trypticon.lucene3.index.IndexReader} to load position and DocIdSet information from
-   * @return A {@link SpanFilterResult}
+   * @param reader The {@code org.trypticon.lucene3.index.IndexReader} to load position and DocIdSet information from
+   * @return A {@code SpanFilterResult}
    * @throws java.io.IOException if there was an issue accessing the necessary information
    * */
   public abstract SpanFilterResult bitSpans(IndexReader reader) throws IOException;

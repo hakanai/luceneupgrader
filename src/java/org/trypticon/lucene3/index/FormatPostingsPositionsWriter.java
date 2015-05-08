@@ -21,7 +21,6 @@ import org.trypticon.lucene3.index.FieldInfo.IndexOptions;
 import org.trypticon.lucene3.store.IndexOutput;
 import org.trypticon.lucene3.util.IOUtils;
 
-
 import java.io.Closeable;
 import java.io.IOException;
 

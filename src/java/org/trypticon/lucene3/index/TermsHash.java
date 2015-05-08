@@ -18,17 +18,13 @@ package org.trypticon.lucene3.index;
  */
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
-/** This class implements {@link InvertedDocConsumer}, which
+/** This class implements {@code InvertedDocConsumer}, which
  *  is passed each token produced by the analyzer on each
  *  field.  It stores these tokens in a hash table, and
  *  allocates separate byte streams per token.  Consumers of
- *  this class, eg {@link FreqProxTermsWriter} and {@link
+ *  this class, eg {@code FreqProxTermsWriter} and {@code
  *  TermVectorsTermsWriter}, write their own byte streams
  *  under each term.
  */

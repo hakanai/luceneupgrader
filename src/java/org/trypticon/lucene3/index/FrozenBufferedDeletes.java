@@ -17,13 +17,13 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.util.Iterator;
-import java.util.Map;
-
+import org.trypticon.lucene3.index.BufferedDeletesStream.QueryAndLimit;
 import org.trypticon.lucene3.search.Query;
 import org.trypticon.lucene3.util.ArrayUtil;
 import org.trypticon.lucene3.util.RamUsageEstimator;
-import org.trypticon.lucene3.index.BufferedDeletesStream.QueryAndLimit;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /** Holds buffered deletes by term or query, once pushed.
  *  Pushed deletes are write-once, so we shift to more

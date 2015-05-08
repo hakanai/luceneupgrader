@@ -19,19 +19,19 @@ package org.trypticon.lucene3.index;
 
 import java.io.IOException;
 
-/** This is a {@link LogMergePolicy} that measures size of a
+/** This is a {@code LogMergePolicy} that measures size of a
  *  segment as the total byte size of the segment's files. */
 public class LogByteSizeMergePolicy extends LogMergePolicy {
 
-  /** Default minimum segment size.  @see setMinMergeMB */
+  /** Default minimum segment size.  */
   public static final double DEFAULT_MIN_MERGE_MB = 1.6;
 
   /** Default maximum segment size.  A segment of this size
-   *  or larger will never be merged.  @see setMaxMergeMB */
+   *  or larger will never be merged.  */
   public static final double DEFAULT_MAX_MERGE_MB = 2048;
 
   /** Default maximum segment size.  A segment of this size
-   *  or larger will never be merged during forceMerge.  @see setMaxMergeMBForForceMerge */
+   *  or larger will never be merged during forceMerge.  */
   public static final double DEFAULT_MAX_MERGE_MB_FOR_FORCED_MERGE = Long.MAX_VALUE;
 
   public LogByteSizeMergePolicy() {
@@ -53,7 +53,7 @@ public class LogByteSizeMergePolicy extends LogMergePolicy {
    *  seconds.  Larger values are best for batched indexing
    *  and speedier searches.</p>
    *
-   *  <p>Note that {@link #setMaxMergeDocs} is also
+   *  <p>Note that {@code #setMaxMergeDocs} is also
    *  used to check whether a segment is too large for
    *  merging (it's either or).</p>*/
   public void setMaxMergeMB(double mb) {
@@ -63,12 +63,12 @@ public class LogByteSizeMergePolicy extends LogMergePolicy {
   /** Returns the largest segment (measured by total byte
    *  size of the segment's files, in MB) that may be merged
    *  with other segments.
-   *  @see #setMaxMergeMB */
+   *  */
   public double getMaxMergeMB() {
     return ((double) maxMergeSize)/1024/1024;
   }
 
-  /** @deprecated Renamed to {@link
+  /** @deprecated Renamed to {@code
    * #setMaxMergeMBForForcedMerge} */
   @Deprecated  
   public void setMaxMergeMBForOptimize(double mb) {
@@ -79,12 +79,12 @@ public class LogByteSizeMergePolicy extends LogMergePolicy {
    *  byte size of the segment's files, in MB) that may be
    *  merged with other segments during forceMerge. Setting
    *  it low will leave the index with more than 1 segment,
-   *  even if {@link IndexWriter#forceMerge} is called.*/
+   *  even if {@code IndexWriter#forceMerge} is called.*/
   public void setMaxMergeMBForForcedMerge(double mb) {
     maxMergeSizeForForcedMerge = (long) (mb*1024*1024);
   }
 
-  /** @deprecated Renamed to {@link
+  /** @deprecated Renamed to {@code
    * #getMaxMergeMBForForcedMerge} */
   @Deprecated  
   public double getMaxMergeMBForOptimize() {
@@ -94,7 +94,7 @@ public class LogByteSizeMergePolicy extends LogMergePolicy {
   /** Returns the largest segment (measured by total byte
    *  size of the segment's files, in MB) that may be merged
    *  with other segments during forceMerge.
-   *  @see #setMaxMergeMBForForcedMerge */
+   *  */
   public double getMaxMergeMBForForcedMerge() {
     return ((double) maxMergeSizeForForcedMerge)/1024/1024;
   }
@@ -114,7 +114,7 @@ public class LogByteSizeMergePolicy extends LogMergePolicy {
 
   /** Get the minimum size for a segment to remain
    *  un-merged.
-   *  @see #setMinMergeMB **/
+   *  **/
   public double getMinMergeMB() {
     return ((double) minMergeSize)/1024/1024;
   }

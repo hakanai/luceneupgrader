@@ -17,10 +17,11 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
 import org.trypticon.lucene3.store.RAMOutputStream;
 import org.trypticon.lucene3.util.ArrayUtil;
 import org.trypticon.lucene3.util.RamUsageEstimator;
+
+import java.io.IOException;
 
 /** This is a DocFieldConsumer that writes stored fields. */
 final class StoredFieldsWriter {

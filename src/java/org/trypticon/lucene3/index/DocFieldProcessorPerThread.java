@@ -17,15 +17,16 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.util.Comparator;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.io.IOException;
 import org.trypticon.lucene3.document.Document;
 import org.trypticon.lucene3.document.Fieldable;
 import org.trypticon.lucene3.util.ArrayUtil;
 import org.trypticon.lucene3.util.RamUsageEstimator;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Gathers all Fieldables for a document under the same

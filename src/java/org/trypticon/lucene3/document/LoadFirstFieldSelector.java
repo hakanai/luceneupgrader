@@ -19,7 +19,7 @@ package org.trypticon.lucene3.document;
 /**
  * Load the First field and break.
  * <p/>
- * See {@link FieldSelectorResult#LOAD_AND_BREAK}
+ * See {@code FieldSelectorResult#LOAD_AND_BREAK}
  */
 public class LoadFirstFieldSelector implements FieldSelector {
 

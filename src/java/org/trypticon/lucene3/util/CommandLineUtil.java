@@ -17,12 +17,12 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.store.Directory;
+import org.trypticon.lucene3.store.FSDirectory;
+
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-
-import org.trypticon.lucene3.store.Directory;
-import org.trypticon.lucene3.store.FSDirectory;
 
 /**
  * Class containing some useful methods used by command line tools 

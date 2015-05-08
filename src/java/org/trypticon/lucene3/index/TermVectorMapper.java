@@ -19,7 +19,7 @@ package org.trypticon.lucene3.index;
 /**
  * The TermVectorMapper can be used to map Term Vectors into your own
  * structure instead of the parallel array structure used by
- * {@link org.trypticon.lucene3.index.IndexReader#getTermFreqVector(int,String)}.
+ * {@code org.trypticon.lucene3.index.IndexReader#getTermFreqVector(int,String)}.
  * <p/>
  * It is up to the implementation to make sure it is thread-safe.
  *
@@ -48,7 +48,7 @@ public abstract class TermVectorMapper {
    * Tell the mapper what to expect in regards to field, number of terms, offset and position storage.
    * This method will be called once before retrieving the vector for a field.
    *
-   * This method will be called before {@link #map(String,int,TermVectorOffsetInfo[],int[])}.
+   * This method will be called before {@code #map(String,int,TermVectorOffsetInfo[],int[])}.
    * @param field The field the vector is for
    * @param numTerms The number of terms that need to be mapped
    * @param storeOffsets true if the mapper should expect offset information
@@ -77,7 +77,7 @@ public abstract class TermVectorMapper {
 
   /**
    *
-   * @see #isIgnoringPositions() Same principal as {@link #isIgnoringPositions()}, but applied to offsets.  false by default.
+   *
    * @return false
    */
   public boolean isIgnoringOffsets()

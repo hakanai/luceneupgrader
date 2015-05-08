@@ -24,9 +24,9 @@ public class DefaultSimilarity extends Similarity {
 
   /** Implemented as
    *  <code>state.getBoost()*lengthNorm(numTerms)</code>, where
-   *  <code>numTerms</code> is {@link FieldInvertState#getLength()} if {@link
-   *  #setDiscountOverlaps} is false, else it's {@link
-   *  FieldInvertState#getLength()} - {@link
+   *  <code>numTerms</code> is {@code FieldInvertState#getLength()} if {@code
+   *  #setDiscountOverlaps} is false, else it's {@code
+   *  FieldInvertState#getLength()} - {@code
    *  FieldInvertState#getNumOverlap()}.
    *
    *  @lucene.experimental */
@@ -80,13 +80,13 @@ public class DefaultSimilarity extends Similarity {
    *
    *  @lucene.experimental
    *
-   *  @see #computeNorm
+   *
    */
   public void setDiscountOverlaps(boolean v) {
     discountOverlaps = v;
   }
 
-  /** @see #setDiscountOverlaps */
+  /** */
   public boolean getDiscountOverlaps() {
     return discountOverlaps;
   }

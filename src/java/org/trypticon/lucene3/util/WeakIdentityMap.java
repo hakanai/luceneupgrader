@@ -27,21 +27,21 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Implements a combination of {@link java.util.WeakHashMap} and
- * {@link java.util.IdentityHashMap}.
+ * Implements a combination of {@code java.util.WeakHashMap} and
+ * {@code java.util.IdentityHashMap}.
  * Useful for caches that need to key off of a {@code ==} comparison
  * instead of a {@code .equals}.
  * 
- * <p>This class is not a general-purpose {@link java.util.Map}
+ * <p>This class is not a general-purpose {@code java.util.Map}
  * implementation! It intentionally violates
  * Map's general contract, which mandates the use of the equals method
  * when comparing objects. This class is designed for use only in the
  * rare cases wherein reference-equality semantics are required.
  * 
  * <p>This implementation was forked from <a href="http://cxf.apache.org/">Apache CXF</a>
- * but modified to <b>not</b> implement the {@link java.util.Map} interface and
+ * but modified to <b>not</b> implement the {@code java.util.Map} interface and
  * without any set views on it, as those are error-prone and inefficient,
- * if not implemented carefully. The map only contains {@link Iterator} implementations
+ * if not implemented carefully. The map only contains {@code Iterator} implementations
  * on the values and not-GCed keys. Lucene's implementation also supports {@code null}
  * keys, but those are never weak!
  *
@@ -51,12 +51,12 @@ public final class WeakIdentityMap<K,V> {
   private final ReferenceQueue<Object> queue = new ReferenceQueue<Object>();
   private final Map<IdentityWeakReference, V> backingStore;
 
-  /** Creates a new {@code WeakIdentityMap} based on a non-synchronized {@link HashMap}. */
+  /** Creates a new {@code WeakIdentityMap} based on a non-synchronized {@code HashMap}. */
   public static final <K,V> WeakIdentityMap<K,V> newHashMap() {
     return new WeakIdentityMap<K,V>(new HashMap<IdentityWeakReference,V>());
   }
 
-  /** Creates a new {@code WeakIdentityMap} based on a {@link ConcurrentHashMap}. */
+  /** Creates a new {@code WeakIdentityMap} based on a {@code ConcurrentHashMap}. */
   public static final <K,V> WeakIdentityMap<K,V> newConcurrentHashMap() {
     return new WeakIdentityMap<K,V>(new ConcurrentHashMap<IdentityWeakReference,V>());
   }

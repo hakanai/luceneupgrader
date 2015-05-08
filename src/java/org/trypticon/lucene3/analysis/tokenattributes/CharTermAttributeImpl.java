@@ -17,13 +17,13 @@ package org.trypticon.lucene3.analysis.tokenattributes;
  * limitations under the License.
  */
 
-import java.io.Serializable;
-import java.nio.CharBuffer;
-
 import org.trypticon.lucene3.util.ArrayUtil;
 import org.trypticon.lucene3.util.AttributeImpl;
 import org.trypticon.lucene3.util.AttributeReflector;
 import org.trypticon.lucene3.util.RamUsageEstimator;
+
+import java.io.Serializable;
+import java.nio.CharBuffer;
 
 /**
  * The term text of a Token.
@@ -273,12 +273,12 @@ public class CharTermAttributeImpl extends AttributeImpl implements CharTermAttr
 
   /** 
    * Returns solely the term text as specified by the
-   * {@link CharSequence} interface.
+   * {@code CharSequence} interface.
    * <p>This method changed the behavior with Lucene 3.1,
    * before it returned a String representation of the whole
    * term with all attributes.
    * This affects especially the
-   * {@link org.trypticon.lucene3.analysis.Token} subclass.
+   * {@code org.trypticon.lucene3.analysis.Token} subclass.
    */
   @Override
   public String toString() {

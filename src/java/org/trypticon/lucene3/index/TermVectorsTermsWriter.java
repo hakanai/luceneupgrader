@@ -25,7 +25,6 @@ import org.trypticon.lucene3.util.RamUsageEstimator;
 
 import java.io.IOException;
 import java.util.Collection;
-
 import java.util.Map;
 
 final class TermVectorsTermsWriter extends TermsHashConsumer {

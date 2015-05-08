@@ -17,7 +17,6 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
-import java.util.Collection;
 import java.util.Comparator;
 
 /**
@@ -27,109 +26,12 @@ import java.util.Comparator;
  */
 public final class ArrayUtil {
 
-  /**
-   * @deprecated This constructor was not intended to be public and should not be used.
-   *  This class contains solely a static utility methods.
-   *  It will be made private in Lucene 4.0
-   */
-  // make private in 4.0!
-  @Deprecated
-  public ArrayUtil() {} // no instance
-
   /*
      Begin Apache Harmony code
 
      Revision taken on Friday, June 12. https://svn.apache.org/repos/asf/harmony/enhanced/classlib/archive/java6/modules/luni/src/main/java/java/lang/Integer.java
 
    */
-
-  /**
-   * Parses the string argument as if it was an int value and returns the
-   * result. Throws NumberFormatException if the string does not represent an
-   * int quantity.
-   *
-   * @param chars a string representation of an int quantity.
-   * @return int the value represented by the argument
-   * @throws NumberFormatException if the argument could not be parsed as an int quantity.
-   */
-  public static int parseInt(char[] chars) throws NumberFormatException {
-    return parseInt(chars, 0, chars.length, 10);
-  }
-
-  /**
-   * Parses a char array into an int.
-   * @param chars the character array
-   * @param offset The offset into the array
-   * @param len The length
-   * @return the int
-   * @throws NumberFormatException if it can't parse
-   */
-  public static int parseInt(char[] chars, int offset, int len) throws NumberFormatException {
-    return parseInt(chars, offset, len, 10);
-  }
-
-  /**
-   * Parses the string argument as if it was an int value and returns the
-   * result. Throws NumberFormatException if the string does not represent an
-   * int quantity. The second argument specifies the radix to use when parsing
-   * the value.
-   *
-   * @param chars a string representation of an int quantity.
-   * @param radix the base to use for conversion.
-   * @return int the value represented by the argument
-   * @throws NumberFormatException if the argument could not be parsed as an int quantity.
-   */
-  public static int parseInt(char[] chars, int offset, int len, int radix)
-          throws NumberFormatException {
-    if (chars == null || radix < Character.MIN_RADIX
-            || radix > Character.MAX_RADIX) {
-      throw new NumberFormatException();
-    }
-    int  i = 0;
-    if (len == 0) {
-      throw new NumberFormatException("chars length is 0");
-    }
-    boolean negative = chars[offset + i] == '-';
-    if (negative && ++i == len) {
-      throw new NumberFormatException("can't convert to an int");
-    }
-    if (negative == true){
-      offset++;
-      len--;
-    }
-    return parse(chars, offset, len, radix, negative);
-  }
-
-
-  private static int parse(char[] chars, int offset, int len, int radix,
-                           boolean negative) throws NumberFormatException {
-    int max = Integer.MIN_VALUE / radix;
-    int result = 0;
-    for (int i = 0; i < len; i++){
-      int digit = Character.digit(chars[i + offset], radix);
-      if (digit == -1) {
-        throw new NumberFormatException("Unable to parse");
-      }
-      if (max > result) {
-        throw new NumberFormatException("Unable to parse");
-      }
-      int next = result * radix - digit;
-      if (next > result) {
-        throw new NumberFormatException("Unable to parse");
-      }
-      result = next;
-    }
-    /*while (offset < len) {
-
-    }*/
-    if (!negative) {
-      result = -result;
-      if (result < 0) {
-        throw new NumberFormatException("Unable to parse");
-      }
-    }
-    return result;
-  }
 
 
   /*
@@ -150,7 +52,7 @@ public final class ArrayUtil {
    *
    * @param minTargetSize Minimum required value to be returned.
    * @param bytesPerElement Bytes used by each element of
-   * the array.  See constants in {@link RamUsageEstimator}.
+   * the array.  See constants in {@code RamUsageEstimator}.
    *
    * @lucene.internal
    */
@@ -277,18 +179,7 @@ public final class ArrayUtil {
     return grow(array, 1 + array.length);
   }
 
-  public static short[] shrink(short[] array, int targetSize) {
-    assert targetSize >= 0: "size must be positive (got " + targetSize + "): likely integer overflow?";
-    final int newSize = getShrinkSize(array.length, targetSize, RamUsageEstimator.NUM_BYTES_SHORT);
-    if (newSize != array.length) {
-      short[] newArray = new short[newSize];
-      System.arraycopy(array, 0, newArray, 0, newSize);
-      return newArray;
-    } else
-      return array;
-  }
-
-  public static int[] grow(int[] array, int minSize) {
+    public static int[] grow(int[] array, int minSize) {
     assert minSize >= 0: "size must be positive (got " + minSize + "): likely integer overflow?";
     if (array.length < minSize) {
       int[] newArray = new int[oversize(minSize, RamUsageEstimator.NUM_BYTES_INT)];
@@ -327,18 +218,7 @@ public final class ArrayUtil {
     return grow(array, 1 + array.length);
   }
 
-  public static long[] shrink(long[] array, int targetSize) {
-    assert targetSize >= 0: "size must be positive (got " + targetSize + "): likely integer overflow?";
-    final int newSize = getShrinkSize(array.length, targetSize, RamUsageEstimator.NUM_BYTES_LONG);
-    if (newSize != array.length) {
-      long[] newArray = new long[newSize];
-      System.arraycopy(array, 0, newArray, 0, newSize);
-      return newArray;
-    } else
-      return array;
-  }
-
-  public static byte[] grow(byte[] array, int minSize) {
+    public static byte[] grow(byte[] array, int minSize) {
     assert minSize >= 0: "size must be positive (got " + minSize + "): likely integer overflow?";
     if (array.length < minSize) {
       byte[] newArray = new byte[oversize(minSize, 1)];
@@ -377,18 +257,7 @@ public final class ArrayUtil {
     return grow(array, 1 + array.length);
   }
 
-  public static boolean[] shrink(boolean[] array, int targetSize) {
-    assert targetSize >= 0: "size must be positive (got " + targetSize + "): likely integer overflow?";
-    final int newSize = getShrinkSize(array.length, targetSize, 1);
-    if (newSize != array.length) {
-      boolean[] newArray = new boolean[newSize];
-      System.arraycopy(array, 0, newArray, 0, newSize);
-      return newArray;
-    } else
-      return array;
-  }
-
-  public static char[] grow(char[] array, int minSize) {
+    public static char[] grow(char[] array, int minSize) {
     assert minSize >= 0: "size must be positive (got " + minSize + "): likely integer overflow?";
     if (array.length < minSize) {
       char[] newArray = new char[oversize(minSize, RamUsageEstimator.NUM_BYTES_CHAR)];
@@ -402,18 +271,7 @@ public final class ArrayUtil {
     return grow(array, 1 + array.length);
   }
 
-  public static char[] shrink(char[] array, int targetSize) {
-    assert targetSize >= 0: "size must be positive (got " + targetSize + "): likely integer overflow?";
-    final int newSize = getShrinkSize(array.length, targetSize, RamUsageEstimator.NUM_BYTES_CHAR);
-    if (newSize != array.length) {
-      char[] newArray = new char[newSize];
-      System.arraycopy(array, 0, newArray, 0, newSize);
-      return newArray;
-    } else
-      return array;
-  }
-
-  public static int[][] grow(int[][] array, int minSize) {
+    public static int[][] grow(int[][] array, int minSize) {
     assert minSize >= 0: "size must be positive (got " + minSize + "): likely integer overflow?";
     if (array.length < minSize) {
       int[][] newArray = new int[oversize(minSize, RamUsageEstimator.NUM_BYTES_OBJECT_REF)][];
@@ -428,19 +286,7 @@ public final class ArrayUtil {
     return grow(array, 1 + array.length);
   }
 
-  public static int[][] shrink(int[][] array, int targetSize) {
-    assert targetSize >= 0: "size must be positive (got " + targetSize + "): likely integer overflow?";
-    final int newSize = getShrinkSize(array.length, targetSize, RamUsageEstimator.NUM_BYTES_OBJECT_REF);
-    if (newSize != array.length) {
-      int[][] newArray = new int[newSize][];
-      System.arraycopy(array, 0, newArray, 0, newSize);
-      return newArray;
-    } else {
-      return array;
-    }
-  }
-
-  public static float[][] grow(float[][] array, int minSize) {
+    public static float[][] grow(float[][] array, int minSize) {
     assert minSize >= 0: "size must be positive (got " + minSize + "): likely integer overflow?";
     if (array.length < minSize) {
       float[][] newArray = new float[oversize(minSize, RamUsageEstimator.NUM_BYTES_OBJECT_REF)][];
@@ -455,19 +301,7 @@ public final class ArrayUtil {
     return grow(array, 1 + array.length);
   }
 
-  public static float[][] shrink(float[][] array, int targetSize) {
-    assert targetSize >= 0: "size must be positive (got " + targetSize + "): likely integer overflow?";
-    final int newSize = getShrinkSize(array.length, targetSize, RamUsageEstimator.NUM_BYTES_OBJECT_REF);
-    if (newSize != array.length) {
-      float[][] newArray = new float[newSize][];
-      System.arraycopy(array, 0, newArray, 0, newSize);
-      return newArray;
-    } else {
-      return array;
-    }
-  }
-
-  /**
+    /**
    * Returns hash of chars in range start (inclusive) to
    * end (inclusive)
    */
@@ -501,7 +335,7 @@ public final class ArrayUtil {
    * @param length      The length of the section of the array to compare
    * @return true if the two arrays, starting at their respective offsets, are equal
    * 
-   * @see java.util.Arrays#equals(char[], char[])
+   *
    */
   public static boolean equals(char[] left, int offsetLeft, char[] right, int offsetRight, int length) {
     if ((offsetLeft + length <= left.length) && (offsetRight + length <= right.length)) {
@@ -527,7 +361,7 @@ public final class ArrayUtil {
    * @param length      The length of the section of the array to compare
    * @return true if the two arrays, starting at their respective offsets, are equal
    * 
-   * @see java.util.Arrays#equals(char[], char[])
+   *
    */
   public static boolean equals(int[] left, int offsetLeft, int[] right, int offsetRight, int length) {
     if ((offsetLeft + length <= left.length) && (offsetRight + length <= right.length)) {
@@ -542,21 +376,7 @@ public final class ArrayUtil {
     return false;
   }
 
-  public static int[] toIntArray(Collection<Integer> ints) {
-
-    final int[] result = new int[ints.size()];
-    int upto = 0;
-    for(int v : ints) {
-      result[upto++] = v;
-    }
-
-    // paranoia:
-    assert upto == result.length;
-
-    return result;
-  }
-  
-  /** SorterTemplate with custom {@link Comparator} */
+    /** SorterTemplate with custom {@code Comparator} */
   private static <T> SorterTemplate getSorter(final T[] a, final Comparator<? super T> comp) {
     return new SorterTemplate() {
       @Override
@@ -617,7 +437,7 @@ public final class ArrayUtil {
   // quickSorts (endindex is exclusive!):
   
   /**
-   * Sorts the given array slice using the {@link Comparator}. This method uses the quick sort
+   * Sorts the given array slice using the {@code Comparator}. This method uses the quick sort
    * algorithm, but falls back to insertion sort for small arrays.
    * @param fromIndex start index (inclusive)
    * @param toIndex end index (exclusive)
@@ -626,38 +446,11 @@ public final class ArrayUtil {
     if (toIndex-fromIndex <= 1) return;
     getSorter(a, comp).quickSort(fromIndex, toIndex-1);
   }
-  
-  /**
-   * Sorts the given array using the {@link Comparator}. This method uses the quick sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   */
-  public static <T> void quickSort(T[] a, Comparator<? super T> comp) {
-    quickSort(a, 0, a.length, comp);
-  }
-  
-  /**
-   * Sorts the given array slice in natural order. This method uses the quick sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   * @param fromIndex start index (inclusive)
-   * @param toIndex end index (exclusive)
-   */
-  public static <T extends Comparable<? super T>> void quickSort(T[] a, int fromIndex, int toIndex) {
-    if (toIndex-fromIndex <= 1) return;
-    getSorter(a).quickSort(fromIndex, toIndex-1);
-  }
-  
-  /**
-   * Sorts the given array in natural order. This method uses the quick sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   */
-  public static <T extends Comparable<? super T>> void quickSort(T[] a) {
-    quickSort(a, 0, a.length);
-  }
 
-  // mergeSorts:
+    // mergeSorts:
   
   /**
-   * Sorts the given array slice using the {@link Comparator}. This method uses the merge sort
+   * Sorts the given array slice using the {@code Comparator}. This method uses the merge sort
    * algorithm, but falls back to insertion sort for small arrays.
    * @param fromIndex start index (inclusive)
    * @param toIndex end index (exclusive)
@@ -669,7 +462,7 @@ public final class ArrayUtil {
   }
   
   /**
-   * Sorts the given array using the {@link Comparator}. This method uses the merge sort
+   * Sorts the given array using the {@code Comparator}. This method uses the merge sort
    * algorithm, but falls back to insertion sort for small arrays.
    */
   public static <T> void mergeSort(T[] a, Comparator<? super T> comp) {
@@ -696,43 +489,5 @@ public final class ArrayUtil {
   }
 
   // insertionSorts:
-  
-  /**
-   * Sorts the given array slice using the {@link Comparator}. This method uses the insertion sort
-   * algorithm. It is only recommended to use this algorithm for partially sorted small arrays!
-   * @param fromIndex start index (inclusive)
-   * @param toIndex end index (exclusive)
-   */
-  public static <T> void insertionSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> comp) {
-    if (toIndex-fromIndex <= 1) return;
-    getSorter(a, comp).insertionSort(fromIndex, toIndex-1);
-  }
-  
-  /**
-   * Sorts the given array using the {@link Comparator}. This method uses the insertion sort
-   * algorithm. It is only recommended to use this algorithm for partially sorted small arrays!
-   */
-  public static <T> void insertionSort(T[] a, Comparator<? super T> comp) {
-    insertionSort(a, 0, a.length, comp);
-  }
-  
-  /**
-   * Sorts the given array slice in natural order. This method uses the insertion sort
-   * algorithm. It is only recommended to use this algorithm for partially sorted small arrays!
-   * @param fromIndex start index (inclusive)
-   * @param toIndex end index (exclusive)
-   */
-  public static <T extends Comparable<? super T>> void insertionSort(T[] a, int fromIndex, int toIndex) {
-    if (toIndex-fromIndex <= 1) return;
-    getSorter(a).insertionSort(fromIndex, toIndex-1);
-  }
-  
-  /**
-   * Sorts the given array in natural order. This method uses the insertion sort
-   * algorithm. It is only recommended to use this algorithm for partially sorted small arrays!
-   */
-  public static <T extends Comparable<? super T>> void insertionSort(T[] a) {
-    insertionSort(a, 0, a.length);
-  }
 
 }

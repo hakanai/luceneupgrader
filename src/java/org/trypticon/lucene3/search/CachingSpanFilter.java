@@ -34,7 +34,7 @@ public class CachingSpanFilter extends SpanFilter {
 
   /**
    * New deletions always result in a cache miss, by default
-   * ({@link CachingWrapperFilter.DeletesMode#RECACHE}.
+   * ({@code CachingWrapperFilter.DeletesMode#RECACHE}.
    * @param filter Filter to cache results of
    */
   public CachingSpanFilter(SpanFilter filter) {
@@ -43,7 +43,7 @@ public class CachingSpanFilter extends SpanFilter {
 
   /**
    * @param filter Filter to cache results of
-   * @param deletesMode See {@link CachingWrapperFilter.DeletesMode}
+   * @param deletesMode See {@code CachingWrapperFilter.DeletesMode}
    */
   public CachingSpanFilter(SpanFilter filter, CachingWrapperFilter.DeletesMode deletesMode) {
     this.filter = filter;

@@ -17,27 +17,24 @@ package org.trypticon.lucene3.analysis;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.analysis.tokenattributes.CharTermAttribute;
+import org.trypticon.lucene3.analysis.tokenattributes.PositionIncrementAttribute;
+import org.trypticon.lucene3.analysis.tokenattributes.TypeAttribute;
 import org.trypticon.lucene3.util.AttributeSource;
 import org.trypticon.lucene3.util.NumericUtils;
-import org.trypticon.lucene3.document.NumericField; // for javadocs
-import org.trypticon.lucene3.search.NumericRangeQuery; // for javadocs
-import org.trypticon.lucene3.search.NumericRangeFilter; // for javadocs
-import org.trypticon.lucene3.analysis.tokenattributes.CharTermAttribute;
-import org.trypticon.lucene3.analysis.tokenattributes.TypeAttribute;
-import org.trypticon.lucene3.analysis.tokenattributes.PositionIncrementAttribute;
 
 /**
- * <b>Expert:</b> This class provides a {@link TokenStream}
- * for indexing numeric values that can be used by {@link
- * NumericRangeQuery} or {@link NumericRangeFilter}.
+ * <b>Expert:</b> This class provides a {@code TokenStream}
+ * for indexing numeric values that can be used by {@code
+ * NumericRangeQuery} or {@code NumericRangeFilter}.
  *
- * <p>Note that for simple usage, {@link NumericField} is
- * recommended.  {@link NumericField} disables norms and
+ * <p>Note that for simple usage, {@code NumericField} is
+ * recommended.  {@code NumericField} disables norms and
  * term freqs, as they are not usually needed during
  * searching.  If you need to change these settings, you
  * should use this class.
  *
- * <p>See {@link NumericField} for capabilities of fields
+ * <p>See {@code NumericField} for capabilities of fields
  * indexed numerically.</p>
  *
  * <p>Here's an example usage, for an <code>int</code> field:
@@ -75,7 +72,7 @@ import org.trypticon.lucene3.analysis.tokenattributes.PositionIncrementAttribute
  * than one numeric field, use a separate <code>NumericTokenStream</code>
  * instance for each.</p>
  *
- * <p>See {@link NumericRangeQuery} for more details on the
+ * <p>See {@code NumericRangeQuery} for more details on the
  * <a
  * href="../search/NumericRangeQuery.html#precisionStepDesc"><code>precisionStep</code></a>
  * parameter as well as how numeric fields work under the hood.</p>
@@ -92,7 +89,7 @@ public final class NumericTokenStream extends TokenStream {
 
   /**
    * Creates a token stream for numeric values using the default <code>precisionStep</code>
-   * {@link NumericUtils#PRECISION_STEP_DEFAULT} (4). The stream is not yet initialized,
+   * {@code NumericUtils#PRECISION_STEP_DEFAULT} (4). The stream is not yet initialized,
    * before using set a value using the various set<em>???</em>Value() methods.
    */
   public NumericTokenStream() {
@@ -113,7 +110,7 @@ public final class NumericTokenStream extends TokenStream {
 
   /**
    * Expert: Creates a token stream for numeric values with the specified
-   * <code>precisionStep</code> using the given {@link AttributeSource}.
+   * <code>precisionStep</code> using the given {@code AttributeSource}.
    * The stream is not yet initialized,
    * before using set a value using the various set<em>???</em>Value() methods.
    */
@@ -127,7 +124,7 @@ public final class NumericTokenStream extends TokenStream {
   /**
    * Expert: Creates a token stream for numeric values with the specified
    * <code>precisionStep</code> using the given
-   * {@link org.trypticon.lucene3.util.AttributeSource.AttributeFactory}.
+   * {@code org.trypticon.lucene3.util.AttributeSource.AttributeFactory}.
    * The stream is not yet initialized,
    * before using set a value using the various set<em>???</em>Value() methods.
    */

@@ -26,10 +26,13 @@ import org.trypticon.lucene3.store.IndexOutput;
 import org.trypticon.lucene3.util.StringHelper;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /** 
- * Collection of {@link FieldInfo}s (accessible by number or by name).
+ * Collection of {@code FieldInfo}s (accessible by number or by name).
  *
  * @lucene.experimental
  */
@@ -145,7 +148,7 @@ public final class FieldInfos implements Iterable<FieldInfo> {
    * 
    * @param name The name of the Fieldable
    * @param isIndexed true if the field is indexed
-   * @see #add(String, boolean, boolean)
+   *
    */
   synchronized public void add(String name, boolean isIndexed) {
     add(name, isIndexed, false, false);

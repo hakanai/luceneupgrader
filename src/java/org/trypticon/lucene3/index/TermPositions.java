@@ -25,23 +25,23 @@ import java.io.IOException;
  * frequency are the same as for a TermDocs.  The positions portion lists the ordinal
  * positions of each occurrence of a term in a document.
  *
- * @see IndexReader#termPositions()
+ *
  */
 
 public interface TermPositions
     extends TermDocs
 {
     /** Returns next position in the current document.  It is an error to call
-    this more than {@link #freq()} times
-    without calling {@link #next()}<p> This is
-    invalid until {@link #next()} is called for
+    this more than {@code #freq()} times
+    without calling {@code #next()}<p> This is
+    invalid until {@code #next()} is called for
     the first time.
     */
     int nextPosition() throws IOException;
     
     /** 
      * Returns the length of the payload at the current term position.
-     * This is invalid until {@link #nextPosition()} is called for
+     * This is invalid until {@code #nextPosition()} is called for
      * the first time.<br>
      * @return length of the current payload in number of bytes
      */
@@ -49,10 +49,10 @@ public interface TermPositions
     
     /** 
      * Returns the payload data at the current term position.
-     * This is invalid until {@link #nextPosition()} is called for
+     * This is invalid until {@code #nextPosition()} is called for
      * the first time.
      * This method must not be called more than once after each call
-     * of {@link #nextPosition()}. However, payloads are loaded lazily,
+     * of {@code #nextPosition()}. However, payloads are loaded lazily,
      * so if the payload data for the current position is not needed,
      * this method may not be called at all for performance reasons.<br>
      * 
@@ -70,10 +70,10 @@ public interface TermPositions
    * Checks if a payload can be loaded at this position.
    * <p>
    * Payloads can only be loaded once per call to 
-   * {@link #nextPosition()}.
+   * {@code #nextPosition()}.
    * 
    * @return true if there is a payload available at this position that can be loaded
    */
-    public boolean isPayloadAvailable();
+  boolean isPayloadAvailable();
 
 }

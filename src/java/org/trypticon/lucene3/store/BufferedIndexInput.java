@@ -20,7 +20,7 @@ package org.trypticon.lucene3.store;
 import java.io.EOFException;
 import java.io.IOException;
 
-/** Base implementation class for buffered {@link IndexInput}. */
+/** Base implementation class for buffered {@code IndexInput}. */
 public abstract class BufferedIndexInput extends IndexInput {
 
   /** Default buffer size */
@@ -96,7 +96,7 @@ public abstract class BufferedIndexInput extends IndexInput {
     buffer = newBuffer;
   }
 
-  /** Returns buffer size.  @see #setBufferSize */
+  /** Returns buffer size.  */
   public final int getBufferSize() {
     return bufferSize;
   }
@@ -298,8 +298,8 @@ public abstract class BufferedIndexInput extends IndexInput {
   }
 
   /** Expert: implements seek.  Sets current position in this file, where the
-   * next {@link #readInternal(byte[],int,int)} will occur.
-   * @see #readInternal(byte[],int,int)
+   * next {@code #readInternal(byte[],int,int)} will occur.
+   *
    */
   protected abstract void seekInternal(long pos) throws IOException;
 

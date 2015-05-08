@@ -18,15 +18,15 @@ package org.trypticon.lucene3.index;
  */
 
 import org.trypticon.lucene3.index.FieldInfo.IndexOptions;
+import org.trypticon.lucene3.util.BitVector;
+import org.trypticon.lucene3.util.CollectionUtil;
 import org.trypticon.lucene3.util.UnicodeUtil;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.trypticon.lucene3.util.BitVector;
-import org.trypticon.lucene3.util.CollectionUtil;
+import java.util.Map;
 
 final class FreqProxTermsWriter extends TermsHashConsumer {
 

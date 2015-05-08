@@ -17,16 +17,16 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.index.SegmentReader.CoreClosedListener;
+import org.trypticon.lucene3.store.Directory;
+import org.trypticon.lucene3.store.IndexInput;
+import org.trypticon.lucene3.util.IOUtils;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.trypticon.lucene3.index.SegmentReader.CoreClosedListener;
-import org.trypticon.lucene3.store.Directory;
-import org.trypticon.lucene3.store.IndexInput;
-import org.trypticon.lucene3.util.IOUtils;
 
 /** Holds core readers that are shared (unchanged) when
  * SegmentReader is cloned or reopened */

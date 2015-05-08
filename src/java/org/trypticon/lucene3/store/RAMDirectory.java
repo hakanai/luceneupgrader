@@ -17,8 +17,11 @@ package org.trypticon.lucene3.store;
  * limitations under the License.
  */
 
-import java.io.IOException;
+import org.trypticon.lucene3.index.IndexFileNameFilter;
+import org.trypticon.lucene3.util.ThreadInterruptedException;
+
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +30,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.trypticon.lucene3.index.IndexFileNameFilter;
-import org.trypticon.lucene3.util.ThreadInterruptedException;
-
 /**
- * A memory-resident {@link Directory} implementation.  Locking
- * implementation is by default the {@link SingleInstanceLockFactory}
- * but can be changed with {@link #setLockFactory}.
+ * A memory-resident {@code Directory} implementation.  Locking
+ * implementation is by default the {@code SingleInstanceLockFactory}
+ * but can be changed with {@code #setLockFactory}.
  * 
  * <p><b>Warning:</b> This class is not intended to work with huge
  * indexes. Everything beyond several hundred megabytes will waste
@@ -43,7 +43,7 @@ import org.trypticon.lucene3.util.ThreadInterruptedException;
  * It also has bad concurrency on multithreaded environments.
  * 
  * <p>It is recommended to materialize large indexes on disk and use
- * {@link MMapDirectory}, which is a high-performance directory
+ * {@code MMapDirectory}, which is a high-performance directory
  * implementation working directly on the file system cache of the
  * operating system, so copying data to Java heap space is not useful.
  */
@@ -58,7 +58,7 @@ public class RAMDirectory extends Directory implements Serializable {
   // Lock acquisition sequence:  RAMDirectory, then RAMFile
   // *****
 
-  /** Constructs an empty {@link Directory}. */
+  /** Constructs an empty {@code Directory}. */
   public RAMDirectory() {
     try {
       setLockFactory(new SingleInstanceLockFactory());
@@ -80,7 +80,7 @@ public class RAMDirectory extends Directory implements Serializable {
    * It also has bad concurrency on multithreaded environments.
    * 
    * <p>For disk-based indexes it is recommended to use
-   * {@link MMapDirectory}, which is a high-performance directory
+   * {@code MMapDirectory}, which is a high-performance directory
    * implementation working directly on the file system cache of the
    * operating system, so copying data to Java heap space is not useful.
    * 
@@ -220,9 +220,9 @@ public class RAMDirectory extends Directory implements Serializable {
   }
 
   /**
-   * Returns a new {@link RAMFile} for storing data. This method can be
-   * overridden to return different {@link RAMFile} impls, that e.g. override
-   * {@link RAMFile#newBuffer(int)}.
+   * Returns a new {@code RAMFile} for storing data. This method can be
+   * overridden to return different {@code RAMFile} impls, that e.g. override
+   * {@code RAMFile#newBuffer(int)}.
    */
   protected RAMFile newRAMFile() {
     return new RAMFile(this);

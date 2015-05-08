@@ -26,8 +26,8 @@ final class HitQueue extends PriorityQueue<ScoreDoc> {
   /**
    * Creates a new instance with <code>size</code> elements. If
    * <code>prePopulate</code> is set to true, the queue will pre-populate itself
-   * with sentinel objects and set its {@link #size()} to <code>size</code>. In
-   * that case, you should not rely on {@link #size()} to get the number of
+   * with sentinel objects and set its {@code #size()} to <code>size</code>. In
+   * that case, you should not rely on {@code #size()} to get the number of
    * actual elements that were added to the queue, but keep track yourself.<br>
    * <b>NOTE:</b> in case <code>prePopulate</code> is true, you should pop
    * elements from the queue using the following code example:
@@ -60,7 +60,7 @@ final class HitQueue extends PriorityQueue<ScoreDoc> {
    *          the requested size of this queue.
    * @param prePopulate
    *          specifies whether to pre-populate the queue with sentinel values.
-   * @see #getSentinelObject()
+   *
    */
   HitQueue(int size, boolean prePopulate) {
     this.prePopulate = prePopulate;

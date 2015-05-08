@@ -108,7 +108,7 @@ public class PositionBasedTermVectorMapper extends TermVectorMapper{
   /**
    * Get the mapping between fields and terms, sorted by the comparator
    *
-   * @return A map between field names and a Map.  The sub-Map key is the position as the integer, the value is {@link org.trypticon.lucene3.index.PositionBasedTermVectorMapper.TVPositionInfo}.
+   * @return A map between field names and a Map.  The sub-Map key is the position as the integer, the value is {@code org.trypticon.lucene3.index.PositionBasedTermVectorMapper.TVPositionInfo}.
    */
   public Map<String,Map<Integer,TVPositionInfo>>  getFieldToTerms() {
     return fieldToTerms;
@@ -158,7 +158,7 @@ public class PositionBasedTermVectorMapper extends TermVectorMapper{
     }
 
     /**
-     * Parallel list (to {@link #getTerms()}) of TermVectorOffsetInfo objects.  There may be multiple entries since there may be multiple terms at a position
+     * Parallel list (to {@code #getTerms()}) of TermVectorOffsetInfo objects.  There may be multiple entries since there may be multiple terms at a position
      * @return A List of TermVectorOffsetInfo objects, if offsets are stored.
      */
     public List<TermVectorOffsetInfo> getOffsets() {

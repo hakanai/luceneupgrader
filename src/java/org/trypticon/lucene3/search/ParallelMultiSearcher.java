@@ -17,32 +17,26 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.trypticon.lucene3.index.IndexReader;
 import org.trypticon.lucene3.index.Term;
 import org.trypticon.lucene3.util.NamedThreadFactory;
 import org.trypticon.lucene3.util.ThreadInterruptedException;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /** Implements parallel search over a set of <code>Searchables</code>.
  *
- * <p>Applications usually need only call the inherited {@link #search(Query,int)}
- * or {@link #search(Query,Filter,int)} methods.
+ * <p>Applications usually need only call the inherited {@code #search(Query,int)}
+ * or {@code #search(Query,Filter,int)} methods.
  * 
- * @deprecated Please pass an ExecutorService to {@link
+ * @deprecated Please pass an ExecutorService to {@code
  * IndexSearcher}, instead.
  */
 @Deprecated
@@ -51,14 +45,14 @@ public class ParallelMultiSearcher extends MultiSearcher {
   private final Searchable[] searchables;
   private final int[] starts;
 
-  /** Creates a {@link Searchable} which searches <i>searchables</i> with the default 
+  /** Creates a {@code Searchable} which searches <i>searchables</i> with the default
    * executor service (a cached thread pool). */
   public ParallelMultiSearcher(Searchable... searchables) throws IOException {
     this(Executors.newCachedThreadPool(new NamedThreadFactory(ParallelMultiSearcher.class.getSimpleName())), searchables);
   }
 
   /**
-   * Creates a {@link Searchable} which searches <i>searchables</i> with the specified ExecutorService.
+   * Creates a {@code Searchable} which searches <i>searchables</i> with the specified ExecutorService.
    */
   public ParallelMultiSearcher(ExecutorService executor, Searchable... searchables) throws IOException {
     super(searchables);
@@ -67,7 +61,7 @@ public class ParallelMultiSearcher extends MultiSearcher {
     this.executor = executor;
   }
   /**
-   * Executes each {@link Searchable}'s docFreq() in its own thread and waits for each search to complete and merge
+   * Executes each {@code Searchable}'s docFreq() in its own thread and waits for each search to complete and merge
    * the results back together.
    */
   @Override
@@ -90,7 +84,7 @@ public class ParallelMultiSearcher extends MultiSearcher {
 
   /**
    * A search implementation which executes each 
-   * {@link Searchable} in its own thread and waits for each search to complete and merge
+   * {@code Searchable} in its own thread and waits for each search to complete and merge
    * the results back together.
    */
   @Override
@@ -149,14 +143,14 @@ public class ParallelMultiSearcher extends MultiSearcher {
 
   /** Lower-level search API.
   *
-  * <p>{@link Collector#collect(int)} is called for every matching document.
+  * <p>{@code Collector#collect(int)} is called for every matching document.
   *
   * <p>Applications should only use this if they need <i>all</i> of the
-  * matching documents.  The high-level search API ({@link
+  * matching documents.  The high-level search API ({@code
   * Searcher#search(Query,int)}) is usually more efficient, as it skips
   * non-high-scoring hits.
   * 
-  * <p>This method cannot be parallelized, because {@link Collector}
+  * <p>This method cannot be parallelized, because {@code Collector}
   * supports no concurrent access.
   *
   * @param weight to match documents
@@ -227,7 +221,7 @@ public class ParallelMultiSearcher extends MultiSearcher {
 
   
   /**
-   * A {@link Callable} to retrieve the document frequencies for a Term array  
+   * A {@code Callable} to retrieve the document frequencies for a Term array
    */
   private static final class DocumentFrequencyCallable implements Callable<int[]> {
     private final Searchable searchable;
@@ -244,11 +238,11 @@ public class ParallelMultiSearcher extends MultiSearcher {
   }
   
   /**
-   * A helper class that wraps a {@link CompletionService} and provides an
-   * iterable interface to the completed {@link Callable} instances.
+   * A helper class that wraps a {@code CompletionService} and provides an
+   * iterable interface to the completed {@code Callable} instances.
    * 
    * @param <T>
-   *          the type of the {@link Callable} return value
+   *          the type of the {@code Callable} return value
    */
   private static final class ExecutionHelper<T> implements Iterator<T>, Iterable<T> {
     private final CompletionService<T> service;

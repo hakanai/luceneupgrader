@@ -17,8 +17,8 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
 import java.io.Closeable;
+import java.io.IOException;
 
 /** Abstract class for enumerating terms.
 

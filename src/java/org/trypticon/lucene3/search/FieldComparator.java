@@ -17,31 +17,25 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.index.IndexReader;
+import org.trypticon.lucene3.search.FieldCache.*;
+import org.trypticon.lucene3.util.Bits;
+
 import java.io.IOException;
 import java.text.Collator;
 import java.util.Locale;
 
-import org.trypticon.lucene3.index.IndexReader;
-import org.trypticon.lucene3.search.FieldCache.DoubleParser;
-import org.trypticon.lucene3.search.FieldCache.LongParser;
-import org.trypticon.lucene3.search.FieldCache.ByteParser;
-import org.trypticon.lucene3.search.FieldCache.FloatParser;
-import org.trypticon.lucene3.search.FieldCache.IntParser;
-import org.trypticon.lucene3.search.FieldCache.ShortParser;
-import org.trypticon.lucene3.search.FieldCache.StringIndex;
-import org.trypticon.lucene3.util.Bits;
-
 /**
  * Expert: a FieldComparator compares hits so as to determine their
- * sort order when collecting the top results with {@link
+ * sort order when collecting the top results with {@code
  * TopFieldCollector}.  The concrete public FieldComparator
  * classes here correspond to the SortField types.
  *
  * <p>This API is designed to achieve high performance
- * sorting, by exposing a tight interaction with {@link
+ * sorting, by exposing a tight interaction with {@code
  * FieldValueHitQueue} as it visits hits.  Whenever a hit is
  * competitive, it's enrolled into a virtual slot, which is
- * an int ranging from 0 to numHits-1.  The {@link
+ * an int ranging from 0 to numHits-1.  The {@code
  * FieldComparator} is made aware of segment transitions
  * during searching in case any internal state it's tracking
  * needs to be recomputed during these transitions.</p>
@@ -50,33 +44,33 @@ import org.trypticon.lucene3.util.Bits;
  *
  * <ul>
  *
- *  <li> {@link #compare} Compare a hit at 'slot a'
+ *  <li> {@code #compare} Compare a hit at 'slot a'
  *       with hit 'slot b'.
  *
- *  <li> {@link #setBottom} This method is called by
- *       {@link FieldValueHitQueue} to notify the
+ *  <li> {@code #setBottom} This method is called by
+ *       {@code FieldValueHitQueue} to notify the
  *       FieldComparator of the current weakest ("bottom")
  *       slot.  Note that this slot may not hold the weakest
  *       value according to your comparator, in cases where
  *       your comparator is not the primary one (ie, is only
  *       used to break ties from the comparators before it).
  *
- *  <li> {@link #compareBottom} Compare a new hit (docID)
+ *  <li> {@code #compareBottom} Compare a new hit (docID)
  *       against the "weakest" (bottom) entry in the queue.
  *
- *  <li> {@link #copy} Installs a new hit into the
- *       priority queue.  The {@link FieldValueHitQueue}
+ *  <li> {@code #copy} Installs a new hit into the
+ *       priority queue.  The {@code FieldValueHitQueue}
  *       calls this method when a new hit is competitive.
  *
- *  <li> {@link #setNextReader} Invoked
+ *  <li> {@code #setNextReader} Invoked
  *       when the search is switching to the next segment.
  *       You may need to update internal state of the
  *       comparator, for example retrieving new values from
- *       the {@link FieldCache}.
+ *       the {@code FieldCache}.
  *
- *  <li> {@link #value} Return the sort value stored in
+ *  <li> {@code #value} Return the sort value stored in
  *       the specified slot.  This is only called at the end
- *       of the search, in order to populate {@link
+ *       of the search, in order to populate {@code
  *       FieldDoc#fields} when returning the top results.
  * </ul>
  *
@@ -97,9 +91,9 @@ public abstract class FieldComparator<T> {
 
   /**
    * Set the bottom slot, ie the "weakest" (sorted last)
-   * entry in the queue.  When {@link #compareBottom} is
+   * entry in the queue.  When {@code #compareBottom} is
    * called, you should compare against this slot.  This
-   * will always be called before {@link #compareBottom}.
+   * will always be called before {@code #compareBottom}.
    * 
    * @param slot the currently weakest (sorted last) slot in the queue
    */
@@ -108,7 +102,7 @@ public abstract class FieldComparator<T> {
   /**
    * Compare the bottom of the queue with doc.  This will
    * only invoked after setBottom has been called.  This
-   * should return the same result as {@link
+   * should return the same result as {@code
    * #compare(int,int)}} as if bottom were slot1 and the new
    * document were slot 2.
    *    
@@ -207,7 +201,7 @@ public abstract class FieldComparator<T> {
     }
   }
 
-  /** Parses field's values as byte (using {@link
+  /** Parses field's values as byte (using {@code
    *  FieldCache#getBytes} and sorts by ascending value */
   public static final class ByteComparator extends NumericComparator<Byte> {
     private final byte[] values;
@@ -313,7 +307,7 @@ public abstract class FieldComparator<T> {
     }
   }
 
-  /** Parses field's values as double (using {@link
+  /** Parses field's values as double (using {@code
    *  FieldCache#getDoubles} and sorts by ascending value */
   public static final class DoubleComparator extends NumericComparator<Double> {
     private final double[] values;
@@ -387,7 +381,7 @@ public abstract class FieldComparator<T> {
     }
   }
 
-  /** Parses field's values as float (using {@link
+  /** Parses field's values as float (using {@code
    *  FieldCache#getFloats} and sorts by ascending value */
   public static final class FloatComparator extends NumericComparator<Float> {
     private final float[] values;
@@ -465,7 +459,7 @@ public abstract class FieldComparator<T> {
     }
   }
 
-  /** Parses field's values as int (using {@link
+  /** Parses field's values as int (using {@code
    *  FieldCache#getInts} and sorts by ascending value */
   public static final class IntComparator extends NumericComparator<Integer> {
     private final int[] values;
@@ -547,7 +541,7 @@ public abstract class FieldComparator<T> {
     }
   }
 
-  /** Parses field's values as long (using {@link
+  /** Parses field's values as long (using {@code
    *  FieldCache#getLongs} and sorts by ascending value */
   public static final class LongComparator extends NumericComparator<Long> {
     private final long[] values;
@@ -628,8 +622,8 @@ public abstract class FieldComparator<T> {
   /** Sorts by descending relevance.  NOTE: if you are
    *  sorting only by descending relevance and then
    *  secondarily by ascending docID, performance is faster
-   *  using {@link TopScoreDocCollector} directly (which {@link
-   *  IndexSearcher#search} uses when no {@link Sort} is
+   *  using {@code TopScoreDocCollector} directly (which {@code
+   *  IndexSearcher#search} uses when no {@code Sort} is
    *  specified). */
   public static final class RelevanceComparator extends FieldComparator<Float> {
     private final float[] scores;
@@ -693,7 +687,7 @@ public abstract class FieldComparator<T> {
     }
   }
 
-  /** Parses field's values as short (using {@link
+  /** Parses field's values as short (using {@code
    *  FieldCache#getShorts} and sorts by ascending value */
   public static final class ShortComparator extends NumericComparator<Short> {
     private final short[] values;
@@ -833,13 +827,13 @@ public abstract class FieldComparator<T> {
   }
 
   /** Sorts by field's natural String sort order, using
-   *  ordinals.  This is functionally equivalent to {@link
+   *  ordinals.  This is functionally equivalent to {@code
    *  StringValComparator}, but it first resolves the string
    *  to their relative ordinal positions (using the index
-   *  returned by {@link FieldCache#getStringIndex}), and
+   *  returned by {@code FieldCache#getStringIndex}), and
    *  does most comparisons using the ordinals.  For medium
    *  to large results, this comparator will be much faster
-   *  than {@link StringValComparator}.  For very small
+   *  than {@code StringValComparator}.  For very small
    *  result sets it may be slower. */
   public static final class StringOrdValComparator extends FieldComparator<String> {
 

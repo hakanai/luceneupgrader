@@ -38,9 +38,9 @@ import java.util.*;
  * to get the correct scale factors and offsets for calculating
  * memory usage.
  * 
- * @see #sizeOf(Object)
- * @see #shallowSizeOf(Object)
- * @see #shallowSizeOfInstance(Class)
+ *
+ *
+ *
  * 
  * @lucene.internal
  */
@@ -282,7 +282,7 @@ public final class RamUsageEstimator {
   }
 
   /** 
-   * Aligns an object size to be the next multiple of {@link #NUM_BYTES_OBJECT_ALIGNMENT}. 
+   * Aligns an object size to be the next multiple of {@code #NUM_BYTES_OBJECT_ALIGNMENT}.
    */
   public static long alignObjectSize(long size) {
     size += (long) NUM_BYTES_OBJECT_ALIGNMENT - 1L;
@@ -364,7 +364,7 @@ public final class RamUsageEstimator {
    * This works with all conventional classes and primitive types, but not with arrays
    * (the size then depends on the number of elements and varies from object to object).
    * 
-   * @see #shallowSizeOf(Object)
+   *
    * @throws IllegalArgumentException if {@code clazz} is an array class. 
    */
   public static long shallowSizeOfInstance(Class<?> clazz) {
@@ -594,8 +594,8 @@ public final class RamUsageEstimator {
 
   /**
    * Return a human-readable size of a given object.
-   * @see #sizeOf(Object)
-   * @see #humanReadableUnits(long)
+   *
+   *
    */
   public static String humanSizeOf(Object object) {
     return humanReadableUnits(sizeOf(object));
@@ -711,7 +711,7 @@ public final class RamUsageEstimator {
      * finalization step from Austin Appleby's
      * <code>MurmurHash3</code>.
      * 
-     * @see "http://sites.google.com/site/murmurhash/"
+     *
      */
     private static int rehash(Object o) {
       int k = System.identityHashCode(o);
@@ -848,7 +848,7 @@ public final class RamUsageEstimator {
    * because it is not free of side-effects and strains the garbage collector
    * additionally.
    * @deprecated Don't create instances of this class, instead use the static
-   * {@link #sizeOf(Object)} method that has no intern checking, too.
+   * {@code #sizeOf(Object)} method that has no intern checking, too.
    */
   @Deprecated
   public RamUsageEstimator() {
@@ -862,7 +862,7 @@ public final class RamUsageEstimator {
    * intern checking. Intern checking is deprecated altogether, as it is not free
    * of side-effects and strains the garbage collector additionally.
    * @deprecated Don't create instances of this class, instead use the static
-   * {@link #sizeOf(Object)} method.
+   * {@code #sizeOf(Object)} method.
    */
   @Deprecated
   public RamUsageEstimator(boolean checkInterned) {
@@ -871,8 +871,8 @@ public final class RamUsageEstimator {
   
   /** Creates a new istance of {@code RamUsageEstimator}. 
    * @deprecated Don't create instances of this class, instead use the static
-   * {@link #sizeOf(Object)} method.
-   * @see #sizeOf(Object)
+   * {@code #sizeOf(Object)} method.
+   *
    */
   @Deprecated
   public long estimateRamUsage(Object obj) {

@@ -39,7 +39,7 @@ public class Explanation implements java.io.Serializable {
    * <p>
    * By default, an Explanation represents a "match" if the value is positive.
    * </p>
-   * @see #getValue
+   *
    */
   public boolean isMatch() {
     return (0.0f < getValue());
@@ -131,7 +131,7 @@ public class Explanation implements java.io.Serializable {
    * Small Util class used to pass both an idf factor as well as an
    * explanation for that factor.
    * 
-   * This class will likely be held on a {@link Weight}, so be aware 
+   * This class will likely be held on a {@code Weight}, so be aware
    * before storing any large or un-serializable fields.
    *
    */

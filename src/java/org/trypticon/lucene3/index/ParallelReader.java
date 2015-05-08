@@ -17,14 +17,14 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.*;
-
 import org.trypticon.lucene3.document.Document;
 import org.trypticon.lucene3.document.FieldSelector;
 import org.trypticon.lucene3.document.FieldSelectorResult;
 import org.trypticon.lucene3.document.Fieldable;
 import org.trypticon.lucene3.util.ReaderUtil;
+
+import java.io.IOException;
+import java.util.*;
 
 
 /** An IndexReader which reads multiple, parallel indexes.  Each index added
@@ -101,7 +101,7 @@ public class ParallelReader extends IndexReader {
   * @throws IllegalArgumentException if not all indexes contain the same number
   *     of documents
   * @throws IllegalArgumentException if not all indexes have the same value
-  *     of {@link IndexReader#maxDoc()}
+  *     of {@code IndexReader#maxDoc()}
   * @throws IOException if there is a low-level IO error
   */
   public void add(IndexReader reader, boolean ignoreStoredFields)
@@ -153,7 +153,7 @@ public class ParallelReader extends IndexReader {
   /**
    * @throws UnsupportedOperationException ParallelReaders cannot support changing the readOnly flag
    * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@link #doOpenIfChanged()} instead.
+   * Use {@code #doOpenIfChanged()} instead.
    */
   @Deprecated @Override
   protected IndexReader doOpenIfChanged(boolean openReadOnly) throws CorruptIndexException, IOException {
@@ -173,7 +173,7 @@ public class ParallelReader extends IndexReader {
   /**
    * @throws UnsupportedOperationException ParallelReaders cannot support changing the readOnly flag
    * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@link #clone()} instead.
+   * Use {@code #clone()} instead.
    */
   @Override @Deprecated
   public IndexReader clone(boolean openReadOnly) throws CorruptIndexException, IOException {

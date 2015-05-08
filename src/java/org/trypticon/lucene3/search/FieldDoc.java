@@ -33,8 +33,8 @@ package org.trypticon.lucene3.search;
  * <p>Created: Feb 11, 2004 1:23:38 PM
  *
  * @since   lucene 1.4
- * @see ScoreDoc
- * @see TopFieldDocs
+ *
+ *
  */
 public class FieldDoc extends ScoreDoc {
 
@@ -43,8 +43,8 @@ public class FieldDoc extends ScoreDoc {
    * Sort object.  Each Object will have been returned from
    * the <code>value</code> method corresponding
    * FieldComparator used to sort this field.
-   * @see Sort
-   * @see Searcher#search(Query,Filter,int,Sort)
+   *
+   *
    */
   public Object[] fields;
 

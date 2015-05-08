@@ -17,10 +17,10 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.store.IndexInput;
+
 import java.io.IOException;
 import java.util.Arrays;
-
-import org.trypticon.lucene3.store.IndexInput;
 
 /**
  * Implements the skip list reader for the default posting list format
@@ -57,19 +57,19 @@ class DefaultSkipListReader extends MultiLevelSkipListReader {
   }
 
   /** Returns the freq pointer of the doc to which the last call of 
-   * {@link MultiLevelSkipListReader#skipTo(int)} has skipped.  */
+   * {@code MultiLevelSkipListReader#skipTo(int)} has skipped.  */
   long getFreqPointer() {
     return lastFreqPointer;
   }
 
   /** Returns the prox pointer of the doc to which the last call of 
-   * {@link MultiLevelSkipListReader#skipTo(int)} has skipped.  */
+   * {@code MultiLevelSkipListReader#skipTo(int)} has skipped.  */
   long getProxPointer() {
     return lastProxPointer;
   }
   
   /** Returns the payload length of the payload stored just before 
-   * the doc to which the last call of {@link MultiLevelSkipListReader#skipTo(int)} 
+   * the doc to which the last call of {@code MultiLevelSkipListReader#skipTo(int)}
    * has skipped.  */
   int getPayloadLength() {
     return lastPayloadLength;

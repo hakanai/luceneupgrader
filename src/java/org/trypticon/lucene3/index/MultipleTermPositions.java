@@ -17,17 +17,17 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.util.ArrayUtil;
+import org.trypticon.lucene3.util.PriorityQueue;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.trypticon.lucene3.util.PriorityQueue;
-import org.trypticon.lucene3.util.ArrayUtil;
-
 /**
- * Allows you to iterate over the {@link TermPositions} for multiple {@link Term}s as
- * a single {@link TermPositions}.
+ * Allows you to iterate over the {@code TermPositions} for multiple {@code Term}s as
+ * a single {@code TermPositions}.
  *
  */
 public class MultipleTermPositions implements TermPositions {

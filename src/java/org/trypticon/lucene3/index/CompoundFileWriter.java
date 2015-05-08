@@ -18,14 +18,13 @@ package org.trypticon.lucene3.index;
  */
 
 import org.trypticon.lucene3.store.Directory;
-import org.trypticon.lucene3.store.IndexOutput;
 import org.trypticon.lucene3.store.IndexInput;
+import org.trypticon.lucene3.store.IndexOutput;
 import org.trypticon.lucene3.util.IOUtils;
 
-import java.util.LinkedList;
-import java.util.HashSet;
-
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * Combines multiple files into a single compound file.
@@ -126,8 +125,8 @@ public final class CompoundFileWriter {
     }
 
     /**
-     * Same as {@link #addFile(String)}, only for files that are found in an
-     * external {@link Directory}.
+     * Same as {@code #addFile(String)}, only for files that are found in an
+     * external {@code Directory}.
      */
     public void addFile(String file, Directory dir) {
         if (merged)

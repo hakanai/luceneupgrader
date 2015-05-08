@@ -32,15 +32,15 @@ import java.util.Map;
  * contained index reader. Subclasses of <code>FilterIndexReader</code> may
  * further override some of these methods and may also provide additional
  * methods and fields.
- * <p><b>Note:</b> The default implementation of {@link FilterIndexReader#doOpenIfChanged}
- * throws {@link UnsupportedOperationException} (like the base class),
+ * <p><b>Note:</b> The default implementation of {@code FilterIndexReader#doOpenIfChanged}
+ * throws {@code UnsupportedOperationException} (like the base class),
  * so it's not possible to reopen a <code>FilterIndexReader</code>.
  * To reopen, you have to first reopen the underlying reader
  * and wrap it again with the custom filter.
  */
 public class FilterIndexReader extends IndexReader {
 
-  /** Base class for filtering {@link TermDocs} implementations. */
+  /** Base class for filtering {@code TermDocs} implementations. */
   public static class FilterTermDocs implements TermDocs {
     protected TermDocs in;
 
@@ -58,7 +58,7 @@ public class FilterIndexReader extends IndexReader {
     public void close() throws IOException { in.close(); }
   }
 
-  /** Base class for filtering {@link TermPositions} implementations. */
+  /** Base class for filtering {@code TermPositions} implementations. */
   public static class FilterTermPositions
           extends FilterTermDocs implements TermPositions {
 
@@ -83,7 +83,7 @@ public class FilterIndexReader extends IndexReader {
     }
   }
 
-  /** Base class for filtering {@link TermEnum} implementations. */
+  /** Base class for filtering {@code TermEnum} implementations. */
   public static class FilterTermEnum extends TermEnum {
     protected TermEnum in;
 

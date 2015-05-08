@@ -18,15 +18,12 @@ package org.trypticon.lucene3.document;
 
 import org.trypticon.lucene3.analysis.TokenStream;
 import org.trypticon.lucene3.index.FieldInfo.IndexOptions;
-import org.trypticon.lucene3.index.FieldInvertState; // for javadocs
-import org.trypticon.lucene3.search.PhraseQuery; // for javadocs
-import org.trypticon.lucene3.search.spans.SpanQuery; // for javadocs
 
 import java.io.Reader;
 import java.io.Serializable;
 
 /**
- * Synonymous with {@link Field}.
+ * Synonymous with {@code Field}.
  *
  * <p><bold>WARNING</bold>: This interface may change within minor versions, despite Lucene's backward compatibility requirements.
  * This means new methods may be added from version to version.  This change only affects the Fieldable API; other backwards
@@ -40,22 +37,22 @@ public interface Fieldable extends Serializable {
    * multiplied into the score of all hits on this this field of this
    * document.
    *
-   * <p>The boost is multiplied by {@link org.trypticon.lucene3.document.Document#getBoost()} of the document
+   * <p>The boost is multiplied by {@code org.trypticon.lucene3.document.Document#getBoost()} of the document
    * containing this field.  If a document has multiple fields with the same
    * name, all such values are multiplied together.  This product is then
    * used to compute the norm factor for the field.  By
-   * default, in the {@link
+   * default, in the {@code
    * org.trypticon.lucene3.search.Similarity#computeNorm(String,
    * FieldInvertState)} method, the boost value is multiplied
-   * by the {@link
+   * by the {@code
    * org.trypticon.lucene3.search.Similarity#lengthNorm(String,
-   * int)} and then rounded by {@link org.trypticon.lucene3.search.Similarity#encodeNormValue(float)} before it is stored in the
+   * int)} and then rounded by {@code org.trypticon.lucene3.search.Similarity#encodeNormValue(float)} before it is stored in the
    * index.  One should attempt to ensure that this product does not overflow
    * the range of that encoding.
    *
-   * @see org.trypticon.lucene3.document.Document#setBoost(float)
-   * @see org.trypticon.lucene3.search.Similarity#computeNorm(String, FieldInvertState)
-   * @see org.trypticon.lucene3.search.Similarity#encodeNormValue(float)
+   *
+   *
+   *
    */
   void setBoost(float boost);
 
@@ -64,11 +61,11 @@ public interface Fieldable extends Serializable {
    * <p>The default value is 1.0.
    *
    * <p>Note: this value is not stored directly with the document in the index.
-   * Documents returned from {@link org.trypticon.lucene3.index.IndexReader#document(int)} and
-   * {@link org.trypticon.lucene3.search.Searcher#doc(int)} may thus not have the same value present as when
+   * Documents returned from {@code org.trypticon.lucene3.index.IndexReader#document(int)} and
+   * {@code org.trypticon.lucene3.search.Searcher#doc(int)} may thus not have the same value present as when
    * this field was indexed.
    *
-   * @see #setBoost(float)
+   *
    */
   float getBoost();
 
@@ -86,17 +83,17 @@ public interface Fieldable extends Serializable {
    * If isIndexed()==true and isTokenized()==true, then tokenStreamValue() will be used to generate indexed tokens if not null,
    * else readerValue() will be used to generate indexed tokens if not null, else stringValue() will be used to generate tokens.
    */
-  public String stringValue();
+  String stringValue();
   
   /** The value of the field as a Reader, which can be used at index time to generate indexed tokens.
-   * @see #stringValue()
+   *
    */
-  public Reader readerValue();
+  Reader readerValue();
   
   /** The TokenStream for this field to be used when indexing, or null.
-   * @see #stringValue()
+   *
    */
-  public TokenStream tokenStreamValue();
+  TokenStream tokenStreamValue();
 
   /** True if the value of the field is to be stored in the index for return
     with search hits. */
@@ -112,12 +109,12 @@ public interface Fieldable extends Serializable {
   boolean  isTokenized();
 
   /** True if the term or terms used to index this field are stored as a term
-   *  vector, available from {@link org.trypticon.lucene3.index.IndexReader#getTermFreqVector(int,String)}.
+   *  vector, available from {@code org.trypticon.lucene3.index.IndexReader#getTermFreqVector(int,String)}.
    *  These methods do not provide access to the original content of the field,
    *  only to terms used to index it. If the original content must be
    *  preserved, use the <code>stored</code> attribute instead.
    *
-   * @see org.trypticon.lucene3.index.IndexReader#getTermFreqVector(int, String)
+   *
    */
   boolean isTermVectorStored();
 
@@ -147,8 +144,8 @@ public interface Fieldable extends Serializable {
 
   /**
    * Indicates whether a Field is Lazy or not.  The semantics of Lazy loading are such that if a Field is lazily loaded, retrieving
-   * it's values via {@link #stringValue()} or {@link #getBinaryValue()} is only valid as long as the {@link org.trypticon.lucene3.index.IndexReader} that
-   * retrieved the {@link Document} is still open.
+   * it's values via {@code #stringValue()} or {@code #getBinaryValue()} is only valid as long as the {@code org.trypticon.lucene3.index.IndexReader} that
+   * retrieved the {@code Document} is still open.
    *  
    * @return true if this field can be loaded lazily
    */
@@ -159,33 +156,33 @@ public interface Fieldable extends Serializable {
    * returned value is undefined
    * @return index of the first character in byte[] segment that represents this Field value
    */
-  abstract int getBinaryOffset();
+  int getBinaryOffset();
   
   /**
    * Returns length of byte[] segment that is used as value, if Field is not binary
    * returned value is undefined
    * @return length of byte[] segment that represents this Field value
    */
-  abstract int getBinaryLength();
+  int getBinaryLength();
 
   /**
    * Return the raw byte[] for the binary field.  Note that
-   * you must also call {@link #getBinaryLength} and {@link
+   * you must also call {@code #getBinaryLength} and {@code
    * #getBinaryOffset} to know which range of bytes in this
    * returned array belong to the field.
    * @return reference to the Field value as byte[].
    */
-  abstract byte[] getBinaryValue();
+  byte[] getBinaryValue();
 
   /**
    * Return the raw byte[] for the binary field.  Note that
-   * you must also call {@link #getBinaryLength} and {@link
+   * you must also call {@code #getBinaryLength} and {@code
    * #getBinaryOffset} to know which range of bytes in this
    * returned array belong to the field.<p>
    * About reuse: if you pass in the result byte[] and it is
    * used, likely the underlying implementation will hold
    * onto this byte[] and return it in future calls to
-   * {@link #getBinaryValue()}.
+   * {@code #getBinaryValue()}.
    * So if you subsequently re-use the same byte[] elsewhere
    * it will alter this Fieldable's value.
    * @param result  User defined buffer that will be used if
@@ -193,9 +190,9 @@ public interface Fieldable extends Serializable {
    *  buffer is allocated
    * @return reference to the Field value as byte[].
    */
-  abstract byte[] getBinaryValue(byte[] result);
+  byte[] getBinaryValue(byte[] result);
   
-  /** @see #setIndexOptions */
+  /** */
   IndexOptions getIndexOptions();
   
   /** Expert:
@@ -205,8 +202,8 @@ public interface Fieldable extends Serializable {
   *
   * <p><b>NOTE</b>: While this option reduces storage space
   * required in the index, it also means any query
-  * requiring positional information, such as {@link
-  * PhraseQuery} or {@link SpanQuery} subclasses will
+  * requiring positional information, such as {@code
+  * PhraseQuery} or {@code SpanQuery} subclasses will
   * silently fail to find results.
   */
   void setIndexOptions(IndexOptions indexOptions);

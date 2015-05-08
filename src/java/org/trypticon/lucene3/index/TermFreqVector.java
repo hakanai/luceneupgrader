@@ -19,26 +19,26 @@ package org.trypticon.lucene3.index;
 
 /** Provides access to stored term vector of 
  *  a document field.  The vector consists of the name of the field, an array of the terms that occur in the field of the
- * {@link org.trypticon.lucene3.document.Document} and a parallel array of frequencies.  Thus, getTermFrequencies()[5] corresponds with the
+ * {@code org.trypticon.lucene3.document.Document} and a parallel array of frequencies.  Thus, getTermFrequencies()[5] corresponds with the
  * frequency of getTerms()[5], assuming there are at least 5 terms in the Document.
  */
 public interface TermFreqVector {
   /**
-   * The {@link org.trypticon.lucene3.document.Fieldable} name.
+   * The {@code org.trypticon.lucene3.document.Fieldable} name.
    * @return The name of the field this vector is associated with.
    * 
-   */ 
-  public String getField();
+   */
+  String getField();
   
   /** 
    * @return The number of terms in the term vector.
    */
-  public int size();
+  int size();
 
   /** 
    * @return An Array of term texts in ascending order.
    */
-  public String[] getTerms();
+  String[] getTerms();
 
 
   /** Array of term frequencies. Locations of the array correspond one to one
@@ -46,7 +46,7 @@ public interface TermFreqVector {
    *  method. Each location in the array contains the number of times this
    *  term occurs in the document or the document field.
    */
-  public int[] getTermFrequencies();
+  int[] getTermFrequencies();
   
 
   /** Return an index in the term numbers array returned from
@@ -54,7 +54,7 @@ public interface TermFreqVector {
    *  <code>term</code> appears. If this term does not appear in the array,
    *  return -1.
    */
-  public int indexOf(String term);
+  int indexOf(String term);
 
 
   /** Just like <code>indexOf(int)</code> but searches for a number of terms
@@ -66,6 +66,6 @@ public interface TermFreqVector {
    *  @param start index in the array where the list of terms starts
    *  @param len the number of terms in the list
    */
-  public int[] indexesOf(String[] terms, int start, int len);
+  int[] indexesOf(String[] terms, int start, int len);
 
 }

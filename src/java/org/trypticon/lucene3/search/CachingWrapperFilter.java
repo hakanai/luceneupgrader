@@ -17,13 +17,13 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.Serializable;
-import java.io.IOException;
-import java.util.Map;
-import java.util.WeakHashMap;
-
 import org.trypticon.lucene3.index.IndexReader;
 import org.trypticon.lucene3.util.FixedBitSet;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Wraps another filter's result and caches it.  The purpose is to allow
@@ -32,8 +32,8 @@ import org.trypticon.lucene3.util.FixedBitSet;
  *
  * <p><b>NOTE</b>: if you wrap this filter as a query (eg,
  * using ConstantScoreQuery), you'll likely want to enforce
- * deletions (using either {@link DeletesMode#RECACHE} or
- * {@link DeletesMode#DYNAMIC}).
+ * deletions (using either {@code DeletesMode#RECACHE} or
+ * {@code DeletesMode#DYNAMIC}).
  */
 public class CachingWrapperFilter extends Filter {
   Filter filter;
@@ -130,7 +130,7 @@ public class CachingWrapperFilter extends Filter {
    * this is safe, because the filter will be AND'd with a
    * Query that fully enforces deletions.  If instead you
    * need this filter to always enforce deletions, pass
-   * either {@link DeletesMode#RECACHE} or {@link
+   * either {@code DeletesMode#RECACHE} or {@code
    * DeletesMode#DYNAMIC}.
    * @param filter Filter to cache results of
    */
@@ -144,7 +144,7 @@ public class CachingWrapperFilter extends Filter {
    * deletions.  
    *
    * @param filter Filter to cache results of
-   * @param deletesMode See {@link DeletesMode}
+   * @param deletesMode See {@code DeletesMode}
    */
   public CachingWrapperFilter(Filter filter, DeletesMode deletesMode) {
     this.filter = filter;
@@ -163,9 +163,9 @@ public class CachingWrapperFilter extends Filter {
 
   /** Provide the DocIdSet to be cached, using the DocIdSet provided
    *  by the wrapped Filter.
-   *  <p>This implementation returns the given {@link DocIdSet}, if {@link DocIdSet#isCacheable}
-   *  returns <code>true</code>, else it copies the {@link DocIdSetIterator} into
-   *  an {@link FixedBitSet}.
+   *  <p>This implementation returns the given {@code DocIdSet}, if {@code DocIdSet#isCacheable}
+   *  returns <code>true</code>, else it copies the {@code DocIdSetIterator} into
+   *  an {@code FixedBitSet}.
    */
   protected DocIdSet docIdSetToCache(DocIdSet docIdSet, IndexReader reader) throws IOException {
     if (docIdSet == null) {

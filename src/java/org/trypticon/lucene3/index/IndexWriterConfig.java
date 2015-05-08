@@ -24,15 +24,15 @@ import org.trypticon.lucene3.search.Similarity;
 import org.trypticon.lucene3.util.Version;
 
 /**
- * Holds all the configuration of {@link IndexWriter}.  You
+ * Holds all the configuration of {@code IndexWriter}.  You
  * should instantiate this class, call the setters to set
- * your configuration, then pass it to {@link IndexWriter}.
- * Note that {@link IndexWriter} makes a private clone; if
- * you need to subsequently change settings use {@link
+ * your configuration, then pass it to {@code IndexWriter}.
+ * Note that {@code IndexWriter} makes a private clone; if
+ * you need to subsequently change settings use {@code
  * IndexWriter#getConfig}.
  *
  * <p>
- * All setter methods return {@link IndexWriterConfig} to allow chaining
+ * All setter methods return {@code IndexWriterConfig} to allow chaining
  * settings conveniently, for example:
  * 
  * <pre>
@@ -45,17 +45,17 @@ import org.trypticon.lucene3.util.Version;
 public final class IndexWriterConfig implements Cloneable {
 
   /**
-   * Specifies the open mode for {@link IndexWriter}:
+   * Specifies the open mode for {@code IndexWriter}:
    * <ul>
-   * {@link #CREATE} - creates a new index or overwrites an existing one.
-   * {@link #CREATE_OR_APPEND} - creates a new index if one does not exist,
+   * {@code #CREATE} - creates a new index or overwrites an existing one.
+   * {@code #CREATE_OR_APPEND} - creates a new index if one does not exist,
    * otherwise it opens the index and documents will be appended.
-   * {@link #APPEND} - opens an existing index.
+   * {@code #APPEND} - opens an existing index.
    * </ul>
    */
   public static enum OpenMode { CREATE, APPEND, CREATE_OR_APPEND }
   
-  /** Default value is 128. Change using {@link #setTermIndexInterval(int)}. */
+  /** Default value is 128. Change using {@code #setTermIndexInterval(int)}. */
   public static final int DEFAULT_TERM_INDEX_INTERVAL = 128;
 
   /** Denotes a flush trigger is disabled. */
@@ -76,7 +76,7 @@ public final class IndexWriterConfig implements Cloneable {
   /**
    * Default value for the write lock timeout (1,000 ms).
    * 
-   * @see #setDefaultWriteLockTimeout(long)
+   *
    */
   public static long WRITE_LOCK_TIMEOUT = 1000;
 
@@ -86,10 +86,10 @@ public final class IndexWriterConfig implements Cloneable {
    *  others to finish. */
   public final static int DEFAULT_MAX_THREAD_STATES = 8;
 
-  /** Default setting for {@link #setReaderPooling}. */
+  /** Default setting for {@code #setReaderPooling}. */
   public final static boolean DEFAULT_READER_POOLING = false;
 
-  /** Default value is 1. Change using {@link #setReaderTermsIndexDivisor(int)}. */
+  /** Default value is 1. Change using {@code #setReaderTermsIndexDivisor(int)}. */
   public static final int DEFAULT_READER_TERMS_INDEX_DIVISOR = IndexReader.DEFAULT_TERMS_INDEX_DIVISOR;
 
   /**
@@ -104,7 +104,7 @@ public final class IndexWriterConfig implements Cloneable {
    * Returns the default write lock timeout for newly instantiated
    * IndexWriterConfigs.
    * 
-   * @see #setDefaultWriteLockTimeout(long)
+   *
    */
   public static long getDefaultWriteLockTimeout() {
     return WRITE_LOCK_TIMEOUT;
@@ -132,15 +132,15 @@ public final class IndexWriterConfig implements Cloneable {
 
   /**
    * Creates a new config that with defaults that match the specified
-   * {@link Version} as well as the default {@link
-   * Analyzer}. If matchVersion is >= {@link
-   * Version#LUCENE_32}, {@link TieredMergePolicy} is used
-   * for merging; else {@link LogByteSizeMergePolicy}.
-   * Note that {@link TieredMergePolicy} is free to select
+   * {@code Version} as well as the default {@code
+   * Analyzer}. If matchVersion is >= {@code
+   * Version#LUCENE_32}, {@code TieredMergePolicy} is used
+   * for merging; else {@code LogByteSizeMergePolicy}.
+   * Note that {@code TieredMergePolicy} is free to select
    * non-contiguous merges, which means docIDs may not
    * remain montonic over time.  If this is a problem you
-   * should switch to {@link LogByteSizeMergePolicy} or
-   * {@link LogDocMergePolicy}.
+   * should switch to {@code LogByteSizeMergePolicy} or
+   * {@code LogDocMergePolicy}.
    */
   public IndexWriterConfig(Version matchVersion, Analyzer analyzer) {
     this.matchVersion = matchVersion;
@@ -184,7 +184,7 @@ public final class IndexWriterConfig implements Cloneable {
     return analyzer;
   }
 
-  /** Specifies {@link OpenMode} of the index.
+  /** Specifies {@code OpenMode} of the index.
    * 
    * <p>Only takes effect when IndexWriter is first created. */
   public IndexWriterConfig setOpenMode(OpenMode openMode) {
@@ -192,15 +192,15 @@ public final class IndexWriterConfig implements Cloneable {
     return this;
   }
   
-  /** Returns the {@link OpenMode} set by {@link #setOpenMode(OpenMode)}. */
+  /** Returns the {@code OpenMode} set by {@code #setOpenMode(OpenMode)}. */
   public OpenMode getOpenMode() {
     return openMode;
   }
 
   /**
-   * Expert: allows an optional {@link IndexDeletionPolicy} implementation to be
+   * Expert: allows an optional {@code IndexDeletionPolicy} implementation to be
    * specified. You can use this to control when prior commits are deleted from
-   * the index. The default policy is {@link KeepOnlyLastCommitDeletionPolicy}
+   * the index. The default policy is {@code KeepOnlyLastCommitDeletionPolicy}
    * which removes all prior commits as soon as a new commit is done (this
    * matches behavior before 2.2). Creating your own policy can allow you to
    * explicitly keep previous "point in time" commits alive in the index for
@@ -220,9 +220,9 @@ public final class IndexWriterConfig implements Cloneable {
   }
 
   /**
-   * Returns the {@link IndexDeletionPolicy} specified in
-   * {@link #setIndexDeletionPolicy(IndexDeletionPolicy)} or the default
-   * {@link KeepOnlyLastCommitDeletionPolicy}/
+   * Returns the {@code IndexDeletionPolicy} specified in
+   * {@code #setIndexDeletionPolicy(IndexDeletionPolicy)} or the default
+   * {@code KeepOnlyLastCommitDeletionPolicy}/
    */
   public IndexDeletionPolicy getIndexDeletionPolicy() {
     return delPolicy;
@@ -239,8 +239,8 @@ public final class IndexWriterConfig implements Cloneable {
   }
 
   /**
-   * Returns the {@link IndexCommit} as specified in
-   * {@link #setIndexCommit(IndexCommit)} or the default, <code>null</code>
+   * Returns the {@code IndexCommit} as specified in
+   * {@code #setIndexCommit(IndexCommit)} or the default, <code>null</code>
    * which specifies to open the latest index commit point.
    */
   public IndexCommit getIndexCommit() {
@@ -248,12 +248,12 @@ public final class IndexWriterConfig implements Cloneable {
   }
 
   /**
-   * Expert: set the {@link Similarity} implementation used by this IndexWriter.
+   * Expert: set the {@code Similarity} implementation used by this IndexWriter.
    * <p>
    * <b>NOTE:</b> the similarity cannot be null. If <code>null</code> is passed,
    * the similarity will be set to the default.
    * 
-   * @see Similarity#setDefault(Similarity)
+   *
    *
    * <p>Only takes effect when IndexWriter is first created. */
   public IndexWriterConfig setSimilarity(Similarity similarity) {
@@ -262,9 +262,9 @@ public final class IndexWriterConfig implements Cloneable {
   }
 
   /**
-   * Expert: returns the {@link Similarity} implementation used by this
+   * Expert: returns the {@code Similarity} implementation used by this
    * IndexWriter. This defaults to the current value of
-   * {@link Similarity#getDefault()}.
+   * {@code Similarity#getDefault()}.
    */
   public Similarity getSimilarity() {
     return similarity;
@@ -290,7 +290,7 @@ public final class IndexWriterConfig implements Cloneable {
    * memory by an IndexReader, and, on average, <code>interval/2</code> terms
    * must be scanned for each random term access.
    * 
-   * @see #DEFAULT_TERM_INDEX_INTERVAL
+   *
    *
    * <p>Takes effect immediately, but only applies to newly
    *  flushed/merged segments. */
@@ -302,7 +302,7 @@ public final class IndexWriterConfig implements Cloneable {
   /**
    * Returns the interval between indexed terms.
    * 
-   * @see #setTermIndexInterval(int)
+   *
    */
   public int getTermIndexInterval() {
     return termIndexInterval;
@@ -310,7 +310,7 @@ public final class IndexWriterConfig implements Cloneable {
 
   /**
    * Expert: sets the merge scheduler used by this writer. The default is
-   * {@link ConcurrentMergeScheduler}.
+   * {@code ConcurrentMergeScheduler}.
    * <p>
    * <b>NOTE:</b> the merge scheduler cannot be null. If <code>null</code> is
    * passed, the merge scheduler will be set to the default.
@@ -322,8 +322,8 @@ public final class IndexWriterConfig implements Cloneable {
   }
 
   /**
-   * Returns the {@link MergeScheduler} that was set by
-   * {@link #setMergeScheduler(MergeScheduler)}
+   * Returns the {@code MergeScheduler} that was set by
+   * {@code #setMergeScheduler(MergeScheduler)}
    */
   public MergeScheduler getMergeScheduler() {
     return mergeScheduler;
@@ -332,7 +332,7 @@ public final class IndexWriterConfig implements Cloneable {
   /**
    * Sets the maximum time to wait for a write lock (in milliseconds) for this
    * instance. You can change the default value for all instances by calling
-   * {@link #setDefaultWriteLockTimeout(long)}.
+   * {@code #setDefaultWriteLockTimeout(long)}.
    *
    * <p>Only takes effect when IndexWriter is first created. */
   public IndexWriterConfig setWriteLockTimeout(long writeLockTimeout) {
@@ -343,7 +343,7 @@ public final class IndexWriterConfig implements Cloneable {
   /**
    * Returns allowed timeout when acquiring the write lock.
    * 
-   * @see #setWriteLockTimeout(long)
+   *
    */
   public long getWriteLockTimeout() {
     return writeLockTimeout;
@@ -359,7 +359,7 @@ public final class IndexWriterConfig implements Cloneable {
    * 
    * @throws IllegalArgumentException if maxBufferedDeleteTerms
    * is enabled but smaller than 1
-   * @see #setRAMBufferSizeMB
+   *
    *
    * <p>Takes effect immediately, but only the next time a
    * document is added, updated or deleted.
@@ -377,7 +377,7 @@ public final class IndexWriterConfig implements Cloneable {
    * Returns the number of buffered deleted terms that will trigger a flush if
    * enabled.
    * 
-   * @see #setMaxBufferedDeleteTerms(int)
+   *
    */
   public int getMaxBufferedDeleteTerms() {
     return maxBufferedDeleteTerms;
@@ -391,7 +391,7 @@ public final class IndexWriterConfig implements Cloneable {
    * 
    * <p>
    * When this is set, the writer will flush whenever buffered documents and
-   * deletions use this much RAM. Pass in {@link #DISABLE_AUTO_FLUSH} to prevent
+   * deletions use this much RAM. Pass in {@code #DISABLE_AUTO_FLUSH} to prevent
    * triggering a flush due to RAM usage. Note that if flushing by document
    * count is also enabled, then the flush will be triggered by whichever comes
    * first.
@@ -401,7 +401,7 @@ public final class IndexWriterConfig implements Cloneable {
    * approximate. Specifically, if you delete by Query, Lucene currently has no
    * way to measure the RAM usage of individual Queries so the accounting will
    * under-estimate and you should compensate by either calling commit()
-   * periodically yourself, or by using {@link #setMaxBufferedDeleteTerms(int)}
+   * periodically yourself, or by using {@code #setMaxBufferedDeleteTerms(int)}
    * to flush by count instead of RAM usage (each buffered delete Query counts 
    * as one).
    * 
@@ -413,7 +413,7 @@ public final class IndexWriterConfig implements Cloneable {
    * best to set this value comfortably under 2048.
    * 
    * <p>
-   * The default value is {@link #DEFAULT_RAM_BUFFER_SIZE_MB}.
+   * The default value is {@code #DEFAULT_RAM_BUFFER_SIZE_MB}.
    * 
    * <p>Takes effect immediately, but only the next time a
    * document is added, updated or deleted.
@@ -437,7 +437,7 @@ public final class IndexWriterConfig implements Cloneable {
     return this;
   }
 
-  /** Returns the value set by {@link #setRAMBufferSizeMB(double)} if enabled. */
+  /** Returns the value set by {@code #setRAMBufferSizeMB(double)} if enabled. */
   public double getRAMBufferSizeMB() {
     return ramBufferSizeMB;
   }
@@ -449,7 +449,7 @@ public final class IndexWriterConfig implements Cloneable {
    * 
    * <p>
    * When this is set, the writer will flush every maxBufferedDocs added
-   * documents. Pass in {@link #DISABLE_AUTO_FLUSH} to prevent triggering a
+   * documents. Pass in {@code #DISABLE_AUTO_FLUSH} to prevent triggering a
    * flush due to number of buffered documents. Note that if flushing by RAM
    * usage is also enabled, then the flush will be triggered by whichever comes
    * first.
@@ -460,7 +460,7 @@ public final class IndexWriterConfig implements Cloneable {
    * <p>Takes effect immediately, but only the next time a
    * document is added, updated or deleted.
    *
-   * @see #setRAMBufferSizeMB(double)
+   *
    * 
    * @throws IllegalArgumentException
    *           if maxBufferedDocs is enabled but smaller than 2, or it disables
@@ -482,13 +482,13 @@ public final class IndexWriterConfig implements Cloneable {
    * Returns the number of buffered added documents that will trigger a flush if
    * enabled.
    * 
-   * @see #setMaxBufferedDocs(int)
+   *
    */
   public int getMaxBufferedDocs() {
     return maxBufferedDocs;
   }
 
-  /** Set the merged segment warmer. See {@link IndexReaderWarmer}.
+  /** Set the merged segment warmer. See {@code IndexReaderWarmer}.
    *
    * <p>Takes effect on the next merge. */
   public IndexWriterConfig setMergedSegmentWarmer(IndexReaderWarmer mergeSegmentWarmer) {
@@ -496,17 +496,17 @@ public final class IndexWriterConfig implements Cloneable {
     return this;
   }
 
-  /** Returns the current merged segment warmer. See {@link IndexReaderWarmer}. */
+  /** Returns the current merged segment warmer. See {@code IndexReaderWarmer}. */
   public IndexReaderWarmer getMergedSegmentWarmer() {
     return mergedSegmentWarmer;
   }
 
   /**
-   * Expert: {@link MergePolicy} is invoked whenever there are changes to the
+   * Expert: {@code MergePolicy} is invoked whenever there are changes to the
    * segments in the index. Its role is to select which merges to do, if any,
-   * and return a {@link MergePolicy.MergeSpecification} describing the merges.
+   * and return a {@code MergePolicy.MergeSpecification} describing the merges.
    * It also selects merges to do for forceMerge. (The default is
-   * {@link LogByteSizeMergePolicy}.
+   * {@code LogByteSizeMergePolicy}.
    *
    * <p>Only takes effect when IndexWriter is first created. */
   public IndexWriterConfig setMergePolicy(MergePolicy mergePolicy) {
@@ -517,7 +517,7 @@ public final class IndexWriterConfig implements Cloneable {
   /**
    * Returns the current MergePolicy in use by this writer.
    * 
-   * @see #setMergePolicy(MergePolicy)
+   *
    */
   public MergePolicy getMergePolicy() {
     return mergePolicy;
@@ -527,7 +527,7 @@ public final class IndexWriterConfig implements Cloneable {
    * Sets the max number of simultaneous threads that may be indexing documents
    * at once in IndexWriter. Values &lt; 1 are invalid and if passed
    * <code>maxThreadStates</code> will be set to
-   * {@link #DEFAULT_MAX_THREAD_STATES}.
+   * {@code #DEFAULT_MAX_THREAD_STATES}.
    *
    * <p>Only takes effect when IndexWriter is first created. */
   public IndexWriterConfig setMaxThreadStates(int maxThreadStates) {
@@ -544,11 +544,11 @@ public final class IndexWriterConfig implements Cloneable {
   /** By default, IndexWriter does not pool the
    *  SegmentReaders it must open for deletions and
    *  merging, unless a near-real-time reader has been
-   *  obtained by calling {@link IndexWriter#getReader}.
+   *  obtained by calling {@code IndexWriter#getReader}.
    *  This method lets you enable pooling without getting a
    *  near-real-time reader.  NOTE: if you set this to
    *  false, IndexWriter will still pool readers once
-   *  {@link IndexWriter#getReader} is called.
+   *  {@code IndexWriter#getReader} is called.
    *
    * <p>Only takes effect when IndexWriter is first created. */
   public IndexWriterConfig setReaderPooling(boolean readerPooling) {
@@ -557,12 +557,12 @@ public final class IndexWriterConfig implements Cloneable {
   }
 
   /** Returns true if IndexWriter should pool readers even
-   *  if {@link IndexWriter#getReader} has not been called. */
+   *  if {@code IndexWriter#getReader} has not been called. */
   public boolean getReaderPooling() {
     return readerPooling;
   }
 
-  /** Expert: sets the {@link DocConsumer} chain to be used to process documents.
+  /** Expert: sets the {@code DocConsumer} chain to be used to process documents.
    *
    * <p>Only takes effect when IndexWriter is first created. */
   IndexWriterConfig setIndexingChain(IndexingChain indexingChain) {
@@ -570,14 +570,14 @@ public final class IndexWriterConfig implements Cloneable {
     return this;
   }
   
-  /** Returns the indexing chain set on {@link #setIndexingChain(IndexingChain)}. */
+  /** Returns the indexing chain set on {@code #setIndexingChain(IndexingChain)}. */
   IndexingChain getIndexingChain() {
     return indexingChain;
   }
 
   /** Sets the termsIndexDivisor passed to any readers that
    *  IndexWriter opens, for example when applying deletes
-   *  or creating a near-real-time reader in {@link
+   *  or creating a near-real-time reader in {@code
    *  IndexWriter#getReader}. If you pass -1, the terms index 
    *  won't be loaded by the readers. This is only useful in 
    *  advanced situations when you will only .next() through 
@@ -593,7 +593,7 @@ public final class IndexWriterConfig implements Cloneable {
     return this;
   }
 
-  /** @see #setReaderTermsIndexDivisor(int) */
+  /** */
   public int getReaderTermsIndexDivisor() {
     return readerTermsIndexDivisor;
   }

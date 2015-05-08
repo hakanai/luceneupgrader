@@ -17,18 +17,8 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import java.util.List;
-import java.util.Map;
-
-import java.util.concurrent.atomic.AtomicInteger;
 import org.trypticon.lucene3.document.Document;
 import org.trypticon.lucene3.document.FieldSelector;
-import org.trypticon.lucene3.search.FieldCache;
 import org.trypticon.lucene3.search.Similarity;
 import org.trypticon.lucene3.store.BufferedIndexInput;
 import org.trypticon.lucene3.store.Directory;
@@ -36,6 +26,10 @@ import org.trypticon.lucene3.store.IndexInput;
 import org.trypticon.lucene3.util.BitVector;
 import org.trypticon.lucene3.util.CloseableThreadLocal;
 import org.trypticon.lucene3.util.StringHelper;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * IndexReader implementation over a single segment. 
@@ -911,14 +905,14 @@ public class SegmentReader extends IndexReader implements Cloneable {
    * This listener is called only once all SegmentReaders 
    * sharing the same core are closed.  At this point it 
    * is safe for apps to evict this reader from any caches 
-   * keyed on {@link #getCoreCacheKey}.  This is the same 
-   * interface that {@link FieldCache} uses, internally, 
+   * keyed on {@code #getCoreCacheKey}.  This is the same
+   * interface that {@code FieldCache} uses, internally,
    * to evict entries.</p>
    * 
    * @lucene.experimental
    */
-  public static interface CoreClosedListener {
-    public void onClose(SegmentReader owner);
+  public interface CoreClosedListener {
+    void onClose(SegmentReader owner);
   }
   
   /** Expert: adds a CoreClosedListener to this reader's shared core */

@@ -22,11 +22,11 @@ import java.util.regex.Pattern;
 /**
  * This class contains useful constants representing filenames and extensions
  * used by lucene, as well as convenience methods for querying whether a file
- * name matches an extension ({@link #matchesExtension(String, String)
+ * name matches an extension ({@code #matchesExtension(String, String)
  * matchesExtension}), as well as generating file names from a segment name,
  * generation and extension (
- * {@link #fileNameFromGeneration(String, String, long) fileNameFromGeneration},
- * {@link #segmentFileName(String, String) segmentFileName}).
+ * {@code #fileNameFromGeneration(String, String, long) fileNameFromGeneration},
+ * {@code #segmentFileName(String, String) segmentFileName}).
  * 
  * @lucene.internal
  */
@@ -202,7 +202,7 @@ public final class IndexFileNames {
 
   /**
    * Returns true if the provided filename is one of the doc store files (ends
-   * with an extension in {@link #STORE_INDEX_EXTENSIONS}).
+   * with an extension in {@code #STORE_INDEX_EXTENSIONS}).
    */
   public static final boolean isDocStoreFile(String fileName) {
     if (fileName.endsWith(COMPOUND_FILE_STORE_EXTENSION))
@@ -243,7 +243,7 @@ public final class IndexFileNames {
 
   /**
    * Strips the segment file name out of the given one. If you used
-   * {@link #segmentFileName} or {@link #fileNameFromGeneration} to create your
+   * {@code #segmentFileName} or {@code #fileNameFromGeneration} to create your
    * files, then this method simply removes whatever comes before the first '.',
    * or the second '_' (excluding both), in case of deleted docs.
    * 

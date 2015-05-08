@@ -17,11 +17,11 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
-import org.trypticon.lucene3.util.AttributeSource;
-import org.trypticon.lucene3.analysis.tokenattributes.OffsetAttribute;
 import org.trypticon.lucene3.analysis.tokenattributes.CharTermAttribute;
+import org.trypticon.lucene3.analysis.tokenattributes.OffsetAttribute;
+import org.trypticon.lucene3.util.AttributeSource;
+
+import java.io.IOException;
 
 /** This is a DocFieldConsumer that inverts each field,
  *  separately, from a Document, and accepts a

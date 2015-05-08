@@ -16,12 +16,13 @@ package org.trypticon.lucene3.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import org.trypticon.lucene3.store.DataOutput;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.trypticon.lucene3.store.DataOutput;
 
 import static org.trypticon.lucene3.util.RamUsageEstimator.NUM_BYTES_OBJECT_REF;
 
@@ -70,7 +71,7 @@ public final class ByteBlockPool {
     }
   }
   
-  /** A simple {@link Allocator} that never recycles. */
+  /** A simple {@code Allocator} that never recycles. */
   public static final class DirectAllocator extends Allocator {
     
     public DirectAllocator() {
@@ -86,7 +87,7 @@ public final class ByteBlockPool {
     }
   }
   
-  /** A simple {@link Allocator} that never recycles, but
+  /** A simple {@code Allocator} that never recycles, but
    *  tracks how much total RAM is in use. */
   public static class DirectTrackingAllocator extends Allocator {
     private final AtomicLong bytesUsed;
@@ -250,8 +251,8 @@ public final class ByteBlockPool {
   }
   
   /**
-   * Copies the given {@link BytesRef} at the current positions (
-   * {@link #byteUpto} across buffer boundaries
+   * Copies the given {@code BytesRef} at the current positions (
+   * {@code #byteUpto} across buffer boundaries
    */
   public final void copy(final BytesRef bytes) {
     int length = bytes.length;
@@ -305,7 +306,7 @@ public final class ByteBlockPool {
   }
   
   /**
-   * Writes the pools content to the given {@link DataOutput}
+   * Writes the pools content to the given {@code DataOutput}
    */
   public final void writePool(final DataOutput out) throws IOException {
     int bytesOffset = byteOffset;

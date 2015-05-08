@@ -17,10 +17,10 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.store.IndexOutput;
 import org.trypticon.lucene3.store.RAMOutputStream;
+
+import java.io.IOException;
 
 /**
  * This abstract class writes skip lists with multiple levels.

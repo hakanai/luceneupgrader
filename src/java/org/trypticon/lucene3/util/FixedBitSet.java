@@ -17,18 +17,18 @@
 
 package org.trypticon.lucene3.util;
 
-import java.io.IOException;
-import java.util.Arrays;
-
 import org.trypticon.lucene3.search.DocIdSet;
 import org.trypticon.lucene3.search.DocIdSetIterator;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 // TODO: maybe merge with BitVector?  Problem is BitVector
 // caches its cardinality...
 
 /** BitSet of fixed length (numBits), backed by accessible
- *  ({@link #getBits}) long[], accessed with an int index,
- *  implementing Bits and DocIdSet.  Unlike {@link
+ *  ({@code #getBits}) long[], accessed with an int index,
+ *  implementing Bits and DocIdSet.  Unlike {@code
  *  OpenBitSet} this bit set does not auto-expand, cannot
  *  handle long index, and does not have fastXX/XX variants
  *  (just X).

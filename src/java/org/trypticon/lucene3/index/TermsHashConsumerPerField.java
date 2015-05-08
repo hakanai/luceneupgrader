@@ -22,9 +22,9 @@ package org.trypticon.lucene3.index;
  *  table and provides an API for writing bytes into
  *  multiple streams for each unique Token. */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.document.Fieldable;
+
+import java.io.IOException;
 
 abstract class TermsHashConsumerPerField {
   abstract boolean start(Fieldable[] fields, int count) throws IOException;

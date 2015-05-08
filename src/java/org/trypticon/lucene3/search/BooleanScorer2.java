@@ -17,12 +17,12 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
+import org.trypticon.lucene3.search.BooleanClause.Occur;
+import org.trypticon.lucene3.search.BooleanQuery.BooleanWeight;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.trypticon.lucene3.search.BooleanClause.Occur;
-import org.trypticon.lucene3.search.BooleanQuery.BooleanWeight;
 
 /* See the description in BooleanScorer.java, comparing
  * BooleanScorer & BooleanScorer2 */
@@ -64,7 +64,7 @@ class BooleanScorer2 extends Scorer {
   private int doc = -1;
 
   /**
-   * Creates a {@link Scorer} with the given similarity and lists of required,
+   * Creates a {@code Scorer} with the given similarity and lists of required,
    * prohibited and optional scorers. In no required scorers are added, at least
    * one of the optional scorers will have to match during the search.
    * 
@@ -72,7 +72,7 @@ class BooleanScorer2 extends Scorer {
    *          The BooleanWeight to be used.
    * @param disableCoord
    *          If this parameter is true, coordination level matching 
-   *          ({@link Similarity#coord(int, int)}) is not used.
+   *          ({@code Similarity#coord(int, int)}) is not used.
    * @param minNrShouldMatch
    *          The minimum number of optional added scorers that should match
    *          during the search. In case no required scorers are added, at least

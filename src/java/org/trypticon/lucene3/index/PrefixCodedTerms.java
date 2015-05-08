@@ -17,15 +17,15 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.Iterator;
-
 import org.trypticon.lucene3.store.IndexInput;
 import org.trypticon.lucene3.store.RAMFile;
 import org.trypticon.lucene3.store.RAMInputStream;
 import org.trypticon.lucene3.store.RAMOutputStream;
 import org.trypticon.lucene3.util.BytesRef;
 import org.trypticon.lucene3.util.StringHelper;
+
+import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * Prefix codes term instances (prefixes are shared)

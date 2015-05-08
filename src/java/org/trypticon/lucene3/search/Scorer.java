@@ -17,9 +17,9 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.search.BooleanClause.Occur;
+
+import java.io.IOException;
 
 /**
  * Expert: Common scoring functionality for different types of queries.
@@ -35,7 +35,7 @@ import org.trypticon.lucene3.search.BooleanClause.Occur;
  *
  * <p><b>NOTE</b>: The values Float.Nan,
  * Float.NEGATIVE_INFINITY and Float.POSITIVE_INFINITY are
- * not valid scores.  Certain collectors (eg {@link
+ * not valid scores.  Certain collectors (eg {@code
  * TopScoreDocCollector}) will not properly collect hits
  * with these scores.
  */
@@ -53,7 +53,7 @@ public abstract class Scorer extends DocIdSetIterator {
   
   /** Constructs a Scorer.
    * @param similarity The <code>Similarity</code> implementation used by this scorer.
-   * @deprecated Use {@link #Scorer(Weight)} instead.
+   * @deprecated Use {@code #Scorer(Weight)} instead.
    */
   @Deprecated
   protected Scorer(Similarity similarity) {
@@ -64,7 +64,7 @@ public abstract class Scorer extends DocIdSetIterator {
    * Constructs a Scorer
    * @param similarity The <code>Similarity</code> implementation used by this scorer.
    * @param weight The scorers <code>Weight</code>
-   * @deprecated Use {@link #Scorer(Weight)} instead.
+   * @deprecated Use {@code #Scorer(Weight)} instead.
    */
   @Deprecated
   protected Scorer(Similarity similarity, Weight weight) {
@@ -93,7 +93,7 @@ public abstract class Scorer extends DocIdSetIterator {
 
   /**
    * Expert: Collects matching documents in a range. Hook for optimization.
-   * Note, <code>firstDocID</code> is added to ensure that {@link #nextDoc()}
+   * Note, <code>firstDocID</code> is added to ensure that {@code #nextDoc()}
    * was called before this method.
    *
    * <p><b>NOTE:</b> Because of backwards compatibility, this method is still
@@ -107,7 +107,7 @@ public abstract class Scorer extends DocIdSetIterator {
    * @param max
    *          Do not score documents past this.
    * @param firstDocID
-   *          The first document ID (ensures {@link #nextDoc()} is called before
+   *          The first document ID (ensures {@code #nextDoc()} is called before
    *          this method.
    * @return true if more matching documents may remain.
    */
@@ -122,9 +122,9 @@ public abstract class Scorer extends DocIdSetIterator {
   }
   
   /** Returns the score of the current document matching the query.
-   * Initially invalid, until {@link #nextDoc()} or {@link #advance(int)}
+   * Initially invalid, until {@code #nextDoc()} or {@code #advance(int)}
    * is called the first time, or when called from within
-   * {@link Collector#collect}.
+   * {@code Collector#collect}.
    */
   public abstract float score() throws IOException;
 
@@ -176,7 +176,7 @@ public abstract class Scorer extends DocIdSetIterator {
 
   /**
    * Expert: call this to gather details for all sub-scorers for this query.
-   * This can be used, in conjunction with a custom {@link Collector} to gather
+   * This can be used, in conjunction with a custom {@code Collector} to gather
    * details about how each sub-query matched the current hit.
    * 
    * @param visitor a callback executed for each sub-scorer
@@ -187,13 +187,13 @@ public abstract class Scorer extends DocIdSetIterator {
   }
 
   /**
-   * {@link Scorer} subclasses should implement this method if the subclass
+   * {@code Scorer} subclasses should implement this method if the subclass
    * itself contains multiple scorers to support gathering details for
-   * sub-scorers via {@link ScorerVisitor}
+   * sub-scorers via {@code ScorerVisitor}
    * <p>
-   * Note: this method will throw {@link UnsupportedOperationException} if no
-   * associated {@link Weight} instance is provided to
-   * {@link #Scorer(Weight)}
+   * Note: this method will throw {@code UnsupportedOperationException} if no
+   * associated {@code Weight} instance is provided to
+   * {@code #Scorer(Weight)}
    * </p>
    * 
    * @lucene.experimental

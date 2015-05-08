@@ -17,8 +17,9 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
 import org.trypticon.lucene3.store.IndexInput;
+
+import java.io.IOException;
 
 final class SegmentTermEnum extends TermEnum implements Cloneable {
   private IndexInput input;

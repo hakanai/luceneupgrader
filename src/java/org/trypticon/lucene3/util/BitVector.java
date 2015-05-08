@@ -17,11 +17,11 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.lucene3.store.Directory;
 import org.trypticon.lucene3.store.IndexInput;
 import org.trypticon.lucene3.store.IndexOutput;
+
+import java.io.IOException;
 
 /** Optimized implementation of a vector of bits.  This is more-or-less like
  *  java.util.BitSet, but also includes the following:
@@ -181,7 +181,7 @@ public final class BitVector implements Cloneable, Bits {
   private final static int VERSION_CURRENT = VERSION_START;
 
   /** Writes this vector to the file <code>name</code> in Directory
-    <code>d</code>, in a format that can be read by the constructor {@link
+    <code>d</code>, in a format that can be read by the constructor {@code
     #BitVector(Directory, String)}.  */
   public final void write(Directory d, String name) throws IOException {
     IndexOutput output = d.createOutput(name);
@@ -260,7 +260,7 @@ public final class BitVector implements Cloneable, Bits {
   }
 
   /** Constructs a bit vector from the file <code>name</code> in Directory
-    <code>d</code>, as written by the {@link #write} method.
+    <code>d</code>, as written by the {@code #write} method.
     */
   public BitVector(Directory d, String name) throws IOException {
     IndexInput input = d.openInput(name);

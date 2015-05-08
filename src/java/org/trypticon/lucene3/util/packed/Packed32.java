@@ -25,7 +25,7 @@ import java.util.Arrays;
 
 /**
  * Space optimized random access capable array of values with a fixed number of
- * bits. The maximum number of bits/value is 31. Use {@link Packed64} for higher
+ * bits. The maximum number of bits/value is 31. Use {@code Packed64} for higher
  * numbers.
  * </p><p>
  * The implementation strives to avoid conditionals and expensive operations,

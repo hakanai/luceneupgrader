@@ -16,29 +16,26 @@ package org.trypticon.lucene3.store;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.File;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.BufferUnderflowException;
-import java.nio.channels.ClosedChannelException; // javadoc
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileChannel.MapMode;
-
-import java.util.Iterator;
-
-import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
-import java.security.PrivilegedActionException;
-import java.lang.reflect.Method;
 
 import org.trypticon.lucene3.util.Constants;
 import org.trypticon.lucene3.util.WeakIdentityMap;
 
-/** File-based {@link Directory} implementation that uses
- *  mmap for reading, and {@link
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.lang.reflect.Method;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.Iterator;
+
+/** File-based {@code Directory} implementation that uses
+ *  mmap for reading, and {@code
  *  FSDirectory.FSIndexOutput} for writing.
  *
  * <p><b>NOTE</b>: memory mapping uses up a portion of the
@@ -47,13 +44,13 @@ import org.trypticon.lucene3.util.WeakIdentityMap;
  * be sure your have plenty of virtual address space, e.g. by
  * using a 64 bit JRE, or a 32 bit JRE with indexes that are
  * guaranteed to fit within the address space.
- * On 32 bit platforms also consult {@link #setMaxChunkSize}
+ * On 32 bit platforms also consult {@code #setMaxChunkSize}
  * if you have problems with mmap failing because of fragmented
  * address space. If you get an OutOfMemoryException, it is recommended
  * to reduce the chunk size, until it works.
  *
  * <p>Due to <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4724038">
- * this bug</a> in Sun's JRE, MMapDirectory's {@link IndexInput#close}
+ * this bug</a> in Sun's JRE, MMapDirectory's {@code IndexInput#close}
  * is unable to close the underlying OS file handle.  Only when GC
  * finally collects the underlying objects, which could be quite
  * some time later, will the file handle be closed.
@@ -68,17 +65,17 @@ import org.trypticon.lucene3.util.WeakIdentityMap;
  * an important limitation to be aware of.
  *
  * <p>This class supplies the workaround mentioned in the bug report
- * (see {@link #setUseUnmap}), which may fail on
+ * (see {@code #setUseUnmap}), which may fail on
  * non-Sun JVMs. It forcefully unmaps the buffer on close by using
  * an undocumented internal cleanup functionality.
- * {@link #UNMAP_SUPPORTED} is <code>true</code>, if the workaround
+ * {@code #UNMAP_SUPPORTED} is <code>true</code>, if the workaround
  * can be enabled (with no guarantees).
  * <p>
  * <b>NOTE:</b> Accessing this class either directly or
  * indirectly from a thread while it's interrupted can close the
  * underlying channel immediately if at the same time the thread is
  * blocked on IO. The channel will remain closed and subsequent access
- * to {@link MMapDirectory} will throw a {@link ClosedChannelException}. 
+ * to {@code MMapDirectory} will throw a {@code ClosedChannelException}.
  * </p>
  */
 public class MMapDirectory extends FSDirectory {
@@ -90,7 +87,7 @@ public class MMapDirectory extends FSDirectory {
    *
    * @param path the path of the directory
    * @param lockFactory the lock factory to use, or null for the default
-   * ({@link NativeFSLockFactory});
+   * ({@code NativeFSLockFactory});
    * @throws IOException
    */
   public MMapDirectory(File path, LockFactory lockFactory) throws IOException {
@@ -98,7 +95,7 @@ public class MMapDirectory extends FSDirectory {
     setMaxChunkSize(DEFAULT_MAX_BUFF);
   }
 
-  /** Create a new MMapDirectory for the named location and {@link NativeFSLockFactory}.
+  /** Create a new MMapDirectory for the named location and {@code NativeFSLockFactory}.
    *
    * @param path the path of the directory
    * @throws IOException
@@ -127,14 +124,14 @@ public class MMapDirectory extends FSDirectory {
   
   /**
    * This method enables the workaround for unmapping the buffers
-   * from address space after closing {@link IndexInput}, that is
+   * from address space after closing {@code IndexInput}, that is
    * mentioned in the bug report. This hack may fail on non-Sun JVMs.
    * It forcefully unmaps the buffer on close by using
    * an undocumented internal cleanup functionality.
    * <p><b>NOTE:</b> Enabling this is completely unsupported
    * by Java and may lead to JVM crashes if <code>IndexInput</code>
    * is closed while another thread is still accessing it (SIGSEGV).
-   * @throws IllegalArgumentException if {@link #UNMAP_SUPPORTED}
+   * @throws IllegalArgumentException if {@code #UNMAP_SUPPORTED}
    * is <code>false</code> and the workaround cannot be enabled.
    */
   public void setUseUnmap(final boolean useUnmapHack) {
@@ -145,7 +142,7 @@ public class MMapDirectory extends FSDirectory {
   
   /**
    * Returns <code>true</code>, if the unmap workaround is enabled.
-   * @see #setUseUnmap
+   *
    */
   public boolean getUseUnmap() {
     return useUnmapHack;
@@ -204,7 +201,7 @@ public class MMapDirectory extends FSDirectory {
   
   /**
    * Returns the current mmap chunk size.
-   * @see #setMaxChunkSize
+   *
    */
   public final int getMaxChunkSize() {
     return 1 << chunkSizePower;

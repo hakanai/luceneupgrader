@@ -17,15 +17,14 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A default {@link ThreadFactory} implementation that accepts the name prefix
+ * A default {@code ThreadFactory} implementation that accepts the name prefix
  * of the created threads as a constructor argument. Otherwise, this factory
  * yields the same semantics as the thread factory returned by
- * {@link Executors#defaultThreadFactory()}.
+ * {@code Executors#defaultThreadFactory()}.
  */
 public class NamedThreadFactory implements ThreadFactory {
   private static final AtomicInteger threadPoolNumber = new AtomicInteger(1);
@@ -35,7 +34,7 @@ public class NamedThreadFactory implements ThreadFactory {
   private final String threadNamePrefix;
 
   /**
-   * Creates a new {@link NamedThreadFactory} instance
+   * Creates a new {@code NamedThreadFactory} instance
    * 
    * @param threadNamePrefix the name prefix assigned to each thread created.
    */
@@ -52,9 +51,9 @@ public class NamedThreadFactory implements ThreadFactory {
   }
 
   /**
-   * Creates a new {@link Thread}
+   * Creates a new {@code Thread}
    * 
-   * @see java.util.concurrent.ThreadFactory#newThread(java.lang.Runnable)
+   *
    */
   public Thread newThread(Runnable r) {
     final Thread t = new Thread(group, r, String.format("%s-%d",

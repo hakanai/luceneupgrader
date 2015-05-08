@@ -17,15 +17,15 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.Arrays;
-
 import org.trypticon.lucene3.store.BufferedIndexInput;
 import org.trypticon.lucene3.store.Directory;
 import org.trypticon.lucene3.store.IndexInput;
 import org.trypticon.lucene3.util.ArrayUtil;
 import org.trypticon.lucene3.util.IOUtils;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.Arrays;
 
 class TermVectorsReader implements Cloneable, Closeable {
 
@@ -574,7 +574,7 @@ class ParallelArrayTermVectorMapper extends TermVectorMapper
 
   /**
    * Construct the vector
-   * @return The {@link TermFreqVector} based on the mappings.
+   * @return The {@code TermFreqVector} based on the mappings.
    */
   public TermFreqVector materializeVector() {
     SegmentTermVector tv = null;

@@ -26,7 +26,7 @@ import java.util.Arrays;
 /**
  * Space optimized random access capable array of values with a fixed number of
  * bits. For 32 bits/value and less, performance on 32 bit machines is not
- * optimal. Consider using {@link Packed32} for such a setup.
+ * optimal. Consider using {@code Packed32} for such a setup.
  * </p><p>
  * The implementation strives to avoid conditionals and expensive operations,
  * sacrificing code clarity to achieve better performance.

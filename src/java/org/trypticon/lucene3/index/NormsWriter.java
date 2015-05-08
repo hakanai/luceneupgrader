@@ -17,17 +17,12 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-
-import org.trypticon.lucene3.store.IndexOutput;
 import org.trypticon.lucene3.search.Similarity;
+import org.trypticon.lucene3.store.IndexOutput;
 import org.trypticon.lucene3.util.IOUtils;
+
+import java.io.IOException;
+import java.util.*;
 
 // TODO FI: norms could actually be stored as doc store
 

@@ -35,7 +35,7 @@ import java.util.Set;
  * <p>Created: Apr 20, 2004 8:58:29 AM
  *
  * @since   1.4
- * @see     CachingWrapperFilter
+ *
  */
 public class FilteredQuery
 extends Query {
@@ -121,11 +121,11 @@ extends Query {
   
   /** Hackidy-Häck-Hack for backwards compatibility, as we cannot change IndexSearcher API in 3.x, but still want
    * to move the searchWithFilter implementation to this class: to enable access to our scorer() implementation
-   * from IndexSearcher without instantiating a separate {@link Weight}, we make the inner implementation accessible.
+   * from IndexSearcher without instantiating a separate {@code Weight}, we make the inner implementation accessible.
    * @param indexReader the atomic reader
    * @param similarity the Similarity to use (deprecated)
    * @param weight the weight to wrap
-   * @param wrapperWeight must be identical to {@code weight} for usage in {@link IndexSearcher}, but it is different inside this query
+   * @param wrapperWeight must be identical to {@code weight} for usage in {@code IndexSearcher}, but it is different inside this query
    * @param filter the Filter to wrap
    * @lucene.internal
    */

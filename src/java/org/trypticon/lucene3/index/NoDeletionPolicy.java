@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * An {@link IndexDeletionPolicy} which keeps all index commits around, never
+ * An {@code IndexDeletionPolicy} which keeps all index commits around, never
  * deleting them. This class is a singleton and can be accessed by referencing
- * {@link #INSTANCE}.
+ * {@code #INSTANCE}.
  */
 public final class NoDeletionPolicy implements IndexDeletionPolicy {
 

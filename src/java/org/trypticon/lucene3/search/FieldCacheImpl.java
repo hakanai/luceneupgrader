@@ -17,23 +17,15 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-
-import org.trypticon.lucene3.index.IndexReader;
-import org.trypticon.lucene3.index.SegmentReader;
-import org.trypticon.lucene3.index.Term;
-import org.trypticon.lucene3.index.TermDocs;
-import org.trypticon.lucene3.index.TermEnum;
+import org.trypticon.lucene3.index.*;
 import org.trypticon.lucene3.util.Bits;
+import org.trypticon.lucene3.util.FieldCacheSanityChecker;
 import org.trypticon.lucene3.util.FixedBitSet;
 import org.trypticon.lucene3.util.StringHelper;
-import org.trypticon.lucene3.util.FieldCacheSanityChecker;
+
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.*;
 
 /**
  * Expert: The default cache implementation, storing all values in memory.

@@ -17,9 +17,9 @@ package org.trypticon.lucene3.analysis.tokenattributes;
  * limitations under the License.
  */
 
-import java.io.Serializable;
-
 import org.trypticon.lucene3.util.AttributeImpl;
+
+import java.io.Serializable;
 
 /**
  * The start and end character offset of a Token. 
@@ -40,7 +40,7 @@ public class OffsetAttributeImpl extends AttributeImpl implements OffsetAttribut
 
   
   /** Set the starting and ending offset.
-    @see #startOffset() and #endOffset()*/
+    */
   public void setOffset(int startOffset, int endOffset) {
     // TODO: check that these are valid!  IE, each should be
     // >= 0, and endOffset should be >= startOffset.

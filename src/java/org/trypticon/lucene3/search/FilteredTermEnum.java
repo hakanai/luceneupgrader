@@ -17,9 +17,10 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
 import org.trypticon.lucene3.index.Term;
 import org.trypticon.lucene3.index.TermEnum;
+
+import java.io.IOException;
 
 /** Abstract class for enumerating a subset of all terms. 
 
@@ -29,7 +30,7 @@ public abstract class FilteredTermEnum extends TermEnum {
     /** the current term */
     protected Term currentTerm = null;
     
-    /** the delegate enum - to set this member use {@link #setEnum} */
+    /** the delegate enum - to set this member use {@code #setEnum} */
     protected TermEnum actualEnum = null;
     
     public FilteredTermEnum() {}

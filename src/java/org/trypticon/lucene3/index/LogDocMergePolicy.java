@@ -19,13 +19,13 @@ import java.io.IOException;
  * limitations under the License.
  */
 
-/** This is a {@link LogMergePolicy} that measures size of a
+/** This is a {@code LogMergePolicy} that measures size of a
  *  segment as the number of documents (not taking deletions
  *  into account). */
 
 public class LogDocMergePolicy extends LogMergePolicy {
 
-  /** Default minimum segment size.  @see setMinMergeDocs */
+  /** Default minimum segment size.  */
   public static final int DEFAULT_MIN_MERGE_DOCS = 1000;
 
   public LogDocMergePolicy() {
@@ -57,7 +57,7 @@ public class LogDocMergePolicy extends LogMergePolicy {
 
   /** Get the minimum size for a segment to remain
    *  un-merged.
-   *  @see #setMinMergeDocs **/
+   *  **/
   public int getMinMergeDocs() {
     return (int) minMergeSize;
   }

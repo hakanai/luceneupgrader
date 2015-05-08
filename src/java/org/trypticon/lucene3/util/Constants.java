@@ -17,8 +17,9 @@ package org.trypticon.lucene3.util;
  * limitations under the License.
  */
 
-import java.lang.reflect.Field;
 import org.trypticon.lucene3.LucenePackage;
+
+import java.lang.reflect.Field;
 
 /**
  * Some useful constants.

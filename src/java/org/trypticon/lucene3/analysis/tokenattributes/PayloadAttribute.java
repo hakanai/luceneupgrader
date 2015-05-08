@@ -21,16 +21,16 @@ import org.trypticon.lucene3.index.Payload;
 import org.trypticon.lucene3.util.Attribute;
 
 /**
- * The payload of a Token. See also {@link Payload}.
+ * The payload of a Token. See also {@code Payload}.
  */
 public interface PayloadAttribute extends Attribute {
   /**
    * Returns this Token's payload.
-   */ 
-  public Payload getPayload();
+   */
+  Payload getPayload();
 
   /** 
    * Sets this Token's payload.
    */
-  public void setPayload(Payload payload);
+  void setPayload(Payload payload);
 }

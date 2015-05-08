@@ -17,9 +17,9 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-import java.io.IOException;
 
 abstract class InvertedDocEndConsumer {
   abstract InvertedDocEndConsumerPerThread addThread(DocInverterPerThread docInverterPerThread);

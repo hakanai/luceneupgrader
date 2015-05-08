@@ -16,7 +16,6 @@ package org.trypticon.lucene3.search;
  */
 
 import java.util.ArrayList;
-
 import java.util.List;
 
 
@@ -33,7 +32,7 @@ public class SpanFilterResult {
   /**
   *
   * @param docIdSet The DocIdSet for the Filter
-  * @param positions A List of {@link org.trypticon.lucene3.search.SpanFilterResult.PositionInfo} objects
+  * @param positions A List of {@code org.trypticon.lucene3.search.SpanFilterResult.PositionInfo} objects
   */
   public SpanFilterResult(DocIdSet docIdSet, List<PositionInfo> positions) {
     this.docIdSet = docIdSet;

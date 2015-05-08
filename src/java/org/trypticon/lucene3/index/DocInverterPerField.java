@@ -17,12 +17,13 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.Reader;
-import org.trypticon.lucene3.document.Fieldable;
 import org.trypticon.lucene3.analysis.TokenStream;
 import org.trypticon.lucene3.analysis.tokenattributes.OffsetAttribute;
 import org.trypticon.lucene3.analysis.tokenattributes.PositionIncrementAttribute;
+import org.trypticon.lucene3.document.Fieldable;
+
+import java.io.IOException;
+import java.io.Reader;
 
 /**
  * Holds state for inverting all occurrences of a single

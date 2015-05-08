@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 /**
- * Provides a {@link FieldComparator} for custom field sorting.
+ * Provides a {@code FieldComparator} for custom field sorting.
  *
  * @lucene.experimental
  *

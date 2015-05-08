@@ -17,48 +17,42 @@ package org.trypticon.lucene3.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.trypticon.lucene3.document.Document;
 import org.trypticon.lucene3.document.FieldSelector;
 import org.trypticon.lucene3.index.CorruptIndexException;
 import org.trypticon.lucene3.index.IndexReader;
 import org.trypticon.lucene3.index.Term;
 import org.trypticon.lucene3.store.Directory;
-import org.trypticon.lucene3.store.NIOFSDirectory; // javadocs
 import org.trypticon.lucene3.util.ReaderUtil;
 import org.trypticon.lucene3.util.ThreadInterruptedException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /** Implements search over a single IndexReader.
  *
  * <p>Applications usually need only call the inherited
- * {@link #search(Query,int)}
- * or {@link #search(Query,Filter,int)} methods. For
+ * {@code #search(Query,int)}
+ * or {@code #search(Query,Filter,int)} methods. For
  * performance reasons, if your index is unchanging, you
  * should share a single IndexSearcher instance across
  * multiple searches instead of creating a new one
  * per-search.  If your index has changed and you wish to
  * see the changes reflected in searching, you should
- * use {@link IndexReader#openIfChanged} to obtain a new reader and
+ * use {@code IndexReader#openIfChanged} to obtain a new reader and
  * then create a new IndexSearcher from that.  Also, for
  * low-latency turnaround it's best to use a near-real-time
- * reader ({@link IndexReader#open(IndexWriter,boolean)}).
- * Once you have a new {@link IndexReader}, it's relatively
+ * reader ({@code IndexReader#open(IndexWriter,boolean)}).
+ * Once you have a new {@code IndexReader}, it's relatively
  * cheap to create a new IndexSearcher from it.
  * 
- * <a name="thread-safety"></a><p><b>NOTE</b>: <code>{@link
+ * <a name="thread-safety"></a><p><b>NOTE</b>: <code>{@code
  * IndexSearcher}</code> instances are completely
  * thread safe, meaning multiple threads can call any of its
  * methods, concurrently.  If your application requires
@@ -86,7 +80,7 @@ public class IndexSearcher extends Searcher {
    * @param path directory where IndexReader will be opened
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
-   * @deprecated use {@link IndexSearcher#IndexSearcher(IndexReader)} instead.
+   * @deprecated use {@code IndexSearcher#IndexSearcher(IndexReader)} instead.
    */
   @Deprecated
   public IndexSearcher(Directory path) throws CorruptIndexException, IOException {
@@ -103,7 +97,7 @@ public class IndexSearcher extends Searcher {
    * will be opened readOnly
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
-   * @deprecated Use {@link IndexSearcher#IndexSearcher(IndexReader)} instead.
+   * @deprecated Use {@code IndexSearcher#IndexSearcher(IndexReader)} instead.
    */
   @Deprecated
   public IndexSearcher(Directory path, boolean readOnly) throws CorruptIndexException, IOException {
@@ -119,7 +113,7 @@ public class IndexSearcher extends Searcher {
    *  provided ExecutorService.  IndexSearcher will not
    *  shutdown/awaitTermination this ExecutorService on
    *  close; you must do so, eventually, on your own.  NOTE:
-   *  if you are using {@link NIOFSDirectory}, do not use
+   *  if you are using {@code NIOFSDirectory}, do not use
    *  the shutdownNow method of ExecutorService as this uses
    *  Thread.interrupt under-the-hood which can silently
    *  close file descriptors (see <a
@@ -157,7 +151,7 @@ public class IndexSearcher extends Searcher {
    *  ExecutorService.  IndexSearcher will not
    *  shutdown/awaitTermination this ExecutorService on
    *  close; you must do so, eventually, on your own.  NOTE:
-   *  if you are using {@link NIOFSDirectory}, do not use
+   *  if you are using {@code NIOFSDirectory}, do not use
    *  the shutdownNow method of ExecutorService as this uses
    *  Thread.interrupt under-the-hood which can silently
    *  close file descriptors (see <a
@@ -210,19 +204,14 @@ public class IndexSearcher extends Searcher {
     ReaderUtil.gatherSubReaders(allSubReaders, r);
   }
 
-  /** Return the {@link IndexReader} this searches. */
+  /** Return the {@code IndexReader} this searches. */
   public IndexReader getIndexReader() {
     return reader;
   }
 
-  /** Returns the atomic subReaders used by this searcher. */
-  public IndexReader[] getSubReaders() {
-    return subReaders;
-  }
-
   /** Expert: Returns one greater than the largest possible document number.
    * 
-   * @see org.trypticon.lucene3.index.IndexReader#maxDoc()
+   *
    */
   @Override
   public int maxDoc() {
@@ -266,7 +255,7 @@ public class IndexSearcher extends Searcher {
   
   /** Expert: Set the Similarity implementation used by this Searcher.
    *
-   * @see Similarity#setDefault(Similarity)
+   *
    */
   @Override
   public void setSimilarity(Similarity similarity) {
@@ -292,34 +281,6 @@ public class IndexSearcher extends Searcher {
   }
 
   /** Finds the top <code>n</code>
-   * hits for <code>query</code> where all results are after a previous 
-   * result (<code>after</code>).
-   * <p>
-   * By passing the bottom result from a previous page as <code>after</code>,
-   * this method can be used for efficient 'deep-paging' across potentially
-   * large result sets.
-   *
-   * @throws BooleanQuery.TooManyClauses
-   */
-  public TopDocs searchAfter(ScoreDoc after, Query query, int n) throws IOException {
-    return searchAfter(after, query, null, n);
-  }
-  
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code>, applying <code>filter</code> if non-null,
-   * where all results are after a previous result (<code>after</code>).
-   * <p>
-   * By passing the bottom result from a previous page as <code>after</code>,
-   * this method can be used for efficient 'deep-paging' across potentially
-   * large result sets.
-   *
-   * @throws BooleanQuery.TooManyClauses
-   */
-  public TopDocs searchAfter(ScoreDoc after, Query query, Filter filter, int n) throws IOException {
-    return search(createNormalizedWeight(query), filter, after, n);
-  }
-  
-  /** Finds the top <code>n</code>
    * hits for <code>query</code>.
    *
    * @throws BooleanQuery.TooManyClauses
@@ -344,12 +305,12 @@ public class IndexSearcher extends Searcher {
 
   /** Lower-level search API.
    *
-   * <p>{@link Collector#collect(int)} is called for every matching
+   * <p>{@code Collector#collect(int)} is called for every matching
    * document.
    * <br>Collector-based access to remote indexes is discouraged.
    *
    * <p>Applications should only use this if they need <i>all</i> of the
-   * matching documents.  The high-level search API ({@link
+   * matching documents.  The high-level search API ({@code
    * Searcher#search(Query, Filter, int)}) is usually more efficient, as it skips
    * non-high-scoring hits.
    *
@@ -366,10 +327,10 @@ public class IndexSearcher extends Searcher {
 
   /** Lower-level search API.
   *
-  * <p>{@link Collector#collect(int)} is called for every matching document.
+  * <p>{@code Collector#collect(int)} is called for every matching document.
   *
   * <p>Applications should only use this if they need <i>all</i> of the
-  * matching documents.  The high-level search API ({@link
+  * matching documents.  The high-level search API ({@code
   * Searcher#search(Query, int)}) is usually more efficient, as it skips
   * non-high-scoring hits.
   * <p>Note: The <code>score</code> passed to this method is a raw score.
@@ -389,7 +350,7 @@ public class IndexSearcher extends Searcher {
    * <code>sort</code>.
    * 
    * <p>NOTE: this does not compute scores by default; use
-   * {@link IndexSearcher#setDefaultFieldSortScoring} to
+   * {@code IndexSearcher#setDefaultFieldSortScoring} to
    * enable scoring.
    *
    * @throws BooleanQuery.TooManyClauses
@@ -404,8 +365,8 @@ public class IndexSearcher extends Searcher {
    * Search implementation with arbitrary sorting and no filter.
    * @param query The query to search for
    * @param n Return only the top n results
-   * @param sort The {@link org.trypticon.lucene3.search.Sort} object
-   * @return The top docs, sorted according to the supplied {@link org.trypticon.lucene3.search.Sort} instance
+   * @param sort The {@code org.trypticon.lucene3.search.Sort} object
+   * @return The top docs, sorted according to the supplied {@code org.trypticon.lucene3.search.Sort} instance
    * @throws IOException
    */
   @Override
@@ -417,8 +378,8 @@ public class IndexSearcher extends Searcher {
   /** Expert: Low-level search implementation.  Finds the top <code>n</code>
    * hits for <code>query</code>, applying <code>filter</code> if non-null.
    *
-   * <p>Applications should usually call {@link Searcher#search(Query,int)} or
-   * {@link Searcher#search(Query,Filter,int)} instead.
+   * <p>Applications should usually call {@code Searcher#search(Query,int)} or
+   * {@code Searcher#search(Query,Filter,int)} instead.
    * @throws BooleanQuery.TooManyClauses
    */
   @Override
@@ -476,7 +437,7 @@ public class IndexSearcher extends Searcher {
    * <code>filter</code> if non-null, and sorting the hits by the criteria in
    * <code>sort</code>.
    *
-   * <p>Applications should usually call {@link
+   * <p>Applications should usually call {@code
    * Searcher#search(Query,Filter,int,Sort)} instead.
    * 
    * @throws BooleanQuery.TooManyClauses
@@ -488,14 +449,14 @@ public class IndexSearcher extends Searcher {
   }
 
   /**
-   * Just like {@link #search(Weight, Filter, int, Sort)}, but you choose
-   * whether or not the fields in the returned {@link FieldDoc} instances should
+   * Just like {@code #search(Weight, Filter, int, Sort)}, but you choose
+   * whether or not the fields in the returned {@code FieldDoc} instances should
    * be set by specifying fillFields.
    *
    * <p>NOTE: this does not compute scores by default.  If you
-   * need scores, create a {@link TopFieldCollector}
-   * instance by calling {@link TopFieldCollector#create} and
-   * then pass that to {@link #search(Weight, Filter,
+   * need scores, create a {@code TopFieldCollector}
+   * instance by calling {@code TopFieldCollector#create} and
+   * then pass that to {@code #search(Weight, Filter,
    * Collector)}.</p>
    */
   protected TopFieldDocs search(Weight weight, Filter filter, int nDocs,
@@ -548,12 +509,12 @@ public class IndexSearcher extends Searcher {
    * Lower-level search API.
    * 
    * <p>
-   * {@link Collector#collect(int)} is called for every document. <br>
+   * {@code Collector#collect(int)} is called for every document. <br>
    * Collector-based access to remote indexes is discouraged.
    * 
    * <p>
    * Applications should only use this if they need <i>all</i> of the matching
-   * documents. The high-level search API ({@link Searcher#search(Query,int)}) is
+   * documents. The high-level search API ({@code Searcher#search(Query,int)}) is
    * usually more efficient, as it skips non-high-scoring hits.
    * 
    * @param weight
@@ -617,7 +578,7 @@ public class IndexSearcher extends Searcher {
    * and, for good performance, should not be displayed with every hit.
    * Computing an explanation is as expensive as executing the query over the
    * entire index.
-   * <p>Applications should call {@link Searcher#explain(Query, int)}.
+   * <p>Applications should call {@code Searcher#explain(Query, int)}.
    * @throws BooleanQuery.TooManyClauses
    */
   @Override
@@ -631,33 +592,11 @@ public class IndexSearcher extends Searcher {
   private boolean fieldSortDoTrackScores;
   private boolean fieldSortDoMaxScore;
 
-  /** By default, no scores are computed when sorting by
-   *  field (using {@link #search(Query,Filter,int,Sort)}).
-   *  You can change that, per IndexSearcher instance, by
-   *  calling this method.  Note that this will incur a CPU
-   *  cost.
-   * 
-   *  @param doTrackScores If true, then scores are
-   *  returned for every matching document in {@link
-   *  TopFieldDocs}.
-   *
-   *  @param doMaxScore If true, then the max score for all
-   *  matching docs is computed. */
-  public void setDefaultFieldSortScoring(boolean doTrackScores, boolean doMaxScore) {
-    fieldSortDoTrackScores = doTrackScores;
-    fieldSortDoMaxScore = doMaxScore;
-    if (subSearchers != null) { // propagate settings to subs
-      for (IndexSearcher sub : subSearchers) {
-        sub.setDefaultFieldSortScoring(doTrackScores, doMaxScore);
-      }
-    }
-  }
-
   /**
-   * Creates a normalized weight for a top-level {@link Query}.
-   * The query is rewritten by this method and {@link Query#createWeight} called,
-   * afterwards the {@link Weight} is normalized. The returned {@code Weight}
-   * can then directly be used to get a {@link Scorer}.
+   * Creates a normalized weight for a top-level {@code Query}.
+   * The query is rewritten by this method and {@code Query#createWeight} called,
+   * afterwards the {@code Weight} is normalized. The returned {@code Weight}
+   * can then directly be used to get a {@code Scorer}.
    * @lucene.internal
    */
   public Weight createNormalizedWeight(Query query) throws IOException {
@@ -810,11 +749,11 @@ public class IndexSearcher extends Searcher {
   }
 
   /**
-   * A helper class that wraps a {@link CompletionService} and provides an
-   * iterable interface to the completed {@link Callable} instances.
+   * A helper class that wraps a {@code CompletionService} and provides an
+   * iterable interface to the completed {@code Callable} instances.
    * 
    * @param <T>
-   *          the type of the {@link Callable} return value
+   *          the type of the {@code Callable} return value
    */
   private static final class ExecutionHelper<T> implements Iterator<T>, Iterable<T> {
     private final CompletionService<T> service;

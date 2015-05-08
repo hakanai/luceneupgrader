@@ -17,20 +17,14 @@ package org.trypticon.lucene3.index;
  * limitations under the License.
  */
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.trypticon.lucene3.store.Directory;
 import org.trypticon.lucene3.store.NoSuchDirectoryException;
 import org.trypticon.lucene3.util.CollectionUtil;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.*;
 
 /*
  * This class keeps track of each SegmentInfos instance that
@@ -59,7 +53,7 @@ import org.trypticon.lucene3.util.CollectionUtil;
  * file deletion, retrying, etc, derived from the deletion
  * of commit points is the business of the IndexFileDeleter.
  * 
- * The current default deletion policy is {@link
+ * The current default deletion policy is {@code
  * KeepOnlyLastCommitDeletionPolicy}, which removes all
  * prior commits when a new commit has completed.  This
  * matches the behavior before 2.2.
@@ -383,12 +377,12 @@ final class IndexFileDeleter {
   }
 
   /**
-   * Revisits the {@link IndexDeletionPolicy} by calling its
-   * {@link IndexDeletionPolicy#onCommit(List)} again with the known commits.
+   * Revisits the {@code IndexDeletionPolicy} by calling its
+   * {@code IndexDeletionPolicy#onCommit(List)} again with the known commits.
    * This is useful in cases where a deletion policy which holds onto index
    * commits is used. The application may know that some commits are not held by
    * the deletion policy anymore and call
-   * {@link IndexWriter#deleteUnusedFiles()}, which will attempt to delete the
+   * {@code IndexWriter#deleteUnusedFiles()}, which will attempt to delete the
    * unused commits again.
    */
   void revisitPolicy() throws IOException {

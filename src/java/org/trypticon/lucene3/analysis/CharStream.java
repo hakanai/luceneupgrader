@@ -20,11 +20,11 @@ package org.trypticon.lucene3.analysis;
 import java.io.Reader;
 
 /**
- * CharStream adds {@link #correctOffset}
- * functionality over {@link Reader}.  All Tokenizers accept a
- * CharStream instead of {@link Reader} as input, which enables
+ * CharStream adds {@code #correctOffset}
+ * functionality over {@code Reader}.  All Tokenizers accept a
+ * CharStream instead of {@code Reader} as input, which enables
  * arbitrary character based filtering before tokenization. 
- * The {@link #correctOffset} method fixed offsets to account for
+ * The {@code #correctOffset} method fixed offsets to account for
  * removal or insertion of characters, so that the offsets
  * reported in the tokens match the character offsets of the
  * original Reader.

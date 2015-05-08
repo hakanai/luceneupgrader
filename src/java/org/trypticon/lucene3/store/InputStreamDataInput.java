@@ -17,12 +17,13 @@ package org.trypticon.lucene3.store;
  * limitations under the License.
  */
 
-import java.io.*;
-
-import org.trypticon.lucene3.store.DataInput;
+import java.io.Closeable;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * A {@link DataInput} wrapping a plain {@link InputStream}.
+ * A {@code DataInput} wrapping a plain {@code InputStream}.
  */
 public class InputStreamDataInput extends DataInput implements Closeable {
   private final InputStream is;
