@@ -77,7 +77,7 @@ public abstract class TermVectorMapper {
 
   /**
    *
-   * @see #isIgnoringPositions() Same principal as {@code #isIgnoringPositions()}, but applied to offsets.  false by default.
+   *
    * @return false
    */
   public boolean isIgnoringOffsets()

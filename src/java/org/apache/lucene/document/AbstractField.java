@@ -84,9 +84,9 @@ public abstract class AbstractField implements Fieldable {
    * index.  One should attempt to ensure that this product does not overflow
    * the range of that encoding.
    *
-   * @see org.apache.lucene.document.Document#setBoost(float)
-   * @see org.apache.lucene.search.Similarity#computeNorm(String, FieldInvertState)
-   * @see org.apache.lucene.search.Similarity#encodeNormValue(float)
+   *
+   *
+   *
    */
   public void setBoost(float boost) {
     this.boost = boost;
@@ -101,7 +101,7 @@ public abstract class AbstractField implements Fieldable {
    * {@code org.apache.lucene.search.Searcher#doc(int)} may thus not have the same value present as when
    * this field was indexed.
    *
-   * @see #setBoost(float)
+   *
    */
   public float getBoost() {
     return boost;
@@ -138,7 +138,7 @@ public abstract class AbstractField implements Fieldable {
    *  only to terms used to index it. If the original content must be
    *  preserved, use the <code>stored</code> attribute instead.
    *
-   * @see org.apache.lucene.index.IndexReader#getTermFreqVector(int, String)
+   *
    */
   public final boolean isTermVectorStored() { return storeTermVector; }
 
@@ -207,11 +207,7 @@ public abstract class AbstractField implements Fieldable {
   /** True if norms are omitted for this indexed field */
   public boolean getOmitNorms() { return omitNorms; }
 
-  /** @deprecated use {@code #getIndexOptions()} instead. */
-  @Deprecated
-  public boolean getOmitTermFreqAndPositions() { return indexOptions == IndexOptions.DOCS_ONLY; }
-  
-  /** @see #setIndexOptions */
+  /** */
   public IndexOptions getIndexOptions() { return indexOptions; }
   
   /** Expert:
@@ -220,16 +216,6 @@ public abstract class AbstractField implements Fieldable {
    * This effectively disables indexing boosts and length normalization for this field.
    */
   public void setOmitNorms(boolean omitNorms) { this.omitNorms=omitNorms; }
-
-  /** @deprecated use {@code #setIndexOptions(FieldInfo.IndexOptions)} instead. */
-  @Deprecated
-  public void setOmitTermFreqAndPositions(boolean omitTermFreqAndPositions) { 
-    if (omitTermFreqAndPositions) {
-      indexOptions = IndexOptions.DOCS_ONLY;
-    } else {
-      indexOptions = IndexOptions.DOCS_AND_FREQS_AND_POSITIONS;
-    }
-  }
 
   /** Expert:
    *
@@ -243,10 +229,6 @@ public abstract class AbstractField implements Fieldable {
    * silently fail to find results.
    */
   public void setIndexOptions(IndexOptions indexOptions) { this.indexOptions=indexOptions; }
- 
-  public boolean isLazy() {
-    return lazy;
-  }
 
   /** Prints a Field for human consumption. */
   @Override
@@ -299,7 +281,7 @@ public abstract class AbstractField implements Fieldable {
     result.append(name);
     result.append(':');
 
-    if (fieldsData != null && lazy == false) {
+    if (fieldsData != null && !lazy) {
       result.append(fieldsData);
     }
 

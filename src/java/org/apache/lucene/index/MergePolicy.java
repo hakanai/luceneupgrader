@@ -263,7 +263,7 @@ public abstract class MergePolicy implements java.io.Closeable {
    * allowed to be called only once, and is usually set by IndexWriter. If it is
    * called more than once, {@code AlreadySetException} is thrown.
    * 
-   * @see SetOnce
+   *
    */
   public void setIndexWriter(IndexWriter writer) {
     this.writer.set(writer);
@@ -279,7 +279,7 @@ public abstract class MergePolicy implements java.io.Closeable {
    *          the total set of segments in the index
    */
   public abstract MergeSpecification findMerges(SegmentInfos segmentInfos)
-      throws CorruptIndexException, IOException;
+      throws IOException;
 
   /**
    * Determine what set of merge operations is necessary in
@@ -304,7 +304,7 @@ public abstract class MergePolicy implements java.io.Closeable {
    */
   public abstract MergeSpecification findForcedMerges(
           SegmentInfos segmentInfos, int maxSegmentCount, Map<SegmentInfo,Boolean> segmentsToMerge)
-      throws CorruptIndexException, IOException;
+      throws IOException;
 
   /**
    * Determine what set of merge operations is necessary in order to expunge all
@@ -314,7 +314,7 @@ public abstract class MergePolicy implements java.io.Closeable {
    *          the total set of segments in the index
    */
   public abstract MergeSpecification findForcedDeletesMerges(
-      SegmentInfos segmentInfos) throws CorruptIndexException, IOException;
+      SegmentInfos segmentInfos) throws IOException;
 
   /**
    * Release all resources for the policy.

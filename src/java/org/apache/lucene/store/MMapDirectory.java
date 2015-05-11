@@ -145,7 +145,7 @@ public class MMapDirectory extends FSDirectory {
   
   /**
    * Returns <code>true</code>, if the unmap workaround is enabled.
-   * @see #setUseUnmap
+   *
    */
   public boolean getUseUnmap() {
     return useUnmapHack;
@@ -204,7 +204,7 @@ public class MMapDirectory extends FSDirectory {
   
   /**
    * Returns the current mmap chunk size.
-   * @see #setMaxChunkSize
+   *
    */
   public final int getMaxChunkSize() {
     return 1 << chunkSizePower;

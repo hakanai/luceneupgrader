@@ -78,7 +78,7 @@ public interface Searchable extends Closeable {
 
   /** Expert: Returns the number of documents containing <code>term</code>.
    * 
-   * @see org.apache.lucene.index.IndexReader#docFreq(Term)
+   *
    */
   int docFreq(Term term) throws IOException;
 
@@ -90,27 +90,18 @@ public interface Searchable extends Closeable {
 
   /** Expert: Returns one greater than the largest possible document number.
    * 
-   * @see org.apache.lucene.index.IndexReader#maxDoc()
+   *
    */
   int maxDoc() throws IOException;
-
-  /** Expert: Low-level search implementation.  Finds the top <code>n</code>
-   * hits for <code>query</code>, applying <code>filter</code> if non-null.
-   *
-   * <p>Applications should usually call {@code Searcher#search(Query,int)} or
-   * {@code Searcher#search(Query,Filter,int)} instead.
-   * @throws BooleanQuery.TooManyClauses
-   */
-  TopDocs search(Weight weight, Filter filter, int n) throws IOException;
 
   /**
    * Returns the stored fields of document <code>i</code>.
    * 
-   * @see org.apache.lucene.index.IndexReader#document(int)
+   *
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
    */
-  Document doc(int i) throws CorruptIndexException, IOException;
+  Document doc(int i) throws IOException;
 
   /**
    * Get the {@code org.apache.lucene.document.Document} at the <code>n</code><sup>th</sup> position. The {@code org.apache.lucene.document.FieldSelector}
@@ -127,13 +118,13 @@ public interface Searchable extends Closeable {
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
    * 
-   * @see org.apache.lucene.index.IndexReader#document(int, FieldSelector)
-   * @see org.apache.lucene.document.Fieldable
-   * @see org.apache.lucene.document.FieldSelector
-   * @see org.apache.lucene.document.SetBasedFieldSelector
-   * @see org.apache.lucene.document.LoadFirstFieldSelector
+   *
+   *
+   *
+   *
+   *
    */
-  Document doc(int n, FieldSelector fieldSelector) throws CorruptIndexException, IOException;
+  Document doc(int n, FieldSelector fieldSelector) throws IOException;
   
   /** Expert: called to re-write queries into primitive queries.
    * @throws BooleanQuery.TooManyClauses
@@ -152,18 +143,5 @@ public interface Searchable extends Closeable {
    * @throws BooleanQuery.TooManyClauses
    */
   Explanation explain(Weight weight, int doc) throws IOException;
-
-  /** Expert: Low-level search implementation with arbitrary sorting.  Finds
-   * the top <code>n</code> hits for <code>query</code>, applying
-   * <code>filter</code> if non-null, and sorting the hits by the criteria in
-   * <code>sort</code>.
-   *
-   * <p>Applications should usually call {@code
-   * Searcher#search(Query,Filter,int,Sort)} instead.
-   * 
-   * @throws BooleanQuery.TooManyClauses
-   */
-  TopFieldDocs search(Weight weight, Filter filter, int n, Sort sort)
-  throws IOException;
 
 }

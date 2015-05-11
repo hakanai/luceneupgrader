@@ -73,7 +73,7 @@ final class FormatPostingsPositionsWriter extends FormatPostingsPositionsConsume
 
   void setField(FieldInfo fieldInfo) {
     omitTermFreqAndPositions = fieldInfo.indexOptions == IndexOptions.DOCS_ONLY;
-    storePayloads = omitTermFreqAndPositions ? false : fieldInfo.storePayloads;
+    storePayloads = !omitTermFreqAndPositions && fieldInfo.storePayloads;
   }
 
   /** Called when we are done adding positions & payloads */

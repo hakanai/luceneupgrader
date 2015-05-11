@@ -68,8 +68,8 @@ public abstract class AttributeImpl implements Cloneable, Serializable, Attribut
    * <li><em>iff {@code prependAttClass=false}:</em> {@code "key=value,key=value"}
    * </ul>
    *
-   * @see #reflectWith(AttributeReflector)
-   * @see #toString()
+   *
+   *
    */
   public final String reflectAsString(final boolean prependAttClass) {
     final StringBuilder buffer = new StringBuilder();
@@ -136,7 +136,7 @@ public abstract class AttributeImpl implements Cloneable, Serializable, Attribut
    * interfaces and keys are passed to {@code AttributeReflector#reflect} in the same order, but possibly
    * different values. So don't automatically exclude e.g. {@code null} properties!
    *
-   * @see #reflectAsString(boolean)
+   *
    */
   public void reflectWith(AttributeReflector reflector) {
     final Class<? extends AttributeImpl> clazz = this.getClass();

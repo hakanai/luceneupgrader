@@ -43,7 +43,7 @@ public class FlagsAttributeImpl extends AttributeImpl implements FlagsAttribute,
   }
 
   /**
-   * @see #getFlags()
+   *
    */
   public void setFlags(int flags) {
     this.flags = flags;

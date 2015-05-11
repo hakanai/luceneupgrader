@@ -48,7 +48,7 @@ import java.io.IOException;
  * test it by using {@code VerifyingLockFactory}, {@code
  * LockVerifyServer} and {@code LockStressTest}.</p>
  *
- * @see LockFactory
+ *
  */
 
 public class SimpleFSLockFactory extends FSLockFactory {

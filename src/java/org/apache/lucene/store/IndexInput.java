@@ -22,7 +22,7 @@ import java.io.Closeable;
 
 /** Abstract base class for input from a file in a {@code Directory}.  A
  * random-access input stream.  Used for all Lucene index input operations.
- * @see Directory
+ *
  */
 public abstract class IndexInput extends DataInput implements Cloneable,Closeable {
 
@@ -76,12 +76,12 @@ public abstract class IndexInput extends DataInput implements Cloneable,Closeabl
 
   /** Returns the current position in this file, where the next read will
    * occur.
-   * @see #seek(long)
+   *
    */
   public abstract long getFilePointer();
 
   /** Sets current position in this file, where the next read will occur.
-   * @see #getFilePointer()
+   *
    */
   public abstract void seek(long pos) throws IOException;
 

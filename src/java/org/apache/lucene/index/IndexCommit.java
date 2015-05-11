@@ -17,11 +17,11 @@ package org.apache.lucene.index;
  * limitations under the License.
 */
 
+import org.apache.lucene.store.Directory;
+
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-import java.io.IOException;
-
-import org.apache.lucene.store.Directory;
 
 /**
  * <p>Expert: represents a single commit into an index as seen by the
@@ -104,19 +104,6 @@ public abstract class IndexCommit implements Comparable<IndexCommit> {
   /** Returns the generation (the _N in segments_N) for this
    *  IndexCommit */
   public abstract long getGeneration();
-
-  /** Convenience method that returns the last modified time
-   *  of the segments_N file corresponding to this index
-   *  commit, equivalent to
-   *  getDirectory().fileModified(getSegmentsFileName()).
-   * @deprecated If you need to track commit time of
-   * an index, you can store it in the commit data (see
-   * {@code IndexWriter#commit(Map)}
-   */
-  @Deprecated
-  public long getTimestamp() throws IOException {
-    return getDirectory().fileModified(getSegmentsFileName());
-  }
 
   /** Returns userData, previously passed to {@code
    *  IndexWriter#commit(Map)} for this commit.  Map is

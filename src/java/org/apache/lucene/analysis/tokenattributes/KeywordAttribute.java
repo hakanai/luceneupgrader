@@ -36,7 +36,7 @@ public interface KeywordAttribute extends Attribute {
    * @return <code>true</code> iff the current token is a keyword, otherwise
    *         <code>false</code>/
    */
-  public boolean isKeyword();
+  boolean isKeyword();
 
   /**
    * Marks the current token as keyword iff set to <code>true</code>.
@@ -45,5 +45,5 @@ public interface KeywordAttribute extends Attribute {
    *          <code>true</code> iff the current token is a keyword, otherwise
    *          <code>false</code>.
    */
-  public void setKeyword(boolean isKeyword);
+  void setKeyword(boolean isKeyword);
 }

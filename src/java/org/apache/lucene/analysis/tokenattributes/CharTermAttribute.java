@@ -30,7 +30,7 @@ public interface CharTermAttribute extends Attribute, CharSequence, Appendable {
    *  @param offset the index in the buffer of the first character to copy
    *  @param length the number of characters to copy
    */
-  public void copyBuffer(char[] buffer, int offset, int length);
+  void copyBuffer(char[] buffer, int offset, int length);
   
   /** Returns the internal termBuffer character array which
    *  you can then directly alter.  If the array is too
@@ -39,14 +39,14 @@ public interface CharTermAttribute extends Attribute, CharSequence, Appendable {
    *  altering the buffer be sure to call {@code
    *  #setLength} to record the number of valid
    *  characters that were placed into the termBuffer. */
-  public char[] buffer();
+  char[] buffer();
 
   /** Grows the termBuffer to at least size newSize, preserving the
    *  existing content.
    *  @param newSize minimum size of the new termBuffer
    *  @return newly created termBuffer with length >= newSize
    */
-  public char[] resizeBuffer(int newSize);
+  char[] resizeBuffer(int newSize);
 
   /** Set number of valid characters (length of the term) in
    *  the termBuffer array. Use this to truncate the termBuffer
@@ -55,37 +55,37 @@ public interface CharTermAttribute extends Attribute, CharSequence, Appendable {
    *  use {@code #resizeBuffer(int)} first.
    *  @param length the truncated length
    */
-  public CharTermAttribute setLength(int length);
+  CharTermAttribute setLength(int length);
   
   /** Sets the length of the termBuffer to zero.
    * Use this method before appending contents
    * using the {@code Appendable} interface.
    */
-  public CharTermAttribute setEmpty();
+  CharTermAttribute setEmpty();
   
   // the following methods are redefined to get rid of IOException declaration:
-  public CharTermAttribute append(CharSequence csq);
-  public CharTermAttribute append(CharSequence csq, int start, int end);
-  public CharTermAttribute append(char c);
+  CharTermAttribute append(CharSequence csq);
+  CharTermAttribute append(CharSequence csq, int start, int end);
+  CharTermAttribute append(char c);
 
   /** Appends the specified {@code String} to this character sequence. 
    * <p>The characters of the {@code String} argument are appended, in order, increasing the length of
    * this sequence by the length of the argument. If argument is {@code null}, then the four
    * characters {@code "null"} are appended. 
    */
-  public CharTermAttribute append(String s);
+  CharTermAttribute append(String s);
 
   /** Appends the specified {@code StringBuilder} to this character sequence. 
    * <p>The characters of the {@code StringBuilder} argument are appended, in order, increasing the length of
    * this sequence by the length of the argument. If argument is {@code null}, then the four
    * characters {@code "null"} are appended. 
    */
-  public CharTermAttribute append(StringBuilder sb);
+  CharTermAttribute append(StringBuilder sb);
 
   /** Appends the contents of the other {@code CharTermAttribute} to this character sequence. 
    * <p>The characters of the {@code CharTermAttribute} argument are appended, in order, increasing the length of
    * this sequence by the length of the argument. If argument is {@code null}, then the four
    * characters {@code "null"} are appended. 
    */
-  public CharTermAttribute append(CharTermAttribute termAtt);
+  CharTermAttribute append(CharTermAttribute termAtt);
 }

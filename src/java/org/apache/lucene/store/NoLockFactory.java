@@ -24,7 +24,7 @@ import java.io.IOException;
  * Only one instance of this lock is created.  You should call {@code
  * #getNoLockFactory()} to get the instance.
  *
- * @see LockFactory
+ *
  */
 
 public class NoLockFactory extends LockFactory {
@@ -36,7 +36,7 @@ public class NoLockFactory extends LockFactory {
   /**
    * @deprecated This constructor was not intended to be public and should not be used.
    *  It will be made private in Lucene 4.0
-   * @see #getNoLockFactory()
+   *
    */
   // make private in 4.0!
   @Deprecated

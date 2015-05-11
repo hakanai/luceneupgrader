@@ -39,7 +39,7 @@ public class Explanation implements java.io.Serializable {
    * <p>
    * By default, an Explanation represents a "match" if the value is positive.
    * </p>
-   * @see #getValue
+   *
    */
   public boolean isMatch() {
     return (0.0f < getValue());

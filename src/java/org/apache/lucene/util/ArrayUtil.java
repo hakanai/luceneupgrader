@@ -501,7 +501,7 @@ public final class ArrayUtil {
    * @param length      The length of the section of the array to compare
    * @return true if the two arrays, starting at their respective offsets, are equal
    * 
-   * @see java.util.Arrays#equals(char[], char[])
+   *
    */
   public static boolean equals(char[] left, int offsetLeft, char[] right, int offsetRight, int length) {
     if ((offsetLeft + length <= left.length) && (offsetRight + length <= right.length)) {
@@ -527,7 +527,7 @@ public final class ArrayUtil {
    * @param length      The length of the section of the array to compare
    * @return true if the two arrays, starting at their respective offsets, are equal
    * 
-   * @see java.util.Arrays#equals(char[], char[])
+   *
    */
   public static boolean equals(int[] left, int offsetLeft, int[] right, int offsetRight, int length) {
     if ((offsetLeft + length <= left.length) && (offsetRight + length <= right.length)) {

@@ -63,17 +63,17 @@ class TermVectorsReader implements Cloneable, Closeable {
   private final int format;
 
   TermVectorsReader(Directory d, String segment, FieldInfos fieldInfos)
-    throws CorruptIndexException, IOException {
+    throws IOException {
     this(d, segment, fieldInfos, BufferedIndexInput.BUFFER_SIZE);
   }
 
   TermVectorsReader(Directory d, String segment, FieldInfos fieldInfos, int readBufferSize)
-    throws CorruptIndexException, IOException {
+    throws IOException {
     this(d, segment, fieldInfos, readBufferSize, -1, 0);
   }
     
   TermVectorsReader(Directory d, String segment, FieldInfos fieldInfos, int readBufferSize, int docStoreOffset, int size)
-    throws CorruptIndexException, IOException {
+    throws IOException {
     boolean success = false;
 
     try {
@@ -133,7 +133,7 @@ class TermVectorsReader implements Cloneable, Closeable {
     return tvf;
   }
 
-  final private void seekTvx(final int docNum) throws IOException {
+  private void seekTvx(final int docNum) throws IOException {
     if (format < FORMAT_VERSION2)
       tvx.seek((docNum + docStoreOffset) * 8L + FORMAT_SIZE);
     else
@@ -194,7 +194,7 @@ class TermVectorsReader implements Cloneable, Closeable {
     }
   }
 
-  private int checkValidFormat(String fn, IndexInput in) throws CorruptIndexException, IOException
+  private int checkValidFormat(String fn, IndexInput in) throws IOException
   {
     int format = in.readInt();
     if (format > FORMAT_CURRENT) {
@@ -285,7 +285,7 @@ class TermVectorsReader implements Cloneable, Closeable {
 
   // Reads the String[] fields; you have to pre-seek tvd to
   // the right point
-  final private String[] readFields(int fieldCount) throws IOException {
+  private String[] readFields(int fieldCount) throws IOException {
     int number = 0;
     String[] fields = new String[fieldCount];
 
@@ -303,7 +303,7 @@ class TermVectorsReader implements Cloneable, Closeable {
 
   // Reads the long[] offsets into TVF; you have to pre-seek
   // tvx/tvd to the right point
-  final private long[] readTvfPointers(int fieldCount) throws IOException {
+  private long[] readTvfPointers(int fieldCount) throws IOException {
     // Compute position in the tvf file
     long position;
     if (format >= FORMAT_VERSION2)

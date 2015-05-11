@@ -96,7 +96,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** @see #setMaxMergeAtOnce */
+  /** */
   public int getMaxMergeAtOnce() {
     return maxMergeAtOnce;
   }
@@ -114,7 +114,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** @see #setMaxMergeAtOnceExplicit */
+  /** */
   public int getMaxMergeAtOnceExplicit() {
     return maxMergeAtOnceExplicit;
   }
@@ -129,7 +129,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** @see #getMaxMergedSegmentMB */
+  /** */
   public double getMaxMergedSegmentMB() {
     return maxMergedSegmentBytes/1024/1024.;
   }
@@ -164,7 +164,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** @see #setFloorSegmentMB */
+  /** */
   public double getFloorSegmentMB() {
     return floorSegmentBytes/(1024*1024.);
   }
@@ -180,7 +180,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** @see #setForceMergeDeletesPctAllowed */
+  /** */
   public double getForceMergeDeletesPctAllowed() {
     return forceMergeDeletesPctAllowed;
   }
@@ -201,7 +201,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** @see #setSegmentsPerTier */
+  /** */
   public double getSegmentsPerTier() {
     return segsPerTier;
   }
@@ -214,7 +214,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
 
-  /** @see  #setUseCompoundFile */
+  /** */
   public boolean getUseCompoundFile() {
     return useCompoundFile;
   }
@@ -232,7 +232,7 @@ public class TieredMergePolicy extends MergePolicy {
     return this;
   }
   
-  /** @see #setNoCFSRatio */
+  /** */
   public double getNoCFSRatio() {
     return noCFSRatio;
   }
@@ -551,7 +551,7 @@ public class TieredMergePolicy extends MergePolicy {
 
   @Override
   public MergeSpecification findForcedDeletesMerges(SegmentInfos infos)
-      throws CorruptIndexException, IOException {
+      throws IOException {
     if (verbose()) {
       message("findForcedDeletesMerges infos=" + writer.get().segString(infos) + " forceMergeDeletesPctAllowed=" + forceMergeDeletesPctAllowed);
     }

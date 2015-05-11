@@ -145,7 +145,7 @@ public final class FieldInfos implements Iterable<FieldInfo> {
    * 
    * @param name The name of the Fieldable
    * @param isIndexed true if the field is indexed
-   * @see #add(String, boolean, boolean)
+   *
    */
   synchronized public void add(String name, boolean isIndexed) {
     add(name, isIndexed, false, false);
@@ -236,7 +236,7 @@ public final class FieldInfos implements Iterable<FieldInfo> {
   /**
    * Return the fieldName identified by its number.
    * 
-   * @param fieldNumber
+   * @param fieldNumber ...
    * @return the fieldName or an empty string when the field
    * with the given number doesn't exist.
    */  
@@ -247,7 +247,7 @@ public final class FieldInfos implements Iterable<FieldInfo> {
 
   /**
    * Return the fieldinfo object referenced by the fieldNumber.
-   * @param fieldNumber
+   * @param fieldNumber ...
    * @return the FieldInfo object or null when the given fieldNumber
    * doesn't exist.
    */  

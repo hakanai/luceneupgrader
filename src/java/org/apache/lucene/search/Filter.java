@@ -46,7 +46,7 @@ public abstract class Filter implements java.io.Serializable {
    *         prohibited in search results. <b>NOTE:</b> null can be returned if
    *         no documents will be accepted by this Filter.
    * 
-   * @see DocIdBitSet
+   *
    */
   public abstract DocIdSet getDocIdSet(IndexReader reader) throws IOException;
 }

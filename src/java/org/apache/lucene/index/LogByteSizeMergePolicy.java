@@ -23,15 +23,15 @@ import java.io.IOException;
  *  segment as the total byte size of the segment's files. */
 public class LogByteSizeMergePolicy extends LogMergePolicy {
 
-  /** Default minimum segment size.  @see setMinMergeMB */
+  /** Default minimum segment size.  */
   public static final double DEFAULT_MIN_MERGE_MB = 1.6;
 
   /** Default maximum segment size.  A segment of this size
-   *  or larger will never be merged.  @see setMaxMergeMB */
+   *  or larger will never be merged.  */
   public static final double DEFAULT_MAX_MERGE_MB = 2048;
 
   /** Default maximum segment size.  A segment of this size
-   *  or larger will never be merged during forceMerge.  @see setMaxMergeMBForForceMerge */
+   *  or larger will never be merged during forceMerge.  */
   public static final double DEFAULT_MAX_MERGE_MB_FOR_FORCED_MERGE = Long.MAX_VALUE;
 
   public LogByteSizeMergePolicy() {
@@ -63,7 +63,7 @@ public class LogByteSizeMergePolicy extends LogMergePolicy {
   /** Returns the largest segment (measured by total byte
    *  size of the segment's files, in MB) that may be merged
    *  with other segments.
-   *  @see #setMaxMergeMB */
+   *  */
   public double getMaxMergeMB() {
     return ((double) maxMergeSize)/1024/1024;
   }
@@ -94,7 +94,7 @@ public class LogByteSizeMergePolicy extends LogMergePolicy {
   /** Returns the largest segment (measured by total byte
    *  size of the segment's files, in MB) that may be merged
    *  with other segments during forceMerge.
-   *  @see #setMaxMergeMBForForcedMerge */
+   *  */
   public double getMaxMergeMBForForcedMerge() {
     return ((double) maxMergeSizeForForcedMerge)/1024/1024;
   }
@@ -114,7 +114,7 @@ public class LogByteSizeMergePolicy extends LogMergePolicy {
 
   /** Get the minimum size for a segment to remain
    *  un-merged.
-   *  @see #setMinMergeMB **/
+   *  **/
   public double getMinMergeMB() {
     return ((double) minMergeSize)/1024/1024;
   }

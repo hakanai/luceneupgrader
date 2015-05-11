@@ -28,9 +28,9 @@ import java.io.IOException;
  * VerifyingLockFactory}, {@code LockStressTest}, {@code
  * LockVerifyServer}.</p>
  *
- * @see LockVerifyServer
- * @see LockStressTest
- * @see VerifyingLockFactory
+ *
+ *
+ *
  */
 
 public abstract class LockFactory {

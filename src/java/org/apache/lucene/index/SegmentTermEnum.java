@@ -42,7 +42,7 @@ final class SegmentTermEnum extends TermEnum implements Cloneable {
   private int formatM1SkipInterval;
 
   SegmentTermEnum(IndexInput i, FieldInfos fis, boolean isi)
-          throws CorruptIndexException, IOException {
+          throws IOException {
     input = i;
     fieldInfos = fis;
     isIndex = isi;

@@ -31,11 +31,11 @@ import org.apache.lucene.util.Attribute;
 public interface PositionLengthAttribute extends Attribute {
   /** @param positionLength how many positions this token
    *  spans. */
-  public void setPositionLength(int positionLength);
+  void setPositionLength(int positionLength);
 
   /** Returns the position length of this Token.
-   * @see #setPositionLength
+   *
    */
-  public int getPositionLength();
+  int getPositionLength();
 }
 

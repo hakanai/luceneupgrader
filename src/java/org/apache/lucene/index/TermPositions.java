@@ -25,7 +25,7 @@ import java.io.IOException;
  * frequency are the same as for a TermDocs.  The positions portion lists the ordinal
  * positions of each occurrence of a term in a document.
  *
- * @see IndexReader#termPositions()
+ *
  */
 
 public interface TermPositions
@@ -74,6 +74,6 @@ public interface TermPositions
    * 
    * @return true if there is a payload available at this position that can be loaded
    */
-    public boolean isPayloadAvailable();
+  boolean isPayloadAvailable();
 
 }

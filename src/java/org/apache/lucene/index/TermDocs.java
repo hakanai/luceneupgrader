@@ -26,7 +26,7 @@ import java.io.Closeable;
  the number of times the term occurred in each document.  <p> The pairs are
  ordered by document number.
 
- @see IndexReader#termDocs()
+
  */
 
 public interface TermDocs extends Closeable {

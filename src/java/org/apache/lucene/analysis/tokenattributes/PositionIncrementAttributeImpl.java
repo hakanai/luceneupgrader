@@ -62,7 +62,7 @@ public class PositionIncrementAttributeImpl extends AttributeImpl implements Pos
   }
 
   /** Returns the position increment of this Token.
-   * @see #setPositionIncrement
+   *
    */
   public int getPositionIncrement() {
     return positionIncrement;

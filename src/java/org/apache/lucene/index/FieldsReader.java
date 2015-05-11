@@ -17,26 +17,18 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.zip.DataFormatException;
-
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.document.AbstractField;
-import org.apache.lucene.document.CompressionTools;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldSelector;
-import org.apache.lucene.document.FieldSelectorResult;
-import org.apache.lucene.document.Fieldable;
-import org.apache.lucene.document.NumericField;
+import org.apache.lucene.document.*;
 import org.apache.lucene.store.AlreadyClosedException;
-import org.apache.lucene.store.BufferedIndexInput;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.util.CloseableThreadLocal;
 import org.apache.lucene.util.IOUtils;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.zip.DataFormatException;
 
 /**
  * Class responsible for access to stored document fields.
@@ -112,14 +104,6 @@ final class FieldsReader implements Cloneable, Closeable {
     this.cloneableIndexStream = cloneableIndexStream;
     fieldsStream = (IndexInput) cloneableFieldsStream.clone();
     indexStream = (IndexInput) cloneableIndexStream.clone();
-  }
-  
-  FieldsReader(Directory d, String segment, FieldInfos fn) throws IOException {
-    this(d, segment, fn, BufferedIndexInput.BUFFER_SIZE, -1, 0);
-  }
-
-  FieldsReader(Directory d, String segment, FieldInfos fn, int readBufferSize) throws IOException {
-    this(d, segment, fn, readBufferSize, -1, 0);
   }
 
   FieldsReader(Directory d, String segment, FieldInfos fn, int readBufferSize, int docStoreOffset, int size) throws IOException {
@@ -214,7 +198,7 @@ final class FieldsReader implements Cloneable, Closeable {
     return size;
   }
 
-  private final void seekIndex(int docID) throws IOException {
+  private void seekIndex(int docID) throws IOException {
     indexStream.seek(formatSize + (docID + docStoreOffset) * 8L);
   }
 
@@ -226,7 +210,7 @@ final class FieldsReader implements Cloneable, Closeable {
     return format >= FieldsWriter.FORMAT_LUCENE_3_0_NO_COMPRESSED_FIELDS;
   }
 
-  final Document doc(int n, FieldSelector fieldSelector) throws CorruptIndexException, IOException {
+  final Document doc(int n, FieldSelector fieldSelector) throws IOException {
     seekIndex(n);
     long position = indexStream.readLong();
     fieldsStream.seek(position);
@@ -242,7 +226,7 @@ final class FieldsReader implements Cloneable, Closeable {
       assert bits <= (FieldsWriter.FIELD_IS_NUMERIC_MASK | FieldsWriter.FIELD_IS_COMPRESSED | FieldsWriter.FIELD_IS_TOKENIZED | FieldsWriter.FIELD_IS_BINARY): "bits=" + Integer.toHexString(bits);
 
       boolean compressed = (bits & FieldsWriter.FIELD_IS_COMPRESSED) != 0;
-      assert (compressed ? (format < FieldsWriter.FORMAT_LUCENE_3_0_NO_COMPRESSED_FIELDS) : true)
+      assert (!compressed || (format < FieldsWriter.FORMAT_LUCENE_3_0_NO_COMPRESSED_FIELDS))
         : "compressed fields are only allowed in indexes of version <= 2.9";
       boolean tokenize = (bits & FieldsWriter.FIELD_IS_TOKENIZED) != 0;
       boolean binary = (bits & FieldsWriter.FIELD_IS_BINARY) != 0;
@@ -356,7 +340,7 @@ final class FieldsReader implements Cloneable, Closeable {
     if (binary) {
       int toRead = fieldsStream.readVInt();
       long pointer = fieldsStream.getFilePointer();
-      f = new LazyField(fi.name, Field.Store.YES, toRead, pointer, binary, compressed, cacheResult);
+      f = new LazyField(fi.name, Field.Store.YES, toRead, pointer, true, compressed, cacheResult);
       //Need to move the pointer ahead by toRead positions
       fieldsStream.seek(pointer + toRead);
     } else if (numeric != 0) {
@@ -369,7 +353,7 @@ final class FieldsReader implements Cloneable, Closeable {
       if (compressed) {
         int toRead = fieldsStream.readVInt();
         long pointer = fieldsStream.getFilePointer();
-        f = new LazyField(fi.name, store, toRead, pointer, binary, compressed, cacheResult);
+        f = new LazyField(fi.name, store, toRead, pointer, false, true, cacheResult);
         //skip over the part that we aren't loading
         fieldsStream.seek(pointer + toRead);
       } else {
@@ -381,7 +365,7 @@ final class FieldsReader implements Cloneable, Closeable {
         } else {
           fieldsStream.skipChars(length);
         }
-        f = new LazyField(fi.name, store, index, termVector, length, pointer, binary, compressed, cacheResult);
+        f = new LazyField(fi.name, store, index, termVector, length, pointer, false, false, cacheResult);
       }  
     }
     
@@ -390,7 +374,7 @@ final class FieldsReader implements Cloneable, Closeable {
     doc.add(f);
   }
 
-  private void addField(Document doc, FieldInfo fi, boolean binary, boolean compressed, boolean tokenize, int numeric) throws CorruptIndexException, IOException {
+  private void addField(Document doc, FieldInfo fi, boolean binary, boolean compressed, boolean tokenize, int numeric) throws IOException {
     final AbstractField f;
 
     //we have a binary stored field, and it may be compressed
@@ -589,7 +573,7 @@ final class FieldsReader implements Cloneable, Closeable {
           try {
             localFieldsStream.seek(pointer);
             localFieldsStream.readBytes(b, 0, toRead);
-            if (isCompressed == true) {
+            if (isCompressed) {
               value = uncompress(b);
             } else {
               value = b;
@@ -600,7 +584,7 @@ final class FieldsReader implements Cloneable, Closeable {
 
           binaryOffset = 0;
           binaryLength = toRead;
-          if (cacheResult == true){
+          if (cacheResult){
             fieldsData = value;
           }
           return value;

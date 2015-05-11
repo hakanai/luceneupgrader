@@ -28,7 +28,7 @@ import java.util.HashSet;
  * against a single shared in-process Directory instance.  This is
  * currently the default locking for RAMDirectory.
  *
- * @see LockFactory
+ *
  */
 
 public class SingleInstanceLockFactory extends LockFactory {

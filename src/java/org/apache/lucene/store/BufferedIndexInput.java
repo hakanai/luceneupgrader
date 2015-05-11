@@ -96,7 +96,7 @@ public abstract class BufferedIndexInput extends IndexInput {
     buffer = newBuffer;
   }
 
-  /** Returns buffer size.  @see #setBufferSize */
+  /** Returns buffer size.  */
   public final int getBufferSize() {
     return bufferSize;
   }
@@ -299,7 +299,7 @@ public abstract class BufferedIndexInput extends IndexInput {
 
   /** Expert: implements seek.  Sets current position in this file, where the
    * next {@code #readInternal(byte[],int,int)} will occur.
-   * @see #readInternal(byte[],int,int)
+   *
    */
   protected abstract void seekInternal(long pos) throws IOException;
 

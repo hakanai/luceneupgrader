@@ -34,10 +34,10 @@ public interface FlagsAttribute extends Attribute {
    *
    * @return The bits
    */
-  public int getFlags();
+  int getFlags();
 
   /**
-   * @see #getFlags()
+   *
    */
-  public void setFlags(int flags);  
+  void setFlags(int flags);
 }

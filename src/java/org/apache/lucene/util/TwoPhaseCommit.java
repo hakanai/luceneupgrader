@@ -35,7 +35,7 @@ public interface TwoPhaseCommit {
    * 2-phase commit fails, {@code #rollback()} is called to discard all changes
    * since last successful commit.
    */
-  public void prepareCommit() throws IOException;
+  void prepareCommit() throws IOException;
 
   /**
    * Like {@code #commit()}, but takes an additional commit data to be included
@@ -45,9 +45,9 @@ public interface TwoPhaseCommit {
    * included w/ the commit and may discard it altogether. Consult the actual
    * implementation documentation for verifying if this is supported.
    * 
-   * @see #prepareCommit()
+   *
    */
-  public void prepareCommit(Map<String, String> commitData) throws IOException;
+  void prepareCommit(Map<String, String> commitData) throws IOException;
 
   /**
    * The second phase of a 2-phase commit. Implementations should ideally do
@@ -55,16 +55,16 @@ public interface TwoPhaseCommit {
    * after it returns, the caller can assume that the changes were successfully
    * committed to the underlying storage.
    */
-  public void commit() throws IOException;
+  void commit() throws IOException;
 
   /**
    * Like {@code #commit()}, but takes an additional commit data to be included
    * w/ the commit.
    * 
-   * @see #commit()
-   * @see #prepareCommit(Map)
+   *
+   *
    */
-  public void commit(Map<String, String> commitData) throws IOException;
+  void commit(Map<String, String> commitData) throws IOException;
 
   /**
    * Discards any changes that have occurred since the last commit. In a 2-phase
@@ -72,6 +72,6 @@ public interface TwoPhaseCommit {
    * {@code #prepareCommit()}, this method is used to roll all other objects
    * back to their previous state.
    */
-  public void rollback() throws IOException;
+  void rollback() throws IOException;
 
 }

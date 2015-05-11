@@ -42,7 +42,7 @@ public final class FieldInfo {
    * Controls how much information is stored in the postings lists.
    * @lucene.experimental
    */
-  public static enum IndexOptions { 
+  public enum IndexOptions {
     /** only documents are indexed: term frequencies and positions are omitted */
     DOCS_ONLY,
     /** only documents and term frequencies are indexed: positions are omitted */  

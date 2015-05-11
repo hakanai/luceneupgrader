@@ -51,9 +51,9 @@ public interface Fieldable extends Serializable {
    * index.  One should attempt to ensure that this product does not overflow
    * the range of that encoding.
    *
-   * @see org.apache.lucene.document.Document#setBoost(float)
-   * @see org.apache.lucene.search.Similarity#computeNorm(String, FieldInvertState)
-   * @see org.apache.lucene.search.Similarity#encodeNormValue(float)
+   *
+   *
+   *
    */
   void setBoost(float boost);
 
@@ -66,7 +66,7 @@ public interface Fieldable extends Serializable {
    * {@code org.apache.lucene.search.Searcher#doc(int)} may thus not have the same value present as when
    * this field was indexed.
    *
-   * @see #setBoost(float)
+   *
    */
   float getBoost();
 
@@ -84,17 +84,17 @@ public interface Fieldable extends Serializable {
    * If isIndexed()==true and isTokenized()==true, then tokenStreamValue() will be used to generate indexed tokens if not null,
    * else readerValue() will be used to generate indexed tokens if not null, else stringValue() will be used to generate tokens.
    */
-  public String stringValue();
+  String stringValue();
   
   /** The value of the field as a Reader, which can be used at index time to generate indexed tokens.
-   * @see #stringValue()
+   *
    */
-  public Reader readerValue();
+  Reader readerValue();
   
   /** The TokenStream for this field to be used when indexing, or null.
-   * @see #stringValue()
+   *
    */
-  public TokenStream tokenStreamValue();
+  TokenStream tokenStreamValue();
 
   /** True if the value of the field is to be stored in the index for return
     with search hits. */
@@ -115,7 +115,7 @@ public interface Fieldable extends Serializable {
    *  only to terms used to index it. If the original content must be
    *  preserved, use the <code>stored</code> attribute instead.
    *
-   * @see org.apache.lucene.index.IndexReader#getTermFreqVector(int, String)
+   *
    */
   boolean isTermVectorStored();
 
@@ -144,27 +144,18 @@ public interface Fieldable extends Serializable {
   void setOmitNorms(boolean omitNorms);
 
   /**
-   * Indicates whether a Field is Lazy or not.  The semantics of Lazy loading are such that if a Field is lazily loaded, retrieving
-   * it's values via {@code #stringValue()} or {@code #getBinaryValue()} is only valid as long as the {@code org.apache.lucene.index.IndexReader} that
-   * retrieved the {@code Document} is still open.
-   *  
-   * @return true if this field can be loaded lazily
-   */
-  boolean isLazy();
-  
-  /**
    * Returns offset into byte[] segment that is used as value, if Field is not binary
    * returned value is undefined
    * @return index of the first character in byte[] segment that represents this Field value
    */
-  abstract int getBinaryOffset();
+  int getBinaryOffset();
   
   /**
    * Returns length of byte[] segment that is used as value, if Field is not binary
    * returned value is undefined
    * @return length of byte[] segment that represents this Field value
    */
-  abstract int getBinaryLength();
+  int getBinaryLength();
 
   /**
    * Return the raw byte[] for the binary field.  Note that
@@ -173,7 +164,7 @@ public interface Fieldable extends Serializable {
    * returned array belong to the field.
    * @return reference to the Field value as byte[].
    */
-  abstract byte[] getBinaryValue();
+  byte[] getBinaryValue();
 
   /**
    * Return the raw byte[] for the binary field.  Note that
@@ -191,9 +182,9 @@ public interface Fieldable extends Serializable {
    *  buffer is allocated
    * @return reference to the Field value as byte[].
    */
-  abstract byte[] getBinaryValue(byte[] result);
+  byte[] getBinaryValue(byte[] result);
   
-  /** @see #setIndexOptions */
+  /** */
   IndexOptions getIndexOptions();
   
   /** Expert:

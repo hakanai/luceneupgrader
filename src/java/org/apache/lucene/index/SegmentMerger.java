@@ -37,8 +37,8 @@ import org.apache.lucene.util.ReaderUtil;
  * into a single Segment.  After adding the appropriate readers, call the merge method to combine the 
  * segments.
  * 
- * @see #merge
- * @see #add
+ *
+ *
  */
 final class SegmentMerger {
   private Directory directory;
@@ -96,7 +96,7 @@ final class SegmentMerger {
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
    */
-  final int merge() throws CorruptIndexException, IOException {
+  final int merge() throws IOException {
     // NOTE: it's important to add calls to
     // checkAbort.work(...) if you make any changes to this
     // method that will spend alot of time.  The frequency
@@ -195,7 +195,7 @@ final class SegmentMerger {
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
    */
-  private int mergeFields() throws CorruptIndexException, IOException {
+  private int mergeFields() throws IOException {
 
     for (IndexReader reader : readers) {
       fieldInfos.add(reader.getFieldInfos());
@@ -238,7 +238,7 @@ final class SegmentMerger {
 
   private int copyFieldsWithDeletions(final FieldsWriter fieldsWriter, final IndexReader reader,
                                       final FieldsReader matchingFieldsReader)
-    throws IOException, MergeAbortedException, CorruptIndexException {
+    throws IOException, CorruptIndexException {
     int docCount = 0;
     final int maxDoc = reader.maxDoc();
     if (matchingFieldsReader != null) {
@@ -286,7 +286,7 @@ final class SegmentMerger {
 
   private int copyFieldsNoDeletions(final FieldsWriter fieldsWriter, final IndexReader reader,
                                     final FieldsReader matchingFieldsReader)
-    throws IOException, MergeAbortedException, CorruptIndexException {
+    throws IOException, CorruptIndexException {
     final int maxDoc = reader.maxDoc();
     int docCount = 0;
     if (matchingFieldsReader != null) {
@@ -314,7 +314,7 @@ final class SegmentMerger {
    * Merge the TermVectors from each of the segments into the new one.
    * @throws IOException
    */
-  private final void mergeVectors() throws IOException {
+  private void mergeVectors() throws IOException {
     TermVectorsWriter termVectorsWriter = 
       new TermVectorsWriter(directory, segment, fieldInfos);
 
@@ -347,7 +347,7 @@ final class SegmentMerger {
   private void copyVectorsWithDeletions(final TermVectorsWriter termVectorsWriter,
                                         final TermVectorsReader matchingVectorsReader,
                                         final IndexReader reader)
-    throws IOException, MergeAbortedException {
+    throws IOException {
     final int maxDoc = reader.maxDoc();
     if (matchingVectorsReader != null) {
       // We can bulk-copy because the fieldInfos are "congruent"
@@ -393,7 +393,7 @@ final class SegmentMerger {
   private void copyVectorsNoDeletions(final TermVectorsWriter termVectorsWriter,
                                       final TermVectorsReader matchingVectorsReader,
                                       final IndexReader reader)
-      throws IOException, MergeAbortedException {
+      throws IOException {
     final int maxDoc = reader.maxDoc();
     if (matchingVectorsReader != null) {
       // We can bulk-copy because the fieldInfos are "congruent"
@@ -418,7 +418,7 @@ final class SegmentMerger {
 
   private SegmentMergeQueue queue = null;
 
-  private final void mergeTerms() throws CorruptIndexException, IOException {
+  private void mergeTerms() throws IOException {
 
     final FormatPostingsFieldsConsumer fieldsConsumer = new FormatPostingsFieldsWriter(segmentWriteState, fieldInfos);
 
@@ -440,7 +440,7 @@ final class SegmentMerger {
 
   IndexOptions indexOptions;
 
-  private final void mergeTermInfos(final FormatPostingsFieldsConsumer consumer) throws CorruptIndexException, IOException {
+  private void mergeTermInfos(final FormatPostingsFieldsConsumer consumer) throws IOException {
     int base = 0;
     final int readerCount = readers.size();
     for (int i = 0; i < readerCount; i++) {
@@ -519,8 +519,8 @@ final class SegmentMerger {
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
    */
-  private final int appendPostings(final FormatPostingsTermsConsumer termsConsumer, SegmentMergeInfo[] smis, int n)
-        throws CorruptIndexException, IOException {
+  private int appendPostings(final FormatPostingsTermsConsumer termsConsumer, SegmentMergeInfo[] smis, int n)
+        throws IOException {
 
     final FormatPostingsDocsConsumer docConsumer = termsConsumer.addTerm(smis[0].term.text);
     int df = 0;

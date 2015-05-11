@@ -744,7 +744,7 @@ public final class UnicodeUtil {
 
   /**
    * Utility method for {@code #UTF8toUTF16(byte[], int, int, CharsRef)}
-   * @see #UTF8toUTF16(byte[], int, int, CharsRef)
+   *
    */
   public static void UTF8toUTF16(BytesRef bytesRef, CharsRef chars) {
     UTF8toUTF16(bytesRef.bytes, bytesRef.offset, bytesRef.length, chars);

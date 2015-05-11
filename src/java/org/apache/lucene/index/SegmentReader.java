@@ -17,18 +17,8 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import java.util.List;
-import java.util.Map;
-
-import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.FieldSelector;
-import org.apache.lucene.search.FieldCache;
 import org.apache.lucene.search.Similarity;
 import org.apache.lucene.store.BufferedIndexInput;
 import org.apache.lucene.store.Directory;
@@ -36,6 +26,10 @@ import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.util.BitVector;
 import org.apache.lucene.util.CloseableThreadLocal;
 import org.apache.lucene.util.StringHelper;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * IndexReader implementation over a single segment. 
@@ -90,7 +84,7 @@ public class SegmentReader extends IndexReader implements Cloneable {
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
    */
-  public static SegmentReader get(boolean readOnly, SegmentInfo si, int termInfosIndexDivisor) throws CorruptIndexException, IOException {
+  public static SegmentReader get(boolean readOnly, SegmentInfo si, int termInfosIndexDivisor) throws IOException {
     return get(readOnly, si.dir, si, BufferedIndexInput.BUFFER_SIZE, true, termInfosIndexDivisor);
   }
 
@@ -104,7 +98,7 @@ public class SegmentReader extends IndexReader implements Cloneable {
                                   int readBufferSize,
                                   boolean doOpenStores,
                                   int termInfosIndexDivisor)
-    throws CorruptIndexException, IOException {
+    throws IOException {
     SegmentReader instance = readOnly ? new ReadOnlySegmentReader() : new SegmentReader();
     instance.readOnly = readOnly;
     instance.si = si;
@@ -203,24 +197,11 @@ public class SegmentReader extends IndexReader implements Cloneable {
 
   /** {@inheritDoc} */
   @Override @Deprecated
-  public final synchronized IndexReader clone(boolean openReadOnly) throws CorruptIndexException, IOException {
+  public final synchronized IndexReader clone(boolean openReadOnly) throws IOException {
     return reopenSegment(si, true, openReadOnly);
   }
 
-  @Override
-  protected synchronized IndexReader doOpenIfChanged()
-    throws CorruptIndexException, IOException {
-    return reopenSegment(si, false, readOnly);
-  }
-
-  /** {@inheritDoc} */
-  @Override @Deprecated
-  protected synchronized IndexReader doOpenIfChanged(boolean openReadOnly)
-    throws CorruptIndexException, IOException {
-    return reopenSegment(si, false, openReadOnly);
-  }
-
-  synchronized SegmentReader reopenSegment(SegmentInfo si, boolean doClone, boolean openReadOnly) throws CorruptIndexException, IOException {
+  synchronized SegmentReader reopenSegment(SegmentInfo si, boolean doClone, boolean openReadOnly) throws IOException {
     ensureOpen();
     boolean deletionsUpToDate = (this.si.hasDeletions() == si.hasDeletions()) 
                                   && (!si.hasDeletions() || this.si.getDelFileName().equals(si.getDelFileName()));
@@ -409,14 +390,6 @@ public class SegmentReader extends IndexReader implements Cloneable {
     return deletedDocs != null;
   }
 
-  static boolean usesCompoundFile(SegmentInfo si) throws IOException {
-    return si.getUseCompoundFile();
-  }
-
-  static boolean hasSeparateNorms(SegmentInfo si) throws IOException {
-    return si.hasSeparateNorms();
-  }
-
   /** {@inheritDoc} */
   @Override @Deprecated
   protected void doDelete(int docNum) {
@@ -484,7 +457,7 @@ public class SegmentReader extends IndexReader implements Cloneable {
   }
 
   @Override
-  public Document document(int n, FieldSelector fieldSelector) throws CorruptIndexException, IOException {
+  public Document document(int n, FieldSelector fieldSelector) throws IOException {
     ensureOpen();
     if (n < 0 || n >= maxDoc()) {       
       throw new IllegalArgumentException("docID must be >= 0 and < maxDoc=" + maxDoc() + " (got docID=" + n + ")");
@@ -504,21 +477,6 @@ public class SegmentReader extends IndexReader implements Cloneable {
     } else {
       return super.termDocs(term);
     }
-  }
-
-  /** Expert: returns an enumeration of the documents that contain
-   *  <code>term</code>, including deleted documents (which
-   *  are normally filtered out).
-   * 
-   * @lucene.experimental
-   */
-  public TermDocs rawTermDocs(Term term) throws IOException {
-    if (term == null) {
-      throw new IllegalArgumentException("term must not be null");
-    }
-    TermDocs td = new SegmentTermDocs(this, true);
-    td.seek(term);
-    return td;
   }
 
   @Override
@@ -605,10 +563,6 @@ public class SegmentReader extends IndexReader implements Cloneable {
   }
 
   // For testing
-  /** @lucene.internal */
-  int getPostingsSkipInterval() {
-    return core.getTermsReader().getSkipInterval();
-  }
 
   private void openNorms(Directory cfsDir, int readBufferSize) throws IOException {
     boolean normsInitiallyEmpty = norms.isEmpty(); // only used for assert
@@ -682,24 +636,6 @@ public class SegmentReader extends IndexReader implements Cloneable {
     core.loadTermsIndex(si, termsIndexDivisor);
   }
 
-  // for testing only
-  boolean normsClosed() {
-    if (singleNormStream != null) {
-      return false;
-    }
-    for (final SegmentNorms norm : norms.values()) {
-      if (norm.refCount > 0) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  // for testing only
-  boolean normsClosed(String field) {
-    return norms.get(field).refCount == 0;
-  }
-
   /**
    * Create a clone from the initial TermVectorsReader and store it in the ThreadLocal.
    * @return TermVectorsReader
@@ -722,10 +658,6 @@ public class SegmentReader extends IndexReader implements Cloneable {
     return tvReader;
   }
 
-  TermVectorsReader getTermVectorsReaderOrig() {
-    return core.getTermVectorsReaderOrig();
-  }
-  
   /** Return a term frequency vector for the specified document and field. The
    *  vector returned contains term numbers and frequencies for all terms in
    *  the specified field of this document, if the field had storeTermVector
@@ -819,10 +751,6 @@ public class SegmentReader extends IndexReader implements Cloneable {
     return si;
   }
 
-  void setSegmentInfo(SegmentInfo info) {
-    si = info;
-  }
-
   void startCommit() {
     rollbackSegmentInfo = (SegmentInfo) si.clone();
     rollbackHasChanges = hasChanges;
@@ -862,48 +790,6 @@ public class SegmentReader extends IndexReader implements Cloneable {
     return core.freqStream;
   }
 
-  @Override
-  public Object getDeletesCacheKey() {
-    return deletedDocs;
-  }
-
-  @Override
-  public long getUniqueTermCount() {
-    return core.getTermsReader().size();
-  }
-
-  /**
-   * Lotsa tests did hacks like:<br/>
-   * SegmentReader reader = (SegmentReader) IndexReader.open(dir);<br/>
-   * They broke. This method serves as a hack to keep hacks working
-   * We do it with R/W access for the tests (BW compatibility)
-   * @deprecated Remove this when tests are fixed!
-   */
-  @Deprecated
-  static SegmentReader getOnlySegmentReader(Directory dir) throws IOException {
-    return getOnlySegmentReader(IndexReader.open(dir,false));
-  }
-
-  static SegmentReader getOnlySegmentReader(IndexReader reader) {
-    if (reader instanceof SegmentReader)
-      return (SegmentReader) reader;
-
-    if (reader instanceof DirectoryReader) {
-      IndexReader[] subReaders = reader.getSequentialSubReaders();
-      if (subReaders.length != 1)
-        throw new IllegalArgumentException(reader + " has " + subReaders.length + " segments instead of exactly one");
-
-      return (SegmentReader) subReaders[0];
-    }
-
-    throw new IllegalArgumentException(reader + " is not a SegmentReader or a single-segment DirectoryReader");
-  }
-
-  @Override
-  public int getTermInfosIndexDivisor() {
-    return core.termsIndexDivisor;
-  }
-  
   /**
    * Called when the shared core for this SegmentReader
    * is closed.
@@ -917,8 +803,8 @@ public class SegmentReader extends IndexReader implements Cloneable {
    * 
    * @lucene.experimental
    */
-  public static interface CoreClosedListener {
-    public void onClose(SegmentReader owner);
+  public interface CoreClosedListener {
+    void onClose(SegmentReader owner);
   }
   
   /** Expert: adds a CoreClosedListener to this reader's shared core */
@@ -926,10 +812,5 @@ public class SegmentReader extends IndexReader implements Cloneable {
     ensureOpen();
     core.addCoreClosedListener(listener);
   }
-  
-  /** Expert: removes a CoreClosedListener from this reader's shared core */
-  public void removeCoreClosedListener(CoreClosedListener listener) {
-    ensureOpen();
-    core.removeCoreClosedListener(listener);
-  }
+
 }

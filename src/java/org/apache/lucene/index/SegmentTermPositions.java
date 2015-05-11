@@ -72,7 +72,7 @@ extends SegmentTermDocs implements TermPositions {
     return position += readDeltaPosition();
   }
 
-  private final int readDeltaPosition() throws IOException {
+  private int readDeltaPosition() throws IOException {
     int delta = proxStream.readVInt();
     if (currentFieldStoresPayloads) {
       // if the current field stores payloads then

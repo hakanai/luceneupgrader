@@ -134,7 +134,7 @@ final class IndexFileDeleter {
    * @throws IOException if there is a low-level IO error
    */
   public IndexFileDeleter(Directory directory, IndexDeletionPolicy policy, SegmentInfos segmentInfos, PrintStream infoStream, IndexWriter writer)
-    throws CorruptIndexException, IOException {
+    throws IOException {
 
     this.infoStream = infoStream;
     this.writer = writer;

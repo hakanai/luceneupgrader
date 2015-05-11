@@ -101,8 +101,8 @@ public class AttributeSource {
       
   /**
    * This class holds the state of an AttributeSource.
-   * @see #captureState
-   * @see #restoreState
+   *
+   *
    */
   public static final class State implements Cloneable {
     AttributeImpl attribute;
@@ -452,7 +452,7 @@ public class AttributeSource {
    * <li><em>iff {@code prependAttClass=false}:</em> {@code "key=value,key=value"}
    * </ul>
    *
-   * @see #reflectWith(AttributeReflector)
+   *
    */
   public final String reflectAsString(final boolean prependAttClass) {
     final StringBuilder buffer = new StringBuilder();
@@ -477,7 +477,7 @@ public class AttributeSource {
    * <p>This method iterates over all Attribute implementations and calls the
    * corresponding {@code AttributeImpl#reflectWith} method.</p>
    *
-   * @see AttributeImpl#reflectWith
+   *
    */
   public final void reflectWith(AttributeReflector reflector) {
     for (State state = getCurrentState(); state != null; state = state.next) {

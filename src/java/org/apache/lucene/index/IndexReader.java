@@ -17,20 +17,16 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.FieldSelector;
-import org.apache.lucene.search.Similarity;
-import org.apache.lucene.store.*;
-import org.apache.lucene.util.VirtualMethod;
+import org.apache.lucene.store.AlreadyClosedException;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.LockObtainFailedException;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /** IndexReader is an abstract class, providing an interface for accessing an
  index.  Search of an index is done entirely through this abstract interface,
@@ -83,8 +79,8 @@ public abstract class IndexReader implements Cloneable,Closeable {
    *
    * @lucene.experimental
    */
-  public static interface ReaderClosedListener {
-    public void onClose(IndexReader reader);
+  public interface ReaderClosedListener {
+    void onClose(IndexReader reader);
   }
 
   private final Set<ReaderClosedListener> readerClosedListeners = 
@@ -99,15 +95,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
     readerClosedListeners.add(listener);
   }
 
-  /** Expert: remove a previously added {@code ReaderClosedListener}.
-   *
-   * @lucene.experimental */
-  public final void removeReaderClosedListener(ReaderClosedListener listener) {
-    ensureOpen();
-    readerClosedListeners.remove(listener);
-  }
-
-  private final void notifyReaderClosedListeners() {
+  private void notifyReaderClosedListeners() {
     synchronized(readerClosedListeners) {
       for(ReaderClosedListener listener : readerClosedListeners) {
         listener.onClose(this);
@@ -139,45 +127,12 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * #decRef} has been called for all outstanding
    * references.
    *
-   * @see #decRef
-   * @see #tryIncRef
+   *
+   *
    */
   public final void incRef() {
     ensureOpen();
     refCount.incrementAndGet();
-  }
-  
-  /**
-   * Expert: increments the refCount of this IndexReader
-   * instance only if the IndexReader has not been closed yet
-   * and returns <code>true</code> iff the refCount was
-   * successfully incremented, otherwise <code>false</code>.
-   * If this method returns <code>false</code> the reader is either
-   * already closed or is currently been closed. Either way this
-   * reader instance shouldn't be used by an application unless
-   * <code>true</code> is returned.
-   * <p>
-   * RefCounts are used to determine when a
-   * reader can be closed safely, i.e. as soon as there are
-   * no more references.  Be sure to always call a
-   * corresponding {@code #decRef}, in a finally clause;
-   * otherwise the reader may never be closed.  Note that
-   * {@code #close} simply calls decRef(), which means that
-   * the IndexReader will not really be closed until {@code
-   * #decRef} has been called for all outstanding
-   * references.
-   *
-   * @see #decRef
-   * @see #incRef
-   */
-  public final boolean tryIncRef() {
-    int count;
-    while ((count = refCount.get()) > 0) {
-      if (refCount.compareAndSet(count, count+1)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   /** {@inheritDoc} */
@@ -209,7 +164,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
    *
    * @throws IOException in case an IOException occurs in commit() or doClose()
    *
-   * @see #incRef
+   *
    */
   public final void decRef() throws IOException {
     ensureOpen();
@@ -244,16 +199,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
       throw new AlreadyClosedException("this IndexReader is closed");
     }
   }
-  
-  /** Returns a IndexReader reading the index in the given
-   *  Directory, with readOnly=true.
-   * @param directory the index directory
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
-  public static IndexReader open(final Directory directory) throws CorruptIndexException, IOException {
-    return DirectoryReader.open(directory, null, null, true, DEFAULT_TERMS_INDEX_DIVISOR);
-  }
 
   /** Returns an IndexReader reading the index in the given
    *  Directory.  You should pass readOnly=true, since it
@@ -268,592 +213,8 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * Use {@code #open(Directory)} instead
    */
   @Deprecated
-  public static IndexReader open(final Directory directory, boolean readOnly) throws CorruptIndexException, IOException {
+  public static IndexReader open(final Directory directory, boolean readOnly) throws IOException {
     return DirectoryReader.open(directory, null, null, readOnly, DEFAULT_TERMS_INDEX_DIVISOR);
-  }
-
-  /**
-   * Open a near real time IndexReader from the {@code org.apache.lucene.index.IndexWriter}.
-   *
-   * @param writer The IndexWriter to open from
-   * @param applyAllDeletes If true, all buffered deletes will
-   * be applied (made visible) in the returned reader.  If
-   * false, the deletes are not applied but remain buffered
-   * (in IndexWriter) so that they will be applied in the
-   * future.  Applying deletes can be costly, so if your app
-   * can tolerate deleted documents being returned you might
-   * gain some performance by passing false.
-   * @return The new IndexReader
-   * @throws CorruptIndexException
-   * @throws IOException if there is a low-level IO error
-   *
-   * @see #openIfChanged(IndexReader,IndexWriter,boolean)
-   *
-   * @lucene.experimental
-   */
-  public static IndexReader open(final IndexWriter writer, boolean applyAllDeletes) throws CorruptIndexException, IOException {
-    return writer.getReader(applyAllDeletes);
-  }
-
-  /** Expert: returns an IndexReader reading the index in the given
-   *  {@code IndexCommit}.
-   * @param commit the commit point to open
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
-  public static IndexReader open(final IndexCommit commit) throws CorruptIndexException, IOException {
-    return DirectoryReader.open(commit.getDirectory(), null, commit, true, DEFAULT_TERMS_INDEX_DIVISOR);
-  }
-
-  /** Expert: returns an IndexReader reading the index in the given
-   *  {@code IndexCommit}.  You should pass readOnly=true, since it
-   *  gives much better concurrent performance, unless you
-   *  intend to do write operations (delete documents or
-   *  change norms) with the reader.
-   * @param commit the commit point to open
-   * @param readOnly true if no changes (deletions, norms) will be made with this IndexReader
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@code #open(IndexCommit)} instead
-   */
-  @Deprecated
-  public static IndexReader open(final IndexCommit commit, boolean readOnly) throws CorruptIndexException, IOException {
-    return DirectoryReader.open(commit.getDirectory(), null, commit, readOnly, DEFAULT_TERMS_INDEX_DIVISOR);
-  }
-
-  /** Expert: returns an IndexReader reading the index in
-   *  the given Directory, with a custom {@code
-   *  IndexDeletionPolicy}.  You should pass readOnly=true,
-   *  since it gives much better concurrent performance,
-   *  unless you intend to do write operations (delete
-   *  documents or change norms) with the reader.
-   * @param directory the index directory
-   * @param deletionPolicy a custom deletion policy (only used
-   *  if you use this reader to perform deletes or to set
-   *  norms); see {@code IndexWriter} for details.
-   * @param readOnly true if no changes (deletions, norms) will be made with this IndexReader
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@code #open(Directory)} instead
-   */
-  @Deprecated
-  public static IndexReader open(final Directory directory, IndexDeletionPolicy deletionPolicy, boolean readOnly) throws CorruptIndexException, IOException {
-    return DirectoryReader.open(directory, deletionPolicy, null, readOnly, DEFAULT_TERMS_INDEX_DIVISOR);
-  }
-
-  /** Expert: returns an IndexReader reading the index in
-   *  the given Directory, with a custom {@code
-   *  IndexDeletionPolicy}.  You should pass readOnly=true,
-   *  since it gives much better concurrent performance,
-   *  unless you intend to do write operations (delete
-   *  documents or change norms) with the reader.
-   * @param directory the index directory
-   * @param deletionPolicy a custom deletion policy (only used
-   *  if you use this reader to perform deletes or to set
-   *  norms); see {@code IndexWriter} for details.
-   * @param readOnly true if no changes (deletions, norms) will be made with this IndexReader
-   * @param termInfosIndexDivisor Subsamples which indexed
-   *  terms are loaded into RAM. This has the same effect as {@code
-   *  IndexWriter#setTermIndexInterval} except that setting
-   *  must be done at indexing time while this setting can be
-   *  set per reader.  When set to N, then one in every
-   *  N*termIndexInterval terms in the index is loaded into
-   *  memory.  By setting this to a value > 1 you can reduce
-   *  memory usage, at the expense of higher latency when
-   *  loading a TermInfo.  The default value is 1.  Set this
-   *  to -1 to skip loading the terms index entirely.
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@code #open(Directory,int)} instead
-   */
-  @Deprecated
-  public static IndexReader open(final Directory directory, IndexDeletionPolicy deletionPolicy, boolean readOnly, int termInfosIndexDivisor) throws CorruptIndexException, IOException {
-    return DirectoryReader.open(directory, deletionPolicy, null, readOnly, termInfosIndexDivisor);
-  }
-
-  /** Expert: returns an IndexReader reading the index in
-   *  the given Directory, using a specific commit and with
-   *  a custom {@code IndexDeletionPolicy}.  You should pass
-   *  readOnly=true, since it gives much better concurrent
-   *  performance, unless you intend to do write operations
-   *  (delete documents or change norms) with the reader.
-   * @param commit the specific {@code IndexCommit} to open;
-   * see {@code IndexReader#listCommits} to list all commits
-   * in a directory
-   * @param deletionPolicy a custom deletion policy (only used
-   *  if you use this reader to perform deletes or to set
-   *  norms); see {@code IndexWriter} for details.
-   * @param readOnly true if no changes (deletions, norms) will be made with this IndexReader
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@code #open(IndexCommit)} instead
-   */
-  @Deprecated
-  public static IndexReader open(final IndexCommit commit, IndexDeletionPolicy deletionPolicy, boolean readOnly) throws CorruptIndexException, IOException {
-    return DirectoryReader.open(commit.getDirectory(), deletionPolicy, commit, readOnly, DEFAULT_TERMS_INDEX_DIVISOR);
-  }
-
-  /** Expert: returns an IndexReader reading the index in
-   *  the given Directory, using a specific commit and with
-   *  a custom {@code IndexDeletionPolicy}.  You should pass
-   *  readOnly=true, since it gives much better concurrent
-   *  performance, unless you intend to do write operations
-   *  (delete documents or change norms) with the reader.
-   * @param commit the specific {@code IndexCommit} to open;
-   * see {@code IndexReader#listCommits} to list all commits
-   * in a directory
-   * @param deletionPolicy a custom deletion policy (only used
-   *  if you use this reader to perform deletes or to set
-   *  norms); see {@code IndexWriter} for details.
-   * @param readOnly true if no changes (deletions, norms) will be made with this IndexReader
-   * @param termInfosIndexDivisor Subsamples which indexed
-   *  terms are loaded into RAM. This has the same effect as {@code
-   *  IndexWriter#setTermIndexInterval} except that setting
-   *  must be done at indexing time while this setting can be
-   *  set per reader.  When set to N, then one in every
-   *  N*termIndexInterval terms in the index is loaded into
-   *  memory.  By setting this to a value > 1 you can reduce
-   *  memory usage, at the expense of higher latency when
-   *  loading a TermInfo.  The default value is 1.  Set this
-   *  to -1 to skip loading the terms index entirely. This is only useful in 
-   *  advanced situations when you will only .next() through all terms; 
-   *  attempts to seek will hit an exception.
-   *  
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@code #open(IndexCommit,int)} instead
-   */
-  @Deprecated
-  public static IndexReader open(final IndexCommit commit, IndexDeletionPolicy deletionPolicy, boolean readOnly, int termInfosIndexDivisor) throws CorruptIndexException, IOException {
-    return DirectoryReader.open(commit.getDirectory(), deletionPolicy, commit, readOnly, termInfosIndexDivisor);
-  }
-
-  /** Expert: Returns a IndexReader reading the index in the given
-   *  Director and given termInfosIndexDivisor
-   * @param directory the index directory
-   * @param termInfosIndexDivisor Subsamples which indexed
-   *  terms are loaded into RAM. This has the same effect as {@code
-   *  IndexWriterConfig#setTermIndexInterval} except that setting
-   *  must be done at indexing time while this setting can be
-   *  set per reader.  When set to N, then one in every
-   *  N*termIndexInterval terms in the index is loaded into
-   *  memory.  By setting this to a value > 1 you can reduce
-   *  memory usage, at the expense of higher latency when
-   *  loading a TermInfo.  The default value is 1.  Set this
-   *  to -1 to skip loading the terms index entirely.
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
-  public static IndexReader open(final Directory directory, int termInfosIndexDivisor) throws CorruptIndexException, IOException {
-    return DirectoryReader.open(directory, null, null, true, termInfosIndexDivisor);
-  }
-
-  /** Expert: returns an IndexReader reading the index in the given
-   *  {@code IndexCommit} and termInfosIndexDivisor.
-   * @param commit the commit point to open
-   * @param termInfosIndexDivisor Subsamples which indexed
-   *  terms are loaded into RAM. This has the same effect as {@code
-   *  IndexWriterConfig#setTermIndexInterval} except that setting
-   *  must be done at indexing time while this setting can be
-   *  set per reader.  When set to N, then one in every
-   *  N*termIndexInterval terms in the index is loaded into
-   *  memory.  By setting this to a value > 1 you can reduce
-   *  memory usage, at the expense of higher latency when
-   *  loading a TermInfo.  The default value is 1.  Set this
-   *  to -1 to skip loading the terms index entirely.
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
-  public static IndexReader open(final IndexCommit commit, int termInfosIndexDivisor) throws CorruptIndexException, IOException {
-    return DirectoryReader.open(commit.getDirectory(), null, commit, true, termInfosIndexDivisor);
-  }
-
-  /**
-   * If the index has changed since the provided reader was
-   * opened, open and return a new reader; else, return
-   * null.  The new reader, if not null, will be the same
-   * type of reader as the previous one, ie an NRT reader
-   * will open a new NRT reader, a MultiReader will open a
-   * new MultiReader,  etc.
-   *
-   * <p>This method is typically far less costly than opening a
-   * fully new <code>IndexReader</code> as it shares
-   * resources (for example sub-readers) with the provided
-   * <code>IndexReader</code>, when possible.
-   *
-   * <p>The provided reader is not closed (you are responsible
-   * for doing so); if a new reader is returned you also
-   * must eventually close it.  Be sure to never close a
-   * reader while other threads are still using it; see
-   * {@code SearcherManager} to simplify managing this.
-   *
-   * <p>If a new reader is returned, it's safe to make changes
-   * (deletions, norms) with it.  All shared mutable state
-   * with the old reader uses "copy on write" semantics to
-   * ensure the changes are not seen by other readers.
-   *
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   * @return null if there are no changes; else, a new
-   * IndexReader instance which you must eventually close
-   */  
-  public static IndexReader openIfChanged(IndexReader oldReader) throws IOException {
-    if (oldReader.hasNewReopenAPI1) {
-      final IndexReader newReader = oldReader.doOpenIfChanged();
-      assert newReader != oldReader;
-      return newReader;
-    } else {
-      final IndexReader newReader = oldReader.reopen();
-      if (newReader == oldReader) {
-        return null;
-      } else {
-        return newReader;
-      }
-    }
-  }
-
-  /**
-   * If the index has changed since the provided reader was
-   * opened, open and return a new reader, with the
-   * specified <code>readOnly</code>; else, return
-   * null.
-   *
-   * @see #openIfChanged(IndexReader)
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@code #openIfChanged(IndexReader)} instead
-   */
-  @Deprecated
-  public static IndexReader openIfChanged(IndexReader oldReader, boolean readOnly) throws IOException {
-    if (oldReader.hasNewReopenAPI2) {
-      final IndexReader newReader = oldReader.doOpenIfChanged(readOnly);
-      assert newReader != oldReader;
-      return newReader;
-    } else {
-      final IndexReader newReader = oldReader.reopen(readOnly);
-      if (newReader == oldReader) {
-        return null;
-      } else {
-        return newReader;
-      }
-    }
-  }
-
-  /**
-   * If the IndexCommit differs from what the
-   * provided reader is searching, or the provided reader is
-   * not already read-only, open and return a new
-   * <code>readOnly=true</code> reader; else, return null.
-   *
-   * @see #openIfChanged(IndexReader)
-   */
-  // TODO: should you be able to specify readOnly?
-  public static IndexReader openIfChanged(IndexReader oldReader, IndexCommit commit) throws IOException {
-    if (oldReader.hasNewReopenAPI3) {
-      final IndexReader newReader = oldReader.doOpenIfChanged(commit);
-      assert newReader != oldReader;
-      return newReader;
-    } else {
-      final IndexReader newReader = oldReader.reopen(commit);
-      if (newReader == oldReader) {
-        return null;
-      } else {
-        return newReader;
-      }
-    }
-  }
-
-  /**
-   * Expert: If there changes (committed or not) in the
-   * {@code IndexWriter} versus what the provided reader is
-   * searching, then open and return a new read-only
-   * IndexReader searching both committed and uncommitted
-   * changes from the writer; else, return null (though, the
-   * current implementation never returns null).
-   *
-   * <p>This provides "near real-time" searching, in that
-   * changes made during an {@code IndexWriter} session can be
-   * quickly made available for searching without closing
-   * the writer nor calling {@code IndexWriter#commit}.
-   *
-   * <p>It's <i>near</i> real-time because there is no hard
-   * guarantee on how quickly you can get a new reader after
-   * making changes with IndexWriter.  You'll have to
-   * experiment in your situation to determine if it's
-   * fast enough.  As this is a new and experimental
-   * feature, please report back on your findings so we can
-   * learn, improve and iterate.</p>
-   *
-   * <p>The very first time this method is called, this
-   * writer instance will make every effort to pool the
-   * readers that it opens for doing merges, applying
-   * deletes, etc.  This means additional resources (RAM,
-   * file descriptors, CPU time) will be consumed.</p>
-   *
-   * <p>For lower latency on reopening a reader, you should
-   * call {@code IndexWriterConfig#setMergedSegmentWarmer} to
-   * pre-warm a newly merged segment before it's committed
-   * to the index.  This is important for minimizing
-   * index-to-search delay after a large merge.  </p>
-   *
-   * <p>If an addIndexes* call is running in another thread,
-   * then this reader will only search those segments from
-   * the foreign index that have been successfully copied
-   * over, so far.</p>
-   *
-   * <p><b>NOTE</b>: Once the writer is closed, any
-   * outstanding readers may continue to be used.  However,
-   * if you attempt to reopen any of those readers, you'll
-   * hit an {@code AlreadyClosedException}.</p>
-   *
-   * @return IndexReader that covers entire index plus all
-   * changes made so far by this IndexWriter instance, or
-   * null if there are no new changes
-   *
-   * @param writer The IndexWriter to open from
-   *
-   * @param applyAllDeletes If true, all buffered deletes will
-   * be applied (made visible) in the returned reader.  If
-   * false, the deletes are not applied but remain buffered
-   * (in IndexWriter) so that they will be applied in the
-   * future.  Applying deletes can be costly, so if your app
-   * can tolerate deleted documents being returned you might
-   * gain some performance by passing false.
-   *
-   * @throws IOException
-   *
-   * @lucene.experimental
-   */
-  public static IndexReader openIfChanged(IndexReader oldReader, IndexWriter writer, boolean applyAllDeletes) throws IOException {
-    if (oldReader.hasNewReopenAPI4) {
-      final IndexReader newReader = oldReader.doOpenIfChanged(writer, applyAllDeletes);
-      assert newReader != oldReader;
-      return newReader;
-    } else {
-      final IndexReader newReader = oldReader.reopen(writer, applyAllDeletes);
-      if (newReader == oldReader) {
-        return null;
-      } else {
-        return newReader;
-      }
-    }
-  }
-
-  /**
-   * Refreshes an IndexReader if the index has changed since this instance 
-   * was (re)opened. 
-   * <p>
-   * Opening an IndexReader is an expensive operation. This method can be used
-   * to refresh an existing IndexReader to reduce these costs. This method 
-   * tries to only load segments that have changed or were created after the 
-   * IndexReader was (re)opened.
-   * <p>
-   * If the index has not changed since this instance was (re)opened, then this
-   * call is a NOOP and returns this instance. Otherwise, a new instance is 
-   * returned. The old instance is <b>not</b> closed and remains usable.<br>
-   * <p>   
-   * If the reader is reopened, even though they share
-   * resources internally, it's safe to make changes
-   * (deletions, norms) with the new reader.  All shared
-   * mutable state obeys "copy on write" semantics to ensure
-   * the changes are not seen by other readers.
-   * <p>
-   * You can determine whether a reader was actually reopened by comparing the
-   * old instance with the instance returned by this method: 
-   * <pre>
-   * IndexReader reader = ... 
-   * ...
-   * IndexReader newReader = r.reopen();
-   * if (newReader != reader) {
-   * ...     // reader was reopened
-   *   reader.close(); 
-   * }
-   * reader = newReader;
-   * ...
-   * </pre>
-   *
-   * Be sure to synchronize that code so that other threads,
-   * if present, can never use reader after it has been
-   * closed and before it's switched to newReader.
-   *
-   * <p><b>NOTE</b>: If this reader is a near real-time
-   * reader (obtained from {@code IndexWriter#getReader()},
-   * reopen() will simply call writer.getReader() again for
-   * you, though this may change in the future.
-   * 
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   * @deprecated Use {@code #openIfChanged(IndexReader)} instead
-   */
-  @Deprecated
-  public IndexReader reopen() throws CorruptIndexException, IOException {
-    final IndexReader newReader = IndexReader.openIfChanged(this);
-    if (newReader == null) {
-      return this;
-    } else {
-      return newReader;
-    }
-  }
-
-  /** Just like {@code #reopen()}, except you can change the
-   *  readOnly of the original reader.  If the index is
-   *  unchanged but readOnly is different then a new reader
-   *  will be returned.
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@code #openIfChanged(IndexReader)} instead
-   */
-  @Deprecated
-  public IndexReader reopen(boolean openReadOnly) throws CorruptIndexException, IOException {
-    final IndexReader newReader = IndexReader.openIfChanged(this, openReadOnly);
-    if (newReader == null) {
-      return this;
-    } else {
-      return newReader;
-    }
-  }
-
-  /** Expert: reopen this reader on a specific commit point.
-   *  This always returns a readOnly reader.  If the
-   *  specified commit point matches what this reader is
-   *  already on, and this reader is already readOnly, then
-   *  this same instance is returned; if it is not already
-   *  readOnly, a readOnly clone is returned.
-   * @deprecated Use {@code #openIfChanged(IndexReader,IndexCommit)} instead
-   */
-  @Deprecated
-  public IndexReader reopen(IndexCommit commit) throws CorruptIndexException, IOException {
-    final IndexReader newReader = IndexReader.openIfChanged(this, commit);
-    if (newReader == null) {
-      return this;
-    } else {
-      return newReader;
-    }
-  }
-
-  /**
-   * Expert: returns a readonly reader, covering all
-   * committed as well as un-committed changes to the index.
-   * This provides "near real-time" searching, in that
-   * changes made during an IndexWriter session can be
-   * quickly made available for searching without closing
-   * the writer nor calling {@code #commit}.
-   *
-   * <p>Note that this is functionally equivalent to calling
-   * {#flush} (an internal IndexWriter operation) and then using {@code IndexReader#open} to
-   * open a new reader.  But the turnaround time of this
-   * method should be faster since it avoids the potentially
-   * costly {@code #commit}.</p>
-   *
-   * <p>You must close the {@code IndexReader} returned by
-   * this method once you are done using it.</p>
-   *
-   * <p>It's <i>near</i> real-time because there is no hard
-   * guarantee on how quickly you can get a new reader after
-   * making changes with IndexWriter.  You'll have to
-   * experiment in your situation to determine if it's
-   * fast enough.  As this is a new and experimental
-   * feature, please report back on your findings so we can
-   * learn, improve and iterate.</p>
-   *
-   * <p>The resulting reader supports {@code
-   * IndexReader#reopen}, but that call will simply forward
-   * back to this method (though this may change in the
-   * future).</p>
-   *
-   * <p>The very first time this method is called, this
-   * writer instance will make every effort to pool the
-   * readers that it opens for doing merges, applying
-   * deletes, etc.  This means additional resources (RAM,
-   * file descriptors, CPU time) will be consumed.</p>
-   *
-   * <p>For lower latency on reopening a reader, you should
-   * call {@code IndexWriterConfig#setMergedSegmentWarmer} to
-   * pre-warm a newly merged segment before it's committed
-   * to the index.  This is important for minimizing
-   * index-to-search delay after a large merge.  </p>
-   *
-   * <p>If an addIndexes* call is running in another thread,
-   * then this reader will only search those segments from
-   * the foreign index that have been successfully copied
-   * over, so far</p>.
-   *
-   * <p><b>NOTE</b>: Once the writer is closed, any
-   * outstanding readers may continue to be used.  However,
-   * if you attempt to reopen any of those readers, you'll
-   * hit an {@code AlreadyClosedException}.</p>
-   *
-   * @return IndexReader that covers entire index plus all
-   * changes made so far by this IndexWriter instance
-   *
-   * @param writer The IndexWriter to open from
-   * @param applyAllDeletes If true, all buffered deletes will
-   * be applied (made visible) in the returned reader.  If
-   * false, the deletes are not applied but remain buffered
-   * (in IndexWriter) so that they will be applied in the
-   * future.  Applying deletes can be costly, so if your app
-   * can tolerate deleted documents being returned you might
-   * gain some performance by passing false.
-   *
-   * @throws IOException
-   *
-   * @lucene.experimental
-   * @deprecated Use {@code #openIfChanged(IndexReader,IndexWriter,boolean)} instead
-   */
-  @Deprecated
-  public IndexReader reopen(IndexWriter writer, boolean applyAllDeletes) throws CorruptIndexException, IOException {
-    final IndexReader newReader = IndexReader.openIfChanged(this, writer, applyAllDeletes);
-    if (newReader == null) {
-      return this;
-    } else {
-      return newReader;
-    }
-  }
-
-  /**
-   * If the index has changed since it was opened, open and return a new reader;
-   * else, return {@code null}.
-   * 
-   * @see #openIfChanged(IndexReader)
-   */
-  protected IndexReader doOpenIfChanged() throws CorruptIndexException, IOException {
-    throw new UnsupportedOperationException("This reader does not support reopen().");
-  }
-  
-  /**
-   * If the index has changed since it was opened, open and return a new reader;
-   * else, return {@code null}.
-   * 
-   * @see #openIfChanged(IndexReader, boolean)
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@code #doOpenIfChanged()} instead
-   */
-  @Deprecated
-  protected IndexReader doOpenIfChanged(boolean openReadOnly) throws CorruptIndexException, IOException {
-    throw new UnsupportedOperationException("This reader does not support reopen().");
-  }
-
-  /**
-   * If the index has changed since it was opened, open and return a new reader;
-   * else, return {@code null}.
-   * 
-   * @see #openIfChanged(IndexReader, IndexCommit)
-   */
-  protected IndexReader doOpenIfChanged(final IndexCommit commit) throws CorruptIndexException, IOException {
-    throw new UnsupportedOperationException("This reader does not support reopen(IndexCommit).");
-  }
-
-  /**
-   * If the index has changed since it was opened, open and return a new reader;
-   * else, return {@code null}.
-   * 
-   * @see #openIfChanged(IndexReader, IndexWriter, boolean)
-   */
-  protected IndexReader doOpenIfChanged(IndexWriter writer, boolean applyAllDeletes) throws CorruptIndexException, IOException {
-    return writer.getReader(applyAllDeletes);
   }
 
   /**
@@ -887,7 +248,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * Use {@code #clone()} instead.
    */
   @Deprecated
-  public synchronized IndexReader clone(boolean openReadOnly) throws CorruptIndexException, IOException {
+  public synchronized IndexReader clone(boolean openReadOnly) throws IOException {
     throw new UnsupportedOperationException("This reader does not implement clone()");
   }
 
@@ -904,65 +265,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
   }
 
   /**
-   * Returns the time the index in the named directory was last modified. 
-   * Do not use this to check whether the reader is still up-to-date, use
-   * {@code #isCurrent()} instead.
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   * @deprecated If you need to track commit time of
-   * an index, you can store it in the commit data (see
-   * {@code IndexWriter#commit(Map)}
-   */
-  @Deprecated
-  public static long lastModified(final Directory directory2) throws CorruptIndexException, IOException {
-    return ((Long) new SegmentInfos.FindSegmentsFile(directory2) {
-        @Override
-        public Object doBody(String segmentFileName) throws IOException {
-          return Long.valueOf(directory2.fileModified(segmentFileName));
-        }
-      }.run()).longValue();
-  }
-
-  /**
-   * Reads version number from segments files. The version number is
-   * initialized with a timestamp and then increased by one for each change of
-   * the index.
-   * 
-   * @param directory where the index resides.
-   * @return version number.
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   * @deprecated Use {@code #getVersion} on an opened IndexReader.
-   */
-  @Deprecated
-  public static long getCurrentVersion(Directory directory) throws CorruptIndexException, IOException {
-    return SegmentInfos.readCurrentVersion(directory);
-  }
-
-  /**
-   * Reads commitUserData, previously passed to {@code
-   * IndexWriter#commit(Map)}, from current index
-   * segments file.  This will return null if {@code
-   * IndexWriter#commit(Map)} has never been called for
-   * this index.
-   * 
-   * @param directory where the index resides.
-   * @return commit userData.
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   *
-   * @deprecated Call {@code
-   * #getIndexCommit} on an open IndexReader, and then call
-   * {@code IndexCommit#getUserData}.
-   */
-  @Deprecated
-  public static Map<String,String> getCommitUserData(Directory directory) throws CorruptIndexException, IOException {
-    SegmentInfos sis = new SegmentInfos();
-    sis.read(directory);
-    return sis.getUserData();
-  }
-
-  /**
    * Version number when this IndexReader was opened. Not
    * implemented in the IndexReader base class.
    *
@@ -976,20 +278,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * @throws UnsupportedOperationException unless overridden in subclass
    */
   public long getVersion() {
-    throw new UnsupportedOperationException("This reader does not support this method.");
-  }
-
-  /**
-   * Retrieve the String userData optionally passed to
-   * IndexWriter#commit.  This will return null if {@code
-   * IndexWriter#commit(Map)} has never been called for
-   * this index.
-   *
-   * @deprecated Call {@code #getIndexCommit} and then call
-   * {@code IndexCommit#getUserData}.
-   */
-  @Deprecated
-  public Map<String,String> getCommitUserData() {
     throw new UnsupportedOperationException("This reader does not support this method.");
   }
 
@@ -1021,7 +309,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * @throws IOException           if there is a low-level IO error
    * @throws UnsupportedOperationException unless overridden in subclass
    */
-  public boolean isCurrent() throws CorruptIndexException, IOException {
+  public boolean isCurrent() throws IOException {
     throw new UnsupportedOperationException("This reader does not support this method.");
   }
 
@@ -1045,7 +333,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * @return array of term frequency vectors. May be null if no term vectors have been
    *  stored for the specified document.
    * @throws IOException if index cannot be accessed
-   * @see org.apache.lucene.document.Field.TermVector
+   *
    */
   abstract public TermFreqVector[] getTermFreqVectors(int docNumber)
           throws IOException;
@@ -1063,7 +351,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * @return term frequency vector May be null if field does not exist in the specified
    * document or term vector was not stored.
    * @throws IOException if index cannot be accessed
-   * @see org.apache.lucene.document.Field.TermVector
+   *
    */
   abstract public TermFreqVector getTermFreqVector(int docNumber, String field)
           throws IOException;
@@ -1129,7 +417,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
    */
-  public final Document document(int n) throws CorruptIndexException, IOException {
+  public final Document document(int n) throws IOException {
     ensureOpen();
     if (n < 0 || n >= maxDoc()) {
       throw new IllegalArgumentException("docID must be >= 0 and < maxDoc=" + maxDoc() + " (got docID=" + n + ")");
@@ -1162,13 +450,13 @@ public abstract class IndexReader implements Cloneable,Closeable {
    *         {@code org.apache.lucene.document.Document} at the nth position
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
-   * @see org.apache.lucene.document.Fieldable
-   * @see org.apache.lucene.document.FieldSelector
-   * @see org.apache.lucene.document.SetBasedFieldSelector
-   * @see org.apache.lucene.document.LoadFirstFieldSelector
+   *
+   *
+   *
+   *
    */
   // TODO (1.5): When we convert to JDK 1.5 make this Set<String>
-  public abstract Document document(int n, FieldSelector fieldSelector) throws CorruptIndexException, IOException;
+  public abstract Document document(int n, FieldSelector fieldSelector) throws IOException;
   
   /** Returns true if document <i>n</i> has been deleted */
   public abstract boolean isDeleted(int n);
@@ -1188,14 +476,14 @@ public abstract class IndexReader implements Cloneable,Closeable {
    *  every document.  This is used by the search code to score documents.
    *  Returns null if norms were not indexed for this field.
    *
-   * @see org.apache.lucene.document.Field#setBoost(float)
+   *
    */
   public abstract byte[] norms(String field) throws IOException;
 
   /** Reads the byte-encoded normalization factor for the named field of every
    *  document.  This is used by the search code to score documents.
    *
-   * @see org.apache.lucene.document.Field#setBoost(float)
+   *
    */
   public abstract void norms(String field, byte[] bytes, int offset)
     throws IOException;
@@ -1209,8 +497,8 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * <b>NOTE:</b> If this field does not index norms, then
    * this method throws {@code IllegalStateException}.
    *
-   * @see #norms(String)
-   * @see Similarity#decodeNormValue(byte)
+   *
+   *
    * @throws StaleReaderException if the index has changed
    *  since this reader was opened
    * @throws CorruptIndexException if the index is corrupt
@@ -1224,7 +512,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
    */
   @Deprecated
   public final synchronized  void setNorm(int doc, String field, byte value)
-          throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
+          throws IOException {
     ensureOpen();
     acquireWriteLock();
     hasChanges = true;
@@ -1237,30 +525,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
    */
   @Deprecated
   protected abstract void doSetNorm(int doc, String field, byte value)
-          throws CorruptIndexException, IOException;
-
-  /** Expert: Resets the normalization factor for the named field of the named
-   * document.
-   *
-   * @see #norms(String)
-   * @see Similarity#decodeNormValue(byte)
-   * 
-   * @throws StaleReaderException if the index has changed
-   *  since this reader was opened
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws LockObtainFailedException if another writer
-   *  has this index open (<code>write.lock</code> could not
-   *  be obtained)
-   * @throws IOException if there is a low-level IO error
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * There will be no replacement for this method.
-   */
-  @Deprecated
-  public final void setNorm(int doc, String field, float value)
-          throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
-    ensureOpen();
-    setNorm(doc, field, Similarity.getDefault().encodeNormValue(value));
-  }
+          throws IOException;
 
   /** Returns an enumeration of all the terms in the index. The
    * enumeration is ordered by Term.compareTo(). Each term is greater
@@ -1316,30 +581,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
    */
   public abstract TermDocs termDocs() throws IOException;
 
-  /** Returns an enumeration of all the documents which contain
-   * <code>term</code>.  For each document, in addition to the document number
-   * and frequency of the term in that document, a list of all of the ordinal
-   * positions of the term in the document is available.  Thus, this method
-   * implements the mapping:
-   *
-   * <p><ul>
-   * Term &nbsp;&nbsp; =&gt; &nbsp;&nbsp; &lt;docNum, freq,
-   * &lt;pos<sub>1</sub>, pos<sub>2</sub>, ...
-   * pos<sub>freq-1</sub>&gt;
-   * &gt;<sup>*</sup>
-   * </ul>
-   * <p> This positional information facilitates phrase and proximity searching.
-   * <p>The enumeration is ordered by document number.  Each document number is
-   * greater than all that precede it in the enumeration.
-   * @throws IOException if there is a low-level IO error
-   */
-  public final TermPositions termPositions(Term term) throws IOException {
-    ensureOpen();
-    TermPositions termPositions = termPositions();
-    termPositions.seek(term);
-    return termPositions;
-  }
-
   /** Returns an unpositioned {@code TermPositions} enumerator.
    * @throws IOException if there is a low-level IO error
    */
@@ -1365,7 +606,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * Use {@code IndexWriter#deleteDocuments(Term)} instead
    */
   @Deprecated
-  public final synchronized void deleteDocument(int docNum) throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
+  public final synchronized void deleteDocument(int docNum) throws IOException {
     ensureOpen();
     acquireWriteLock();
     hasChanges = true;
@@ -1379,44 +620,8 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * Use {@code IndexWriter#deleteDocuments(Term)} instead
    */
   @Deprecated
-  protected abstract void doDelete(int docNum) throws CorruptIndexException, IOException;
+  protected abstract void doDelete(int docNum) throws IOException;
 
-
-  /** Deletes all documents that have a given <code>term</code> indexed.
-   * This is useful if one uses a document field to hold a unique ID string for
-   * the document.  Then to delete such a document, one merely constructs a
-   * term with the appropriate field and the unique ID string as its text and
-   * passes it to this method.
-   * See {@code #deleteDocument(int)} for information about when this deletion will
-   * become effective.
-   *
-   * @return the number of documents deleted
-   * @throws StaleReaderException if the index has changed
-   *  since this reader was opened
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws LockObtainFailedException if another writer
-   *  has this index open (<code>write.lock</code> could not
-   *  be obtained)
-   * @throws IOException if there is a low-level IO error
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@code IndexWriter#deleteDocuments(Term)} instead
-   */
-  @Deprecated
-  public final int deleteDocuments(Term term) throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
-    ensureOpen();
-    TermDocs docs = termDocs(term);
-    if (docs == null) return 0;
-    int n = 0;
-    try {
-      while (docs.next()) {
-        deleteDocument(docs.doc());
-        n++;
-      }
-    } finally {
-      docs.close();
-    }
-    return n;
-  }
 
   /** Undeletes all documents currently marked as deleted in
    * this index.
@@ -1440,7 +645,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * There will be no replacement for this method.
    */
   @Deprecated
-  public final synchronized void undeleteAll() throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
+  public final synchronized void undeleteAll() throws IOException {
     ensureOpen();
     acquireWriteLock();
     hasChanges = true;
@@ -1452,7 +657,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * There will be no replacement for this method.
    */
   @Deprecated
-  protected abstract void doUndeleteAll() throws CorruptIndexException, IOException;
+  protected abstract void doUndeleteAll() throws IOException;
 
   /** Does nothing by default. Subclasses that require a write lock for
    *  index modifications must implement this method.
@@ -1551,18 +756,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
    */
   public abstract FieldInfos getFieldInfos();
 
-  /**
-   * Expert: return the IndexCommit that this reader has
-   * opened.  This method is only implemented by those
-   * readers that correspond to a Directory with its own
-   * segments_N file.
-   *
-   * @lucene.experimental
-   */
-  public IndexCommit getIndexCommit() throws IOException {
-    throw new UnsupportedOperationException("This reader does not support this method.");
-  }
-  
   /** Returns all commit points that exist in the Directory.
    *  Normally, because the default is {@code
    *  KeepOnlyLastCommitDeletionPolicy}, there would be only
@@ -1609,82 +802,4 @@ public abstract class IndexReader implements Cloneable,Closeable {
     return this;
   }
 
-  /** Expert.  Warning: this returns null if the reader has
-   *  no deletions */
-  public Object getDeletesCacheKey() {
-    return this;
-  }
-
-  /** Returns the number of unique terms (across all fields)
-   *  in this reader.
-   *
-   *  This method returns long, even though internally
-   *  Lucene cannot handle more than 2^31 unique terms, for
-   *  a possible future when this limitation is removed.
-   *
-   *  @throws UnsupportedOperationException if this count
-   *  cannot be easily determined (eg Multi*Readers).
-   *  Instead, you should call {@code
-   *  #getSequentialSubReaders} and ask each sub reader for
-   *  its unique term count. */
-  public long getUniqueTermCount() throws IOException {
-    throw new UnsupportedOperationException("this reader does not implement getUniqueTermCount()");
-  }
-
-  // Back compat for reopen()
-  @Deprecated
-  private static final VirtualMethod<IndexReader> reopenMethod1 =
-    new VirtualMethod<IndexReader>(IndexReader.class, "reopen");
-  @Deprecated
-  private static final VirtualMethod<IndexReader> doOpenIfChangedMethod1 =
-    new VirtualMethod<IndexReader>(IndexReader.class, "doOpenIfChanged");
-  @Deprecated
-  private final boolean hasNewReopenAPI1 =
-    VirtualMethod.compareImplementationDistance(getClass(),
-        doOpenIfChangedMethod1, reopenMethod1) >= 0; // its ok for both to be overridden
-
-  // Back compat for reopen(boolean openReadOnly)
-  @Deprecated
-  private static final VirtualMethod<IndexReader> reopenMethod2 =
-    new VirtualMethod<IndexReader>(IndexReader.class, "reopen", boolean.class);
-  @Deprecated
-  private static final VirtualMethod<IndexReader> doOpenIfChangedMethod2 =
-    new VirtualMethod<IndexReader>(IndexReader.class, "doOpenIfChanged", boolean.class);
-  @Deprecated
-  private final boolean hasNewReopenAPI2 =
-    VirtualMethod.compareImplementationDistance(getClass(),
-        doOpenIfChangedMethod2, reopenMethod2) >= 0; // its ok for both to be overridden
-
-  // Back compat for reopen(IndexCommit commit)
-  @Deprecated
-  private static final VirtualMethod<IndexReader> reopenMethod3 =
-    new VirtualMethod<IndexReader>(IndexReader.class, "reopen", IndexCommit.class);
-  @Deprecated
-  private static final VirtualMethod<IndexReader> doOpenIfChangedMethod3 =
-    new VirtualMethod<IndexReader>(IndexReader.class, "doOpenIfChanged", IndexCommit.class);
-  @Deprecated
-  private final boolean hasNewReopenAPI3 =
-    VirtualMethod.compareImplementationDistance(getClass(),
-        doOpenIfChangedMethod3, reopenMethod3) >= 0; // its ok for both to be overridden
-
-  // Back compat for reopen(IndexWriter writer, boolean applyDeletes)
-  @Deprecated
-  private static final VirtualMethod<IndexReader> reopenMethod4 =
-    new VirtualMethod<IndexReader>(IndexReader.class, "reopen", IndexWriter.class, boolean.class);
-  @Deprecated
-  private static final VirtualMethod<IndexReader> doOpenIfChangedMethod4 =
-    new VirtualMethod<IndexReader>(IndexReader.class, "doOpenIfChanged", IndexWriter.class, boolean.class);
-  @Deprecated
-  private final boolean hasNewReopenAPI4 =
-    VirtualMethod.compareImplementationDistance(getClass(),
-        doOpenIfChangedMethod4, reopenMethod4) >= 0; // its ok for both to be overridden
-
-  /** For IndexReader implementations that use
-   *  TermInfosReader to read terms, this returns the
-   *  current indexDivisor as specified when the reader was
-   *  opened.
-   */
-  public int getTermInfosIndexDivisor() {
-    throw new UnsupportedOperationException("This reader does not support this method.");
-  }
 }

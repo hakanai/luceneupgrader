@@ -30,9 +30,9 @@ public abstract class MergeScheduler {
 
   /** Run the merges provided by {@code IndexWriter#getNextMerge()}. */
   public abstract void merge(IndexWriter writer)
-    throws CorruptIndexException, IOException;
+    throws IOException;
 
   /** Close this MergeScheduler. */
   public abstract void close()
-    throws CorruptIndexException, IOException;
+    throws IOException;
 }

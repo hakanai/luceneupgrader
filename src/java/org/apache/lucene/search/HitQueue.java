@@ -60,7 +60,7 @@ final class HitQueue extends PriorityQueue<ScoreDoc> {
    *          the requested size of this queue.
    * @param prePopulate
    *          specifies whether to pre-populate the queue with sentinel values.
-   * @see #getSentinelObject()
+   *
    */
   HitQueue(int size, boolean prePopulate) {
     this.prePopulate = prePopulate;

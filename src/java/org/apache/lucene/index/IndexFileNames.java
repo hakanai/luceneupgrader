@@ -162,13 +162,6 @@ public final class IndexFileNames {
     TERMS_INDEX_EXTENSION,
     TERMS_EXTENSION
   };
-  
-  /** File extensions for term vector support */
-  public static final String VECTOR_EXTENSIONS[] = new String[] {
-    VECTORS_INDEX_EXTENSION,
-    VECTORS_DOCUMENTS_EXTENSION,
-    VECTORS_FIELDS_EXTENSION
-  };
 
   /**
    * Computes the full file name from base, extension and generation. If the
@@ -182,7 +175,7 @@ public final class IndexFileNames {
    * @param ext extension of the filename
    * @param gen generation
    */
-  public static final String fileNameFromGeneration(String base, String ext, long gen) {
+  public static String fileNameFromGeneration(String base, String ext, long gen) {
     if (gen == SegmentInfo.NO) {
       return null;
     } else if (gen == SegmentInfo.WITHOUT_GEN) {
@@ -204,7 +197,7 @@ public final class IndexFileNames {
    * Returns true if the provided filename is one of the doc store files (ends
    * with an extension in {@code #STORE_INDEX_EXTENSIONS}).
    */
-  public static final boolean isDocStoreFile(String fileName) {
+  public static boolean isDocStoreFile(String fileName) {
     if (fileName.endsWith(COMPOUND_FILE_STORE_EXTENSION))
       return true;
     for (String ext : STORE_INDEX_EXTENSIONS) {
@@ -222,7 +215,7 @@ public final class IndexFileNames {
    * <b>NOTE:</b> .&lt;ext&gt; is added to the result file name only if
    * <code>ext</code> is not empty.
    */
-  public static final String segmentFileName(String segmentName, String ext) {
+  public static String segmentFileName(String segmentName, String ext) {
     if (ext.length() > 0) {
       return new StringBuilder(segmentName.length() + 1 + ext.length()).append(
           segmentName).append('.').append(ext).toString();
@@ -235,7 +228,7 @@ public final class IndexFileNames {
    * Returns true if the given filename ends with the given extension. One
    * should provide a <i>pure</i> extension, without '.'.
    */
-  public static final boolean matchesExtension(String filename, String ext) {
+  public static boolean matchesExtension(String filename, String ext) {
     // It doesn't make a difference whether we allocate a StringBuilder ourself
     // or not, since there's only 1 '+' operator.
     return filename.endsWith("." + ext);
@@ -250,7 +243,7 @@ public final class IndexFileNames {
    * @return the filename with the segment name removed, or the given filename
    *         if it does not contain a '.' and '_'.
    */
-  public static final String stripSegmentName(String filename) {
+  public static String stripSegmentName(String filename) {
     // If it is a .del file, there's an '_' after the first character
     int idx = filename.indexOf('_', 1);
     if (idx == -1) {

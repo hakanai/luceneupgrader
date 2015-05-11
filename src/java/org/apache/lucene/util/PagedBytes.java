@@ -48,7 +48,7 @@ public final class PagedBytes {
   /** Provides methods to read BytesRefs from a frozen
    *  PagedBytes.
    *
-   * @see #freeze */
+   * */
   public final static class Reader {
     private final byte[][] blocks;
     private final int[] blockEnds;

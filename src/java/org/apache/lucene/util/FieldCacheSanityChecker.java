@@ -45,9 +45,9 @@ import org.apache.lucene.search.FieldCache.CacheEntry;
  * usages of the FieldCache.
  * </p>
  * @lucene.experimental
- * @see FieldCache
- * @see FieldCacheSanityChecker.Insanity
- * @see FieldCacheSanityChecker.InsanityType
+ *
+ *
+ *
  */
 public final class FieldCacheSanityChecker {
 
@@ -67,7 +67,7 @@ public final class FieldCacheSanityChecker {
 
   /** 
    * Quick and dirty convenience method
-   * @see #check
+   *
    */
   public static Insanity[] checkSanity(FieldCache cache) {
     return checkSanity(cache.getCacheEntries());
@@ -76,7 +76,7 @@ public final class FieldCacheSanityChecker {
   /** 
    * Quick and dirty convenience method that instantiates an instance with 
    * "good defaults" and uses it to test the CacheEntrys
-   * @see #check
+   *
    */
   public static Insanity[] checkSanity(CacheEntry... cacheEntries) {
     FieldCacheSanityChecker sanityChecker = new FieldCacheSanityChecker();
@@ -157,7 +157,7 @@ public final class FieldCacheSanityChecker {
    * valMismatchKeys and generates a Collection of Insanity 
    * instances accordingly.  The MapOfSets are used to populate 
    * the Insanity objects. 
-   * @see InsanityType#VALUEMISMATCH
+   *
    */
   private Collection<Insanity> checkValueMismatch(MapOfSets<Integer, CacheEntry> valIdToItems,
                                         MapOfSets<ReaderField, Integer> readerFieldToValIds,
@@ -195,7 +195,7 @@ public final class FieldCacheSanityChecker {
    * of Insanity instances whenever two (or more) ReaderField instances are 
    * found that have an ancestry relationships.  
    *
-   * @see InsanityType#SUBREADER
+   *
    */
   private Collection<Insanity> checkSubreaders( MapOfSets<Integer, CacheEntry>  valIdToItems,
                                       MapOfSets<ReaderField, Integer> readerFieldToValIds) {
@@ -381,9 +381,9 @@ public final class FieldCacheSanityChecker {
    * An Enumeration of the different types of "insane" behavior that 
    * may be detected in a FieldCache.
    *
-   * @see InsanityType#SUBREADER
-   * @see InsanityType#VALUEMISMATCH
-   * @see InsanityType#EXPECTED
+   *
+   *
+   *
    */
   public final static class InsanityType {
     private final String label;

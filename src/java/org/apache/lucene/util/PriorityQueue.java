@@ -216,7 +216,7 @@ public abstract class PriorityQueue<T> {
     size = 0;
   }
 
-  private final void upHeap() {
+  private void upHeap() {
     int i = size;
     T node = heap[i];			  // save bottom node
     int j = i >>> 1;
@@ -228,7 +228,7 @@ public abstract class PriorityQueue<T> {
     heap[i] = node;				  // install saved node
   }
 
-  private final void downHeap() {
+  private void downHeap() {
     int i = 1;
     T node = heap[i];			  // save top node
     int j = i << 1;				  // find smaller child

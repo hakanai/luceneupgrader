@@ -52,12 +52,12 @@ public final class WeakIdentityMap<K,V> {
   private final Map<IdentityWeakReference, V> backingStore;
 
   /** Creates a new {@code WeakIdentityMap} based on a non-synchronized {@code HashMap}. */
-  public static final <K,V> WeakIdentityMap<K,V> newHashMap() {
+  public static <K,V> WeakIdentityMap<K,V> newHashMap() {
     return new WeakIdentityMap<K,V>(new HashMap<IdentityWeakReference,V>());
   }
 
   /** Creates a new {@code WeakIdentityMap} based on a {@code ConcurrentHashMap}. */
-  public static final <K,V> WeakIdentityMap<K,V> newConcurrentHashMap() {
+  public static <K,V> WeakIdentityMap<K,V> newConcurrentHashMap() {
     return new WeakIdentityMap<K,V>(new ConcurrentHashMap<IdentityWeakReference,V>());
   }
 

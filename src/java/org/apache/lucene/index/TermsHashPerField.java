@@ -152,7 +152,7 @@ final class TermsHashPerField extends InvertedDocConsumerPerField {
       nextPerField.abort();
   }
   
-  private final void growParallelPostingsArray() {
+  private void growParallelPostingsArray() {
     int oldSize = postingsArray.size;
     this.postingsArray = this.postingsArray.grow();
     bytesUsed(postingsArray.bytesPerPosting() * (postingsArray.size - oldSize));

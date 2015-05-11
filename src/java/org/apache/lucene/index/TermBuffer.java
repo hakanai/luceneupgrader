@@ -38,7 +38,7 @@ final class TermBuffer implements Cloneable {
       return field.compareTo(other.field);
   }
 
-  private static final int compareChars(char[] chars1, int len1,
+  private static int compareChars(char[] chars1, int len1,
                                         char[] chars2, int len2) {
     final int end = len1 < len2 ? len1:len2;
     for (int k = 0; k < end; k++) {

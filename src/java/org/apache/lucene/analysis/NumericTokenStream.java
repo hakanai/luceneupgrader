@@ -20,7 +20,6 @@ package org.apache.lucene.analysis;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
-import org.apache.lucene.util.AttributeSource;
 import org.apache.lucene.util.NumericUtils;
 
 /**
@@ -88,48 +87,12 @@ public final class NumericTokenStream extends TokenStream {
   public static final String TOKEN_TYPE_LOWER_PREC = "lowerPrecNumeric";
 
   /**
-   * Creates a token stream for numeric values using the default <code>precisionStep</code>
-   * {@code NumericUtils#PRECISION_STEP_DEFAULT} (4). The stream is not yet initialized,
-   * before using set a value using the various set<em>???</em>Value() methods.
-   */
-  public NumericTokenStream() {
-    this(NumericUtils.PRECISION_STEP_DEFAULT);
-  }
-  
-  /**
    * Creates a token stream for numeric values with the specified
    * <code>precisionStep</code>. The stream is not yet initialized,
    * before using set a value using the various set<em>???</em>Value() methods.
    */
   public NumericTokenStream(final int precisionStep) {
     super();
-    this.precisionStep = precisionStep;
-    if (precisionStep < 1)
-      throw new IllegalArgumentException("precisionStep must be >=1");
-  }
-
-  /**
-   * Expert: Creates a token stream for numeric values with the specified
-   * <code>precisionStep</code> using the given {@code AttributeSource}.
-   * The stream is not yet initialized,
-   * before using set a value using the various set<em>???</em>Value() methods.
-   */
-  public NumericTokenStream(AttributeSource source, final int precisionStep) {
-    super(source);
-    this.precisionStep = precisionStep;
-    if (precisionStep < 1)
-      throw new IllegalArgumentException("precisionStep must be >=1");
-  }
-
-  /**
-   * Expert: Creates a token stream for numeric values with the specified
-   * <code>precisionStep</code> using the given
-   * {@code org.apache.lucene.util.AttributeSource.AttributeFactory}.
-   * The stream is not yet initialized,
-   * before using set a value using the various set<em>???</em>Value() methods.
-   */
-  public NumericTokenStream(AttributeFactory factory, final int precisionStep) {
-    super(factory);
     this.precisionStep = precisionStep;
     if (precisionStep < 1)
       throw new IllegalArgumentException("precisionStep must be >=1");
@@ -232,11 +195,6 @@ public final class NumericTokenStream extends TokenStream {
     return sb.toString();
   }
 
-  /** Returns the precision step. */
-  public int getPrecisionStep() {
-    return precisionStep;
-  }
-  
   // members
   private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
   private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);

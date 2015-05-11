@@ -17,27 +17,21 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Similarity;
-import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMFile;
 import org.apache.lucene.util.ArrayUtil;
 import org.apache.lucene.util.BitVector;
 import org.apache.lucene.util.RamUsageEstimator;
 import org.apache.lucene.util.ThreadInterruptedException;
+
+import java.io.IOException;
+import java.io.PrintStream;
+import java.text.NumberFormat;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 /**
@@ -263,11 +257,9 @@ final class DocumentsWriter {
 
   private final IndexWriterConfig config;
 
-  private boolean closed;
   private final FieldInfos fieldInfos;
 
   private final BufferedDeletesStream bufferedDeletesStream;
-  private final IndexWriter.FlushControl flushControl;
 
   DocumentsWriter(IndexWriterConfig config, Directory directory, IndexWriter writer, FieldInfos fieldInfos, BufferedDeletesStream bufferedDeletesStream) throws IOException {
     this.directory = directory;
@@ -276,64 +268,9 @@ final class DocumentsWriter {
     this.maxThreadStates = config.getMaxThreadStates();
     this.fieldInfos = fieldInfos;
     this.bufferedDeletesStream = bufferedDeletesStream;
-    flushControl = writer.flushControl;
 
     consumer = config.getIndexingChain().getChain(this);
     this.config = config;
-  }
-
-  // Buffer a specific docID for deletion.  Currently only
-  // used when we hit a exception when adding a document
-  synchronized void deleteDocID(int docIDUpto) {
-    pendingDeletes.addDocID(docIDUpto);
-    // NOTE: we do not trigger flush here.  This is
-    // potentially a RAM leak, if you have an app that tries
-    // to add docs but every single doc always hits a
-    // non-aborting exception.  Allowing a flush here gets
-    // very messy because we are only invoked when handling
-    // exceptions so to do this properly, while handling an
-    // exception we'd have to go off and flush new deletes
-    // which is risky (likely would hit some other
-    // confounding exception).
-  }
-  
-  boolean deleteQueries(Query... queries) {
-    final boolean doFlush = flushControl.waitUpdate(0, queries.length);
-    synchronized(this) {
-      for (Query query : queries) {
-        pendingDeletes.addQuery(query, numDocs);
-      }
-    }
-    return doFlush;
-  }
-  
-  boolean deleteQuery(Query query) { 
-    final boolean doFlush = flushControl.waitUpdate(0, 1);
-    synchronized(this) {
-      pendingDeletes.addQuery(query, numDocs);
-    }
-    return doFlush;
-  }
-  
-  boolean deleteTerms(Term... terms) {
-    final boolean doFlush = flushControl.waitUpdate(0, terms.length);
-    synchronized(this) {
-      for (Term term : terms) {
-        pendingDeletes.addTerm(term, numDocs);
-      }
-    }
-    return doFlush;
-  }
-
-  // TODO: we could check w/ FreqProxTermsWriter: if the
-  // term doesn't exist, don't bother buffering into the
-  // per-DWPT map (but still must go into the global map)
-  boolean deleteTerm(Term term, boolean skipWait) {
-    final boolean doFlush = flushControl.waitUpdate(0, 1, skipWait);
-    synchronized(this) {
-      pendingDeletes.addTerm(term, numDocs);
-    }
-    return doFlush;
   }
 
   public FieldInfos getFieldInfos() {
@@ -344,22 +281,22 @@ final class DocumentsWriter {
    *  here. */
   synchronized void setInfoStream(PrintStream infoStream) {
     this.infoStream = infoStream;
-    for(int i=0;i<threadStates.length;i++) {
-      threadStates[i].docState.infoStream = infoStream;
+    for (DocumentsWriterThreadState threadState : threadStates) {
+      threadState.docState.infoStream = infoStream;
     }
   }
 
   synchronized void setMaxFieldLength(int maxFieldLength) {
     this.maxFieldLength = maxFieldLength;
-    for(int i=0;i<threadStates.length;i++) {
-      threadStates[i].docState.maxFieldLength = maxFieldLength;
+    for (DocumentsWriterThreadState threadState : threadStates) {
+      threadState.docState.maxFieldLength = maxFieldLength;
     }
   }
 
   synchronized void setSimilarity(Similarity similarity) {
     this.similarity = similarity;
-    for(int i=0;i<threadStates.length;i++) {
-      threadStates[i].docState.similarity = similarity;
+    for (DocumentsWriterThreadState threadState : threadStates) {
+      threadState.docState.similarity = similarity;
     }
   }
 
@@ -402,7 +339,7 @@ final class DocumentsWriter {
       // Forcefully remove waiting ThreadStates from line
       try {
         waitQueue.abort();
-      } catch (Throwable t) {
+      } catch (Throwable ignored) {
       }
 
       // Wait for all other threads to finish with
@@ -422,13 +359,13 @@ final class DocumentsWriter {
         for (DocumentsWriterThreadState threadState : threadStates) {
           try {
             threadState.consumer.abort();
-          } catch (Throwable t) {
+          } catch (Throwable ignored) {
           }
         }
           
         try {
           consumer.abort();
-        } catch (Throwable t) {
+        } catch (Throwable ignored) {
         }
         
         // Reset all postings data
@@ -455,14 +392,14 @@ final class DocumentsWriter {
     numDocs = 0;
     nextDocID = 0;
     bufferIsFull = false;
-    for(int i=0;i<threadStates.length;i++) {
-      threadStates[i].doAfterFlush();
+    for (DocumentsWriterThreadState threadState : threadStates) {
+      threadState.doAfterFlush();
     }
   }
 
   private synchronized boolean allThreadsIdle() {
-    for(int i=0;i<threadStates.length;i++) {
-      if (!threadStates[i].isIdle) {
+    for (DocumentsWriterThreadState threadState : threadStates) {
+      if (!threadState.isIdle) {
         return false;
       }
     }
@@ -471,11 +408,6 @@ final class DocumentsWriter {
 
   synchronized boolean anyChanges() {
     return numDocs != 0 || pendingDeletes.any();
-  }
-
-  // for testing
-  public BufferedDeletes getPendingDeletes() {
-    return pendingDeletes;
   }
 
   private void pushDeletes(SegmentInfo newSegment, SegmentInfos segmentInfos) {
@@ -506,10 +438,6 @@ final class DocumentsWriter {
     } else if (newSegment != null) {
       newSegment.setBufferedDeletesGen(delGen);
     }
-  }
-
-  public boolean anyDeletions() {
-    return pendingDeletes.any();
   }
 
   /** Flush all pending docs to a new segment */
@@ -672,312 +600,7 @@ final class DocumentsWriter {
   }
 
   synchronized void close() {
-    closed = true;
     notifyAll();
-  }
-
-  /** Returns a free (idle) ThreadState that may be used for
-   * indexing this one document.  This call also pauses if a
-   * flush is pending.  If delTerm is non-null then we
-   * buffer this deleted term after the thread state has
-   * been acquired. */
-  synchronized DocumentsWriterThreadState getThreadState(Term delTerm, int docCount) throws IOException {
-
-    final Thread currentThread = Thread.currentThread();
-    assert !Thread.holdsLock(writer);
-
-    // First, find a thread state.  If this thread already
-    // has affinity to a specific ThreadState, use that one
-    // again.
-    DocumentsWriterThreadState state = threadBindings.get(currentThread);
-    if (state == null) {
-
-      // First time this thread has called us since last
-      // flush.  Find the least loaded thread state:
-      DocumentsWriterThreadState minThreadState = null;
-      for(int i=0;i<threadStates.length;i++) {
-        DocumentsWriterThreadState ts = threadStates[i];
-        if (minThreadState == null || ts.numThreads < minThreadState.numThreads) {
-          minThreadState = ts;
-        }
-      }
-      if (minThreadState != null && (minThreadState.numThreads == 0 || threadStates.length >= maxThreadStates)) {
-        state = minThreadState;
-        state.numThreads++;
-      } else {
-        // Just create a new "private" thread state
-        DocumentsWriterThreadState[] newArray = new DocumentsWriterThreadState[1+threadStates.length];
-        if (threadStates.length > 0) {
-          System.arraycopy(threadStates, 0, newArray, 0, threadStates.length);
-        }
-        state = newArray[threadStates.length] = new DocumentsWriterThreadState(this);
-        threadStates = newArray;
-      }
-      threadBindings.put(currentThread, state);
-    }
-
-    // Next, wait until my thread state is idle (in case
-    // it's shared with other threads), and no flush/abort
-    // pending 
-    waitReady(state);
-
-    // Allocate segment name if this is the first doc since
-    // last flush:
-    if (segment == null) {
-      segment = writer.newSegmentName();
-      assert numDocs == 0;
-    }
-
-    state.docState.docID = nextDocID;
-    nextDocID += docCount;
-
-    if (delTerm != null) {
-      pendingDeletes.addTerm(delTerm, state.docState.docID);
-    }
-
-    numDocs += docCount;
-    state.isIdle = false;
-    return state;
-  }
-  
-  boolean addDocument(Document doc, Analyzer analyzer) throws CorruptIndexException, IOException {
-    return updateDocument(doc, analyzer, null);
-  }
-  
-  boolean updateDocument(Document doc, Analyzer analyzer, Term delTerm)
-    throws CorruptIndexException, IOException {
-
-    // Possibly trigger a flush, or wait until any running flush completes:
-    boolean doFlush = flushControl.waitUpdate(1, delTerm != null ? 1 : 0);
-
-    // This call is synchronized but fast
-    final DocumentsWriterThreadState state = getThreadState(delTerm, 1);
-
-    final DocState docState = state.docState;
-    docState.doc = doc;
-    docState.analyzer = analyzer;
-
-    boolean success = false;
-    try {
-      // This call is not synchronized and does all the
-      // work
-      final DocWriter perDoc;
-      try {
-        perDoc = state.consumer.processDocument();
-      } finally {
-        docState.clear();
-      }
-
-      // This call is synchronized but fast
-      finishDocument(state, perDoc);
-
-      success = true;
-    } finally {
-      if (!success) {
-
-        // If this thread state had decided to flush, we
-        // must clear it so another thread can flush
-        if (doFlush) {
-          flushControl.clearFlushPending();
-        }
-
-        if (infoStream != null) {
-          message("exception in updateDocument aborting=" + aborting);
-        }
-
-        synchronized(this) {
-
-          state.isIdle = true;
-          notifyAll();
-            
-          if (aborting) {
-            abort();
-          } else {
-            skipDocWriter.docID = docState.docID;
-            boolean success2 = false;
-            try {
-              waitQueue.add(skipDocWriter);
-              success2 = true;
-            } finally {
-              if (!success2) {
-                abort();
-                return false;
-              }
-            }
-
-            // Immediately mark this document as deleted
-            // since likely it was partially added.  This
-            // keeps indexing as "all or none" (atomic) when
-            // adding a document:
-            deleteDocID(state.docState.docID);
-          }
-        }
-      }
-    }
-
-    doFlush |= flushControl.flushByRAMUsage("new document");
-
-    return doFlush;
-  }
-
-  boolean updateDocuments(Collection<Document> docs, Analyzer analyzer, Term delTerm)
-    throws CorruptIndexException, IOException {
-
-    // Possibly trigger a flush, or wait until any running flush completes:
-    boolean doFlush = flushControl.waitUpdate(docs.size(), delTerm != null ? 1 : 0);
-
-    final int docCount = docs.size();
-
-    // This call is synchronized but fast -- we allocate the
-    // N docIDs up front:
-    final DocumentsWriterThreadState state = getThreadState(null, docCount);
-    final DocState docState = state.docState;
-
-    final int startDocID = docState.docID;
-    int docID = startDocID;
-
-    //System.out.println(Thread.currentThread().getName() + ": A " + docCount);
-    for(Document doc : docs) {
-      docState.doc = doc;
-      docState.analyzer = analyzer;
-      // Assign next docID from our block:
-      docState.docID = docID++;
-      
-      boolean success = false;
-      try {
-        // This call is not synchronized and does all the
-        // work
-        final DocWriter perDoc;
-        try {
-          perDoc = state.consumer.processDocument();
-        } finally {
-          docState.clear();
-        }
-
-        // Must call this w/o holding synchronized(this) else
-        // we'll hit deadlock:
-        balanceRAM();
-
-        // Synchronized but fast
-        synchronized(this) {
-          if (aborting) {
-            break;
-          }
-          assert perDoc == null || perDoc.docID == docState.docID;
-          final boolean doPause;
-          if (perDoc != null) {
-            waitQueue.add(perDoc);
-          } else {
-            skipDocWriter.docID = docState.docID;
-            waitQueue.add(skipDocWriter);
-          }
-        }
-
-        success = true;
-      } finally {
-        if (!success) {
-          //System.out.println(Thread.currentThread().getName() + ": E");
-
-          // If this thread state had decided to flush, we
-          // must clear it so another thread can flush
-          if (doFlush) {
-            message("clearFlushPending!");
-            flushControl.clearFlushPending();
-          }
-
-          if (infoStream != null) {
-            message("exception in updateDocuments aborting=" + aborting);
-          }
-
-          synchronized(this) {
-
-            state.isIdle = true;
-            notifyAll();
-
-            if (aborting) {
-              abort();
-            } else {
-
-              // Fill hole in the doc stores for all
-              // docIDs we pre-allocated
-              //System.out.println(Thread.currentThread().getName() + ": F " + docCount);
-              final int endDocID = startDocID + docCount;
-              docID = docState.docID;
-              while(docID < endDocID) {
-                skipDocWriter.docID = docID++;
-                boolean success2 = false;
-                try {
-                  waitQueue.add(skipDocWriter);
-                  success2 = true;
-                } finally {
-                  if (!success2) {
-                    abort();
-                    return false;
-                  }
-                }
-              }
-              //System.out.println(Thread.currentThread().getName() + ":   F " + docCount + " done");
-
-              // Mark all pre-allocated docIDs as deleted:
-              docID = startDocID;
-              while(docID < startDocID + docs.size()) {
-                deleteDocID(docID++);
-              }
-            }
-          }
-        }
-      }
-    }
-
-    synchronized(this) {
-      // We must delay pausing until the full doc block is
-      // added, else we can hit deadlock if more than one
-      // thread is adding a block and we need to pause when
-      // both are only part way done:
-      if (waitQueue.doPause()) {
-        waitForWaitQueue();
-      }
-
-      //System.out.println(Thread.currentThread().getName() + ":   A " + docCount);
-
-      if (aborting) {
-
-        // We are currently aborting, and another thread is
-        // waiting for me to become idle.  We just forcefully
-        // idle this threadState; it will be fully reset by
-        // abort()
-        state.isIdle = true;
-
-        // wakes up any threads waiting on the wait queue
-        notifyAll();
-
-        abort();
-
-        if (doFlush) {
-          message("clearFlushPending!");
-          flushControl.clearFlushPending();
-        }
-
-        return false;
-      }
-
-      // Apply delTerm only after all indexing has
-      // succeeded, but apply it only to docs prior to when
-      // this batch started:
-      if (delTerm != null) {
-        pendingDeletes.addTerm(delTerm, startDocID);
-      }
-
-      state.isIdle = true;
-
-      // wakes up any threads waiting on the wait queue
-      notifyAll();
-    }
-
-    doFlush |= flushControl.flushByRAMUsage("new document");
-
-    //System.out.println(Thread.currentThread().getName() + ":   B " + docCount);
-    return doFlush;
   }
 
   public synchronized void waitIdle() {
@@ -988,83 +611,6 @@ final class DocumentsWriter {
         throw new ThreadInterruptedException(ie);
       }
     }
-  }
-
-  synchronized void waitReady(DocumentsWriterThreadState state) {
-    while (!closed && (!state.isIdle || aborting)) {
-      try {
-        wait();
-      } catch (InterruptedException ie) {
-        throw new ThreadInterruptedException(ie);
-      }
-    }
-
-    if (closed) {
-      throw new AlreadyClosedException("this IndexWriter is closed");
-    }
-  }
-
-  /** Does the synchronized work to finish/flush the
-   *  inverted document. */
-  private void finishDocument(DocumentsWriterThreadState perThread, DocWriter docWriter) throws IOException {
-
-    // Must call this w/o holding synchronized(this) else
-    // we'll hit deadlock:
-    balanceRAM();
-
-    synchronized(this) {
-
-      assert docWriter == null || docWriter.docID == perThread.docState.docID;
-
-      if (aborting) {
-
-        // We are currently aborting, and another thread is
-        // waiting for me to become idle.  We just forcefully
-        // idle this threadState; it will be fully reset by
-        // abort()
-        if (docWriter != null) {
-          try {
-            docWriter.abort();
-          } catch (Throwable t) {
-          }
-        }
-
-        perThread.isIdle = true;
-
-        // wakes up any threads waiting on the wait queue
-        notifyAll();
-
-        return;
-      }
-
-      final boolean doPause;
-
-      if (docWriter != null) {
-        doPause = waitQueue.add(docWriter);
-      } else {
-        skipDocWriter.docID = perThread.docState.docID;
-        doPause = waitQueue.add(skipDocWriter);
-      }
-
-      if (doPause) {
-        waitForWaitQueue();
-      }
-
-      perThread.isIdle = true;
-
-      // wakes up any threads waiting on the wait queue
-      notifyAll();
-    }
-  }
-
-  synchronized void waitForWaitQueue() {
-    do {
-      try {
-        wait();
-      } catch (InterruptedException ie) {
-        throw new ThreadInterruptedException(ie);
-      }
-    } while (!waitQueue.doResume());
   }
 
   private static class SkipDocWriter extends DocWriter {
@@ -1088,7 +634,6 @@ final class DocumentsWriter {
   final static int BYTE_BLOCK_SHIFT = 15;
   final static int BYTE_BLOCK_SIZE = 1 << BYTE_BLOCK_SHIFT;
   final static int BYTE_BLOCK_MASK = BYTE_BLOCK_SIZE - 1;
-  final static int BYTE_BLOCK_NOT_MASK = ~BYTE_BLOCK_MASK;
 
   private class ByteBlockAllocator extends ByteBlockPool.Allocator {
     final int blockSize;
@@ -1358,17 +903,6 @@ final class DocumentsWriter {
       assert numWaiting == 0;
       assert waitingBytes == 0;
       nextWriteDocID = 0;
-    }
-
-    synchronized boolean doResume() {
-      final double mb = config.getRAMBufferSizeMB();
-      final long waitQueueResumeBytes;
-      if (mb == IndexWriterConfig.DISABLE_AUTO_FLUSH) {
-        waitQueueResumeBytes = 2*1024*1024;
-      } else {
-        waitQueueResumeBytes = (long) (mb*1024*1024*0.05);
-      }
-      return waitingBytes <= waitQueueResumeBytes;
     }
 
     synchronized boolean doPause() {

@@ -17,17 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
-import java.util.Map;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.search.Similarity;
@@ -35,6 +24,10 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.Lock;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.util.IOUtils;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
 
 /** 
  * An IndexReader which reads indexes with multiple segments.
@@ -68,10 +61,10 @@ class DirectoryReader extends IndexReader implements Cloneable {
   private final boolean applyAllDeletes;
 
   static IndexReader open(final Directory directory, final IndexDeletionPolicy deletionPolicy, final IndexCommit commit, final boolean readOnly,
-                          final int termInfosIndexDivisor) throws CorruptIndexException, IOException {
+                          final int termInfosIndexDivisor) throws IOException {
     return (IndexReader) new SegmentInfos.FindSegmentsFile(directory) {
       @Override
-      protected Object doBody(String segmentFileName) throws CorruptIndexException, IOException {
+      protected Object doBody(String segmentFileName) throws IOException {
         SegmentInfos infos = new SegmentInfos();
         infos.read(directory, segmentFileName);
         if (readOnly)
@@ -346,7 +339,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
 
   /** {@inheritDoc} */
   @Override @Deprecated
-  public final synchronized IndexReader clone(boolean openReadOnly) throws CorruptIndexException, IOException {
+  public final synchronized IndexReader clone(boolean openReadOnly) throws IOException {
     // doOpenIfChanged calls ensureOpen
     DirectoryReader newReader = doOpenIfChanged((SegmentInfos) segmentInfos.clone(), true, openReadOnly);
 
@@ -369,33 +362,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
     return newReader;
   }
 
-  @Override
-  protected final IndexReader doOpenIfChanged() throws CorruptIndexException, IOException {
-    // Preserve current readOnly
-    return doOpenIfChanged(readOnly, null);
-  }
-
-  /** {@inheritDoc} */
-  @Override @Deprecated
-  protected final IndexReader doOpenIfChanged(boolean openReadOnly) throws CorruptIndexException, IOException {
-    return doOpenIfChanged(openReadOnly, null);
-  }
-
-  @Override
-  protected final IndexReader doOpenIfChanged(final IndexCommit commit) throws CorruptIndexException, IOException {
-    return doOpenIfChanged(true, commit);
-  }
-
-  @Override
-  protected final IndexReader doOpenIfChanged(IndexWriter writer, boolean applyAllDeletes) throws CorruptIndexException, IOException {
-    if (writer == this.writer && applyAllDeletes == this.applyAllDeletes) {
-      return doOpenIfChanged();
-    } else {    
-      return super.doOpenIfChanged(writer, applyAllDeletes);
-    }
-  }
-
-  private final IndexReader doOpenFromWriter(boolean openReadOnly, IndexCommit commit) throws CorruptIndexException, IOException {
+  private IndexReader doOpenFromWriter(boolean openReadOnly, IndexCommit commit) throws IOException {
     assert readOnly;
 
     if (!openReadOnly) {
@@ -421,7 +388,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
     return reader;
   }
 
-  private IndexReader doOpenIfChanged(final boolean openReadOnly, IndexCommit commit) throws CorruptIndexException, IOException {
+  private IndexReader doOpenIfChanged(final boolean openReadOnly, IndexCommit commit) throws IOException {
     ensureOpen();
 
     assert commit == null || openReadOnly;
@@ -435,7 +402,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
     }
   }
 
-  private synchronized IndexReader doOpenNoWriter(final boolean openReadOnly, IndexCommit commit) throws CorruptIndexException, IOException {
+  private synchronized IndexReader doOpenNoWriter(final boolean openReadOnly, IndexCommit commit) throws IOException {
 
     if (commit == null) {
       if (hasChanges) {
@@ -476,7 +443,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
 
     return (IndexReader) new SegmentInfos.FindSegmentsFile(directory) {
       @Override
-      protected Object doBody(String segmentFileName) throws CorruptIndexException, IOException {
+      protected Object doBody(String segmentFileName) throws IOException {
         SegmentInfos infos = new SegmentInfos();
         infos.read(directory, segmentFileName);
         return doOpenIfChanged(infos, false, openReadOnly);
@@ -484,7 +451,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
     }.run(commit);
   }
 
-  private synchronized DirectoryReader doOpenIfChanged(SegmentInfos infos, boolean doClone, boolean openReadOnly) throws CorruptIndexException, IOException {
+  private synchronized DirectoryReader doOpenIfChanged(SegmentInfos infos, boolean doClone, boolean openReadOnly) throws IOException {
     DirectoryReader reader;
     if (openReadOnly) {
       reader = new ReadOnlyDirectoryReader(directory, infos, subReaders, starts, normsCache, doClone, termInfosIndexDivisor);
@@ -562,7 +529,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
 
   // inherit javadoc
   @Override
-  public Document document(int n, FieldSelector fieldSelector) throws CorruptIndexException, IOException {
+  public Document document(int n, FieldSelector fieldSelector) throws IOException {
     ensureOpen();
     int i = readerIndex(n);                          // find segment num
     return subReaders[i].document(n - starts[i], fieldSelector);    // dispatch to segment reader
@@ -583,7 +550,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
 
   /** {@inheritDoc} */
   @Override @Deprecated
-  protected void doDelete(int n) throws CorruptIndexException, IOException {
+  protected void doDelete(int n) throws IOException {
     numDocs = -1;                             // invalidate cache
     int i = readerIndex(n);                   // find segment num
     subReaders[i].deleteDocument(n - starts[i]);      // dispatch to segment reader
@@ -592,7 +559,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
 
   /** {@inheritDoc} */
   @Override @Deprecated
-  protected void doUndeleteAll() throws CorruptIndexException, IOException {
+  protected void doUndeleteAll() throws IOException {
     for (int i = 0; i < subReaders.length; i++)
       subReaders[i].undeleteAll();
 
@@ -604,7 +571,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
     return readerIndex(n, this.starts, this.subReaders.length);
   }
   
-  final static int readerIndex(int n, int[] starts, int numSubReaders) {    // find reader for doc n:
+  static int readerIndex(int n, int[] starts, int numSubReaders) {    // find reader for doc n:
     int lo = 0;                                      // search starts array
     int hi = numSubReaders - 1;                  // for first element less
 
@@ -669,7 +636,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
   /** {@inheritDoc} */
   @Override @Deprecated
   protected void doSetNorm(int n, String field, byte value)
-    throws CorruptIndexException, IOException {
+    throws IOException {
     synchronized (normsCache) {
       normsCache.remove(field);                         // clear cache      
     }
@@ -754,7 +721,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
    * @deprecated
    */
   @Override @Deprecated
-  protected void acquireWriteLock() throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
+  protected void acquireWriteLock() throws IOException {
 
     if (readOnly) {
       // NOTE: we should not reach this code w/ the core
@@ -878,13 +845,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
   }
 
   @Override
-  public Map<String,String> getCommitUserData() {
-    ensureOpen();
-    return segmentInfos.getUserData();
-  }
-
-  @Override
-  public boolean isCurrent() throws CorruptIndexException, IOException {
+  public boolean isCurrent() throws IOException {
     ensureOpen();
     if (writer == null || writer.isClosed()) {
       // we loaded SegmentInfos from the directory
@@ -931,24 +892,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
     return directory;
   }
 
-  @Override
-  public int getTermInfosIndexDivisor() {
-    ensureOpen();
-    return termInfosIndexDivisor;
-  }
-
-  /**
-   * Expert: return the IndexCommit that this reader has opened.
-   * <p/>
-   * @lucene.experimental
-   */
-  @Override
-  public IndexCommit getIndexCommit() throws IOException {
-    ensureOpen();
-    return new ReaderCommit(segmentInfos, directory);
-  }
-
-  /** @see org.apache.lucene.index.IndexReader#listCommits */
+  /** */
   public static Collection<IndexCommit> listCommits(Directory dir) throws IOException {
     final String[] files = dir.listAll();
 

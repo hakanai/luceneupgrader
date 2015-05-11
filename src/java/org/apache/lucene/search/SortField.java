@@ -30,7 +30,7 @@ import org.apache.lucene.util.StringHelper;
  * <p>Created: Feb 11, 2004 1:25:29 PM
  *
  * @since   lucene 1.4
- * @see Sort
+ *
  */
 public class SortField
 implements Serializable {

@@ -17,29 +17,19 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.FieldSelector;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.util.ReaderUtil;
+import org.apache.lucene.util.ThreadInterruptedException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.NIOFSDirectory; // javadocs
-import org.apache.lucene.util.ReaderUtil;
-import org.apache.lucene.util.ThreadInterruptedException;
+import java.util.concurrent.*;
 
 /** Implements search over a single IndexReader.
  *
@@ -81,63 +71,11 @@ public class IndexSearcher extends Searcher {
 
   private final int docBase;
 
-  /** Creates a searcher searching the index in the named
-   *  directory, with readOnly=true
-   * @param path directory where IndexReader will be opened
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   * @deprecated use {@code IndexSearcher#IndexSearcher(IndexReader)} instead.
-   */
-  @Deprecated
-  public IndexSearcher(Directory path) throws CorruptIndexException, IOException {
-    this(IndexReader.open(path, true), true, null);
-  }
-
-  /** Creates a searcher searching the index in the named
-   *  directory.  You should pass readOnly=true, since it
-   *  gives much better concurrent performance, unless you
-   *  intend to do write operations (delete documents or
-   *  change norms) with the underlying IndexReader.
-   * @param path directory where IndexReader will be opened
-   * @param readOnly if true, the underlying IndexReader
-   * will be opened readOnly
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   * @deprecated Use {@code IndexSearcher#IndexSearcher(IndexReader)} instead.
-   */
-  @Deprecated
-  public IndexSearcher(Directory path, boolean readOnly) throws CorruptIndexException, IOException {
-    this(IndexReader.open(path, readOnly), true, null);
-  }
-
   /** Creates a searcher searching the provided index. */
   public IndexSearcher(IndexReader r) {
     this(r, false, null);
   }
 
-  /** Runs searches for each segment separately, using the
-   *  provided ExecutorService.  IndexSearcher will not
-   *  shutdown/awaitTermination this ExecutorService on
-   *  close; you must do so, eventually, on your own.  NOTE:
-   *  if you are using {@code NIOFSDirectory}, do not use
-   *  the shutdownNow method of ExecutorService as this uses
-   *  Thread.interrupt under-the-hood which can silently
-   *  close file descriptors (see <a
-   *  href="https://issues.apache.org/jira/browse/LUCENE-2239">LUCENE-2239</a>).
-   * 
-   * @lucene.experimental */
-  public IndexSearcher(IndexReader r, ExecutorService executor) {
-    this(r, false, executor);
-  }
-
-  /** Expert: directly specify the reader, subReaders and
-   *  their docID starts.
-   * 
-   * @lucene.experimental */
-  public IndexSearcher(IndexReader reader, IndexReader[] subReaders, int[] docStarts) {
-    this(reader, subReaders, docStarts, null);
-  }
-  
   // Used only when we are an atomic sub-searcher in a parent
   // IndexSearcher that has an ExecutorService, to record
   // our docBase in the parent IndexSearcher:
@@ -149,36 +87,6 @@ public class IndexSearcher extends Searcher {
     subReaders = new IndexReader[] {r};
     docStarts = new int[] {0};
     subSearchers = null;
-  }
-
-  /** Expert: directly specify the reader, subReaders and
-   *  their docID starts, and an ExecutorService.  In this
-   *  case, each segment will be separately searched using the
-   *  ExecutorService.  IndexSearcher will not
-   *  shutdown/awaitTermination this ExecutorService on
-   *  close; you must do so, eventually, on your own.  NOTE:
-   *  if you are using {@code NIOFSDirectory}, do not use
-   *  the shutdownNow method of ExecutorService as this uses
-   *  Thread.interrupt under-the-hood which can silently
-   *  close file descriptors (see <a
-   *  href="https://issues.apache.org/jira/browse/LUCENE-2239">LUCENE-2239</a>).
-   * 
-   * @lucene.experimental */
-  public IndexSearcher(IndexReader reader, IndexReader[] subReaders, int[] docStarts, ExecutorService executor) {
-    this.reader = reader;
-    this.subReaders = subReaders;
-    this.docStarts = docStarts;
-    if (executor == null) {
-      subSearchers = null;
-    } else {
-      subSearchers = new IndexSearcher[subReaders.length];
-      for(int i=0;i<subReaders.length;i++) {
-        subSearchers[i] = new IndexSearcher(subReaders[i], docStarts[i]);
-      }
-    }
-    closeReader = false;
-    this.executor = executor;
-    docBase = 0;
   }
 
   private IndexSearcher(IndexReader r, boolean closeReader, ExecutorService executor) {
@@ -210,19 +118,9 @@ public class IndexSearcher extends Searcher {
     ReaderUtil.gatherSubReaders(allSubReaders, r);
   }
 
-  /** Return the {@code IndexReader} this searches. */
-  public IndexReader getIndexReader() {
-    return reader;
-  }
-
-  /** Returns the atomic subReaders used by this searcher. */
-  public IndexReader[] getSubReaders() {
-    return subReaders;
-  }
-
   /** Expert: Returns one greater than the largest possible document number.
    * 
-   * @see org.apache.lucene.index.IndexReader#maxDoc()
+   *
    */
   @Override
   public int maxDoc() {
@@ -254,19 +152,19 @@ public class IndexSearcher extends Searcher {
 
   /* Sugar for .getIndexReader().document(docID) */
   @Override
-  public Document doc(int docID) throws CorruptIndexException, IOException {
+  public Document doc(int docID) throws IOException {
     return reader.document(docID);
   }
   
   /* Sugar for .getIndexReader().document(docID, fieldSelector) */
   @Override
-  public Document doc(int docID, FieldSelector fieldSelector) throws CorruptIndexException, IOException {
+  public Document doc(int docID, FieldSelector fieldSelector) throws IOException {
     return reader.document(docID, fieldSelector);
   }
   
   /** Expert: Set the Similarity implementation used by this Searcher.
    *
-   * @see Similarity#setDefault(Similarity)
+   *
    */
   @Override
   public void setSimilarity(Similarity similarity) {
@@ -291,258 +189,6 @@ public class IndexSearcher extends Searcher {
     }
   }
 
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code> where all results are after a previous 
-   * result (<code>after</code>).
-   * <p>
-   * By passing the bottom result from a previous page as <code>after</code>,
-   * this method can be used for efficient 'deep-paging' across potentially
-   * large result sets.
-   *
-   * @throws BooleanQuery.TooManyClauses
-   */
-  public TopDocs searchAfter(ScoreDoc after, Query query, int n) throws IOException {
-    return searchAfter(after, query, null, n);
-  }
-  
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code>, applying <code>filter</code> if non-null,
-   * where all results are after a previous result (<code>after</code>).
-   * <p>
-   * By passing the bottom result from a previous page as <code>after</code>,
-   * this method can be used for efficient 'deep-paging' across potentially
-   * large result sets.
-   *
-   * @throws BooleanQuery.TooManyClauses
-   */
-  public TopDocs searchAfter(ScoreDoc after, Query query, Filter filter, int n) throws IOException {
-    return search(createNormalizedWeight(query), filter, after, n);
-  }
-  
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code>.
-   *
-   * @throws BooleanQuery.TooManyClauses
-   */
-  @Override
-  public TopDocs search(Query query, int n)
-    throws IOException {
-    return search(query, null, n);
-  }
-
-
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code>, applying <code>filter</code> if non-null.
-   *
-   * @throws BooleanQuery.TooManyClauses
-   */
-  @Override
-  public TopDocs search(Query query, Filter filter, int n)
-    throws IOException {
-    return search(createNormalizedWeight(query), filter, n);
-  }
-
-  /** Lower-level search API.
-   *
-   * <p>{@code Collector#collect(int)} is called for every matching
-   * document.
-   * <br>Collector-based access to remote indexes is discouraged.
-   *
-   * <p>Applications should only use this if they need <i>all</i> of the
-   * matching documents.  The high-level search API ({@code
-   * Searcher#search(Query, Filter, int)}) is usually more efficient, as it skips
-   * non-high-scoring hits.
-   *
-   * @param query to match documents
-   * @param filter if non-null, used to permit documents to be collected.
-   * @param results to receive hits
-   * @throws BooleanQuery.TooManyClauses
-   */
-  @Override
-  public void search(Query query, Filter filter, Collector results)
-    throws IOException {
-    search(createNormalizedWeight(query), filter, results);
-  }
-
-  /** Lower-level search API.
-  *
-  * <p>{@code Collector#collect(int)} is called for every matching document.
-  *
-  * <p>Applications should only use this if they need <i>all</i> of the
-  * matching documents.  The high-level search API ({@code
-  * Searcher#search(Query, int)}) is usually more efficient, as it skips
-  * non-high-scoring hits.
-  * <p>Note: The <code>score</code> passed to this method is a raw score.
-  * In other words, the score will not necessarily be a float whose value is
-  * between 0 and 1.
-  * @throws BooleanQuery.TooManyClauses
-  */
-  @Override
-  public void search(Query query, Collector results)
-    throws IOException {
-    search(createNormalizedWeight(query), null, results);
-  }
-  
-  /** Search implementation with arbitrary sorting.  Finds
-   * the top <code>n</code> hits for <code>query</code>, applying
-   * <code>filter</code> if non-null, and sorting the hits by the criteria in
-   * <code>sort</code>.
-   * 
-   * <p>NOTE: this does not compute scores by default; use
-   * {@code IndexSearcher#setDefaultFieldSortScoring} to
-   * enable scoring.
-   *
-   * @throws BooleanQuery.TooManyClauses
-   */
-  @Override
-  public TopFieldDocs search(Query query, Filter filter, int n,
-                             Sort sort) throws IOException {
-    return search(createNormalizedWeight(query), filter, n, sort);
-  }
-
-  /**
-   * Search implementation with arbitrary sorting and no filter.
-   * @param query The query to search for
-   * @param n Return only the top n results
-   * @param sort The {@code org.apache.lucene.search.Sort} object
-   * @return The top docs, sorted according to the supplied {@code org.apache.lucene.search.Sort} instance
-   * @throws IOException
-   */
-  @Override
-  public TopFieldDocs search(Query query, int n,
-                             Sort sort) throws IOException {
-    return search(createNormalizedWeight(query), null, n, sort);
-  }
-
-  /** Expert: Low-level search implementation.  Finds the top <code>n</code>
-   * hits for <code>query</code>, applying <code>filter</code> if non-null.
-   *
-   * <p>Applications should usually call {@code Searcher#search(Query,int)} or
-   * {@code Searcher#search(Query,Filter,int)} instead.
-   * @throws BooleanQuery.TooManyClauses
-   */
-  @Override
-  public TopDocs search(Weight weight, Filter filter, int nDocs) throws IOException {
-    return search(weight, filter, null, nDocs);
-  }
-  
-  /**
-   * Expert: Low-level search implementation.  Finds the top <code>n</code>
-   * hits for <code>query</code>, applying <code>filter</code> if non-null,
-   * returning results after <code>after</code>.
-   * 
-   * @throws BooleanQuery.TooManyClauses
-   */
-  protected TopDocs search(Weight weight, Filter filter, ScoreDoc after, int nDocs) throws IOException {
-    if (executor == null) {
-      // single thread
-      int limit = reader.maxDoc();
-      if (limit == 0) {
-        limit = 1;
-      }
-      nDocs = Math.min(nDocs, limit);
-      TopScoreDocCollector collector = TopScoreDocCollector.create(nDocs, after, !weight.scoresDocsOutOfOrder());
-      search(weight, filter, collector);
-      return collector.topDocs();
-    } else {
-      final HitQueue hq = new HitQueue(nDocs, false);
-      final Lock lock = new ReentrantLock();
-      final ExecutionHelper<TopDocs> runner = new ExecutionHelper<TopDocs>(executor);
-    
-      for (int i = 0; i < subReaders.length; i++) { // search each sub
-        runner.submit(
-                      new MultiSearcherCallableNoSort(lock, subSearchers[i], weight, filter, after, nDocs, hq));
-      }
-
-      int totalHits = 0;
-      float maxScore = Float.NEGATIVE_INFINITY;
-      for (final TopDocs topDocs : runner) {
-        if(topDocs.totalHits != 0) {
-          totalHits += topDocs.totalHits;
-          maxScore = Math.max(maxScore, topDocs.getMaxScore());
-        }
-      }
-
-      final ScoreDoc[] scoreDocs = new ScoreDoc[hq.size()];
-      for (int i = hq.size() - 1; i >= 0; i--) // put docs in array
-        scoreDocs[i] = hq.pop();
-
-      return new TopDocs(totalHits, scoreDocs, maxScore);
-    }
-  }
-
-  /** Expert: Low-level search implementation with arbitrary sorting.  Finds
-   * the top <code>n</code> hits for <code>query</code>, applying
-   * <code>filter</code> if non-null, and sorting the hits by the criteria in
-   * <code>sort</code>.
-   *
-   * <p>Applications should usually call {@code
-   * Searcher#search(Query,Filter,int,Sort)} instead.
-   * 
-   * @throws BooleanQuery.TooManyClauses
-   */
-  @Override
-  public TopFieldDocs search(Weight weight, Filter filter,
-      final int nDocs, Sort sort) throws IOException {
-    return search(weight, filter, nDocs, sort, true);
-  }
-
-  /**
-   * Just like {@code #search(Weight, Filter, int, Sort)}, but you choose
-   * whether or not the fields in the returned {@code FieldDoc} instances should
-   * be set by specifying fillFields.
-   *
-   * <p>NOTE: this does not compute scores by default.  If you
-   * need scores, create a {@code TopFieldCollector}
-   * instance by calling {@code TopFieldCollector#create} and
-   * then pass that to {@code #search(Weight, Filter,
-   * Collector)}.</p>
-   */
-  protected TopFieldDocs search(Weight weight, Filter filter, int nDocs,
-                                Sort sort, boolean fillFields)
-      throws IOException {
-
-    if (sort == null) throw new NullPointerException();
-
-    if (executor == null) {
-      // single thread
-      int limit = reader.maxDoc();
-      if (limit == 0) {
-        limit = 1;
-      }
-      nDocs = Math.min(nDocs, limit);
-
-      TopFieldCollector collector = TopFieldCollector.create(sort, nDocs,
-                                                             fillFields, fieldSortDoTrackScores, fieldSortDoMaxScore, !weight.scoresDocsOutOfOrder());
-      search(weight, filter, collector);
-      return (TopFieldDocs) collector.topDocs();
-    } else {
-      final TopFieldCollector topCollector = TopFieldCollector.create(sort, nDocs,
-                                                                      fillFields,
-                                                                      fieldSortDoTrackScores,
-                                                                      fieldSortDoMaxScore,
-                                                                      false);
-
-      final Lock lock = new ReentrantLock();
-      final ExecutionHelper<TopFieldDocs> runner = new ExecutionHelper<TopFieldDocs>(executor);
-      for (int i = 0; i < subReaders.length; i++) { // search each sub
-        runner.submit(
-                      new MultiSearcherCallableWithSort(lock, subSearchers[i], weight, filter, nDocs, topCollector, sort));
-      }
-      int totalHits = 0;
-      float maxScore = Float.NEGATIVE_INFINITY;
-      for (final TopFieldDocs topFieldDocs : runner) {
-        if (topFieldDocs.totalHits != 0) {
-          totalHits += topFieldDocs.totalHits;
-          maxScore = Math.max(maxScore, topFieldDocs.getMaxScore());
-        }
-      }
-
-      final TopFieldDocs topDocs = (TopFieldDocs) topCollector.topDocs();
-
-      return new TopFieldDocs(totalHits, topDocs.scoreDocs, topDocs.fields, topDocs.getMaxScore());
-    }
-  }
 
   /**
    * Lower-level search API.
@@ -596,19 +242,6 @@ public class IndexSearcher extends Searcher {
     return query;
   }
 
-  /** Returns an Explanation that describes how <code>doc</code> scored against
-   * <code>query</code>.
-   *
-   * <p>This is intended to be used in developing Similarity implementations,
-   * and, for good performance, should not be displayed with every hit.
-   * Computing an explanation is as expensive as executing the query over the
-   * entire index.
-   */
-  @Override
-  public Explanation explain(Query query, int doc) throws IOException {
-    return explain(createNormalizedWeight(query), doc);
-  }
-
   /** Expert: low-level implementation method
    * Returns an Explanation that describes how <code>doc</code> scored against
    * <code>weight</code>.
@@ -631,28 +264,6 @@ public class IndexSearcher extends Searcher {
   private boolean fieldSortDoTrackScores;
   private boolean fieldSortDoMaxScore;
 
-  /** By default, no scores are computed when sorting by
-   *  field (using {@code #search(Query,Filter,int,Sort)}).
-   *  You can change that, per IndexSearcher instance, by
-   *  calling this method.  Note that this will incur a CPU
-   *  cost.
-   * 
-   *  @param doTrackScores If true, then scores are
-   *  returned for every matching document in {@code
-   *  TopFieldDocs}.
-   *
-   *  @param doMaxScore If true, then the max score for all
-   *  matching docs is computed. */
-  public void setDefaultFieldSortScoring(boolean doTrackScores, boolean doMaxScore) {
-    fieldSortDoTrackScores = doTrackScores;
-    fieldSortDoMaxScore = doMaxScore;
-    if (subSearchers != null) { // propagate settings to subs
-      for (IndexSearcher sub : subSearchers) {
-        sub.setDefaultFieldSortScoring(doTrackScores, doMaxScore);
-      }
-    }
-  }
-
   /**
    * Creates a normalized weight for a top-level {@code Query}.
    * The query is rewritten by this method and {@code Query#createWeight} called,
@@ -664,150 +275,6 @@ public class IndexSearcher extends Searcher {
     return super.createNormalizedWeight(query);
   }
 
-  /**
-   * A thread subclass for searching a single searchable 
-   */
-  private static final class MultiSearcherCallableNoSort implements Callable<TopDocs> {
-
-    private final Lock lock;
-    private final IndexSearcher searchable;
-    private final Weight weight;
-    private final Filter filter;
-    private final ScoreDoc after;
-    private final int nDocs;
-    private final HitQueue hq;
-
-    public MultiSearcherCallableNoSort(Lock lock, IndexSearcher searchable, Weight weight,
-        Filter filter, ScoreDoc after, int nDocs, HitQueue hq) {
-      this.lock = lock;
-      this.searchable = searchable;
-      this.weight = weight;
-      this.filter = filter;
-      this.after = after;
-      this.nDocs = nDocs;
-      this.hq = hq;
-    }
-
-    public TopDocs call() throws IOException {
-      final TopDocs docs;
-      // we could call the 4-arg method, but we want to invoke the old method
-      // for backwards purposes unless someone is using the new searchAfter.
-      if (after == null) {
-        docs = searchable.search (weight, filter, nDocs);
-      } else {
-        docs = searchable.search (weight, filter, after, nDocs);
-      }
-      final ScoreDoc[] scoreDocs = docs.scoreDocs;
-      //it would be so nice if we had a thread-safe insert 
-      lock.lock();
-      try {
-        for (int j = 0; j < scoreDocs.length; j++) { // merge scoreDocs into hq
-          final ScoreDoc scoreDoc = scoreDocs[j];
-          if (scoreDoc == hq.insertWithOverflow(scoreDoc)) {
-            break;
-          }
-        }
-      } finally {
-        lock.unlock();
-      }
-      return docs;
-    }
-  }
-
-
-  /**
-   * A thread subclass for searching a single searchable 
-   */
-  private static final class MultiSearcherCallableWithSort implements Callable<TopFieldDocs> {
-
-    private final Lock lock;
-    private final IndexSearcher searchable;
-    private final Weight weight;
-    private final Filter filter;
-    private final int nDocs;
-    private final TopFieldCollector hq;
-    private final Sort sort;
-
-    public MultiSearcherCallableWithSort(Lock lock, IndexSearcher searchable, Weight weight,
-                                         Filter filter, int nDocs, TopFieldCollector hq, Sort sort) {
-      this.lock = lock;
-      this.searchable = searchable;
-      this.weight = weight;
-      this.filter = filter;
-      this.nDocs = nDocs;
-      this.hq = hq;
-      this.sort = sort;
-    }
-
-    private final class FakeScorer extends Scorer {
-      float score;
-      int doc;
-
-      public FakeScorer() {
-        super(null, null);
-      }
-    
-      @Override
-      public int advance(int target) {
-        throw new UnsupportedOperationException();
-      }
-
-      @Override
-      public int docID() {
-        return doc;
-      }
-
-      @Override
-      public float freq() {
-        throw new UnsupportedOperationException();
-      }
-
-      @Override
-      public int nextDoc() {
-        throw new UnsupportedOperationException();
-      }
-    
-      @Override
-      public float score() {
-        return score;
-      }
-    }
-
-    private final FakeScorer fakeScorer = new FakeScorer();
-
-    public TopFieldDocs call() throws IOException {
-      final TopFieldDocs docs = searchable.search (weight, filter, nDocs, sort);
-      // If one of the Sort fields is FIELD_DOC, need to fix its values, so that
-      // it will break ties by doc Id properly. Otherwise, it will compare to
-      // 'relative' doc Ids, that belong to two different searchables.
-      for (int j = 0; j < docs.fields.length; j++) {
-        if (docs.fields[j].getType() == SortField.DOC) {
-          // iterate over the score docs and change their fields value
-          for (int j2 = 0; j2 < docs.scoreDocs.length; j2++) {
-            FieldDoc fd = (FieldDoc) docs.scoreDocs[j2];
-            fd.fields[j] = Integer.valueOf(((Integer) fd.fields[j]).intValue());
-          }
-          break;
-        }
-      }
-
-      lock.lock();
-      try {
-        hq.setNextReader(searchable.getIndexReader(), searchable.docBase);
-        hq.setScorer(fakeScorer);
-        for(ScoreDoc scoreDoc : docs.scoreDocs) {
-          final int docID = scoreDoc.doc - searchable.docBase;
-          fakeScorer.doc = docID;
-          fakeScorer.score = scoreDoc.score;
-          hq.collect(docID);
-        }
-      } finally {
-        lock.unlock();
-      }
-
-      return docs;
-    }
-  }
 
   /**
    * A helper class that wraps a {@code CompletionService} and provides an

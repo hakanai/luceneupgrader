@@ -26,11 +26,11 @@ import org.apache.lucene.util.Attribute;
 public interface PayloadAttribute extends Attribute {
   /**
    * Returns this Token's payload.
-   */ 
-  public Payload getPayload();
+   */
+  Payload getPayload();
 
   /** 
    * Sets this Token's payload.
    */
-  public void setPayload(Payload payload);
+  void setPayload(Payload payload);
 }

@@ -53,7 +53,7 @@ public final class IndexWriterConfig implements Cloneable {
    * {@code #APPEND} - opens an existing index.
    * </ul>
    */
-  public static enum OpenMode { CREATE, APPEND, CREATE_OR_APPEND }
+  public enum OpenMode { CREATE, APPEND, CREATE_OR_APPEND }
   
   /** Default value is 128. Change using {@code #setTermIndexInterval(int)}. */
   public static final int DEFAULT_TERM_INDEX_INTERVAL = 128;
@@ -76,7 +76,7 @@ public final class IndexWriterConfig implements Cloneable {
   /**
    * Default value for the write lock timeout (1,000 ms).
    * 
-   * @see #setDefaultWriteLockTimeout(long)
+   *
    */
   public static long WRITE_LOCK_TIMEOUT = 1000;
 
@@ -104,7 +104,7 @@ public final class IndexWriterConfig implements Cloneable {
    * Returns the default write lock timeout for newly instantiated
    * IndexWriterConfigs.
    * 
-   * @see #setDefaultWriteLockTimeout(long)
+   *
    */
   public static long getDefaultWriteLockTimeout() {
     return WRITE_LOCK_TIMEOUT;
@@ -253,7 +253,7 @@ public final class IndexWriterConfig implements Cloneable {
    * <b>NOTE:</b> the similarity cannot be null. If <code>null</code> is passed,
    * the similarity will be set to the default.
    * 
-   * @see Similarity#setDefault(Similarity)
+   *
    *
    * <p>Only takes effect when IndexWriter is first created. */
   public IndexWriterConfig setSimilarity(Similarity similarity) {
@@ -290,7 +290,7 @@ public final class IndexWriterConfig implements Cloneable {
    * memory by an IndexReader, and, on average, <code>interval/2</code> terms
    * must be scanned for each random term access.
    * 
-   * @see #DEFAULT_TERM_INDEX_INTERVAL
+   *
    *
    * <p>Takes effect immediately, but only applies to newly
    *  flushed/merged segments. */
@@ -302,7 +302,7 @@ public final class IndexWriterConfig implements Cloneable {
   /**
    * Returns the interval between indexed terms.
    * 
-   * @see #setTermIndexInterval(int)
+   *
    */
   public int getTermIndexInterval() {
     return termIndexInterval;
@@ -343,7 +343,7 @@ public final class IndexWriterConfig implements Cloneable {
   /**
    * Returns allowed timeout when acquiring the write lock.
    * 
-   * @see #setWriteLockTimeout(long)
+   *
    */
   public long getWriteLockTimeout() {
     return writeLockTimeout;
@@ -359,7 +359,7 @@ public final class IndexWriterConfig implements Cloneable {
    * 
    * @throws IllegalArgumentException if maxBufferedDeleteTerms
    * is enabled but smaller than 1
-   * @see #setRAMBufferSizeMB
+   *
    *
    * <p>Takes effect immediately, but only the next time a
    * document is added, updated or deleted.
@@ -377,7 +377,7 @@ public final class IndexWriterConfig implements Cloneable {
    * Returns the number of buffered deleted terms that will trigger a flush if
    * enabled.
    * 
-   * @see #setMaxBufferedDeleteTerms(int)
+   *
    */
   public int getMaxBufferedDeleteTerms() {
     return maxBufferedDeleteTerms;
@@ -460,7 +460,7 @@ public final class IndexWriterConfig implements Cloneable {
    * <p>Takes effect immediately, but only the next time a
    * document is added, updated or deleted.
    *
-   * @see #setRAMBufferSizeMB(double)
+   *
    * 
    * @throws IllegalArgumentException
    *           if maxBufferedDocs is enabled but smaller than 2, or it disables
@@ -482,7 +482,7 @@ public final class IndexWriterConfig implements Cloneable {
    * Returns the number of buffered added documents that will trigger a flush if
    * enabled.
    * 
-   * @see #setMaxBufferedDocs(int)
+   *
    */
   public int getMaxBufferedDocs() {
     return maxBufferedDocs;
@@ -517,7 +517,7 @@ public final class IndexWriterConfig implements Cloneable {
   /**
    * Returns the current MergePolicy in use by this writer.
    * 
-   * @see #setMergePolicy(MergePolicy)
+   *
    */
   public MergePolicy getMergePolicy() {
     return mergePolicy;
@@ -593,7 +593,7 @@ public final class IndexWriterConfig implements Cloneable {
     return this;
   }
 
-  /** @see #setReaderTermsIndexDivisor(int) */
+  /** */
   public int getReaderTermsIndexDivisor() {
     return readerTermsIndexDivisor;
   }

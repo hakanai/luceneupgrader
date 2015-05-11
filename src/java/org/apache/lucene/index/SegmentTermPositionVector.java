@@ -33,7 +33,7 @@ class SegmentTermPositionVector extends SegmentTermVector implements TermPositio
    *
    * @param index The position in the array to get the offsets from
    * @return An array of TermVectorOffsetInfo objects or the empty list
-   * @see org.apache.lucene.analysis.Token
+   *
    */
   public TermVectorOffsetInfo[] getOffsets(int index) {
     TermVectorOffsetInfo[] result = TermVectorOffsetInfo.EMPTY_OFFSET_INFO;

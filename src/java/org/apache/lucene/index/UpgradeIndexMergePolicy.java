@@ -46,7 +46,7 @@ import java.util.HashMap;
   * were added to the index is preserved), do a forceMerge(1) instead. Please note, the
   * delegate {@code MergePolicy} may also reorder documents.
   * @lucene.experimental
-  * @see IndexUpgrader
+  *
   */
 public class UpgradeIndexMergePolicy extends MergePolicy {
 
@@ -74,12 +74,12 @@ public class UpgradeIndexMergePolicy extends MergePolicy {
   }
   
   @Override
-  public MergeSpecification findMerges(SegmentInfos segmentInfos) throws CorruptIndexException, IOException {
+  public MergeSpecification findMerges(SegmentInfos segmentInfos) throws IOException {
     return base.findMerges(segmentInfos);
   }
   
   @Override
-  public MergeSpecification findForcedMerges(SegmentInfos segmentInfos, int maxSegmentCount, Map<SegmentInfo,Boolean> segmentsToMerge) throws CorruptIndexException, IOException {
+  public MergeSpecification findForcedMerges(SegmentInfos segmentInfos, int maxSegmentCount, Map<SegmentInfo,Boolean> segmentsToMerge) throws IOException {
     // first find all old segments
     final Map<SegmentInfo,Boolean> oldSegments = new HashMap<SegmentInfo,Boolean>();
     for (final SegmentInfo si : segmentInfos) {
@@ -126,7 +126,7 @@ public class UpgradeIndexMergePolicy extends MergePolicy {
   }
   
   @Override
-  public MergeSpecification findForcedDeletesMerges(SegmentInfos segmentInfos) throws CorruptIndexException, IOException {
+  public MergeSpecification findForcedDeletesMerges(SegmentInfos segmentInfos) throws IOException {
     return base.findForcedDeletesMerges(segmentInfos);
   }
   

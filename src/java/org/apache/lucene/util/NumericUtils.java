@@ -77,7 +77,7 @@ public final class NumericUtils {
   /**
    * Expert: The maximum term length (used for <code>char[]</code> buffer size)
    * for encoding <code>long</code> values.
-   * @see #longToPrefixCoded(long,int,char[])
+   *
    */
   public static final int BUF_SIZE_LONG = 63/7 + 2;
 
@@ -90,7 +90,7 @@ public final class NumericUtils {
   /**
    * Expert: The maximum term length (used for <code>char[]</code> buffer size)
    * for encoding <code>int</code> values.
-   * @see #intToPrefixCoded(int,int,char[])
+   *
    */
   public static final int BUF_SIZE_INT = 31/7 + 2;
 
@@ -196,7 +196,7 @@ public final class NumericUtils {
    * This method can be used to decode e.g. a stored field.
    * @throws NumberFormatException if the supplied string is
    * not correctly prefix encoded.
-   * @see #longToPrefixCoded(long)
+   *
    */
   public static long prefixCodedToLong(final String prefixCoded) {
     final int shift = prefixCoded.charAt(0)-SHIFT_START_LONG;
@@ -223,7 +223,7 @@ public final class NumericUtils {
    * This method can be used to decode e.g. a stored field.
    * @throws NumberFormatException if the supplied string is
    * not correctly prefix encoded.
-   * @see #intToPrefixCoded(int)
+   *
    */
   public static int prefixCodedToInt(final String prefixCoded) {
     final int shift = prefixCoded.charAt(0)-SHIFT_START_INT;
@@ -251,7 +251,7 @@ public final class NumericUtils {
    * By this the precision is not reduced, but the value can easily used as a long.
    * The sort order (including {@code Double#NaN}) is defined by
    * {@code Double#compareTo}; {@code NaN} is greater than positive infinity.
-   * @see #sortableLongToDouble
+   *
    */
   public static long doubleToSortableLong(double val) {
     long f = Double.doubleToLongBits(val);
@@ -269,7 +269,7 @@ public final class NumericUtils {
 
   /**
    * Converts a sortable <code>long</code> back to a <code>double</code>.
-   * @see #doubleToSortableLong
+   *
    */
   public static double sortableLongToDouble(long val) {
     if (val<0) val ^= 0x7fffffffffffffffL;
@@ -291,7 +291,7 @@ public final class NumericUtils {
    * By this the precision is not reduced, but the value can easily used as an int.
    * The sort order (including {@code Float#NaN}) is defined by
    * {@code Float#compareTo}; {@code NaN} is greater than positive infinity.
-   * @see #sortableIntToFloat
+   *
    */
   public static int floatToSortableInt(float val) {
     int f = Float.floatToIntBits(val);
@@ -309,7 +309,7 @@ public final class NumericUtils {
 
   /**
    * Converts a sortable <code>int</code> back to a <code>float</code>.
-   * @see #floatToSortableInt
+   *
    */
   public static float sortableIntToFloat(int val) {
     if (val<0) val ^= 0x7fffffff;

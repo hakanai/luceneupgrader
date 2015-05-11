@@ -37,7 +37,7 @@ public final class IOUtils {
   
   /**
    * UTF-8 charset string
-   * @see Charset#forName(String)
+   *
    */
   public static final String UTF_8 = "UTF-8";
   
@@ -95,7 +95,7 @@ public final class IOUtils {
     }
   }
 
-  /** @see #closeWhileHandlingException(Exception, Closeable...) */
+  /** */
   public static <E extends Exception> void closeWhileHandlingException(E priorException, Iterable<? extends Closeable> objects) throws E, IOException {
     Throwable th = null;
 
@@ -157,7 +157,7 @@ public final class IOUtils {
   }
   
   /**
-   * @see #close(Closeable...)
+   *
    */
   public static void close(Iterable<? extends Closeable> objects) throws IOException {
     Throwable th = null;
@@ -202,7 +202,7 @@ public final class IOUtils {
   }
   
   /**
-   * @see #closeWhileHandlingException(Closeable...)
+   *
    */
   public static void closeWhileHandlingException(Iterable<? extends Closeable> objects) throws IOException {
     for (Closeable object : objects) {
@@ -231,7 +231,7 @@ public final class IOUtils {
    * @param exception this exception should get the suppressed one added
    * @param suppressed the suppressed exception
    */
-  private static final void addSuppressed(Throwable exception, Throwable suppressed) {
+  private static void addSuppressed(Throwable exception, Throwable suppressed) {
     if (SUPPRESS_METHOD != null && exception != null && suppressed != null) {
       try {
         SUPPRESS_METHOD.invoke(exception, suppressed);

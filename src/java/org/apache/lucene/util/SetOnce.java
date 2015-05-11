@@ -54,7 +54,7 @@ public final class SetOnce<T> {
    * {@code AlreadySetException}
    *
    * @throws AlreadySetException if called more than once
-   * @see #set(Object)
+   *
    */
   public SetOnce(T obj) {
     this.obj = obj;

@@ -35,7 +35,7 @@ import java.util.Set;
  * <p>Created: Apr 20, 2004 8:58:29 AM
  *
  * @since   1.4
- * @see     CachingWrapperFilter
+ *
  */
 public class FilteredQuery
 extends Query {

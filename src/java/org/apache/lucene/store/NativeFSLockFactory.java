@@ -51,7 +51,7 @@ import java.util.HashSet;
  * test it by using {@code VerifyingLockFactory}, {@code
  * LockVerifyServer} and {@code LockStressTest}.</p>
  *
- * @see LockFactory
+ *
  */
 
 public class NativeFSLockFactory extends FSLockFactory {

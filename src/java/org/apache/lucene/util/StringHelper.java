@@ -47,7 +47,7 @@ public abstract class StringHelper {
    * @param bytes2 The second byte[] to compare
    * @return The number of common elements.
    */
-  public static final int bytesDifference(byte[] bytes1, int len1, byte[] bytes2, int len2) {
+  public static int bytesDifference(byte[] bytes1, int len1, byte[] bytes2, int len2) {
     int len = len1 < len2 ? len1 : len2;
     for (int i = 0; i < len; i++)
       if (bytes1[i] != bytes2[i])

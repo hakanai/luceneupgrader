@@ -176,7 +176,7 @@ final class SegmentCoreReaders {
     }
   }
   
-  private final void notifyCoreClosedListeners() {
+  private void notifyCoreClosedListeners() {
     synchronized(coreClosedListeners) {
       for (CoreClosedListener listener : coreClosedListeners) {
         listener.onClose(owner);

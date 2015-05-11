@@ -147,7 +147,7 @@ final class FreqProxTermsWriter extends TermsHashConsumer {
   void appendPostings(String fieldName, SegmentWriteState state,
                       FreqProxTermsWriterPerField[] fields,
                       FormatPostingsFieldsConsumer consumer)
-    throws CorruptIndexException, IOException {
+    throws IOException {
 
     int numFields = fields.length;
 

@@ -54,12 +54,12 @@ public abstract class LogMergePolicy extends MergePolicy {
   public static final int DEFAULT_MERGE_FACTOR = 10;
 
   /** Default maximum segment size.  A segment of this size
-   *  or larger will never be merged.  @see setMaxMergeDocs */
+   *  or larger will never be merged.  */
   public static final int DEFAULT_MAX_MERGE_DOCS = Integer.MAX_VALUE;
 
   /** Default noCFSRatio.  If a merge's size is >= 10% of
    *  the index, then we disable compound file for it.
-   *  @see #setNoCFSRatio */
+   *  */
   public static final double DEFAULT_NO_CFS_RATIO = 0.1;
 
   protected int mergeFactor = DEFAULT_MERGE_FACTOR;
@@ -86,7 +86,7 @@ public abstract class LogMergePolicy extends MergePolicy {
     return w != null && w.verbose();
   }
 
-  /** @see #setNoCFSRatio */
+  /** */
   public double getNoCFSRatio() {
     return noCFSRatio;
   }
@@ -412,7 +412,7 @@ public abstract class LogMergePolicy extends MergePolicy {
    */ 
   @Override
   public MergeSpecification findForcedDeletesMerges(SegmentInfos segmentInfos)
-      throws CorruptIndexException, IOException {
+      throws IOException {
     final List<SegmentInfo> segments = segmentInfos.asList();
     final int numSegments = segments.size();
 
@@ -640,7 +640,7 @@ public abstract class LogMergePolicy extends MergePolicy {
 
   /** Returns the largest segment (measured by document
    *  count) that may be merged with other segments.
-   *  @see #setMaxMergeDocs */
+   *  */
   public int getMaxMergeDocs() {
     return maxMergeDocs;
   }

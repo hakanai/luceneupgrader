@@ -89,10 +89,6 @@ public final class FieldInvertState {
     return numOverlap;
   }
 
-  public void setNumOverlap(int numOverlap) {
-    this.numOverlap = numOverlap;
-  }
-  
   /**
    * Get end offset of the last processed term.
    * @return the offset
@@ -115,23 +111,4 @@ public final class FieldInvertState {
     this.boost = boost;
   }
 
-  /**
-   * Get the maximum term-frequency encountered for any term in the field.  A
-   * field containing "the quick brown fox jumps over the lazy dog" would have
-   * a value of 2, because "the" appears twice.
-   */
-  public int getMaxTermFrequency() {
-    return maxTermFrequency;
-  }
-  
-  /**
-   * Return the number of unique terms encountered in this field.
-   */
-  public int getUniqueTermCount() {
-    return uniqueTermCount;
-  }
-  
-  public AttributeSource getAttributeSource() {
-    return attributeSource;
-  }
 }

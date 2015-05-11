@@ -128,7 +128,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
   
   /**
    * If non-null, information about loading segments_N files
-   * will be printed here.  @see #setInfoStream.
+   * will be printed here.
    */
   private static PrintStream infoStream = null;
 
@@ -256,7 +256,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
    */
-  public final void read(Directory directory, String segmentFileName) throws CorruptIndexException, IOException {
+  public final void read(Directory directory, String segmentFileName) throws IOException {
     boolean success = false;
 
     // Clear any previous segments:
@@ -352,14 +352,14 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
    * @throws CorruptIndexException if the index is corrupt
    * @throws IOException if there is a low-level IO error
    */
-  public final void read(Directory directory) throws CorruptIndexException, IOException {
+  public final void read(Directory directory) throws IOException {
 
     generation = lastGeneration = -1;
 
     new FindSegmentsFile(directory) {
 
       @Override
-      protected Object doBody(String segmentFileName) throws CorruptIndexException, IOException {
+      protected Object doBody(String segmentFileName) throws IOException {
         read(directory, segmentFileName);
         return null;
       }
@@ -370,7 +370,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
   // before finishCommit is called
   ChecksumIndexOutput pendingSegnOutput;
 
-  private final void write(Directory directory) throws IOException {
+  private void write(Directory directory) throws IOException {
 
     String segmentFileName = getNextSegmentFileName();
 
@@ -472,7 +472,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
    */
   @Deprecated
   public static long readCurrentVersion(Directory directory)
-    throws CorruptIndexException, IOException {
+    throws IOException {
 
     // Fully read the segments file: this ensures that it's
     // completely written so that if
@@ -508,7 +508,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
     defaultGenLookaheadCount = count;
   }
   /**
-   * @see #setDefaultGenLookaheadCount
+   *
    *
    * @lucene.experimental
    */
@@ -517,7 +517,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
   }
 
   /**
-   * @see #setInfoStream
+   *
    */
   public static PrintStream getInfoStream() {
     return infoStream;
@@ -550,11 +550,11 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
       this.directory = directory;
     }
 
-    public Object run() throws CorruptIndexException, IOException {
+    public Object run() throws IOException {
       return run(null);
     }
     
-    public Object run(IndexCommit commit) throws CorruptIndexException, IOException {
+    public Object run(IndexCommit commit) throws IOException {
       if (commit != null) {
         if (directory != commit.getDirectory())
           throw new IOException("the specified commit does not match the specified Directory");
@@ -763,7 +763,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
      * during the processing that could have been caused by
      * a writer committing.
      */
-    protected abstract Object doBody(String segmentFileName) throws CorruptIndexException, IOException;
+    protected abstract Object doBody(String segmentFileName) throws IOException;
   }
 
   /**

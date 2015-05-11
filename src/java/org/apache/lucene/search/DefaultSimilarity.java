@@ -80,13 +80,13 @@ public class DefaultSimilarity extends Similarity {
    *
    *  @lucene.experimental
    *
-   *  @see #computeNorm
+   *
    */
   public void setDiscountOverlaps(boolean v) {
     discountOverlaps = v;
   }
 
-  /** @see #setDiscountOverlaps */
+  /** */
   public boolean getDiscountOverlaps() {
     return discountOverlaps;
   }

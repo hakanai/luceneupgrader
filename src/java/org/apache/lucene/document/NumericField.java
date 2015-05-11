@@ -133,7 +133,7 @@ public final class NumericField extends AbstractField {
   /** Data type of the value in {@code NumericField}.
    * @since 3.2
    */
-  public static enum DataType { INT, LONG, FLOAT, DOUBLE }
+  public enum DataType { INT, LONG, FLOAT, DOUBLE }
 
   private transient NumericTokenStream numericTS;
   private DataType type;

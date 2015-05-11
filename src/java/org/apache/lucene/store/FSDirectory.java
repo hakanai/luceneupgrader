@@ -108,7 +108,7 @@ import org.apache.lucene.util.Constants;
  * NativeFSLockFactory}, but can be changed by
  * passing in a custom {@code LockFactory} instance.
  *
- * @see Directory
+ *
  */
 public abstract class FSDirectory extends Directory {
 
@@ -116,7 +116,7 @@ public abstract class FSDirectory extends Directory {
    * Default read chunk size.  This is a conditional default: on 32bit JVMs, it defaults to 100 MB.  On 64bit JVMs, it's
    * <code>Integer.MAX_VALUE</code>.
    *
-   * @see #setReadChunkSize
+   *
    */
   public static final int DEFAULT_READ_CHUNK_SIZE = Constants.JRE_IS_64BIT ? Integer.MAX_VALUE : 100 * 1024 * 1024;
 
@@ -234,7 +234,7 @@ public abstract class FSDirectory extends Directory {
 
   /** Lists all files (not subdirectories) in the
    * directory.
-   * @see #listAll(File) */
+   * */
   @Override
   public String[] listAll() throws IOException {
     ensureOpen();
@@ -422,7 +422,7 @@ public abstract class FSDirectory extends Directory {
   /**
    * The maximum number of bytes to read at once from the
    * underlying file during {@code IndexInput#readBytes}.
-   * @see #setReadChunkSize
+   *
    */
   public final int getReadChunkSize() {
     // LUCENE-1566

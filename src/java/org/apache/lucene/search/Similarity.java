@@ -523,9 +523,9 @@ import java.util.Collection;
  *    </li>
  * </ol>
  *
- * @see #setDefault(Similarity)
- * @see org.apache.lucene.index.IndexWriter#setSimilarity(Similarity)
- * @see Searcher#setSimilarity(Similarity)
+ *
+ *
+ *
  */
 public abstract class Similarity implements Serializable {
 
@@ -548,8 +548,8 @@ public abstract class Similarity implements Serializable {
   /** Set the default Similarity implementation used by indexing and search
    * code.
    *
-   * @see Searcher#setSimilarity(Similarity)
-   * @see org.apache.lucene.index.IndexWriter#setSimilarity(Similarity)
+   *
+   *
    */
   public static void setDefault(Similarity similarity) {
     Similarity.defaultImpl = similarity;
@@ -560,8 +560,8 @@ public abstract class Similarity implements Serializable {
    *
    * <p>This is initially an instance of {@code DefaultSimilarity}.
    *
-   * @see Searcher#setSimilarity(Similarity)
-   * @see org.apache.lucene.index.IndexWriter#setSimilarity(Similarity)
+   *
+   *
    */
   public static Similarity getDefault() {
     return Similarity.defaultImpl;
@@ -577,7 +577,7 @@ public abstract class Similarity implements Serializable {
 
   /**
    * Decodes a normalization factor stored in an index.
-   * @see #decodeNormValue(byte)
+   *
    * @deprecated Use {@code #decodeNormValue} instead.
    */
   @Deprecated
@@ -591,15 +591,15 @@ public abstract class Similarity implements Serializable {
    *    Similarity to your implementation with {@code Similarity#setDefault(Similarity)}.
    *    Otherwise, your method may not always be called, especially if you omit norms 
    *    for some fields.</b>
-   * @see #encodeNormValue(float)
+   *
    */
   public float decodeNormValue(byte b) {
     return NORM_TABLE[b & 0xFF];  // & 0xFF maps negative bytes to positive above 127
   }
 
   /** Returns a table for decoding normalization bytes.
-   * @see #encodeNormValue(float)
-   * @see #decodeNormValue(byte)
+   *
+   *
    * 
    * @deprecated Use instance methods for encoding/decoding norm values to enable customization.
    */
@@ -660,7 +660,7 @@ public abstract class Similarity implements Serializable {
    * <i>fieldName</i> of <i>doc</i>.
    * @return a normalization factor for hits on this field of this document
    *
-   * @see org.apache.lucene.document.Field#setBoost(float)
+   *
    *
    * @deprecated Please override computeNorm instead
    */
@@ -699,8 +699,8 @@ public abstract class Similarity implements Serializable {
    * Similarity to your implementation with {@code Similarity#setDefault(Similarity)}.
    * Otherwise, your method may not always be called, especially if you omit norms 
    * for some fields.</b>
-   * @see org.apache.lucene.document.Field#setBoost(float)
-   * @see org.apache.lucene.util.SmallFloat
+   *
+   *
    */
   public byte encodeNormValue(float f) {
     return SmallFloat.floatToByte315(f);
@@ -712,7 +712,7 @@ public abstract class Similarity implements Serializable {
    * @return byte representing the given float
    * @deprecated Use {@code #encodeNormValue} instead.
    * 
-   * @see #encodeNormValue(float)
+   *
    */
   @Deprecated
   public static byte encodeNorm(float f) {
@@ -748,7 +748,7 @@ public abstract class Similarity implements Serializable {
    * return larger values when the edit distance is small and smaller values
    * when it is large.
    *
-   * @see PhraseQuery#setSlop(int)
+   *
    * @param distance the edit distance of this sloppy phrase match
    * @return the frequency increment for this match
    */

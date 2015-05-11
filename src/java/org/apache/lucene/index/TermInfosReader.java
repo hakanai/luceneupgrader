@@ -89,7 +89,7 @@ final class TermInfosReader implements Closeable {
   }
   
   TermInfosReader(Directory dir, String seg, FieldInfos fis, int readBufferSize, int indexDivisor)
-       throws CorruptIndexException, IOException {
+       throws IOException {
     boolean success = false;
 
     if (indexDivisor < 1 && indexDivisor != -1) {
@@ -250,7 +250,7 @@ final class TermInfosReader implements Closeable {
   }
 
   // called only from asserts
-  private final boolean sameTermInfo(TermInfo ti1, TermInfo ti2, SegmentTermEnum enumerator) {
+  private boolean sameTermInfo(TermInfo ti1, TermInfo ti2, SegmentTermEnum enumerator) {
     if (ti1.docFreq != ti2.docFreq) {
       return false;
     }

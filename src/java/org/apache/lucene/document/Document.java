@@ -17,10 +17,8 @@ package org.apache.lucene.document;
  * limitations under the License.
  */
 
-import java.util.*;             // for javadoc
-import org.apache.lucene.search.ScoreDoc; // for javadoc
-import org.apache.lucene.search.Searcher;  // for javadoc
-import org.apache.lucene.index.IndexReader;  // for javadoc
+import java.util.ArrayList;
+import java.util.List;
 
 /** Documents are the unit of indexing and search.
  *
@@ -53,7 +51,7 @@ public final class Document implements java.io.Serializable {
    * each field in this document.  Thus, this method in effect sets a default
    * boost for the fields of this document.
    *
-   * @see Fieldable#setBoost(float)
+   *
    */
   public void setBoost(float boost) {
     this.boost = boost;
@@ -69,7 +67,7 @@ public final class Document implements java.io.Serializable {
    * information see the "norm(t,d)" part of the scoring formula in 
    * {@code org.apache.lucene.search.Similarity Similarity}.)
    *
-   * @see #setBoost(float)
+   *
    */
   public float getBoost() {
     return boost;
@@ -88,75 +86,9 @@ public final class Document implements java.io.Serializable {
   public final void add(Fieldable field) {
     fields.add(field);
   }
-  
-  /**
-   * <p>Removes field with the specified name from the document.
-   * If multiple fields exist with this name, this method removes the first field that has been added.
-   * If there is no field with the specified name, the document remains unchanged.</p>
-   * <p> Note that the removeField(s) methods like the add method only make sense 
-   * prior to adding a document to an index. These methods cannot
-   * be used to change the content of an existing index! In order to achieve this,
-   * a document has to be deleted from an index and a new changed version of that
-   * document has to be added.</p>
-   */
-  public final void removeField(String name) {
-    Iterator<Fieldable> it = fields.iterator();
-    while (it.hasNext()) {
-      Fieldable field = it.next();
-      if (field.name().equals(name)) {
-        it.remove();
-        return;
-      }
-    }
-  }
-  
-  /**
-   * <p>Removes all fields with the given name from the document.
-   * If there is no field with the specified name, the document remains unchanged.</p>
-   * <p> Note that the removeField(s) methods like the add method only make sense 
-   * prior to adding a document to an index. These methods cannot
-   * be used to change the content of an existing index! In order to achieve this,
-   * a document has to be deleted from an index and a new changed version of that
-   * document has to be added.</p>
-   */
-  public final void removeFields(String name) {
-    Iterator<Fieldable> it = fields.iterator();
-    while (it.hasNext()) {
-      Fieldable field = it.next();
-      if (field.name().equals(name)) {
-        it.remove();
-      }
-    }
-  }
-
-  /** Returns a field with the given name if any exist in this document, or
-   * null.  If multiple fields exists with this name, this method returns the
-   * first value added.
-   * Do not use this method with lazy loaded fields or {@code NumericField}.
-   * @deprecated use {@code #getFieldable} instead and cast depending on
-   * data type.
-   * @throws ClassCastException if you try to retrieve a numerical or
-   * lazy loaded field.
-   */
-  @Deprecated
-  public final Field getField(String name) {
-    return (Field) getFieldable(name);
-  }
 
 
- /** Returns a field with the given name if any exist in this document, or
-   * null.  If multiple fields exists with this name, this method returns the
-   * first value added.
-   */
- public Fieldable getFieldable(String name) {
-   for (Fieldable field : fields) {
-     if (field.name().equals(name))
-       return field;
-   }
-   return null;
- }
-
-  /** Returns the string value of the field with the given name if any exist in
+    /** Returns the string value of the field with the given name if any exist in
    * this document, or null.  If multiple fields exist with this name, this
    * method returns the first value added. If only binary fields with this name
    * exist, returns null.
@@ -181,128 +113,8 @@ public final class Document implements java.io.Serializable {
     return fields;
   }
 
-  private final static Field[] NO_FIELDS = new Field[0];
-  
-  /**
-   * Returns an array of {@code Field}s with the given name.
-   * This method returns an empty array when there are no
-   * matching fields.  It never returns null.
-   * Do not use this method with lazy loaded fields or {@code NumericField}.
-   *
-   * @param name the name of the field
-   * @return a <code>Field[]</code> array
-   * @deprecated use {@code #getFieldable} instead and cast depending on
-   * data type.
-   * @throws ClassCastException if you try to retrieve a numerical or
-   * lazy loaded field.
-   */
-   @Deprecated
-   public final Field[] getFields(String name) {
-     List<Field> result = new ArrayList<Field>();
-     for (Fieldable field : fields) {
-       if (field.name().equals(name)) {
-         result.add((Field) field);
-       }
-     }
 
-     if (result.size() == 0)
-       return NO_FIELDS;
-
-     return result.toArray(new Field[result.size()]);
-   }
-
-
-   private final static Fieldable[] NO_FIELDABLES = new Fieldable[0];
-
-   /**
-   * Returns an array of {@code Fieldable}s with the given name.
-   * This method returns an empty array when there are no
-   * matching fields.  It never returns null.
-   *
-   * @param name the name of the field
-   * @return a <code>Fieldable[]</code> array
-   */
-   public Fieldable[] getFieldables(String name) {
-     List<Fieldable> result = new ArrayList<Fieldable>();
-     for (Fieldable field : fields) {
-       if (field.name().equals(name)) {
-         result.add(field);
-       }
-     }
-
-     if (result.size() == 0)
-       return NO_FIELDABLES;
-
-     return result.toArray(new Fieldable[result.size()]);
-   }
-
-
-   private final static String[] NO_STRINGS = new String[0];
-
-  /**
-   * Returns an array of values of the field specified as the method parameter.
-   * This method returns an empty array when there are no
-   * matching fields.  It never returns null.
-   * For {@code NumericField}s it returns the string value of the number. If you want
-   * the actual {@code NumericField} instances back, use {@code #getFieldables}.
-   * @param name the name of the field
-   * @return a <code>String[]</code> of field values
-   */
-  public final String[] getValues(String name) {
-    List<String> result = new ArrayList<String>();
-    for (Fieldable field : fields) {
-      if (field.name().equals(name) && (!field.isBinary()))
-        result.add(field.stringValue());
-    }
-    
-    if (result.size() == 0)
-      return NO_STRINGS;
-    
-    return result.toArray(new String[result.size()]);
-  }
-
-  private final static byte[][] NO_BYTES = new byte[0][];
-
-  /**
-  * Returns an array of byte arrays for of the fields that have the name specified
-  * as the method parameter.  This method returns an empty
-  * array when there are no matching fields.  It never
-  * returns null.
-  *
-  * @param name the name of the field
-  * @return a <code>byte[][]</code> of binary field values
-  */
-  public final byte[][] getBinaryValues(String name) {
-    List<byte[]> result = new ArrayList<byte[]>();
-    for (Fieldable field : fields) {
-      if (field.name().equals(name) && (field.isBinary()))
-        result.add(field.getBinaryValue());
-    }
-  
-    if (result.size() == 0)
-      return NO_BYTES;
-  
-    return result.toArray(new byte[result.size()][]);
-  }
-  
-  /**
-  * Returns an array of bytes for the first (or only) field that has the name
-  * specified as the method parameter. This method will return <code>null</code>
-  * if no binary fields with the specified name are available.
-  * There may be non-binary fields with the same name.
-  *
-  * @param name the name of the field.
-  * @return a <code>byte[]</code> containing the binary field value or <code>null</code>
-  */
-  public final byte[] getBinaryValue(String name) {
-    for (Fieldable field : fields) {
-      if (field.name().equals(name) && (field.isBinary()))
-        return field.getBinaryValue();
-    }
-    return null;
-  }
-  
-  /** Prints the fields of a document for human consumption. */
+    /** Prints the fields of a document for human consumption. */
   @Override
   public final String toString() {
     StringBuilder buffer = new StringBuilder();

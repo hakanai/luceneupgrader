@@ -41,7 +41,7 @@ public class TypeAttributeImpl extends AttributeImpl implements TypeAttribute, C
   }
 
   /** Set the lexical type.
-      @see #type() */
+      */
   public void setType(String type) {
     this.type = type;
   }

@@ -29,8 +29,8 @@ import java.io.IOException;
  * verifies at most one process holds the lock at a time.
  * Run without any args to see usage.
  *
- * @see VerifyingLockFactory
- * @see LockStressTest
+ *
+ *
  */
 
 public class LockVerifyServer {

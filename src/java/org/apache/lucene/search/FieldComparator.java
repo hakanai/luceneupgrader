@@ -1063,11 +1063,11 @@ public abstract class FieldComparator<T> {
     }
   }
 
-  final protected static int binarySearch(String[] a, String key) {
+  protected static int binarySearch(String[] a, String key) {
     return binarySearch(a, key, 0, a.length-1);
   }
 
-  final protected static int binarySearch(String[] a, String key, int low, int high) {
+  protected static int binarySearch(String[] a, String key, int low, int high) {
 
     while (low <= high) {
       int mid = (low + high) >>> 1;

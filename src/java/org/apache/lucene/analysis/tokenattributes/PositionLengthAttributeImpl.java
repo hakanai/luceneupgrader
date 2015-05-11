@@ -35,7 +35,7 @@ public class PositionLengthAttributeImpl extends AttributeImpl implements Positi
   }
 
   /** Returns the position length of this Token.
-   * @see #setPositionLength    
+   *
    */
   public int getPositionLength() {
     return positionLength;

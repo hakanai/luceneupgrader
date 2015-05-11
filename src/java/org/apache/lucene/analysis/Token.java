@@ -17,17 +17,8 @@ package org.apache.lucene.analysis;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.tokenattributes.TermAttributeImpl;
-import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
-import org.apache.lucene.analysis.tokenattributes.FlagsAttribute;
-import org.apache.lucene.analysis.tokenattributes.PayloadAttribute;
-import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
-import org.apache.lucene.analysis.tokenattributes.PositionLengthAttribute;
-import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
+import org.apache.lucene.analysis.tokenattributes.*;
 import org.apache.lucene.index.Payload;
-import org.apache.lucene.index.TermPositions;     // for javadoc
-import org.apache.lucene.util.Attribute;
-import org.apache.lucene.util.AttributeSource;
 import org.apache.lucene.util.AttributeImpl;
 import org.apache.lucene.util.AttributeReflector;
 
@@ -118,7 +109,7 @@ import org.apache.lucene.util.AttributeReflector;
   {@code CharSequence} interface introduced by the interface {@code org.apache.lucene.analysis.tokenattributes.CharTermAttribute}.
   This method now only prints the term text, no additional information anymore.
   </p>
-  @see org.apache.lucene.index.Payload
+
 */
 // TODO: change superclass to CharTermAttribute in 4.0! Maybe deprecate the whole class?
 public class Token extends TermAttributeImpl 
@@ -257,7 +248,7 @@ public class Token extends TermAttributeImpl
    *
    * </ul>
    * @param positionIncrement the distance from the prior term
-   * @see org.apache.lucene.index.TermPositions
+   *
    */
   public void setPositionIncrement(int positionIncrement) {
     if (positionIncrement < 0)
@@ -267,20 +258,20 @@ public class Token extends TermAttributeImpl
   }
 
   /** Returns the position increment of this Token.
-   * @see #setPositionIncrement
+   *
    */
   public int getPositionIncrement() {
     return positionIncrement;
   }
 
   /** Set the position length.
-   * @see PositionLengthAttribute */
+   * */
   public void setPositionLength(int positionLength) {
     this.positionLength = positionLength;
   }
 
   /** Get the position length.
-   * @see PositionLengthAttribute */
+   * */
   public int getPositionLength() {
     return positionLength;
   }
@@ -295,12 +286,6 @@ public class Token extends TermAttributeImpl
     return startOffset;
   }
 
-  /** Set the starting offset.
-      @see #startOffset() */
-  public void setStartOffset(int offset) {
-    this.startOffset = offset;
-  }
-
   /** Returns this Token's ending offset, one greater than the position of the
     last character corresponding to this token in the source text. The length
     of the token in the source text is (endOffset - startOffset). */
@@ -308,14 +293,8 @@ public class Token extends TermAttributeImpl
     return endOffset;
   }
 
-  /** Set the ending offset.
-      @see #endOffset() */
-  public void setEndOffset(int offset) {
-    this.endOffset = offset;
-  }
-  
   /** Set the starting and ending offset.
-  @see #startOffset() and #endOffset()*/
+  */
   public void setOffset(int startOffset, int endOffset) {
     this.startOffset = startOffset;
     this.endOffset = endOffset;
@@ -327,7 +306,7 @@ public class Token extends TermAttributeImpl
   }
 
   /** Set the lexical type.
-      @see #type() */
+      */
   public final void setType(String type) {
     this.type = type;
   }
@@ -347,7 +326,7 @@ public class Token extends TermAttributeImpl
   }
 
   /**
-   * @see #getFlags()
+   *
    */
   public void setFlags(int flags) {
     this.flags = flags;
@@ -437,107 +416,6 @@ public class Token extends TermAttributeImpl
       code = code * 31 + payload.hashCode();
     return code;
   }
-      
-  // like clear() but doesn't clear termBuffer/text
-  private void clearNoTermBuffer() {
-    payload = null;
-    positionIncrement = 1;
-    flags = 0;
-    startOffset = endOffset = 0;
-    type = DEFAULT_TYPE;
-  }
-
-  /** Shorthand for calling {@code #clear},
-   *  {@code #copyBuffer(char[], int, int)},
-   *  {@code #setStartOffset},
-   *  {@code #setEndOffset},
-   *  {@code #setType}
-   *  @return this Token instance */
-  public Token reinit(char[] newTermBuffer, int newTermOffset, int newTermLength, int newStartOffset, int newEndOffset, String newType) {
-    clearNoTermBuffer();
-    copyBuffer(newTermBuffer, newTermOffset, newTermLength);
-    payload = null;
-    positionIncrement = 1;
-    startOffset = newStartOffset;
-    endOffset = newEndOffset;
-    type = newType;
-    return this;
-  }
-
-  /** Shorthand for calling {@code #clear},
-   *  {@code #copyBuffer(char[], int, int)},
-   *  {@code #setStartOffset},
-   *  {@code #setEndOffset}
-   *  {@code #setType} on Token.DEFAULT_TYPE
-   *  @return this Token instance */
-  public Token reinit(char[] newTermBuffer, int newTermOffset, int newTermLength, int newStartOffset, int newEndOffset) {
-    clearNoTermBuffer();
-    copyBuffer(newTermBuffer, newTermOffset, newTermLength);
-    startOffset = newStartOffset;
-    endOffset = newEndOffset;
-    type = DEFAULT_TYPE;
-    return this;
-  }
-
-  /** Shorthand for calling {@code #clear},
-   *  {@code #append(CharSequence)},
-   *  {@code #setStartOffset},
-   *  {@code #setEndOffset}
-   *  {@code #setType}
-   *  @return this Token instance */
-  public Token reinit(String newTerm, int newStartOffset, int newEndOffset, String newType) {
-    clear();
-    append(newTerm);
-    startOffset = newStartOffset;
-    endOffset = newEndOffset;
-    type = newType;
-    return this;
-  }
-
-  /** Shorthand for calling {@code #clear},
-   *  {@code #append(CharSequence, int, int)},
-   *  {@code #setStartOffset},
-   *  {@code #setEndOffset}
-   *  {@code #setType}
-   *  @return this Token instance */
-  public Token reinit(String newTerm, int newTermOffset, int newTermLength, int newStartOffset, int newEndOffset, String newType) {
-    clear();
-    append(newTerm, newTermOffset, newTermOffset + newTermLength);
-    startOffset = newStartOffset;
-    endOffset = newEndOffset;
-    type = newType;
-    return this;
-  }
-
-  /** Shorthand for calling {@code #clear},
-   *  {@code #append(CharSequence)},
-   *  {@code #setStartOffset},
-   *  {@code #setEndOffset}
-   *  {@code #setType} on Token.DEFAULT_TYPE
-   *  @return this Token instance */
-  public Token reinit(String newTerm, int newStartOffset, int newEndOffset) {
-    clear();
-    append(newTerm);
-    startOffset = newStartOffset;
-    endOffset = newEndOffset;
-    type = DEFAULT_TYPE;
-    return this;
-  }
-
-  /** Shorthand for calling {@code #clear},
-   *  {@code #append(CharSequence, int, int)},
-   *  {@code #setStartOffset},
-   *  {@code #setEndOffset}
-   *  {@code #setType} on Token.DEFAULT_TYPE
-   *  @return this Token instance */
-  public Token reinit(String newTerm, int newTermOffset, int newTermLength, int newStartOffset, int newEndOffset) {
-    clear();
-    append(newTerm, newTermOffset, newTermOffset + newTermLength);
-    startOffset = newStartOffset;
-    endOffset = newEndOffset;
-    type = DEFAULT_TYPE;
-    return this;
-  }
 
   /**
    * Copy the prototype token's fields into this one. Note: Payloads are shared.
@@ -545,38 +423,6 @@ public class Token extends TermAttributeImpl
    */
   public void reinit(Token prototype) {
     copyBuffer(prototype.buffer(), 0, prototype.length());
-    positionIncrement = prototype.positionIncrement;
-    flags = prototype.flags;
-    startOffset = prototype.startOffset;
-    endOffset = prototype.endOffset;
-    type = prototype.type;
-    payload =  prototype.payload;
-  }
-
-  /**
-   * Copy the prototype token's fields into this one, with a different term. Note: Payloads are shared.
-   * @param prototype
-   * @param newTerm
-   */
-  public void reinit(Token prototype, String newTerm) {
-    setEmpty().append(newTerm);
-    positionIncrement = prototype.positionIncrement;
-    flags = prototype.flags;
-    startOffset = prototype.startOffset;
-    endOffset = prototype.endOffset;
-    type = prototype.type;
-    payload =  prototype.payload;
-  }
-
-  /**
-   * Copy the prototype token's fields into this one, with a different term. Note: Payloads are shared.
-   * @param prototype
-   * @param newTermBuffer
-   * @param offset
-   * @param length
-   */
-  public void reinit(Token prototype, char[] newTermBuffer, int offset, int length) {
-    copyBuffer(newTermBuffer, offset, length);
     positionIncrement = prototype.positionIncrement;
     flags = prototype.flags;
     startOffset = prototype.startOffset;
@@ -613,50 +459,6 @@ public class Token extends TermAttributeImpl
     reflector.reflect(PayloadAttribute.class, "payload", payload);
     reflector.reflect(FlagsAttribute.class, "flags", flags);
     reflector.reflect(TypeAttribute.class, "type", type);
-  }
-
-  /** Convenience factory that returns <code>Token</code> as implementation for the basic
-   * attributes and return the default impl (with &quot;Impl&quot; appended) for all other
-   * attributes.
-   * @since 3.0
-   */
-  public static final AttributeSource.AttributeFactory TOKEN_ATTRIBUTE_FACTORY =
-    new TokenAttributeFactory(AttributeSource.AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
-  
-  /** <b>Expert:</b> Creates a TokenAttributeFactory returning {@code Token} as instance for the basic attributes
-   * and for all other attributes calls the given delegate factory.
-   * @since 3.0
-   */
-  public static final class TokenAttributeFactory extends AttributeSource.AttributeFactory {
-    
-    private final AttributeSource.AttributeFactory delegate;
-    
-    /** <b>Expert</b>: Creates an AttributeFactory returning {@code Token} as instance for the basic attributes
-     * and for all other attributes calls the given delegate factory. */
-    public TokenAttributeFactory(AttributeSource.AttributeFactory delegate) {
-      this.delegate = delegate;
-    }
-  
-    @Override
-    public AttributeImpl createAttributeInstance(Class<? extends Attribute> attClass) {
-      return attClass.isAssignableFrom(Token.class)
-        ? new Token() : delegate.createAttributeInstance(attClass);
-    }
-    
-    @Override
-    public boolean equals(Object other) {
-      if (this == other) return true;
-      if (other instanceof TokenAttributeFactory) {
-        final TokenAttributeFactory af = (TokenAttributeFactory) other;
-        return this.delegate.equals(af.delegate);
-      }
-      return false;
-    }
-    
-    @Override
-    public int hashCode() {
-      return delegate.hashCode() ^ 0x0a45aa31;
-    }
   }
 
 }

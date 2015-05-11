@@ -43,7 +43,7 @@ public class PackedInts {
    * A read-only random access array of positive integers.
    * @lucene.internal
    */
-  public static interface Reader {
+  public interface Reader {
     /**
      * @param index the position of the wanted value.
      * @return the value at the stated index.
@@ -78,7 +78,7 @@ public class PackedInts {
      * Returns true if this implementation is backed by a
      * native java array.
      *
-     * @see #getArray
+     *
      */
     boolean hasArray();
   }
@@ -87,7 +87,7 @@ public class PackedInts {
    * A packed integer array that can be modified.
    * @lucene.internal
    */
-  public static interface Mutable extends Reader {
+  public interface Mutable extends Reader {
     /**
      * Set the value at the given index in the array.
      * @param index where the value should be positioned.

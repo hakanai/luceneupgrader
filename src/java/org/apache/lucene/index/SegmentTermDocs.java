@@ -168,7 +168,7 @@ class SegmentTermDocs implements TermDocs {
     }
   }
 
-  private final int readNoTf(final int[] docs, final int[] freqs, final int length) throws IOException {
+  private int readNoTf(final int[] docs, final int[] freqs, final int length) throws IOException {
     int i = 0;
     while (i < length && count < df) {
       // manually inlined call to next() for speed

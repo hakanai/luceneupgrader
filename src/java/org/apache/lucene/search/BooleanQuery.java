@@ -47,7 +47,7 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
   /** Return the maximum number of clauses permitted, 1024 by default.
    * Attempts to add more than the permitted number of clauses cause {@code
    * TooManyClauses} to be thrown.
-   * @see #setMaxClauseCount(int)
+   *
    */
   public static int getMaxClauseCount() { return maxClauseCount; }
 
@@ -84,7 +84,7 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
 
   /** Returns true iff {@code Similarity#coord(int,int)} is disabled in
    * scoring for this query instance.
-   * @see #BooleanQuery(boolean)
+   *
    */
   public boolean isCoordDisabled() { return disableCoord; }
 
@@ -121,7 +121,7 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
   /** Adds a clause to a boolean query.
    *
    * @throws TooManyClauses if the new number of clauses exceeds the maximum clause number
-   * @see #getMaxClauseCount()
+   *
    */
   public void add(Query query, BooleanClause.Occur occur) {
     add(new BooleanClause(query, occur));
@@ -129,7 +129,7 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
 
   /** Adds a clause to a boolean query.
    * @throws TooManyClauses if the new number of clauses exceeds the maximum clause number
-   * @see #getMaxClauseCount()
+   *
    */
   public void add(BooleanClause clause) {
     if (clauses.size() >= maxClauseCount)

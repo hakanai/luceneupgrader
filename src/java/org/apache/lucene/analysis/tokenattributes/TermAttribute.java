@@ -34,7 +34,7 @@ public interface TermAttribute extends Attribute {
    * String, use this method, which is nothing more than
    * a convenience call to <b>new String(token.termBuffer(), 0, token.termLength())</b>
    */
-  public String term();
+  String term();
   
   /** Copies the contents of buffer, starting at offset for
    *  length characters, into the termBuffer array.
@@ -42,12 +42,12 @@ public interface TermAttribute extends Attribute {
    *  @param offset the index in the buffer of the first character to copy
    *  @param length the number of characters to copy
    */
-  public void setTermBuffer(char[] buffer, int offset, int length);
+  void setTermBuffer(char[] buffer, int offset, int length);
 
   /** Copies the contents of buffer into the termBuffer array.
    *  @param buffer the buffer to copy
    */
-  public void setTermBuffer(String buffer);
+  void setTermBuffer(String buffer);
 
   /** Copies the contents of buffer, starting at offset and continuing
    *  for length characters, into the termBuffer array.
@@ -55,7 +55,7 @@ public interface TermAttribute extends Attribute {
    *  @param offset the index in the buffer of the first character to copy
    *  @param length the number of characters to copy
    */
-  public void setTermBuffer(String buffer, int offset, int length);
+  void setTermBuffer(String buffer, int offset, int length);
   
   /** Returns the internal termBuffer character array which
    *  you can then directly alter.  If the array is too
@@ -64,7 +64,7 @@ public interface TermAttribute extends Attribute {
    *  altering the buffer be sure to call {@code
    *  #setTermLength} to record the number of valid
    *  characters that were placed into the termBuffer. */
-  public char[] termBuffer();
+  char[] termBuffer();
 
   /** Grows the termBuffer to at least size newSize, preserving the
    *  existing content. Note: If the next operation is to change
@@ -76,11 +76,11 @@ public interface TermAttribute extends Attribute {
    *  @param newSize minimum size of the new termBuffer
    *  @return newly created termBuffer with length >= newSize
    */
-  public char[] resizeTermBuffer(int newSize);
+  char[] resizeTermBuffer(int newSize);
 
   /** Return number of valid characters (length of the term)
    *  in the termBuffer array. */
-  public int termLength();
+  int termLength();
   
   /** Set number of valid characters (length of the term) in
    *  the termBuffer array. Use this to truncate the termBuffer
@@ -89,5 +89,5 @@ public interface TermAttribute extends Attribute {
    *  use {@code #resizeTermBuffer(int)} first.
    *  @param length the truncated length
    */
-  public void setTermLength(int length);
+  void setTermLength(int length);
 }

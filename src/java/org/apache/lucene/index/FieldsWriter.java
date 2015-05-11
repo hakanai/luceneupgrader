@@ -16,9 +16,6 @@ package org.apache.lucene.index;
  * the License.
  */
 
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.document.NumericField;
@@ -28,8 +25,11 @@ import org.apache.lucene.store.IndexOutput;
 import org.apache.lucene.store.RAMOutputStream;
 import org.apache.lucene.util.IOUtils;
 
+import java.io.IOException;
+import java.util.List;
+
 final class FieldsWriter {
-  static final int FIELD_IS_TOKENIZED = 1 << 0;
+  static final int FIELD_IS_TOKENIZED = 1;
   static final int FIELD_IS_BINARY = 1 << 1;
 
   /** @deprecated Kept for backwards-compatibility with <3.0 indexes; will be removed in 4.0 */

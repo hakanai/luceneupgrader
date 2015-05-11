@@ -277,7 +277,7 @@ class CompoundFileReader extends Directory {
     
     /** Expert: implements seek.  Sets current position in this file, where
      *  the next {@code #readInternal(byte[],int,int)} will occur.
-     * @see #readInternal(byte[],int,int)
+     *
      */
     @Override
     protected void seekInternal(long pos) {}

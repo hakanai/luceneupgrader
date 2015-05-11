@@ -18,13 +18,11 @@ package org.apache.lucene.document;
  */
 
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.index.IndexWriter;   // for javadoc
+import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.util.StringHelper;
 
 import java.io.Reader;
 import java.io.Serializable;
-
-import org.apache.lucene.index.FieldInfo.IndexOptions;
 
 /**
   A field is a section of a Document.  Each field has two parts, a name and a
@@ -37,7 +35,7 @@ import org.apache.lucene.index.FieldInfo.IndexOptions;
 public final class Field extends AbstractField implements Fieldable, Serializable {
   
   /** Specifies whether and how a field should be stored. */
-  public static enum Store {
+  public enum Store {
 
     /** Store the original field value in the index. This is useful for short texts
      * like a document's title which should be displayed with the results. The
@@ -59,7 +57,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
   }
 
   /** Specifies whether and how a field should be indexed. */
-  public static enum Index {
+  public enum Index {
 
     /** Do not index the field value. This field can thus not be searched,
      * but one can still access its contents provided it is
@@ -169,7 +167,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
   }
 
   /** Specifies whether and how a field should have term vectors. */
-  public static enum TermVector {
+  public enum TermVector {
     
     /** Do not store term vectors. 
      */
@@ -196,7 +194,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     /**
      * Store the term vector + token position information
      * 
-     * @see #YES
+     *
      */ 
     WITH_POSITIONS {
       @Override
@@ -210,7 +208,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     /**
      * Store the term vector + Token offset information
      * 
-     * @see #YES
+     *
      */ 
     WITH_OFFSETS {
       @Override
@@ -224,9 +222,9 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     /**
      * Store the term vector + Token position and offset information
      * 
-     * @see #YES
-     * @see #WITH_POSITIONS
-     * @see #WITH_OFFSETS
+     *
+     *
+     *
      */ 
     WITH_POSITIONS_OFFSETS {
       @Override
@@ -316,24 +314,6 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     fieldsData = value;
     binaryLength = value.length;
     binaryOffset = 0;
-  }
-
-  /** Expert: change the value of this field.  See <a href="#setValue(java.lang.String)">setValue(String)</a>. */
-  public void setValue(byte[] value, int offset, int length) {
-    if (!isBinary) {
-      throw new IllegalArgumentException("cannot set a byte[] value on a non-binary field");
-    }
-    fieldsData = value;
-    binaryLength = length;
-    binaryOffset = offset;
-  }
-  
-  /** Expert: sets the token stream to be used for indexing and causes isIndexed() and isTokenized() to return true.
-   *  May be combined with stored values from stringValue() or getBinaryValue() */
-  public void setTokenStream(TokenStream tokenStream) {
-    this.isIndexed = true;
-    this.isTokenized = true;
-    this.tokenStream = tokenStream;
   }
 
   /**

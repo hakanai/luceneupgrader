@@ -36,7 +36,7 @@ public class GrowableWriter implements PackedInts.Mutable {
     currentMaxValue = PackedInts.maxValue(current.getBitsPerValue());
   }
 
-  private final int getSize(int bpv) {
+  private int getSize(int bpv) {
     if (roundFixedSize) {
       return PackedInts.getNextFixedSize(bpv);
     } else {

@@ -38,9 +38,9 @@ import java.util.*;
  * to get the correct scale factors and offsets for calculating
  * memory usage.
  * 
- * @see #sizeOf(Object)
- * @see #shallowSizeOf(Object)
- * @see #shallowSizeOfInstance(Class)
+ *
+ *
+ *
  * 
  * @lucene.internal
  */
@@ -48,7 +48,7 @@ public final class RamUsageEstimator {
   /**
    * JVM diagnostic features.
    */
-  public static enum JvmFeature {
+  public enum JvmFeature {
     OBJECT_REFERENCE_SIZE("Object reference size estimated using array index scale"),
     ARRAY_HEADER_SIZE("Array header size estimated using array based offset"),
     FIELD_OFFSETS("Shallow instance size based on field offsets"),
@@ -56,7 +56,7 @@ public final class RamUsageEstimator {
 
     public final String description;
 
-    private JvmFeature(String description) {
+    JvmFeature(String description) {
       this.description = description;
     }
     
@@ -364,7 +364,7 @@ public final class RamUsageEstimator {
    * This works with all conventional classes and primitive types, but not with arrays
    * (the size then depends on the number of elements and varies from object to object).
    * 
-   * @see #shallowSizeOf(Object)
+   *
    * @throws IllegalArgumentException if {@code clazz} is an array class. 
    */
   public static long shallowSizeOfInstance(Class<?> clazz) {
@@ -594,8 +594,8 @@ public final class RamUsageEstimator {
 
   /**
    * Return a human-readable size of a given object.
-   * @see #sizeOf(Object)
-   * @see #humanReadableUnits(long)
+   *
+   *
    */
   public static String humanSizeOf(Object object) {
     return humanReadableUnits(sizeOf(object));
@@ -711,7 +711,7 @@ public final class RamUsageEstimator {
      * finalization step from Austin Appleby's
      * <code>MurmurHash3</code>.
      * 
-     * @see "http://sites.google.com/site/murmurhash/"
+     *
      */
     private static int rehash(Object o) {
       int k = System.identityHashCode(o);
@@ -872,7 +872,7 @@ public final class RamUsageEstimator {
   /** Creates a new istance of {@code RamUsageEstimator}. 
    * @deprecated Don't create instances of this class, instead use the static
    * {@code #sizeOf(Object)} method.
-   * @see #sizeOf(Object)
+   *
    */
   @Deprecated
   public long estimateRamUsage(Object obj) {
