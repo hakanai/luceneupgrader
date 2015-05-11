@@ -17,15 +17,9 @@ package org.apache.lucene.util;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-
-import org.apache.lucene.index.FieldInfo;
-import org.apache.lucene.index.FieldInfos;
 import org.apache.lucene.index.IndexReader;
+
+import java.util.List;
 
 /**
  * Common util methods for dealing with {@code IndexReader}s.
@@ -39,8 +33,8 @@ public final class ReaderUtil {
   /**
    * Gathers sub-readers from reader into a List.
    * 
-   * @param allSubReaders
-   * @param reader
+   * @param allSubReaders ...
+   * @param reader ...
    */
   public static void gatherSubReaders(List<IndexReader> allSubReaders, IndexReader reader) {
     IndexReader[] subReaders = reader.getSequentialSubReaders();
@@ -48,50 +42,10 @@ public final class ReaderUtil {
       // Add the reader itself, and do not recurse
       allSubReaders.add(reader);
     } else {
-      for (int i = 0; i < subReaders.length; i++) {
-        gatherSubReaders(allSubReaders, subReaders[i]);
+      for (IndexReader subReader : subReaders) {
+        gatherSubReaders(allSubReaders, subReader);
       }
     }
-  }
-
-  /** Recursively visits all sub-readers of a reader.  You
-   *  should subclass this and override the add method to
-   *  gather what you need.
-   *
-   * @lucene.experimental */
-  public static abstract class Gather {
-    private final IndexReader topReader;
-
-    public Gather(IndexReader r) {
-      topReader = r;
-    }
-
-    public int run() throws IOException {
-      return run(0, topReader);
-    }
-
-    public int run(int docBase) throws IOException {
-      return run(docBase, topReader);
-    }
-
-    private int run(final int base, final IndexReader reader) throws IOException {
-      IndexReader[] subReaders = reader.getSequentialSubReaders();
-      if (subReaders == null) {
-        // atomic reader
-        add(base, reader);
-        return base + reader.maxDoc();
-      } else {
-        // composite reader
-        int newBase = base;
-        for (int i = 0; i < subReaders.length; i++) {
-          newBase = run(newBase, subReaders[i]);
-        }
-        assert newBase == base + reader.maxDoc();
-        return newBase;
-      }
-    }
-
-    protected abstract void add(int base, IndexReader r) throws IOException;
   }
 
   /**
@@ -120,25 +74,4 @@ public final class ReaderUtil {
     return hi;
   }
 
-  public static Collection<String> getIndexedFields(IndexReader reader) {
-    final Collection<String> fields = new HashSet<String>();
-    for(FieldInfo fieldInfo : getMergedFieldInfos(reader)) {
-      if (fieldInfo.isIndexed) {
-        fields.add(fieldInfo.name);
-      }
-    }
-    return fields;
-  }
-
-  /** Call this to get the (merged) FieldInfos for a
-   *  composite reader */
-  public static FieldInfos getMergedFieldInfos(IndexReader reader) {
-    final List<IndexReader> subReaders = new ArrayList<IndexReader>();
-    ReaderUtil.gatherSubReaders(subReaders, reader);
-    final FieldInfos fieldInfos = new FieldInfos();
-    for(IndexReader subReader : subReaders) {
-      fieldInfos.add(subReader.getFieldInfos());
-    }
-    return fieldInfos;
-  }
 }

@@ -96,8 +96,8 @@ public class Explanation implements java.io.Serializable {
 
     Explanation[] details = getDetails();
     if (details != null) {
-      for (int i = 0 ; i < details.length; i++) {
-        buffer.append(details[i].toString(depth+1));
+      for (Explanation detail : details) {
+        buffer.append(detail.toString(depth + 1));
       }
     }
 
@@ -116,8 +116,8 @@ public class Explanation implements java.io.Serializable {
 
     Explanation[] details = getDetails();
     if (details != null) {
-      for (int i = 0 ; i < details.length; i++) {
-        buffer.append(details[i].toHtml());
+      for (Explanation detail : details) {
+        buffer.append(detail.toHtml());
       }
     }
 

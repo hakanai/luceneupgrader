@@ -91,13 +91,4 @@ public class GrowableWriter implements PackedInts.Mutable {
   public void clear() {
     current.clear();
   }
-
-  public GrowableWriter resize(int newSize) {
-    GrowableWriter next = new GrowableWriter(getBitsPerValue(), newSize, roundFixedSize);
-    final int limit = Math.min(size(), newSize);
-    for(int i=0;i<limit;i++) {
-      next.set(i, get(i));
-    }
-    return next;
-  }
 }

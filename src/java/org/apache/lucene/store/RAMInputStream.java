@@ -36,12 +36,6 @@ public class RAMInputStream extends IndexInput implements Cloneable {
   private long bufferStart;
   private int bufferLength;
 
-  /** Please pass String name */
-  @Deprecated
-  public RAMInputStream(RAMFile f) throws IOException {
-    this("anonymous", f);
-  }
-
   public RAMInputStream(String name, RAMFile f) throws IOException {
     super("RAMInputStream(name=" + name + ")");
     file = f;

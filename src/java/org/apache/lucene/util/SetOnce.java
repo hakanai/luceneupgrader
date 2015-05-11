@@ -48,19 +48,6 @@ public final class SetOnce<T> {
     set = new AtomicBoolean(false);
   }
 
-  /**
-   * Creates a new instance with the internal object set to the given object.
-   * Note that any calls to {@code #set(Object)} afterwards will result in
-   * {@code AlreadySetException}
-   *
-   * @throws AlreadySetException if called more than once
-   *
-   */
-  public SetOnce(T obj) {
-    this.obj = obj;
-    set = new AtomicBoolean(true);
-  }
-  
   /** Sets the given object. If the object has already been set, an exception is thrown. */
   public final void set(T obj) {
     if (set.compareAndSet(false, true)) {

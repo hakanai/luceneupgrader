@@ -17,13 +17,13 @@ package org.apache.lucene.util;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.lucene.store.DataInput;
 import org.apache.lucene.store.DataOutput;
 import org.apache.lucene.store.IndexInput;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Represents a logical byte[] as a series of pages.  You
  *  can write-once into the logical byte[] (append only),
@@ -71,35 +71,6 @@ public final class PagedBytes {
     }
 
     /**
-     * Gets a slice out of {@code PagedBytes} starting at <i>start</i> with a
-     * given length. Iff the slice spans across a block border this method will
-     * allocate sufficient resources and copy the paged data.
-     * <p>
-     * Slices spanning more than one block are not supported.
-     * </p>
-     * @lucene.internal 
-     **/
-    public BytesRef fillSlice(BytesRef b, long start, int length) {
-      assert length >= 0: "length=" + length;
-      assert length <= blockSize+1;
-      final int index = (int) (start >> blockBits);
-      final int offset = (int) (start & blockMask);
-      b.length = length;
-      if (blockSize - offset >= length) {
-        // Within block
-        b.bytes = blocks[index];
-        b.offset = offset;
-      } else {
-        // Split
-        b.bytes = new byte[length];
-        b.offset = 0;
-        System.arraycopy(blocks[index], offset, b.bytes, 0, blockSize-offset);
-        System.arraycopy(blocks[1+index], 0, b.bytes, blockSize-offset, length-(blockSize-offset));
-      }
-      return b;
-    }
-    
-    /**
      * Reads length as 1 or 2 byte vInt prefix, starting at <i>start</i>.
      * <p>
      * <b>Note:</b> this method does not support slices spanning across block
@@ -124,120 +95,6 @@ public final class PagedBytes {
         assert b.length > 0;
       }
       return b;
-    }
-
-    /**
-     * Reads length as 1 or 2 byte vInt prefix, starting at <i>start</i>. *
-     * <p>
-     * <b>Note:</b> this method does not support slices spanning across block
-     * borders.
-     * </p>
-     * 
-     * @return the internal block number of the slice.
-     * @lucene.internal
-     **/
-    public int fillAndGetIndex(BytesRef b, long start) {
-      final int index = (int) (start >> blockBits);
-      final int offset = (int) (start & blockMask);
-      final byte[] block = b.bytes = blocks[index];
-
-      if ((block[offset] & 128) == 0) {
-        b.length = block[offset];
-        b.offset = offset+1;
-      } else {
-        b.length = ((block[offset] & 0x7f) << 8) | (block[1+offset] & 0xff);
-        b.offset = offset+2;
-        assert b.length > 0;
-      }
-      return index;
-    }
-
-    /**
-     * Reads length as 1 or 2 byte vInt prefix, starting at <i>start</i> and
-     * returns the start offset of the next part, suitable as start parameter on
-     * next call to sequentially read all {@code BytesRef}.
-     * 
-     * <p>
-     * <b>Note:</b> this method does not support slices spanning across block
-     * borders.
-     * </p>
-     * 
-     * @return the start offset of the next part, suitable as start parameter on
-     *         next call to sequentially read all {@code BytesRef}.
-     * @lucene.internal
-     **/
-    public long fillAndGetStart(BytesRef b, long start) {
-      final int index = (int) (start >> blockBits);
-      final int offset = (int) (start & blockMask);
-      final byte[] block = b.bytes = blocks[index];
-
-      if ((block[offset] & 128) == 0) {
-        b.length = block[offset];
-        b.offset = offset+1;
-        start += 1L + b.length;
-      } else {
-        b.length = ((block[offset] & 0x7f) << 8) | (block[1+offset] & 0xff);
-        b.offset = offset+2;
-        start += 2L + b.length;
-        assert b.length > 0;
-      }
-      return start;
-    }
-    
-  
-    /**
-     * Gets a slice out of {@code PagedBytes} starting at <i>start</i>, the
-     * length is read as 1 or 2 byte vInt prefix. Iff the slice spans across a
-     * block border this method will allocate sufficient resources and copy the
-     * paged data.
-     * <p>
-     * Slices spanning more than one block are not supported.
-     * </p>
-     * 
-     * @lucene.internal
-     **/
-    public BytesRef fillSliceWithPrefix(BytesRef b, long start) {
-      final int index = (int) (start >> blockBits);
-      int offset = (int) (start & blockMask);
-      final byte[] block = blocks[index];
-      final int length;
-      if ((block[offset] & 128) == 0) {
-        length = block[offset];
-        offset = offset+1;
-      } else {
-        length = ((block[offset] & 0x7f) << 8) | (block[1+offset] & 0xff);
-        offset = offset+2;
-        assert length > 0;
-      }
-      assert length >= 0: "length=" + length;
-      b.length = length;
-
-      // NOTE: even though copyUsingLengthPrefix always
-      // allocs a new block if the byte[] to be added won't
-      // fit in current block, callers can write their own
-      // prefix that may span two blocks:
-      if (blockSize - offset >= length) {
-        // Within block
-        b.offset = offset;
-        b.bytes = blocks[index];
-      } else {
-        // Split
-        b.bytes = new byte[length];
-        b.offset = 0;
-        System.arraycopy(blocks[index], offset, b.bytes, 0, blockSize-offset);
-        System.arraycopy(blocks[1+index], 0, b.bytes, blockSize-offset, length-(blockSize-offset));
-      }
-      return b;
-    }
-
-    /** @lucene.internal */
-    public byte[][] getBlocks() {
-      return blocks;
-    }
-
-    /** @lucene.internal */
-    public int[] getBlockEnds() {
-      return blockEnds;
     }
   }
 
@@ -350,47 +207,6 @@ public final class PagedBytes {
     frozen = true;
     currentBlock = null;
     return new Reader(this);
-  }
-
-  public long getPointer() {
-    if (currentBlock == null) {
-      return 0;
-    } else {
-      return (blocks.size() * ((long) blockSize)) + upto;
-    }
-  }
-
-  /** Copy bytes in, writing the length as a 1 or 2 byte
-   *  vInt prefix. */
-  public long copyUsingLengthPrefix(BytesRef bytes) throws IOException {
-    if (bytes.length >= 32768) {
-      throw new IllegalArgumentException("max length is 32767 (got " + bytes.length + ")");
-    }
-
-    if (upto + bytes.length + 2 > blockSize) {
-      if (bytes.length + 2 > blockSize) {
-        throw new IllegalArgumentException("block size " + blockSize + " is too small to store length " + bytes.length + " bytes");
-      }
-      if (currentBlock != null) {
-        blocks.add(currentBlock);
-        blockEnd.add(upto);        
-      }
-      currentBlock = new byte[blockSize];
-      upto = 0;
-    }
-
-    final long pointer = getPointer();
-
-    if (bytes.length < 128) {
-      currentBlock[upto++] = (byte) bytes.length;
-    } else {
-      currentBlock[upto++] = (byte) (0x80 | (bytes.length >> 8));
-      currentBlock[upto++] = (byte) (bytes.length & 0xff);
-    }
-    System.arraycopy(bytes.bytes, bytes.offset, currentBlock, upto, bytes.length);
-    upto += bytes.length;
-
-    return pointer;
   }
 
   public final class PagedBytesDataInput extends DataInput {

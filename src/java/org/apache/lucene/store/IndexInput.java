@@ -41,6 +41,7 @@ public abstract class IndexInput extends DataInput implements Cloneable,Closeabl
   public void skipChars(int length) throws IOException{
     for (int i = 0; i < length; i++) {
       byte b = readByte();
+      //noinspection StatementWithEmptyBody
       if ((b & 0x80) == 0){
         //do nothing, we only need one byte
       } else if ((b & 0xE0) != 0xE0) {

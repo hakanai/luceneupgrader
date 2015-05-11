@@ -68,13 +68,8 @@ extends Query {
       // pass these methods through to enclosed query's weight
       @Override
       public float getValue() { return value; }
-      
-      @Override
-      public boolean scoresDocsOutOfOrder() {
-        return false;
-      }
 
-      public float sumOfSquaredWeights() throws IOException { 
+      public float sumOfSquaredWeights() throws IOException {
         return weight.sumOfSquaredWeights() * getBoost() * getBoost(); // boost sub-weight
       }
 

@@ -17,9 +17,9 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.apache.lucene.search.BooleanClause.Occur;
+
+import java.io.IOException;
 
 /**
  * Expert: Common scoring functionality for different types of queries.
@@ -172,18 +172,6 @@ public abstract class Scorer extends DocIdSetIterator {
      * @param scorer the current scorer
      */
     public void visitProhibited(P parent, C child, S scorer) {}
-  } 
-
-  /**
-   * Expert: call this to gather details for all sub-scorers for this query.
-   * This can be used, in conjunction with a custom {@code Collector} to gather
-   * details about how each sub-query matched the current hit.
-   * 
-   * @param visitor a callback executed for each sub-scorer
-   * @lucene.experimental
-   */
-  public void visitScorers(ScorerVisitor<Query, Query, Scorer> visitor) {
-    visitSubScorers(null, Occur.MUST/*must id default*/, visitor);
   }
 
   /**

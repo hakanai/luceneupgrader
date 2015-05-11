@@ -17,11 +17,11 @@
 
 package org.apache.lucene.util;
 
-import java.io.IOException;
-import java.util.Arrays;
-
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.DocIdSetIterator;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 // TODO: maybe merge with BitVector?  Problem is BitVector
 // caches its cardinality...
@@ -106,34 +106,6 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     bits[wordNum] |= bitmask;
   }
 
-  public boolean getAndSet(int index) {
-    assert index >= 0 && index < numBits;
-    int wordNum = index >> 6;      // div 64
-    int bit = index & 0x3f;     // mod 64
-    long bitmask = 1L << bit;
-    boolean val = (bits[wordNum] & bitmask) != 0;
-    bits[wordNum] |= bitmask;
-    return val;
-  }
-
-  public void clear(int index) {
-    assert index >= 0 && index < numBits;
-    int wordNum = index >> 6;
-    int bit = index & 0x03f;
-    long bitmask = 1L << bit;
-    bits[wordNum] &= ~bitmask;
-  }
-
-  public boolean getAndClear(int index) {
-    assert index >= 0 && index < numBits;
-    int wordNum = index >> 6;      // div 64
-    int bit = index & 0x3f;     // mod 64
-    long bitmask = 1L << bit;
-    boolean val = (bits[wordNum] & bitmask) != 0;
-    bits[wordNum] &= ~bitmask;
-    return val;
-  }
-
   /** Returns the index of the first set bit starting at the index specified.
    *  -1 is returned if there are no more set bits.
    */
@@ -151,29 +123,6 @@ public final class FixedBitSet extends DocIdSet implements Bits {
       word = bits[i];
       if (word != 0) {
         return (i<<6) + BitUtil.ntz(word);
-      }
-    }
-
-    return -1;
-  }
-
-  /** Returns the index of the last set bit before or on the index specified.
-   *  -1 is returned if there are no more set bits.
-   */
-  public int prevSetBit(int index) {
-    assert index >= 0 && index < numBits: "index=" + index + " numBits=" + numBits;
-    int i = index >> 6;
-    final int subIndex = index & 0x3f;  // index within the word
-    long word = (bits[i] << (63-subIndex));  // skip all the bits to the left of index
-
-    if (word != 0) {
-      return (i << 6) + subIndex - Long.numberOfLeadingZeros(word); // See LUCENE-3197
-    }
-
-    while (--i >= 0) {
-      word = bits[i];
-      if (word !=0 ) {
-        return (i << 6) + 63 - Long.numberOfLeadingZeros(word);
       }
     }
 
@@ -249,78 +198,9 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     }
   }
 
-  /** Does in-place AND NOT of the bits provided by the
-   *  iterator. */
-  public void andNot(DocIdSetIterator iter) throws IOException {
-    if (iter instanceof OpenBitSetIterator && iter.docID() == -1) {
-      final OpenBitSetIterator obs = (OpenBitSetIterator) iter;
-      andNot(obs.arr, obs.words);
-      // advance after last doc that would be accepted if standard
-      // iteration is used (to exhaust it):
-      obs.advance(numBits);
-    } else {
-      int doc;
-      while ((doc = iter.nextDoc()) < numBits) {
-        clear(doc);
-      }
-    }
-  }
-
-  /** this = this AND NOT other */
-  public void andNot(FixedBitSet other) {
-    andNot(other.bits, other.bits.length);
-  }
-  
-  private void andNot(final long[] otherArr, final int otherLen) {
-    final long[] thisArr = this.bits;
-    int pos = Math.min(thisArr.length, otherLen);
-    while(--pos >= 0) {
-      thisArr[pos] &= ~otherArr[pos];
-    }
-  }
-
   // NOTE: no .isEmpty() here because that's trappy (ie,
   // typically isEmpty is low cost, but this one wouldn't
   // be)
-
-  /** Flips a range of bits
-   *
-   * @param startIndex lower index
-   * @param endIndex one-past the last bit to flip
-   */
-  public void flip(int startIndex, int endIndex) {
-    assert startIndex >= 0 && startIndex < numBits;
-    assert endIndex >= 0 && endIndex <= numBits;
-    if (endIndex <= startIndex) {
-      return;
-    }
-
-    int startWord = startIndex >> 6;
-    int endWord = (endIndex-1) >> 6;
-
-    /*** Grrr, java shifting wraps around so -1L>>>64 == -1
-     * for that reason, make sure not to use endmask if the bits to flip will
-     * be zero in the last word (redefine endWord to be the last changed...)
-    long startmask = -1L << (startIndex & 0x3f);     // example: 11111...111000
-    long endmask = -1L >>> (64-(endIndex & 0x3f));   // example: 00111...111111
-    ***/
-
-    long startmask = -1L << startIndex;
-    long endmask = -1L >>> -endIndex;  // 64-(endIndex&0x3f) is the same as -endIndex due to wrap
-
-    if (startWord == endWord) {
-      bits[startWord] ^= (startmask & endmask);
-      return;
-    }
-
-    bits[startWord] ^= startmask;
-
-    for (int i=startWord+1; i<endWord; i++) {
-      bits[i] = ~bits[i];
-    }
-
-    bits[endWord] ^= endmask;
-  }
 
   /** Sets a range of bits
    *
@@ -397,6 +277,7 @@ public final class FixedBitSet extends DocIdSet implements Bits {
       return false;
     }
     FixedBitSet other = (FixedBitSet) o;
+    //noinspection SimplifiableIfStatement
     if (numBits != other.length()) {
       return false;
     }

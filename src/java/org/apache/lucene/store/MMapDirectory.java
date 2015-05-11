@@ -17,24 +17,22 @@ package org.apache.lucene.store;
  * limitations under the License.
  */
  
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.File;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.BufferUnderflowException;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileChannel.MapMode;
-
-import java.util.Iterator;
-
-import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
-import java.security.PrivilegedActionException;
-import java.lang.reflect.Method;
-
 import org.apache.lucene.util.Constants;
 import org.apache.lucene.util.WeakIdentityMap;
+
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.lang.reflect.Method;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.Iterator;
 
 /** File-based {@code Directory} implementation that uses
  *  mmap for reading, and {@code
@@ -81,6 +79,23 @@ import org.apache.lucene.util.WeakIdentityMap;
  * </p>
  */
 public class MMapDirectory extends FSDirectory {
+  /**
+   * <code>true</code>, if this platform supports unmapping mmapped files.
+   */
+  public static final boolean UNMAP_SUPPORTED;
+  static {
+    boolean v;
+    try {
+      Class.forName("sun.misc.Cleaner");
+      Class.forName("java.nio.DirectByteBuffer")
+              .getMethod("cleaner");
+      v = true;
+    } catch (Exception e) {
+      v = false;
+    }
+    UNMAP_SUPPORTED = v;
+  }
+
   private boolean useUnmapHack = UNMAP_SUPPORTED;
   public static final int DEFAULT_MAX_BUFF = Constants.JRE_IS_64BIT ? (1 << 30) : (1 << 28);
   private int chunkSizePower;
@@ -97,59 +112,6 @@ public class MMapDirectory extends FSDirectory {
     setMaxChunkSize(DEFAULT_MAX_BUFF);
   }
 
-  /** Create a new MMapDirectory for the named location and {@code NativeFSLockFactory}.
-   *
-   * @param path the path of the directory
-   * @throws IOException
-   */
-  public MMapDirectory(File path) throws IOException {
-    super(path, null);
-    setMaxChunkSize(DEFAULT_MAX_BUFF);
-  }
-
-  /**
-   * <code>true</code>, if this platform supports unmapping mmapped files.
-   */
-  public static final boolean UNMAP_SUPPORTED;
-  static {
-    boolean v;
-    try {
-      Class.forName("sun.misc.Cleaner");
-      Class.forName("java.nio.DirectByteBuffer")
-        .getMethod("cleaner");
-      v = true;
-    } catch (Exception e) {
-      v = false;
-    }
-    UNMAP_SUPPORTED = v;
-  }
-  
-  /**
-   * This method enables the workaround for unmapping the buffers
-   * from address space after closing {@code IndexInput}, that is
-   * mentioned in the bug report. This hack may fail on non-Sun JVMs.
-   * It forcefully unmaps the buffer on close by using
-   * an undocumented internal cleanup functionality.
-   * <p><b>NOTE:</b> Enabling this is completely unsupported
-   * by Java and may lead to JVM crashes if <code>IndexInput</code>
-   * is closed while another thread is still accessing it (SIGSEGV).
-   * @throws IllegalArgumentException if {@code #UNMAP_SUPPORTED}
-   * is <code>false</code> and the workaround cannot be enabled.
-   */
-  public void setUseUnmap(final boolean useUnmapHack) {
-    if (useUnmapHack && !UNMAP_SUPPORTED)
-      throw new IllegalArgumentException("Unmap hack not supported on this platform!");
-    this.useUnmapHack=useUnmapHack;
-  }
-  
-  /**
-   * Returns <code>true</code>, if the unmap workaround is enabled.
-   *
-   */
-  public boolean getUseUnmap() {
-    return useUnmapHack;
-  }
-  
   /**
    * Try to unmap the buffer, this method silently fails if no support
    * for that in the JVM. On Windows, this leads to the fact,
@@ -199,14 +161,6 @@ public class MMapDirectory extends FSDirectory {
     this.chunkSizePower = 31 - Integer.numberOfLeadingZeros(maxChunkSize);
     assert this.chunkSizePower >= 0 && this.chunkSizePower <= 30;
     //System.out.println("Got chunk size: "+getMaxChunkSize());
-  }
-  
-  /**
-   * Returns the current mmap chunk size.
-   *
-   */
-  public final int getMaxChunkSize() {
-    return 1 << chunkSizePower;
   }
 
   /** Creates an IndexInput for the file with the given name. */

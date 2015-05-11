@@ -118,13 +118,13 @@ final class FreqProxTermsWriter extends TermsHashConsumer {
         // If this field has postings then add them to the
         // segment
         appendPostings(fieldName, state, fields, consumer);
-        
-        for(int i=0;i<fields.length;i++) {
-          TermsHashPerField perField = fields[i].termsHashPerField;
+
+        for (FreqProxTermsWriterPerField field : fields) {
+          TermsHashPerField perField = field.termsHashPerField;
           int numPostings = perField.numPostings;
           perField.reset();
           perField.shrinkHash(numPostings);
-          fields[i].reset();
+          field.reset();
         }
         
         start = end;

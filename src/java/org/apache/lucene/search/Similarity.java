@@ -26,7 +26,6 @@ import org.apache.lucene.util.VirtualMethod;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collection;
 
 
 /** 
@@ -543,9 +542,7 @@ public abstract class Similarity implements Serializable {
    **/
   private static Similarity defaultImpl = new DefaultSimilarity();
 
-  public static final int NO_DOC_ID_PROVIDED = -1;
-
-  /** Set the default Similarity implementation used by indexing and search
+    /** Set the default Similarity implementation used by indexing and search
    * code.
    *
    *
@@ -575,40 +572,7 @@ public abstract class Similarity implements Serializable {
       NORM_TABLE[i] = SmallFloat.byte315ToFloat((byte)i);
   }
 
-  /**
-   * Decodes a normalization factor stored in an index.
-   *
-   * @deprecated Use {@code #decodeNormValue} instead.
-   */
-  @Deprecated
-  public static float decodeNorm(byte b) {
-    return NORM_TABLE[b & 0xFF];  // & 0xFF maps negative bytes to positive above 127
-  }
-
-  /** Decodes a normalization factor stored in an index.
-   * <p>
-   * <b>WARNING: If you override this method, you should change the default
-   *    Similarity to your implementation with {@code Similarity#setDefault(Similarity)}.
-   *    Otherwise, your method may not always be called, especially if you omit norms 
-   *    for some fields.</b>
-   *
-   */
-  public float decodeNormValue(byte b) {
-    return NORM_TABLE[b & 0xFF];  // & 0xFF maps negative bytes to positive above 127
-  }
-
-  /** Returns a table for decoding normalization bytes.
-   *
-   *
-   * 
-   * @deprecated Use instance methods for encoding/decoding norm values to enable customization.
-   */
-  @Deprecated
-  public static float[] getNormDecoder() {
-    return NORM_TABLE;
-  }
-
-  /**
+    /**
    * Computes the normalization value for a field, given the accumulated
    * state of term processing for this field (see {@code FieldInvertState}).
    * 
@@ -638,38 +602,8 @@ public abstract class Similarity implements Serializable {
    * @return the calculated float norm
    */
   public abstract float computeNorm(String field, FieldInvertState state);
-  
-  /** Computes the normalization value for a field given the total number of
-   * terms contained in a field.  These values, together with field boosts, are
-   * stored in an index and multipled into scores for hits on each field by the
-   * search code.
-   *
-   * <p>Matches in longer fields are less precise, so implementations of this
-   * method usually return smaller values when <code>numTokens</code> is large,
-   * and larger values when <code>numTokens</code> is small.
-   * 
-   * <p>Note that the return values are computed under 
-   * {@code org.apache.lucene.index.IndexWriter#addDocument(org.apache.lucene.document.Document)}
-   * and then stored using
-   * {@code #encodeNormValue(float)}.
-   * Thus they have limited precision, and documents
-   * must be re-indexed if this method is altered.
-   *
-   * @param fieldName the name of the field
-   * @param numTokens the total number of tokens contained in fields named
-   * <i>fieldName</i> of <i>doc</i>.
-   * @return a normalization factor for hits on this field of this document
-   *
-   *
-   *
-   * @deprecated Please override computeNorm instead
-   */
-  @Deprecated
-  public final float lengthNorm(String fieldName, int numTokens) {
-    throw new UnsupportedOperationException("please use computeNorm instead");
-  }
 
-  /** Computes the normalization value for a query given the sum of the squared
+    /** Computes the normalization value for a query given the sum of the squared
    * weights of each of the query terms.  This value is multiplied into the
    * weight of each query term. While the classic query normalization factor is
    * computed as 1/sqrt(sumOfSquaredWeights), other implementations might
@@ -705,72 +639,8 @@ public abstract class Similarity implements Serializable {
   public byte encodeNormValue(float f) {
     return SmallFloat.floatToByte315(f);
   }
-  
-  /**
-   * Static accessor kept for backwards compability reason, use encodeNormValue instead.
-   * @param f norm-value to encode
-   * @return byte representing the given float
-   * @deprecated Use {@code #encodeNormValue} instead.
-   * 
-   *
-   */
-  @Deprecated
-  public static byte encodeNorm(float f) {
-    return SmallFloat.floatToByte315(f);
-  }
 
-
-  /** Computes a score factor based on a term or phrase's frequency in a
-   * document.  This value is multiplied by the {@code #idf(int, int)}
-   * factor for each term in the query and these products are then summed to
-   * form the initial score for a document.
-   *
-   * <p>Terms and phrases repeated in a document indicate the topic of the
-   * document, so implementations of this method usually return larger values
-   * when <code>freq</code> is large, and smaller values when <code>freq</code>
-   * is small.
-   *
-   * <p>The default implementation calls {@code #tf(float)}.
-   *
-   * @param freq the frequency of a term within a document
-   * @return a score factor based on a term's within-document frequency
-   */
-  public float tf(int freq) {
-    return tf((float)freq);
-  }
-
-  /** Computes the amount of a sloppy phrase match, based on an edit distance.
-   * This value is summed for each sloppy phrase match in a document to form
-   * the frequency that is passed to {@code #tf(float)}.
-   *
-   * <p>A phrase match with a small edit distance to a document passage more
-   * closely matches the document, so implementations of this method usually
-   * return larger values when the edit distance is small and smaller values
-   * when it is large.
-   *
-   *
-   * @param distance the edit distance of this sloppy phrase match
-   * @return the frequency increment for this match
-   */
-  public abstract float sloppyFreq(int distance);
-
-  /** Computes a score factor based on a term or phrase's frequency in a
-   * document.  This value is multiplied by the {@code #idf(int, int)}
-   * factor for each term in the query and these products are then summed to
-   * form the initial score for a document.
-   *
-   * <p>Terms and phrases repeated in a document indicate the topic of the
-   * document, so implementations of this method usually return larger values
-   * when <code>freq</code> is large, and smaller values when <code>freq</code>
-   * is small.
-   *
-   * @param freq the frequency of a term within a document
-   * @return a score factor based on a term's within-document frequency
-   */
-  public abstract float tf(float freq);
-
-
-  /**
+    /**
    * Computes a score factor for a simple term and returns an explanation
    * for that score factor.
    * 
@@ -828,46 +698,7 @@ public abstract class Similarity implements Serializable {
     return idfExplain(term, searcher, searcher.docFreq(term));
   }
 
-  /**
-   * Computes a score factor for a phrase.
-   * 
-   * <p>
-   * The default implementation sums the idf factor for
-   * each term in the phrase.
-   * 
-   * @param terms the terms in the phrase
-   * @param searcher the document collection being searched
-   * @return an IDFExplain object that includes both an idf 
-   *         score factor for the phrase and an explanation 
-   *         for each term.
-   * @throws IOException
-   */
-  public IDFExplanation idfExplain(Collection<Term> terms, Searcher searcher) throws IOException {
-    final int max = searcher.maxDoc();
-    float idf = 0.0f;
-    final StringBuilder exp = new StringBuilder();
-    for (final Term term : terms ) {
-      final int df = searcher.docFreq(term);
-      idf += idf(df, max);
-      exp.append(" ");
-      exp.append(term.text());
-      exp.append("=");
-      exp.append(df);
-    }
-    final float fIdf = idf;
-    return new IDFExplanation() {
-      @Override
-      public float getIdf() {
-        return fIdf;
-      }
-      @Override
-      public String explain() {
-        return exp.toString();
-      }
-    };
-  }
-
-  /** Computes a score factor based on a term's document frequency (the number
+    /** Computes a score factor based on a term's document frequency (the number
    * of documents which contain the term).  This value is multiplied by the
    * {@code #tf(int)} factor for each term in the query and these products are
    * then summed to form the initial score for a document.
@@ -895,27 +726,5 @@ public abstract class Similarity implements Serializable {
    * @return a score factor based on term overlap with the query
    */
   public abstract float coord(int overlap, int maxOverlap);
-
-  /**
-   * Calculate a scoring factor based on the data in the payload.  Overriding implementations
-   * are responsible for interpreting what is in the payload.  Lucene makes no assumptions about
-   * what is in the byte array.
-   * <p>
-   * The default implementation returns 1.
-   *
-   * @param docId The docId currently being scored.  If this value is {@code #NO_DOC_ID_PROVIDED}, then it should be assumed that the PayloadQuery implementation does not provide document information
-   * @param fieldName The fieldName of the term this payload belongs to
-   * @param start The start position of the payload
-   * @param end The end position of the payload
-   * @param payload The payload byte array to be scored
-   * @param offset The offset into the payload array
-   * @param length The length in the array
-   * @return An implementation dependent float to be used as a scoring factor
-   *
-   */
-  public float scorePayload(int docId, String fieldName, int start, int end, byte [] payload, int offset, int length)
-  {
-    return 1;
-  }
 
 }

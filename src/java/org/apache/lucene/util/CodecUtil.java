@@ -18,13 +18,13 @@ package org.apache.lucene.util;
  */
 
 
-import java.io.IOException;
-
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexFormatTooNewException;
 import org.apache.lucene.index.IndexFormatTooOldException;
 import org.apache.lucene.store.DataInput;
 import org.apache.lucene.store.DataOutput;
+
+import java.io.IOException;
 
 /**
  * Utility class for reading and writing versioned headers.
@@ -49,10 +49,6 @@ public final class CodecUtil {
     out.writeInt(version);
 
     return out;
-  }
-
-  public static int headerLength(String codec) {
-    return 9+codec.length();
   }
 
   public static int checkHeader(DataInput in, String codec, int minVersion, int maxVersion)

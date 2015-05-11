@@ -75,15 +75,6 @@ public abstract class Searcher implements Searchable {
     return weight;
   }
 
-    // inherit javadoc
-  public int[] docFreqs(Term[] terms) throws IOException {
-    int[] result = new int[terms.length];
-    for (int i = 0; i < terms.length; i++) {
-      result[i] = docFreq(terms[i]);
-    }
-    return result;
-  }
-
   abstract public void search(Weight weight, Filter filter, Collector results) throws IOException;
   abstract public void close() throws IOException;
   abstract public int docFreq(Term term) throws IOException;
@@ -92,6 +83,5 @@ public abstract class Searcher implements Searchable {
   abstract public Document doc(int i) throws IOException;
   abstract public Document doc(int docid, FieldSelector fieldSelector) throws IOException;
   abstract public Query rewrite(Query query) throws IOException;
-  abstract public Explanation explain(Weight weight, int doc) throws IOException;
   /* End patch for GCJ bug #15411. */
 }

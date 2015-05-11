@@ -17,11 +17,11 @@ package org.apache.lucene.store;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.Map;
-
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.UnicodeUtil;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Abstract base class for performing write operations of Lucene's low-level
@@ -132,59 +132,6 @@ public abstract class DataOutput {
       input.readBytes(copyBuffer, 0, toCopy);
       writeBytes(copyBuffer, 0, toCopy);
       left -= toCopy;
-    }
-  }
-
-  /** Writes a sub sequence of characters from s as the old
-   *  format (modified UTF-8 encoded bytes).
-   * @param s the source of the characters
-   * @param start the first character in the sequence
-   * @param length the number of characters in the sequence
-   * @deprecated -- please pre-convert to utf8 bytes
-   * instead or use {@code #writeString}
-   */
-  @Deprecated
-  public void writeChars(String s, int start, int length)
-       throws IOException {
-    final int end = start + length;
-    for (int i = start; i < end; i++) {
-      final int code = s.charAt(i);
-      if (code >= 0x01 && code <= 0x7F)
-	writeByte((byte)code);
-      else if (((code >= 0x80) && (code <= 0x7FF)) || code == 0) {
-	writeByte((byte)(0xC0 | (code >> 6)));
-	writeByte((byte)(0x80 | (code & 0x3F)));
-      } else {
-	writeByte((byte)(0xE0 | (code >>> 12)));
-	writeByte((byte)(0x80 | ((code >> 6) & 0x3F)));
-	writeByte((byte)(0x80 | (code & 0x3F)));
-      }
-    }
-  }
-
-  /** Writes a sub sequence of characters from char[] as
-   *  the old format (modified UTF-8 encoded bytes).
-   * @param s the source of the characters
-   * @param start the first character in the sequence
-   * @param length the number of characters in the sequence
-   * @deprecated -- please pre-convert to utf8 bytes instead or use {@code #writeString}
-   */
-  @Deprecated
-  public void writeChars(char[] s, int start, int length)
-    throws IOException {
-    final int end = start + length;
-    for (int i = start; i < end; i++) {
-      final int code = s[i];
-      if (code >= 0x01 && code <= 0x7F)
-	writeByte((byte)code);
-      else if (((code >= 0x80) && (code <= 0x7FF)) || code == 0) {
-	writeByte((byte)(0xC0 | (code >> 6)));
-	writeByte((byte)(0x80 | (code & 0x3F)));
-      } else {
-	writeByte((byte)(0xE0 | (code >>> 12)));
-	writeByte((byte)(0x80 | ((code >> 6) & 0x3F)));
-	writeByte((byte)(0x80 | (code & 0x3F)));
-      }
     }
   }
 

@@ -17,8 +17,10 @@ package org.apache.lucene.store;
  * limitations under the License.
  */
 
-import java.io.IOException;
+import org.apache.lucene.util.ThreadInterruptedException;
+
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.apache.lucene.index.IndexFileNameFilter;
-import org.apache.lucene.util.ThreadInterruptedException;
 
 /**
  * A memory-resident {@code Directory} implementation.  Locking
@@ -64,50 +63,6 @@ public class RAMDirectory extends Directory implements Serializable {
       setLockFactory(new SingleInstanceLockFactory());
     } catch (IOException e) {
       // Cannot happen
-    }
-  }
-
-  /**
-   * Creates a new <code>RAMDirectory</code> instance from a different
-   * <code>Directory</code> implementation.  This can be used to load
-   * a disk-based index into memory.
-   * 
-   * <p><b>Warning:</b> This class is not intended to work with huge
-   * indexes. Everything beyond several hundred megabytes will waste
-   * resources (GC cycles), because it uses an internal buffer size
-   * of 1024 bytes, producing millions of {@code byte[1024]} arrays.
-   * This class is optimized for small memory-resident indexes.
-   * It also has bad concurrency on multithreaded environments.
-   * 
-   * <p>For disk-based indexes it is recommended to use
-   * {@code MMapDirectory}, which is a high-performance directory
-   * implementation working directly on the file system cache of the
-   * operating system, so copying data to Java heap space is not useful.
-   * 
-   * <p>Note that the resulting <code>RAMDirectory</code> instance is fully
-   * independent from the original <code>Directory</code> (it is a
-   * complete copy).  Any subsequent changes to the
-   * original <code>Directory</code> will not be visible in the
-   * <code>RAMDirectory</code> instance.
-   *
-   * @param dir a <code>Directory</code> value
-   * @exception IOException if an error occurs
-   */
-  public RAMDirectory(Directory dir) throws IOException {
-    this(dir, false);
-  }
-  
-  private RAMDirectory(Directory dir, boolean closeDir) throws IOException {
-    this();
-
-    IndexFileNameFilter filter = IndexFileNameFilter.getFilter();
-    for (String file : dir.listAll()) {
-      if (filter.accept(null, file)) {
-        dir.copy(this, file, file);
-      }
-    }
-    if (closeDir) {
-      dir.close();
     }
   }
 

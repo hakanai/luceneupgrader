@@ -163,8 +163,7 @@ public abstract class AttributeImpl implements Cloneable, Serializable, Attribut
 
     final Field[] fields = clazz.getDeclaredFields();
     try {
-      for (int i = 0; i < fields.length; i++) {
-        final Field f = fields[i];
+      for (final Field f : fields) {
         if (Modifier.isStatic(f.getModifiers())) continue;
         f.setAccessible(true);
         reflector.reflect(interf, f.getName(), f.get(this));

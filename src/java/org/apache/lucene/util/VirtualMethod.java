@@ -97,7 +97,7 @@ public final class VirtualMethod<C> {
       // we have the slight chance that another thread may do the same, but who cares?
       cache.put(subclazz, distance = reflectImplementationDistance(subclazz));
     }
-    return distance.intValue();
+    return distance;
   }
   
   /**
@@ -122,7 +122,7 @@ public final class VirtualMethod<C> {
         try {
           clazz.getDeclaredMethod(method, parameters);
           overridden = true;
-        } catch (NoSuchMethodException nsme) {
+        } catch (NoSuchMethodException ignored) {
         }
       }
       

@@ -17,17 +17,14 @@ package org.apache.lucene.util;
  * limitations under the License.
  */
 
+import org.apache.lucene.analysis.tokenattributes.CharTermAttributeImpl;
+import org.apache.lucene.analysis.tokenattributes.TermAttribute;
+
 import java.lang.ref.WeakReference;
-import java.util.Collections;
-import java.util.NoSuchElementException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import org.apache.lucene.analysis.tokenattributes.TermAttribute;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttributeImpl;
 
 /**
  * An AttributeSource contains a list of different {@code AttributeImpl}s,
@@ -157,52 +154,7 @@ public class AttributeSource {
     this.currentState = new State[1];
     this.factory = factory;
   }
-  
-  /**
-   * returns the used AttributeFactory.
-   */
-  public AttributeFactory getAttributeFactory() {
-    return this.factory;
-  }
-  
-  /** Returns a new iterator that iterates the attribute classes
-   * in the same order they were added in.
-   */
-  public Iterator<Class<? extends Attribute>> getAttributeClassesIterator() {
-    return Collections.unmodifiableSet(attributes.keySet()).iterator();
-  }
-  
-  /** Returns a new iterator that iterates all unique Attribute implementations.
-   * This iterator may contain less entries that {@code #getAttributeClassesIterator},
-   * if one instance implements more than one Attribute interface.
-   */
-  public Iterator<AttributeImpl> getAttributeImplsIterator() {
-    final State initState = getCurrentState();
-    if (initState != null) {
-      return new Iterator<AttributeImpl>() {
-        private State state = initState;
-      
-        public void remove() {
-          throw new UnsupportedOperationException();
-        }
-        
-        public AttributeImpl next() {
-          if (state == null)
-            throw new NoSuchElementException();
-          final AttributeImpl att = state.attribute;
-          state = state.next;
-          return att;
-        }
-        
-        public boolean hasNext() {
-          return state != null;
-        }
-      };
-    } else {
-      return Collections.<AttributeImpl>emptySet().iterator();
-    }
-  }
-  
+
   /** a cache that stores all interfaces for known implementation classes for performance (slow reflection) */
   private static final WeakIdentityMap<Class<? extends AttributeImpl>,LinkedList<WeakReference<Class<? extends Attribute>>>> knownImplClasses =
     WeakIdentityMap.newConcurrentHashMap();
@@ -334,44 +286,6 @@ public class AttributeSource {
       state.attribute.clear();
     }
   }
-  
-  /**
-   * Captures the state of all Attributes. The return value can be passed to
-   * {@code #restoreState} to restore the state of this or another AttributeSource.
-   */
-  public State captureState() {
-    final State state = this.getCurrentState();
-    return (state == null) ? null : (State) state.clone();
-  }
-  
-  /**
-   * Restores this state by copying the values of all attribute implementations
-   * that this state contains into the attributes implementations of the targetStream.
-   * The targetStream must contain a corresponding instance for each argument
-   * contained in this state (e.g. it is not possible to restore the state of
-   * an AttributeSource containing a TermAttribute into a AttributeSource using
-   * a Token instance as implementation).
-   * <p>
-   * Note that this method does not affect attributes of the targetStream
-   * that are not contained in this state. In other words, if for example
-   * the targetStream contains an OffsetAttribute, but this state doesn't, then
-   * the value of the OffsetAttribute remains unchanged. It might be desirable to
-   * reset its value to the default, in which case the caller should first
-   * call {@code TokenStream#clearAttributes()} on the targetStream.
-   */
-  public void restoreState(State state) {
-    if (state == null)  return;
-    
-    do {
-      AttributeImpl targetImpl = attributeImpls.get(state.attribute.getClass());
-      if (targetImpl == null) {
-        throw new IllegalArgumentException("State contains AttributeImpl of type " +
-          state.attribute.getClass().getName() + " that is not in in this AttributeSource");
-      }
-      state.attribute.copyTo(targetImpl);
-      state = state.next;
-    } while (state != null);
-  }
 
   @Override
   public int hashCode() {
@@ -441,74 +355,7 @@ public class AttributeSource {
     }
     return sb.append(')').toString();
   }
-  
-  /**
-   * This method returns the current attribute values as a string in the following format
-   * by calling the {@code #reflectWith(AttributeReflector)} method:
-   * 
-   * <ul>
-   * <li><em>iff {@code prependAttClass=true}:</em> {@code "AttributeClass#key=value,AttributeClass#key=value"}
-   * <li><em>iff {@code prependAttClass=false}:</em> {@code "key=value,key=value"}
-   * </ul>
-   *
-   *
-   */
-  public final String reflectAsString(final boolean prependAttClass) {
-    final StringBuilder buffer = new StringBuilder();
-    reflectWith(new AttributeReflector() {
-      public void reflect(Class<? extends Attribute> attClass, String key, Object value) {
-        if (buffer.length() > 0) {
-          buffer.append(',');
-        }
-        if (prependAttClass) {
-          buffer.append(attClass.getName()).append('#');
-        }
-        buffer.append(key).append('=').append((value == null) ? "null" : value);
-      }
-    });
-    return buffer.toString();
-  }
-  
-  /**
-   * This method is for introspection of attributes, it should simply
-   * add the key/values this AttributeSource holds to the given {@code AttributeReflector}.
-   *
-   * <p>This method iterates over all Attribute implementations and calls the
-   * corresponding {@code AttributeImpl#reflectWith} method.</p>
-   *
-   *
-   */
-  public final void reflectWith(AttributeReflector reflector) {
-    for (State state = getCurrentState(); state != null; state = state.next) {
-      state.attribute.reflectWith(reflector);
-    }
-  }
 
-  /**
-   * Performs a clone of all {@code AttributeImpl} instances returned in a new
-   * {@code AttributeSource} instance. This method can be used to e.g. create another TokenStream
-   * with exactly the same attributes (using {@code #AttributeSource(AttributeSource)}).
-   * You can also use it as a (non-performant) replacement for {@code #captureState}, if you need to look
-   * into / modify the captured state.
-   */
-  public AttributeSource cloneAttributes() {
-    final AttributeSource clone = new AttributeSource(this.factory);
-    
-    if (hasAttributes()) {
-      // first clone the impls
-      for (State state = getCurrentState(); state != null; state = state.next) {
-        clone.attributeImpls.put(state.attribute.getClass(), (AttributeImpl) state.attribute.clone());
-      }
-      
-      // now the interfaces
-      for (Entry<Class<? extends Attribute>, AttributeImpl> entry : this.attributes.entrySet()) {
-        clone.attributes.put(entry.getKey(), clone.attributeImpls.get(entry.getValue().getClass()));
-      }
-    }
-    
-    return clone;
-  }
-  
   /**
    * Copies the contents of this {@code AttributeSource} to the given target {@code AttributeSource}.
    * The given instance has to provide all {@code Attribute}s this instance contains.

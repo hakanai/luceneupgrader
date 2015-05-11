@@ -242,28 +242,6 @@ public class IndexSearcher extends Searcher {
     return query;
   }
 
-  /** Expert: low-level implementation method
-   * Returns an Explanation that describes how <code>doc</code> scored against
-   * <code>weight</code>.
-   *
-   * <p>This is intended to be used in developing Similarity implementations,
-   * and, for good performance, should not be displayed with every hit.
-   * Computing an explanation is as expensive as executing the query over the
-   * entire index.
-   * <p>Applications should call {@code Searcher#explain(Query, int)}.
-   * @throws BooleanQuery.TooManyClauses
-   */
-  @Override
-  public Explanation explain(Weight weight, int doc) throws IOException {
-    int n = ReaderUtil.subIndex(doc, docStarts);
-    int deBasedDoc = doc - docStarts[n];
-    
-    return weight.explain(subReaders[n], deBasedDoc);
-  }
-
-  private boolean fieldSortDoTrackScores;
-  private boolean fieldSortDoMaxScore;
-
   /**
    * Creates a normalized weight for a top-level {@code Query}.
    * The query is rewritten by this method and {@code Query#createWeight} called,

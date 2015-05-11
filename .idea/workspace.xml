@@ -2,43 +2,105 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="736e230f-2817-43f3-8f39-4bcb3954f125" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/document/AbstractField.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/document/AbstractField.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/Analyzer.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/Analyzer.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldDoc.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldDocSortedHitQueue.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldValueHitQueue.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/FilteredTermEnum.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/HitQueue.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/ScoreDoc.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Sort.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/SortField.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/TopDocs.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/TopDocsCollector.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/TopFieldCollector.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/TopFieldDocs.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/TopScoreDocCollector.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/ByteArrayDataInput.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/ByteArrayDataOutput.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/FileSwitchDirectory.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/InputStreamDataInput.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/NRTCachingDirectory.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/NoLockFactory.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/OutputStreamDataOutput.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/SimpleFSLockFactory.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/CharsRef.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/OpenBitSet.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/ArrayUtil.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/ArrayUtil.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/AttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/AttributeImpl.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/AttributeSource.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/AttributeSource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/BufferedDeletes.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/BufferedDeletes.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/CharBlockPool.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/CharBlockPool.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/ComplexExplanation.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/ComplexExplanation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/CompoundFileReader.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/CompoundFileReader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/ConcurrentMergeScheduler.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/ConcurrentMergeScheduler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/BitUtil.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/BitUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/BitVector.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/BitVector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/Bits.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/Bits.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/BooleanQuery.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/BooleanQuery.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/BooleanScorer.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/BooleanScorer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/BooleanScorer2.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/BooleanScorer2.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/BufferedIndexInput.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/BufferedIndexInput.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/BytesRef.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/BytesRef.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/CodecUtil.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/CodecUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/CollectionUtil.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/CollectionUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Collector.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Collector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/CommandLineUtil.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/CommandLineUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/ConjunctionScorer.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/ConjunctionScorer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/Constants.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/Constants.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/DataOutput.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/DataOutput.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/DefaultSimilarity.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/DefaultSimilarity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Direct16.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Direct16.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Direct32.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Direct32.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Direct64.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Direct64.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Direct8.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Direct8.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/Directory.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/Directory.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DirectoryReader.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DirectoryReader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocConsumerPerThread.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocConsumerPerThread.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessorPerThread.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessorPerThread.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocInverterPerField.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocInverterPerField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Explanation.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Explanation.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/FSDirectory.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/FSDirectory.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldCache.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldCache.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldCacheImpl.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldCacheImpl.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/FieldCacheSanityChecker.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/FieldCacheSanityChecker.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldComparator.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldComparator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/document/Fieldable.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/document/Fieldable.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/FilteredQuery.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/FilteredQuery.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/FixedBitSet.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/FixedBitSet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FreqProxTermsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FreqProxTermsWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/GrowableWriter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/GrowableWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/IOUtils.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/IOUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexFileDeleter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexFileDeleter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/IndexInput.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/IndexInput.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/IndexSearcher.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/IndexSearcher.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/KeywordAttribute.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/KeywordAttribute.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/KeywordAttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/KeywordAttributeImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexWriter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/Lock.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/Lock.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/LockFactory.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/LockFactory.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/MMapDirectory.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/MMapDirectory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/MergePolicy.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/MergePolicy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/MultiLevelSkipListWriter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/MultiLevelSkipListWriter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/NIOFSDirectory.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/NIOFSDirectory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/NRTCachingDirectory.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/NRTCachingDirectory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/document/NumericField.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/document/NumericField.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/NumericTokenStream.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/NumericTokenStream.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/NativeFSLockFactory.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/NativeFSLockFactory.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/NumericUtils.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/NumericUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/Payload.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/Payload.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/PositionBasedTermVectorMapper.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/PositionBasedTermVectorMapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/PositionIncrementAttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/PositionIncrementAttributeImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/OpenBitSetIterator.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/OpenBitSetIterator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Packed32.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Packed32.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Packed64.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Packed64.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/PackedInts.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/PackedInts.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/PagedBytes.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/PagedBytes.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/PriorityQueue.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/PriorityQueue.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Query.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Query.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMDirectory.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMDirectory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMInputStream.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMInputStream.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/RamUsageEstimator.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/RamUsageEstimator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/Token.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/Token.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/TokenStream.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/TokenStream.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/ReaderUtil.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/ReaderUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Scorer.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Scorer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Searchable.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Searchable.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Searcher.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Searcher.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentInfo.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentInfos.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentInfos.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/SetOnce.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/SetOnce.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Similarity.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Similarity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/SimpleFSDirectory.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/SimpleFSDirectory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/SingleInstanceLockFactory.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/SingleInstanceLockFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/SmallFloat.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/SmallFloat.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/ToStringUtils.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/ToStringUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/TwoPhaseCommit.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/TwoPhaseCommit.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/UnicodeUtil.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/UnicodeUtil.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/VirtualMethod.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/VirtualMethod.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/WeakIdentityMap.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/WeakIdentityMap.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Weight.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Weight.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="lucene3.iws" />
@@ -64,101 +126,101 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="AbstractField.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/document/AbstractField.java">
+      <file leaf-file-name="ScoreCachingWrappingScorer.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/ScoreCachingWrappingScorer.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="26" column="22" selection-start-line="26" selection-start-column="22" selection-end-line="26" selection-end-column="22" />
+              <caret line="32" column="13" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TokenStream.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/TokenStream.java">
+      <file leaf-file-name="DocIdSet.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/DocIdSet.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="22" column="16" selection-start-line="22" selection-start-column="16" selection-end-line="22" selection-end-column="16" />
+              <caret line="25" column="22" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Token.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/Token.java">
+      <file leaf-file-name="DisjunctionSumScorer.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/DisjunctionSumScorer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-16.72">
-              <caret line="114" column="36" selection-start-line="114" selection-start-column="36" selection-end-line="114" selection-end-column="36" />
+            <state vertical-scroll-proportion="0.022288261">
+              <caret line="43" column="43" selection-start-line="43" selection-start-column="43" selection-end-line="43" selection-end-column="43" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TermAttributeImpl.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/TermAttributeImpl.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="NumericTokenStream.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/NumericTokenStream.java">
+      <file leaf-file-name="ReqOptSumScorer.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/ReqOptSumScorer.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="192" column="4" selection-start-line="192" selection-start-column="4" selection-end-line="192" selection-end-column="4" />
+              <caret line="25" column="6" selection-start-line="25" selection-start-column="6" selection-end-line="25" selection-end-column="6" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Analyzer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/Analyzer.java">
+      <file leaf-file-name="ReqExclScorer.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/ReqExclScorer.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="82" column="2" selection-start-line="82" selection-start-column="2" selection-end-line="82" selection-end-column="2" />
+              <caret line="28" column="6" selection-start-line="28" selection-start-column="6" selection-end-line="28" selection-end-column="6" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CharTermAttribute.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/CharTermAttribute.java">
+      <file leaf-file-name="QueryWrapperFilter.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/QueryWrapperFilter.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="24" column="17" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
+              <caret line="34" column="13" selection-start-line="34" selection-start-column="13" selection-end-line="34" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CharTermAttributeImpl.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/CharTermAttributeImpl.java">
+      <file leaf-file-name="Query.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/Query.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="30" column="13" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
+              <caret line="163" column="4" selection-start-line="163" selection-start-column="4" selection-end-line="163" selection-end-column="4" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FlagsAttribute.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/FlagsAttribute.java">
+      <file leaf-file-name="IndexSearcher.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/IndexSearcher.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="26" column="17" selection-start-line="26" selection-start-column="17" selection-end-line="26" selection-end-column="17" />
+              <caret line="231" column="50" selection-start-line="231" selection-start-column="50" selection-end-line="231" selection-end-column="50" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FlagsAttributeImpl.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/FlagsAttributeImpl.java">
+      <file leaf-file-name="Filter.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/Filter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.1961367">
-              <caret line="12" column="33" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="27" column="22" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FilteredQuery.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/FilteredQuery.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="39" column="13" selection-start-line="39" selection-start-column="13" selection-end-line="39" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -184,57 +246,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/SimpleFSLockFactory.java" />
-        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/AttributeSource.java" />
-        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/DefaultSimilarity.java" />
-        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Query.java" />
-        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/IndexSearcher.java" />
-        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/util/Bits.java" />
-        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/Sort.java" />
-        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/search/SortField.java" />
-        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/store/NRTCachingDirectory.java" />
-        <option value="$PROJECT_DIR$/src/java/org/trypticon/lucene3/index/IndexWriterConfig.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/CollectionUtil.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/CodecUtil.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/CharsRef.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/BytesRef.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/BitVector.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/BitUtil.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/Bits.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/AttributeSource.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/AttributeImpl.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/ArrayUtil.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/PackedInts.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Packed64.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Packed32.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/GrowableWriter.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Direct64.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Direct32.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Direct16.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/Direct8.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/SimpleFSLockFactory.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/SimpleFSDirectory.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMInputStream.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMDirectory.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/NoLockFactory.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/NIOFSDirectory.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/MMapDirectory.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/LockFactory.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/Lock.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/IndexInput.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/FSDirectory.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/Directory.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/DataOutput.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/BufferedIndexInput.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldCache.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldComparator.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexWriterConfig.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FreqProxTermsWriter.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentWriteState.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/BufferedDeletesStream.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentInfo.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldCacheImpl.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/document/AbstractField.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/document/CompressionTools.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/document/Document.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/document/Field.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldsReader.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/Searcher.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/Query.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldDoc.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/SortField.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/TopDocsCollector.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/TopDocs.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/Similarity.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/Searchable.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/Scorer.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/IndexSearcher.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentReader.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexReader.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexWriter.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexFileNames.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexCommit.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FormatPostingsPositionsWriter.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldsWriter.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldReaderException.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldInvertState.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldInfos.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocumentsWriter.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocInverterPerField.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessorPerThread.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocConsumerPerThread.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/DirectoryReader.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/ConcurrentMergeScheduler.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/CompoundFileReader.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/CharBlockPool.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/BufferedDeletes.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/document/NumericField.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/document/Fieldable.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/TokenStream.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/Token.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/NumericTokenStream.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/Analyzer.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/HitQueue.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/DefaultSimilarity.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/Collector.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/BooleanScorer2.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/BooleanScorer.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/BooleanQuery.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/Sort.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/Weight.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/Query.java" />
       </list>
     </option>
   </component>
@@ -249,8 +311,8 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="45" />
-    <option name="y" value="72" />
+    <option name="x" value="36" />
+    <option name="y" value="46" />
     <option name="width" value="1821" />
     <option name="height" value="1194" />
   </component>
@@ -368,7 +430,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="index" />
+              <option name="myItemId" value="util" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="packed" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -394,63 +460,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="document" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lucene3" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lucene3-upgrader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lucene" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="analysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lucene3" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lucene3-upgrader" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lucene" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="analysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tokenattributes" />
+              <option name="myItemId" value="search" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -471,6 +481,8 @@
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="FullScreen" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
+    <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -671,11 +683,17 @@
       <option name="project" value="LOCAL" />
       <updated>1431311756664</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="mass deletion round 4">
+      <created>1431312327660</created>
+      <option name="number" value="00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1431312327660</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="45" y="72" width="1821" height="1194" extended-state="0" />
+    <frame x="36" y="46" width="1821" height="1194" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -720,7 +738,8 @@
     <MESSAGE value="Deleting unused stuff round 1.&#10;&#10;Also removing Javadoc links so that they don't show up as usages to make the task easier." />
     <MESSAGE value="mass deletion round 2" />
     <MESSAGE value="mass deletion round 3" />
-    <option name="LAST_COMMIT_MESSAGE" value="mass deletion round 3" />
+    <MESSAGE value="mass deletion round 4" />
+    <option name="LAST_COMMIT_MESSAGE" value="mass deletion round 4" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -731,228 +750,10 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldsWriter.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/IndexOutput.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="31" column="41" selection-start-line="31" selection-start-column="41" selection-end-line="31" selection-end-column="41" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldsReader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="317" column="18" selection-start-line="317" selection-start-column="18" selection-end-line="317" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldReaderException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldInvertState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="113" column="0" selection-start-line="113" selection-start-column="0" selection-end-line="113" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldInfos.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="238" column="27" selection-start-line="238" selection-start-column="27" selection-end-line="238" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocumentsWriterThreadState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="12" selection-start-line="25" selection-start-column="12" selection-end-line="25" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocumentsWriter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="125" column="55" selection-start-line="125" selection-start-column="55" selection-end-line="125" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocInverterPerThread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="29" column="12" selection-start-line="29" selection-start-column="12" selection-end-line="29" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocInverterPerField.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="193" column="36" selection-start-line="193" selection-start-column="36" selection-end-line="193" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocInverter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="31" column="12" selection-start-line="31" selection-start-column="12" selection-end-line="31" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessorPerThread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="183" column="2" selection-start-line="183" selection-start-column="2" selection-end-line="183" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessorPerField.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="12" selection-start-line="25" selection-start-column="12" selection-end-line="25" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="33" column="12" selection-start-line="33" selection-start-column="12" selection-end-line="33" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldConsumerPerThread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="15" selection-start-line="21" selection-start-column="15" selection-end-line="21" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldConsumerPerField.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="15" selection-start-line="22" selection-start-column="15" selection-end-line="22" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldConsumer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="23" column="15" selection-start-line="23" selection-start-column="15" selection-end-line="23" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocConsumerPerThread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="2" selection-start-line="21" selection-start-column="2" selection-end-line="21" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocConsumer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="15" selection-start-line="22" selection-start-column="15" selection-end-line="22" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DirectoryReader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="817" column="5" selection-start-line="817" selection-start-column="5" selection-end-line="817" selection-end-column="5" />
-          <folding>
-            <element signature="e#4689#4704#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DefaultSkipListWriter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="30" column="6" selection-start-line="30" selection-start-column="6" selection-end-line="30" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DefaultSkipListReader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="29" column="6" selection-start-line="29" selection-start-column="6" selection-end-line="29" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/CorruptIndexException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/ConcurrentMergeScheduler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="67" column="2" selection-start-line="67" selection-start-column="2" selection-end-line="67" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/CompoundFileWriter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="46" column="39" selection-start-line="46" selection-start-column="39" selection-end-line="46" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/CompoundFileReader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="232" column="4" selection-start-line="232" selection-start-column="4" selection-end-line="232" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/CoalescedDeletes.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="29" column="6" selection-start-line="29" selection-start-column="6" selection-end-line="29" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/CharBlockPool.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="43" selection-start-line="25" selection-start-column="43" selection-end-line="25" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/ByteSliceReader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="39" selection-start-line="28" selection-start-column="39" selection-end-line="28" selection-end-column="39" />
+          <caret line="27" column="22" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
           <folding />
         </state>
       </provider>
@@ -960,44 +761,134 @@
     <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/IndexInput.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="44" column="7" selection-start-line="44" selection-start-column="7" selection-end-line="44" selection-end-column="7" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/ByteBlockPool.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/FSLockFactory.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="41" column="12" selection-start-line="41" selection-start-column="12" selection-end-line="41" selection-end-column="12" />
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/BufferedDeletesStream.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/FSDirectory.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="401" column="0" selection-start-line="401" selection-start-column="0" selection-end-line="401" selection-end-column="0" />
+          <caret line="383" column="2" selection-start-line="383" selection-start-column="2" selection-end-line="383" selection-end-column="2" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/BufferedDeletes.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/Directory.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="91" column="2" selection-start-line="91" selection-start-column="2" selection-end-line="91" selection-end-column="2" />
+          <caret line="152" column="3" selection-start-line="152" selection-start-column="3" selection-end-line="152" selection-end-column="3" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/AllTermDocs.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/DataOutput.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="6" selection-start-line="21" selection-start-column="6" selection-end-line="21" selection-end-column="6" />
+          <caret line="137" column="2" selection-start-line="137" selection-start-column="2" selection-end-line="137" selection-end-column="2" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/AbstractAllTermDocs.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/DataInput.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="155" column="27" selection-start-line="155" selection-start-column="27" selection-end-line="155" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/ChecksumIndexOutput.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/ChecksumIndexInput.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/BufferedIndexOutput.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="22" column="22" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/BufferedIndexInput.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="88" column="2" selection-start-line="88" selection-start-column="2" selection-end-line="88" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/util/FixedBitSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="165" column="12" selection-start-line="165" selection-start-column="12" selection-end-line="165" selection-end-column="12" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/AlreadyClosedException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/ConjunctionScorer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="25" column="6" selection-start-line="25" selection-start-column="6" selection-end-line="25" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/Explanation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldCache.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="474" column="2" selection-start-line="474" selection-start-column="2" selection-end-line="474" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldCacheImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="117" column="0" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldComparatorSource.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="28" column="22" selection-start-line="28" selection-start-column="22" selection-end-line="28" selection-end-column="22" />
@@ -1005,138 +896,204 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/document/NumericField.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/FieldComparator.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="139" column="2" selection-start-line="139" selection-start-column="2" selection-end-line="139" selection-end-column="2" />
+          <caret line="969" column="4" selection-start-line="969" selection-start-column="4" selection-end-line="969" selection-end-column="4" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/document/FieldSelectorResult.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/DocIdSetIterator.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="12" selection-start-line="22" selection-start-column="12" selection-end-line="22" selection-end-column="12" />
+          <caret line="28" column="22" selection-start-line="28" selection-start-column="22" selection-end-line="28" selection-end-column="22" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/document/FieldSelector.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/DefaultSimilarity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="24" column="17" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
+          <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/document/Fieldable.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/DisjunctionScorer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <caret line="23" column="15" selection-start-line="23" selection-start-column="15" selection-end-line="23" selection-end-column="15" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/document/Field.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/ComplexExplanation.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="34" column="19" selection-start-line="34" selection-start-column="19" selection-end-line="34" selection-end-column="19" />
+          <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/document/Document.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/Collector.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="36" column="19" selection-start-line="36" selection-start-column="19" selection-end-line="36" selection-end-column="19" />
-          <folding />
+          <caret line="153" column="23" selection-start-line="153" selection-start-column="23" selection-end-line="153" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/document/CompressionTools.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/BooleanQuery.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+          <caret line="62" column="2" selection-start-line="62" selection-start-column="2" selection-end-line="62" selection-end-column="2" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/document/AbstractField.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/BooleanClause.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="26" column="22" selection-start-line="26" selection-start-column="22" selection-end-line="26" selection-end-column="22" />
+          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/TokenStream.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/BooleanScorer2.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="16" selection-start-line="22" selection-start-column="16" selection-end-line="22" selection-end-column="16" />
+          <caret line="86" column="68" selection-start-line="86" selection-start-column="68" selection-end-line="86" selection-end-column="68" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/Token.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-16.72">
-          <caret line="114" column="36" selection-start-line="114" selection-start-column="36" selection-end-line="114" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/TermAttributeImpl.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/BooleanScorer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
+          <caret line="206" column="60" selection-start-line="206" selection-start-column="60" selection-end-line="206" selection-end-column="60" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/NumericTokenStream.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/Weight.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="192" column="4" selection-start-line="192" selection-start-column="4" selection-end-line="192" selection-end-column="4" />
+          <caret line="54" column="19" selection-start-line="54" selection-start-column="19" selection-end-line="54" selection-end-column="19" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/Analyzer.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/Similarity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="82" column="2" selection-start-line="82" selection-start-column="2" selection-end-line="82" selection-end-column="2" />
+          <caret line="544" column="4" selection-start-line="544" selection-start-column="4" selection-end-line="544" selection-end-column="4" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/CharTermAttribute.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/Searcher.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="24" column="17" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
+          <caret line="37" column="22" selection-start-line="37" selection-start-column="22" selection-end-line="37" selection-end-column="22" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/CharTermAttributeImpl.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/Searchable.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="30" column="13" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
+          <caret line="127" column="0" selection-start-line="127" selection-start-column="0" selection-end-line="127" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/FlagsAttribute.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/Scorer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="26" column="17" selection-start-line="26" selection-start-column="17" selection-end-line="26" selection-end-column="17" />
+          <caret line="176" column="2" selection-start-line="176" selection-start-column="2" selection-end-line="176" selection-end-column="2" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/FlagsAttributeImpl.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/ReqOptSumScorer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.1961367">
-          <caret line="12" column="33" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="25" column="6" selection-start-line="25" selection-start-column="6" selection-end-line="25" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/ReqExclScorer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="28" column="6" selection-start-line="28" selection-start-column="6" selection-end-line="28" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/QueryWrapperFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="34" column="13" selection-start-line="34" selection-start-column="13" selection-end-line="34" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/Query.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="163" column="4" selection-start-line="163" selection-start-column="4" selection-end-line="163" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/FilteredQuery.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="39" column="13" selection-start-line="39" selection-start-column="13" selection-end-line="39" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/IndexSearcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="231" column="50" selection-start-line="231" selection-start-column="50" selection-end-line="231" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/Filter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="27" column="22" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/ScoreCachingWrappingScorer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="32" column="13" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/DocIdSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="25" column="22" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/search/DisjunctionSumScorer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.022288261">
+          <caret line="43" column="43" selection-start-line="43" selection-start-column="43" selection-end-line="43" selection-end-column="43" />
           <folding />
         </state>
       </provider>

@@ -15,17 +15,11 @@ package org.apache.lucene.util;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.FieldCache;
 import org.apache.lucene.search.FieldCache.CacheEntry;
+
+import java.util.*;
 
 /** 
  * Provides methods for sanity checking that entries in the FieldCache 
@@ -97,8 +91,8 @@ public final class FieldCacheSanityChecker {
       return new Insanity[0];
 
     if (estimateRam) {
-      for (int i = 0; i < cacheEntries.length; i++) {
-        cacheEntries[i].estimateSize();
+      for (CacheEntry cacheEntry : cacheEntries) {
+        cacheEntry.estimateSize();
       }
     }
 
@@ -115,8 +109,7 @@ public final class FieldCacheSanityChecker {
     final Set<ReaderField> valMismatchKeys = new HashSet<ReaderField>();
 
     // iterate over all the cacheEntries to get the mappings we'll need
-    for (int i = 0; i < cacheEntries.length; i++) {
-      final CacheEntry item = cacheEntries[i];
+    for (final CacheEntry item : cacheEntries) {
       final Object val = item.getValue();
 
       // It's OK to have dup entries, where one is eg
@@ -129,8 +122,8 @@ public final class FieldCacheSanityChecker {
       if (val instanceof FieldCache.CreationPlaceholder)
         continue;
 
-      final ReaderField rf = new ReaderField(item.getReaderKey(), 
-                                            item.getFieldName());
+      final ReaderField rf = new ReaderField(item.getReaderKey(),
+              item.getFieldName());
 
       final Integer valId = System.identityHashCode(val);
 
@@ -369,8 +362,8 @@ public final class FieldCacheSanityChecker {
       buf.append('\n');
 
       CacheEntry[] ce = getCacheEntries();
-      for (int i = 0; i < ce.length; i++) {
-        buf.append('\t').append(ce[i].toString()).append('\n');
+      for (CacheEntry aCe : ce) {
+        buf.append('\t').append(aCe.toString()).append('\n');
       }
 
       return buf.toString();
@@ -418,13 +411,6 @@ public final class FieldCacheSanityChecker {
     public final static InsanityType VALUEMISMATCH 
       = new InsanityType("VALUEMISMATCH");
 
-    /** 
-     * Indicates an expected bit of "insanity".  This may be useful for 
-     * clients that wish to preserve/log information about insane usage 
-     * but indicate that it was expected. 
-     */
-    public final static InsanityType EXPECTED
-      = new InsanityType("EXPECTED");
   }
   
   

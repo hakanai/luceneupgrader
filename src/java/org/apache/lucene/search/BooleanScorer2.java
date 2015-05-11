@@ -17,12 +17,12 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery.BooleanWeight;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.BooleanQuery.BooleanWeight;
 
 /* See the description in BooleanScorer.java, comparing
  * BooleanScorer & BooleanScorer2 */
@@ -84,8 +84,8 @@ class BooleanScorer2 extends Scorer {
    * @param optional
    *          the list of optional scorers.
    */
-  public BooleanScorer2(BooleanWeight weight, boolean disableCoord, Similarity similarity, int minNrShouldMatch,
-      List<Scorer> required, List<Scorer> prohibited, List<Scorer> optional, int maxCoord) throws IOException {
+  public BooleanScorer2(BooleanWeight weight, boolean disableCoord, int minNrShouldMatch,
+                        List<Scorer> required, List<Scorer> prohibited, List<Scorer> optional, int maxCoord) throws IOException {
     super(weight);
     if (minNrShouldMatch < 0) {
       throw new IllegalArgumentException("Minimum number of optional scorers should not be negative");
@@ -99,7 +99,7 @@ class BooleanScorer2 extends Scorer {
     prohibitedScorers = prohibited;
     
     coordinator.init(weight, disableCoord);
-    countingSumScorer = makeCountingSumScorer(disableCoord, similarity);
+    countingSumScorer = makeCountingSumScorer();
   }
   
   /** Count a scorer as a single match. */
@@ -171,9 +171,7 @@ class BooleanScorer2 extends Scorer {
     };
   }
 
-  private Scorer countingConjunctionSumScorer(boolean disableCoord,
-                                              Similarity similarity,
-                                              List<Scorer> requiredScorers) throws IOException {
+  private Scorer countingConjunctionSumScorer(List<Scorer> requiredScorers) throws IOException {
     // each scorer from the list counted as a single matcher
     final int requiredNrMatchers = requiredScorers.size();
     return new ConjunctionScorer(weight, requiredScorers) {
@@ -199,9 +197,7 @@ class BooleanScorer2 extends Scorer {
     };
   }
 
-  private Scorer dualConjunctionSumScorer(boolean disableCoord,
-                                          Similarity similarity,
-                                          Scorer req1, Scorer req2) throws IOException { // non counting.
+  private Scorer dualConjunctionSumScorer(Scorer req1, Scorer req2) throws IOException { // non counting.
     return new ConjunctionScorer(weight, req1, req2);
     // All scorers match, so defaultSimilarity always has 1 as
     // the coordination factor.
@@ -212,14 +208,13 @@ class BooleanScorer2 extends Scorer {
   /** Returns the scorer to be used for match counting and score summing.
    * Uses requiredScorers, optionalScorers and prohibitedScorers.
    */
-  private Scorer makeCountingSumScorer(boolean disableCoord,
-                                       Similarity similarity) throws IOException { // each scorer counted as a single matcher
+  private Scorer makeCountingSumScorer() throws IOException { // each scorer counted as a single matcher
     return (requiredScorers.size() == 0)
-      ? makeCountingSumScorerNoReq(disableCoord, similarity)
-      : makeCountingSumScorerSomeReq(disableCoord, similarity);
+      ? makeCountingSumScorerNoReq()
+      : makeCountingSumScorerSomeReq();
   }
 
-  private Scorer makeCountingSumScorerNoReq(boolean disableCoord, Similarity similarity) throws IOException { // No required scorers
+  private Scorer makeCountingSumScorerNoReq() throws IOException { // No required scorers
     // minNrShouldMatch optional scorers are required, but at least 1
     int nrOptRequired = (minNrShouldMatch < 1) ? 1 : minNrShouldMatch;
     Scorer requiredCountingSumScorer;
@@ -228,26 +223,24 @@ class BooleanScorer2 extends Scorer {
     else if (optionalScorers.size() == 1)
       requiredCountingSumScorer = new SingleMatchScorer(optionalScorers.get(0));
     else {
-      requiredCountingSumScorer = countingConjunctionSumScorer(disableCoord, similarity, optionalScorers);
+      requiredCountingSumScorer = countingConjunctionSumScorer(optionalScorers);
     }
     return addProhibitedScorers(requiredCountingSumScorer);
   }
 
-  private Scorer makeCountingSumScorerSomeReq(boolean disableCoord, Similarity similarity) throws IOException { // At least one required scorer.
+  private Scorer makeCountingSumScorerSomeReq() throws IOException { // At least one required scorer.
     if (optionalScorers.size() == minNrShouldMatch) { // all optional scorers also required.
       ArrayList<Scorer> allReq = new ArrayList<Scorer>(requiredScorers);
       allReq.addAll(optionalScorers);
-      return addProhibitedScorers(countingConjunctionSumScorer(disableCoord, similarity, allReq));
+      return addProhibitedScorers(countingConjunctionSumScorer(allReq));
     } else { // optionalScorers.size() > minNrShouldMatch, and at least one required scorer
       Scorer requiredCountingSumScorer =
             requiredScorers.size() == 1
             ? new SingleMatchScorer(requiredScorers.get(0))
-            : countingConjunctionSumScorer(disableCoord, similarity, requiredScorers);
+            : countingConjunctionSumScorer(requiredScorers);
       if (minNrShouldMatch > 0) { // use a required disjunction scorer over the optional scorers
         return addProhibitedScorers( 
                       dualConjunctionSumScorer( // non counting
-                              disableCoord,
-                              similarity,
                               requiredCountingSumScorer,
                               countingDisjunctionSumScorer(
                                       optionalScorers,

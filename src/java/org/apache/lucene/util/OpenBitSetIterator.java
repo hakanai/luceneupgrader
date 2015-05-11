@@ -87,10 +87,6 @@ public class OpenBitSetIterator extends DocIdSetIterator {
   private int indexArray;
   private int curDocId = -1;
 
-  public OpenBitSetIterator(OpenBitSet obs) {
-    this(obs.getBits(), obs.getNumWords());
-  }
-
   public OpenBitSetIterator(long[] bits, int numWords) {
     arr = bits;
     words = numWords;
@@ -103,28 +99,6 @@ public class OpenBitSetIterator extends DocIdSetIterator {
     if ((word & 0x000000FF) == 0) { wordShift +=8; word >>>=8; }
     indexArray = bitlist[(int)word & 0xff];
   }
-
-  /***** alternate shift implementations
-  // 32 bit shifts, but a long shift needed at the end
-  private void shift2() {
-    int y = (int)word;
-    if (y==0) {wordShift +=32; y = (int)(word >>>32); }
-    if ((y & 0x0000FFFF) == 0) { wordShift +=16; y>>>=16; }
-    if ((y & 0x000000FF) == 0) { wordShift +=8; y>>>=8; }
-    indexArray = bitlist[y & 0xff];
-    word >>>= (wordShift +1);
-  }
-
-  private void shift3() {
-    int lower = (int)word;
-    int lowByte = lower & 0xff;
-    if (lowByte != 0) {
-      indexArray=bitlist[lowByte];
-      return;
-    }
-    shift();
-  }
-  ******/
 
   @Override
   public int nextDoc() {

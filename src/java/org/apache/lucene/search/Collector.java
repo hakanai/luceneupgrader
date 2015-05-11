@@ -17,9 +17,9 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.apache.lucene.index.IndexReader;
+
+import java.io.IOException;
 
 /**
  * <p>Expert: Collectors are primarily meant to be used to
@@ -151,7 +151,7 @@ public abstract class Collector {
    * 
    * @param reader
    *          next IndexReader
-   * @param docBase
+   * @param docBase ...
    */
   public abstract void setNextReader(IndexReader reader, int docBase) throws IOException;
 

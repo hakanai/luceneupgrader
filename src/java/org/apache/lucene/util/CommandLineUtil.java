@@ -17,12 +17,12 @@ package org.apache.lucene.util;
  * limitations under the License.
  */
 
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 
 /**
  * Class containing some useful methods used by command line tools 
@@ -57,18 +57,7 @@ public final class CommandLineUtil {
       throw new IllegalArgumentException("Error creating " + clazzName + " instance", e);
     }
   }
-  
-  /**
-   * Loads a specific Directory implementation 
-   * @param clazzName The name of the Directory class to load
-   * @return The Directory class loaded
-   * @throws ClassNotFoundException
-   */
-  public static Class<? extends Directory> loadDirectoryClass(String clazzName) 
-      throws ClassNotFoundException {
-    return Class.forName(adjustDirectoryClassName(clazzName)).asSubclass(Directory.class);
-  }
-  
+
   /**
    * Loads a specific FSDirectory implementation
    * @param clazzName The name of the FSDirectory class to load
@@ -86,7 +75,7 @@ public final class CommandLineUtil {
           + " implementation cannot be null or empty");
     }
     
-    if (clazzName.indexOf(".") == -1) {// if not fully qualified, assume .store
+    if (!clazzName.contains(".")) {// if not fully qualified, assume .store
       clazzName = Directory.class.getPackage().getName() + "." + clazzName;
     }
     return clazzName;

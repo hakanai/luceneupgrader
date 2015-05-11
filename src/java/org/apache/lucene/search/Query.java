@@ -160,6 +160,7 @@ public abstract class Query implements java.io.Serializable, Cloneable {
     if (getClass() != obj.getClass())
       return false;
     Query other = (Query) obj;
+      //noinspection RedundantIfStatement
     if (Float.floatToIntBits(boost) != Float.floatToIntBits(other.boost))
       return false;
     return true;

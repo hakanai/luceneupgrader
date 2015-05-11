@@ -35,9 +35,9 @@ class ConjunctionScorer extends Scorer {
   public ConjunctionScorer(Weight weight, Scorer... scorers) throws IOException {
     super(weight);
     this.scorers = scorers;
-    
-    for (int i = 0; i < scorers.length; i++) {
-      if (scorers[i].nextDoc() == NO_MORE_DOCS) {
+
+    for (Scorer scorer : scorers) {
+      if (scorer.nextDoc() == NO_MORE_DOCS) {
         // If even one of the sub-scorers does not have any documents, this
         // scorer should not attempt to do any more work.
         lastDoc = NO_MORE_DOCS;
@@ -129,8 +129,8 @@ class ConjunctionScorer extends Scorer {
   @Override
   public float score() throws IOException {
     float sum = 0.0f;
-    for (int i = 0; i < scorers.length; i++) {
-      sum += scorers[i].score();
+    for (Scorer scorer : scorers) {
+      sum += scorer.score();
     }
     return sum;
   }

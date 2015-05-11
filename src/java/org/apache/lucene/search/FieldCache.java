@@ -40,37 +40,10 @@ public interface FieldCache {
     Object value;
   }
 
-  /** Indicator for StringIndex values in the cache. */
-  // NOTE: the value assigned to this constant must not be
-  // the same as any of those in SortField!!
-  int STRING_INDEX = -1;
-
 
   /** Expert: Stores term text values and document ordering data. */
   class StringIndex {
-	  
-    public int binarySearchLookup(String key) {
-      // this special case is the reason that Arrays.binarySearch() isn't useful.
-      if (key == null)
-        return 0;
-	  
-      int low = 1;
-      int high = lookup.length-1;
 
-      while (low <= high) {
-        int mid = (low + high) >>> 1;
-        int cmp = lookup[mid].compareTo(key);
-
-        if (cmp < 0)
-          low = mid + 1;
-        else if (cmp > 0)
-          high = mid - 1;
-        else
-          return mid; // key found
-      }
-      return -(low + 1);  // key not found.
-    }
-	
     /** All the term values, in natural order. */
     public final String[] lookup;
 
@@ -314,31 +287,6 @@ public interface FieldCache {
    */
   Bits getDocsWithField(IndexReader reader, String field)
   throws IOException;
-  
-  /** Checks the internal cache for an appropriate entry, and if none is
-   * found, reads the terms in <code>field</code> as a single byte and returns an array
-   * of size <code>reader.maxDoc()</code> of the value each document
-   * has in the given field.
-   * @param reader  Used to get field values.
-   * @param field   Which field contains the single byte values.
-   * @return The values in the given field for each document.
-   * @throws IOException  If any error occurs.
-   */
-  byte[] getBytes(IndexReader reader, String field)
-  throws IOException;
-
-  /** Checks the internal cache for an appropriate entry, and if none is found,
-   * reads the terms in <code>field</code> as bytes and returns an array of
-   * size <code>reader.maxDoc()</code> of the value each document has in the
-   * given field.
-   * @param reader  Used to get field values.
-   * @param field   Which field contains the bytes.
-   * @param parser  Computes byte for string values.
-   * @return The values in the given field for each document.
-   * @throws IOException  If any error occurs.
-   */
-  byte[] getBytes(IndexReader reader, String field, ByteParser parser)
-  throws IOException;
 
   /** Checks the internal cache for an appropriate entry, and if none is found,
    * reads the terms in <code>field</code> as bytes and returns an array of
@@ -355,31 +303,6 @@ public interface FieldCache {
   byte[] getBytes(IndexReader reader, String field, ByteParser parser, boolean setDocsWithField)
   throws IOException;
 
-  /** Checks the internal cache for an appropriate entry, and if none is
-   * found, reads the terms in <code>field</code> as shorts and returns an array
-   * of size <code>reader.maxDoc()</code> of the value each document
-   * has in the given field.
-   * @param reader  Used to get field values.
-   * @param field   Which field contains the shorts.
-   * @return The values in the given field for each document.
-   * @throws IOException  If any error occurs.
-   */
-  short[] getShorts(IndexReader reader, String field)
-  throws IOException;
-
-  /** Checks the internal cache for an appropriate entry, and if none is found,
-   * reads the terms in <code>field</code> as shorts and returns an array of
-   * size <code>reader.maxDoc()</code> of the value each document has in the
-   * given field.
-   * @param reader  Used to get field values.
-   * @param field   Which field contains the shorts.
-   * @param parser  Computes short for string values.
-   * @return The values in the given field for each document.
-   * @throws IOException  If any error occurs.
-   */
-  short[] getShorts(IndexReader reader, String field, ShortParser parser)
-  throws IOException;
-
   /** Checks the internal cache for an appropriate entry, and if none is found,
    * reads the terms in <code>field</code> as shorts and returns an array of
    * size <code>reader.maxDoc()</code> of the value each document has in the
@@ -393,31 +316,6 @@ public interface FieldCache {
    * @throws IOException  If any error occurs.
    */
   short[] getShorts(IndexReader reader, String field, ShortParser parser, boolean setDocsWithField)
-  throws IOException;
-
-  /** Checks the internal cache for an appropriate entry, and if none is
-   * found, reads the terms in <code>field</code> as integers and returns an array
-   * of size <code>reader.maxDoc()</code> of the value each document
-   * has in the given field.
-   * @param reader  Used to get field values.
-   * @param field   Which field contains the integers.
-   * @return The values in the given field for each document.
-   * @throws IOException  If any error occurs.
-   */
-  int[] getInts(IndexReader reader, String field)
-  throws IOException;
-
-  /** Checks the internal cache for an appropriate entry, and if none is found,
-   * reads the terms in <code>field</code> as integers and returns an array of
-   * size <code>reader.maxDoc()</code> of the value each document has in the
-   * given field.
-   * @param reader  Used to get field values.
-   * @param field   Which field contains the integers.
-   * @param parser  Computes integer for string values.
-   * @return The values in the given field for each document.
-   * @throws IOException  If any error occurs.
-   */
-  int[] getInts(IndexReader reader, String field, IntParser parser)
   throws IOException;
 
   /** Checks the internal cache for an appropriate entry, and if none is found,
@@ -441,31 +339,6 @@ public interface FieldCache {
    * has in the given field.
    * @param reader  Used to get field values.
    * @param field   Which field contains the floats.
-   * @return The values in the given field for each document.
-   * @throws IOException  If any error occurs.
-   */
-  float[] getFloats(IndexReader reader, String field)
-  throws IOException;
-
-  /** Checks the internal cache for an appropriate entry, and if
-   * none is found, reads the terms in <code>field</code> as floats and returns an array
-   * of size <code>reader.maxDoc()</code> of the value each document
-   * has in the given field.
-   * @param reader  Used to get field values.
-   * @param field   Which field contains the floats.
-   * @param parser  Computes float for string values.
-   * @return The values in the given field for each document.
-   * @throws IOException  If any error occurs.
-   */
-  float[] getFloats(IndexReader reader, String field,
-                    FloatParser parser) throws IOException;
-  
-  /** Checks the internal cache for an appropriate entry, and if
-   * none is found, reads the terms in <code>field</code> as floats and returns an array
-   * of size <code>reader.maxDoc()</code> of the value each document
-   * has in the given field.
-   * @param reader  Used to get field values.
-   * @param field   Which field contains the floats.
    * @param parser  Computes float for string values.
    * @param setDocsWithField  If true then {@code #getDocsWithField} will
    *        also be computed and stored in the FieldCache.
@@ -474,35 +347,7 @@ public interface FieldCache {
    */
   float[] getFloats(IndexReader reader, String field,
                     FloatParser parser, boolean setDocsWithField) throws IOException;
-  
-  /**
-   * Checks the internal cache for an appropriate entry, and if none is
-   * found, reads the terms in <code>field</code> as longs and returns an array
-   * of size <code>reader.maxDoc()</code> of the value each document
-   * has in the given field.
-   *
-   * @param reader Used to get field values.
-   * @param field  Which field contains the longs.
-   * @return The values in the given field for each document.
-   * @throws java.io.IOException If any error occurs.
-   */
-  long[] getLongs(IndexReader reader, String field)
-          throws IOException;
 
-  /**
-   * Checks the internal cache for an appropriate entry, and if none is found,
-   * reads the terms in <code>field</code> as longs and returns an array of
-   * size <code>reader.maxDoc()</code> of the value each document has in the
-   * given field.
-   *
-   * @param reader Used to get field values.
-   * @param field  Which field contains the longs.
-   * @param parser Computes integer for string values.
-   * @return The values in the given field for each document.
-   * @throws IOException If any error occurs.
-   */
-  long[] getLongs(IndexReader reader, String field, LongParser parser)
-          throws IOException;
   /**
    * Checks the internal cache for an appropriate entry, and if none is found,
    * reads the terms in <code>field</code> as longs and returns an array of
@@ -518,35 +363,6 @@ public interface FieldCache {
    * @throws IOException If any error occurs.
    */
   long[] getLongs(IndexReader reader, String field, LongParser parser, boolean setDocsWithField)
-          throws IOException;
-
-  /**
-   * Checks the internal cache for an appropriate entry, and if none is
-   * found, reads the terms in <code>field</code> as integers and returns an array
-   * of size <code>reader.maxDoc()</code> of the value each document
-   * has in the given field.
-   *
-   * @param reader Used to get field values.
-   * @param field  Which field contains the doubles.
-   * @return The values in the given field for each document.
-   * @throws IOException If any error occurs.
-   */
-  double[] getDoubles(IndexReader reader, String field)
-          throws IOException;
-
-  /**
-   * Checks the internal cache for an appropriate entry, and if none is found,
-   * reads the terms in <code>field</code> as doubles and returns an array of
-   * size <code>reader.maxDoc()</code> of the value each document has in the
-   * given field.
-   *
-   * @param reader Used to get field values.
-   * @param field  Which field contains the doubles.
-   * @param parser Computes integer for string values.
-   * @return The values in the given field for each document.
-   * @throws IOException If any error occurs.
-   */
-  double[] getDoubles(IndexReader reader, String field, DoubleParser parser)
           throws IOException;
 
   /**
@@ -655,19 +471,6 @@ public interface FieldCache {
    * @lucene.experimental
    */
   CacheEntry[] getCacheEntries();
-
-  /**
-   * <p>
-   * EXPERT: Instructs the FieldCache to forcibly expunge all entries 
-   * from the underlying caches.  This is intended only to be used for 
-   * test methods as a way to ensure a known base state of the Cache 
-   * (with out needing to rely on GC to free WeakReferences).  
-   * It should not be relied on for "Cache maintenance" in general 
-   * application code.
-   * </p>
-   * @lucene.experimental
-   */
-  void purgeAllCaches();
 
   /**
    * Expert: drops all cache entries associated with this

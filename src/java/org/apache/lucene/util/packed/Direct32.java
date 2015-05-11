@@ -17,10 +17,6 @@ package org.apache.lucene.util.packed;
  * limitations under the License.
  */
 
-import org.apache.lucene.store.DataInput;
-import org.apache.lucene.util.RamUsageEstimator;
-
-import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -38,43 +34,13 @@ class Direct32 extends PackedInts.ReaderImpl
     values = new int[valueCount];
   }
 
-  public Direct32(DataInput in, int valueCount) throws IOException {
-    super(valueCount, BITS_PER_VALUE);
-    int[] values = new int[valueCount];
-    for(int i=0;i<valueCount;i++) {
-      values[i] = in.readInt();
-    }
-    final int mod = valueCount % 2;
-    if (mod != 0) {
-      in.readInt();
-    }
-
-    this.values = values;
-  }
-
-  /**
-   * Creates an array backed by the given values.
-   * </p><p>
-   * Note: The values are used directly, so changes to the given values will
-   * affect the structure.
-   * @param values   used as the internal backing array.
-   */
-  public Direct32(int[] values) {
-    super(values.length, BITS_PER_VALUE);
-    this.values = values;
-  }
-
   public long get(final int index) {
     assert index >= 0 && index < size();
     return 0xFFFFFFFFL & values[index];
   }
 
   public void set(final int index, final long value) {
-    values[index] = (int)(value & 0xFFFFFFFF);
-  }
-
-  public long ramBytesUsed() {
-    return RamUsageEstimator.sizeOf(values);
+    values[index] = (int) value;
   }
 
   public void clear() {

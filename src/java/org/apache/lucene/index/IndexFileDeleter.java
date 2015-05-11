@@ -343,13 +343,12 @@ final class IndexFileDeleter {
       segmentPrefix1 = null;
       segmentPrefix2 = null;
     }
-    
-    for(int i=0;i<files.length;i++) {
-      String fileName = files[i];
+
+    for (String fileName : files) {
       if (filter.accept(null, fileName) &&
-          (segmentName == null || fileName.startsWith(segmentPrefix1) || fileName.startsWith(segmentPrefix2)) &&
-          !refCounts.containsKey(fileName) &&
-          !fileName.equals(IndexFileNames.SEGMENTS_GEN)) {
+              (segmentName == null || fileName.startsWith(segmentPrefix1) || fileName.startsWith(segmentPrefix2)) &&
+              !refCounts.containsKey(fileName) &&
+              !fileName.equals(IndexFileNames.SEGMENTS_GEN)) {
         // Unreferenced file, so remove it
         if (infoStream != null) {
           message("refresh [prefix=" + segmentName + "]: removing newly created unreferenced file \"" + fileName + "\"");
@@ -373,8 +372,8 @@ final class IndexFileDeleter {
     assert locked();
     int size = lastFiles.size();
     if (size > 0) {
-      for(int i=0;i<size;i++) {
-        decRef(lastFiles.get(i));
+      for (Collection<String> lastFile : lastFiles) {
+        decRef(lastFile);
       }
       lastFiles.clear();
     }
@@ -409,11 +408,11 @@ final class IndexFileDeleter {
       List<String> oldDeletable = deletable;
       deletable = null;
       int size = oldDeletable.size();
-      for(int i=0;i<size;i++) {
+      for (String anOldDeletable : oldDeletable) {
         if (infoStream != null) {
-          message("delete pending file " + oldDeletable.get(i));
+          message("delete pending file " + anOldDeletable);
         }
-        deleteFile(oldDeletable.get(i));
+        deleteFile(anOldDeletable);
       }
     }
   }

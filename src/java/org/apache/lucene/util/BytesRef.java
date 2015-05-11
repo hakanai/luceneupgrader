@@ -101,16 +101,6 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
   }
 
   /**
-   * Copies the UTF8 bytes for this string.
-   * 
-   * @param text Must be well-formed unicode text, with no
-   * unpaired surrogates.
-   */
-  public void copyChars(char text[], int offset, int length) {
-    UnicodeUtil.UTF16toUTF8(text, offset, length, this);
-  }
-
-  /**
    * Expert: compares the bytes against another BytesRef,
    * returning true if the bytes are equal.
    * 
@@ -139,31 +129,6 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
     return new BytesRef(bytes, offset, length);
   }
 
-  private boolean sliceEquals(BytesRef other, int pos) {
-    if (pos < 0 || length - pos < other.length) {
-      return false;
-    }
-    int i = offset + pos;
-    int j = other.offset;
-    final int k = other.offset + other.length;
-    
-    while (j < k) {
-      if (bytes[i++] != other.bytes[j++]) {
-        return false;
-      }
-    }
-    
-    return true;
-  }
-  
-  public boolean startsWith(BytesRef other) {
-    return sliceEquals(other, 0);
-  }
-
-  public boolean endsWith(BytesRef other) {
-    return sliceEquals(other, length - other.length);
-  }
-  
   /** Calculates the hash code as required by TermsHash during indexing.
    * <p>It is defined as:
    * <pre>
@@ -272,10 +237,6 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
 
   private final static Comparator<BytesRef> utf8SortedAsUnicodeSortOrder = new UTF8SortedAsUnicodeComparator();
 
-  public static Comparator<BytesRef> getUTF8SortedAsUnicodeComparator() {
-    return utf8SortedAsUnicodeSortOrder;
-  }
-
   private static class UTF8SortedAsUnicodeComparator implements Comparator<BytesRef> {
     // Only singleton
     private UTF8SortedAsUnicodeComparator() {};
@@ -357,18 +318,5 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
       // One is a prefix of the other, or, they are equal:
       return a.length - b.length;
     }
-  }
-  
-  /**
-   * Creates a new BytesRef that points to a copy of the bytes from 
-   * <code>other</code>
-   * <p>
-   * The returned BytesRef will have a length of other.length
-   * and an offset of zero.
-   */
-  public static BytesRef deepCopyOf(BytesRef other) {
-    BytesRef copy = new BytesRef();
-    copy.copyBytes(other);
-    return copy;
   }
 }

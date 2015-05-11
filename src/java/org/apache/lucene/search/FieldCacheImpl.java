@@ -17,23 +17,15 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.SegmentReader;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermDocs;
-import org.apache.lucene.index.TermEnum;
+import org.apache.lucene.index.*;
 import org.apache.lucene.util.Bits;
+import org.apache.lucene.util.FieldCacheSanityChecker;
 import org.apache.lucene.util.FixedBitSet;
 import org.apache.lucene.util.StringHelper;
-import org.apache.lucene.util.FieldCacheSanityChecker;
+
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.*;
 
 /**
  * Expert: The default cache implementation, storing all values in memory.
@@ -60,10 +52,6 @@ class FieldCacheImpl implements FieldCache {
     caches.put(String.class, new StringCache(this));
     caches.put(StringIndex.class, new StringIndexCache(this));
     caches.put(DocsWithFieldCache.class, new DocsWithFieldCache(this));
-  }
-
-  public synchronized void purgeAllCaches() {
-    init();
   }
 
   public synchronized void purge(IndexReader r) {
@@ -253,11 +241,10 @@ class FieldCacheImpl implements FieldCache {
 
     private void printNewInsanity(PrintStream infoStream, Object value) {
       final FieldCacheSanityChecker.Insanity[] insanities = FieldCacheSanityChecker.checkSanity(wrapper);
-      for(int i=0;i<insanities.length;i++) {
-        final FieldCacheSanityChecker.Insanity insanity = insanities[i];
+      for (final FieldCacheSanityChecker.Insanity insanity : insanities) {
         final CacheEntry[] entries = insanity.getCacheEntries();
-        for(int j=0;j<entries.length;j++) {
-          if (entries[j].getValue() == value) {
+        for (CacheEntry entry : entries) {
+          if (entry.getValue() == value) {
             // OK this insanity involves our entry
             infoStream.println("WARNING: new FieldCache insanity created\nDetails: " + insanity.toString());
             infoStream.println("\nStack:\n");
@@ -301,17 +288,6 @@ class FieldCacheImpl implements FieldCache {
     public int hashCode() {
       return field.hashCode() ^ (custom==null ? 0 : custom.hashCode());
     }
-  }
-
-  // inherit javadocs
-  public byte[] getBytes (IndexReader reader, String field) throws IOException {
-    return getBytes(reader, field, null, false);
-  }
-
-  // inherit javadocs
-  public byte[] getBytes(IndexReader reader, String field, ByteParser parser)
-      throws IOException {
-    return getBytes(reader, field, parser, false);
   }
 
   public byte[] getBytes(IndexReader reader, String field, ByteParser parser, boolean setDocsWithField)
@@ -366,17 +342,6 @@ class FieldCacheImpl implements FieldCache {
       }
       return retArray;
     }
-  }
-  
-  // inherit javadocs
-  public short[] getShorts (IndexReader reader, String field) throws IOException {
-    return getShorts(reader, field, null, false);
-  }
-
-  // inherit javadocs
-  public short[] getShorts(IndexReader reader, String field, ShortParser parser)
-      throws IOException {
-    return getShorts(reader, field, parser, false);
   }
 
   // inherit javadocs
@@ -453,17 +418,6 @@ class FieldCacheImpl implements FieldCache {
       bits = docsWithField;
     }
     caches.get(DocsWithFieldCache.class).put(reader, new Entry(field, null), bits);
-  }
-
-  // inherit javadocs
-  public int[] getInts (IndexReader reader, String field) throws IOException {
-    return getInts(reader, field, null);
-  }
-
-  // inherit javadocs
-  public int[] getInts(IndexReader reader, String field, IntParser parser)
-      throws IOException {
-    return getInts(reader, field, parser, false);
   }
 
   // inherit javadocs
@@ -577,18 +531,6 @@ class FieldCacheImpl implements FieldCache {
     }
   }
 
-  // inherit javadocs
-  public float[] getFloats (IndexReader reader, String field)
-    throws IOException {
-    return getFloats(reader, field, null, false);
-  }
-
-  // inherit javadocs
-  public float[] getFloats(IndexReader reader, String field, FloatParser parser)
-    throws IOException {
-    return getFloats(reader, field, parser, false);
-  }
-
   public float[] getFloats(IndexReader reader, String field, FloatParser parser, boolean setDocsWithField)
     throws IOException {
 
@@ -654,16 +596,6 @@ class FieldCacheImpl implements FieldCache {
     }
   }
 
-  public long[] getLongs(IndexReader reader, String field) throws IOException {
-    return getLongs(reader, field, null, false);
-  }
-  
-  // inherit javadocs
-  public long[] getLongs(IndexReader reader, String field, FieldCache.LongParser parser)
-      throws IOException {
-    return getLongs(reader, field, parser, false);
-  }
-
   // inherit javadocs
   public long[] getLongs(IndexReader reader, String field, FieldCache.LongParser parser, boolean setDocsWithField)
       throws IOException {
@@ -726,18 +658,6 @@ class FieldCacheImpl implements FieldCache {
       }
       return retArray;
     }
-  }
-
-  // inherit javadocs
-  public double[] getDoubles(IndexReader reader, String field)
-    throws IOException {
-    return getDoubles(reader, field, null, false);
-  }
-
-  // inherit javadocs
-  public double[] getDoubles(IndexReader reader, String field, FieldCache.DoubleParser parser)
-      throws IOException {
-    return getDoubles(reader, field, parser, false);
   }
 
   // inherit javadocs

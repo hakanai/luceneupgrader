@@ -61,15 +61,6 @@ public class NIOFSDirectory extends FSDirectory {
     super(path, lockFactory);
   }
 
-  /** Create a new NIOFSDirectory for the named location and {@code NativeFSLockFactory}.
-   *
-   * @param path the path of the directory
-   * @throws IOException
-   */
-  public NIOFSDirectory(File path) throws IOException {
-    super(path, null);
-  }
-
   /** Creates an IndexInput for the file with the given name. */
   @Override
   public IndexInput openInput(String name, int bufferSize) throws IOException {

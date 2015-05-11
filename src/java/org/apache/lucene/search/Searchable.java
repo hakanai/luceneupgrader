@@ -17,13 +17,13 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.Closeable;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * The interface for search implementations.
@@ -82,12 +82,6 @@ public interface Searchable extends Closeable {
    */
   int docFreq(Term term) throws IOException;
 
-  /** Expert: For each term in the terms array, calculates the number of
-   * documents containing <code>term</code>. Returns an array with these
-   * document frequencies. Used to minimize number of remote calls.
-   */
-  int[] docFreqs(Term[] terms) throws IOException;
-
   /** Expert: Returns one greater than the largest possible document number.
    * 
    *
@@ -130,18 +124,5 @@ public interface Searchable extends Closeable {
    * @throws BooleanQuery.TooManyClauses
    */
   Query rewrite(Query query) throws IOException;
-
-  /** Expert: low-level implementation method
-   * Returns an Explanation that describes how <code>doc</code> scored against
-   * <code>weight</code>.
-   *
-   * <p>This is intended to be used in developing Similarity implementations,
-   * and, for good performance, should not be displayed with every hit.
-   * Computing an explanation is as expensive as executing the query over the
-   * entire index.
-   * <p>Applications should call {@code Searcher#explain(Query, int)}.
-   * @throws BooleanQuery.TooManyClauses
-   */
-  Explanation explain(Weight weight, int doc) throws IOException;
 
 }

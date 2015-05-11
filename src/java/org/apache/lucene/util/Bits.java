@@ -26,8 +26,6 @@ public interface Bits {
   boolean get(int index);
   int length();
 
-  Bits[] EMPTY_ARRAY = new Bits[0];
-  
   /**
    * Bits impl of the specified length with all bits set. 
    */

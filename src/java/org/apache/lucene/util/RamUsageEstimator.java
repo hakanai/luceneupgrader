@@ -146,10 +146,6 @@ public final class RamUsageEstimator {
     // Initialize empirically measured defaults. We'll modify them to the current
     // JVM settings later on if possible.
     int referenceSize = Constants.JRE_IS_64BIT ? 8 : 4;
-    int objectHeader = Constants.JRE_IS_64BIT ? 16 : 8;
-    // The following is objectHeader + NUM_BYTES_INT, but aligned (object alignment)
-    // so on 64 bit JVMs it'll be align(16 + 4, @8) = 24.
-    int arrayHeader = Constants.JRE_IS_64BIT ? 24 : 12;
 
     supportedFeatures = EnumSet.noneOf(JvmFeature.class);
 
@@ -176,8 +172,10 @@ public final class RamUsageEstimator {
 
     // "best guess" based on reference size. We will attempt to modify
     // these to exact values if there is supported infrastructure.
-    objectHeader = Constants.JRE_IS_64BIT ? (8 + referenceSize) : 8;
-    arrayHeader =  Constants.JRE_IS_64BIT ? (8 + 2 * referenceSize) : 12;
+    int objectHeader = Constants.JRE_IS_64BIT ? (8 + referenceSize) : 8;
+    // The following is objectHeader + NUM_BYTES_INT, but aligned (object alignment)
+    // so on 64 bit JVMs it'll be align(16 + 4, @8) = 24.
+    int arrayHeader =  Constants.JRE_IS_64BIT ? (8 + 2 * referenceSize) : 12;
 
     // get the object header size:
     // - first try out if the field offsets are not scaled (see warning in Unsafe docs)
@@ -269,19 +267,8 @@ public final class RamUsageEstimator {
   private static final class DummyTwoLongObject {
     public long dummy1, dummy2;
   }
-  
-  /** 
-   * Returns true, if the current JVM is fully supported by {@code RamUsageEstimator}.
-   * If this method returns {@code false} you are maybe using a 3rd party Java VM
-   * that is not supporting Oracle/Sun private APIs. The memory estimates can be 
-   * imprecise then (no way of detecting compressed references, alignments, etc.). 
-   * Lucene still tries to use sensible defaults.
-   */
-  public static boolean isSupportedJVM() {
-    return supportedFeatures.size() == JvmFeature.values().length;
-  }
 
-  /** 
+  /**
    * Aligns an object size to be the next multiple of {@code #NUM_BYTES_OBJECT_ALIGNMENT}.
    */
   public static long alignObjectSize(long size) {
@@ -293,16 +280,6 @@ public final class RamUsageEstimator {
   public static long sizeOf(byte[] arr) {
     return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + arr.length);
   }
-  
-  /** Returns the size in bytes of the boolean[] object. */
-  public static long sizeOf(boolean[] arr) {
-    return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + arr.length);
-  }
-  
-  /** Returns the size in bytes of the char[] object. */
-  public static long sizeOf(char[] arr) {
-    return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) NUM_BYTES_CHAR * arr.length);
-  }
 
   /** Returns the size in bytes of the short[] object. */
   public static long sizeOf(short[] arr) {
@@ -313,23 +290,13 @@ public final class RamUsageEstimator {
   public static long sizeOf(int[] arr) {
     return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) NUM_BYTES_INT * arr.length);
   }
-  
-  /** Returns the size in bytes of the float[] object. */
-  public static long sizeOf(float[] arr) {
-    return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) NUM_BYTES_FLOAT * arr.length);
-  }
-  
+
   /** Returns the size in bytes of the long[] object. */
   public static long sizeOf(long[] arr) {
     return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) NUM_BYTES_LONG * arr.length);
   }
-  
-  /** Returns the size in bytes of the double[] object. */
-  public static long sizeOf(double[] arr) {
-    return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) NUM_BYTES_DOUBLE * arr.length);
-  }
 
-  /** 
+  /**
    * Estimates the RAM usage by the given object. It will
    * walk the object tree and sum up all referenced objects.
    * 
@@ -340,68 +307,6 @@ public final class RamUsageEstimator {
    */
   public static long sizeOf(Object obj) {
     return measureObjectSize(obj, false);
-  }
-
-  /** 
-   * Estimates a "shallow" memory usage of the given object. For arrays, this will be the
-   * memory taken by array storage (no subreferences will be followed). For objects, this
-   * will be the memory taken by the fields.
-   * 
-   * JVM object alignments are also applied.
-   */
-  public static long shallowSizeOf(Object obj) {
-    if (obj == null) return 0;
-    final Class<?> clz = obj.getClass();
-    if (clz.isArray()) {
-      return shallowSizeOfArray(obj);
-    } else {
-      return shallowSizeOfInstance(clz);
-    }
-  }
-
-  /**
-   * Returns the shallow instance size in bytes an instance of the given class would occupy.
-   * This works with all conventional classes and primitive types, but not with arrays
-   * (the size then depends on the number of elements and varies from object to object).
-   * 
-   *
-   * @throws IllegalArgumentException if {@code clazz} is an array class. 
-   */
-  public static long shallowSizeOfInstance(Class<?> clazz) {
-    if (clazz.isArray())
-      throw new IllegalArgumentException("This method does not work with array classes.");
-    if (clazz.isPrimitive())
-      return primitiveSizes.get(clazz);
-    
-    long size = NUM_BYTES_OBJECT_HEADER;
-
-    // Walk type hierarchy
-    for (;clazz != null; clazz = clazz.getSuperclass()) {
-      final Field[] fields = clazz.getDeclaredFields();
-      for (Field f : fields) {
-        if (!Modifier.isStatic(f.getModifiers())) {
-          size = adjustForField(size, f);
-        }
-      }
-    }
-    return alignObjectSize(size);    
-  }
-
-  /**
-   * Return shallow size of any <code>array</code>.
-   */
-  private static long shallowSizeOfArray(Object array) {
-    long size = NUM_BYTES_ARRAY_HEADER;
-    final int len = Array.getLength(array);
-    if (len > 0) {
-      Class<?> arrayElementClazz = array.getClass().getComponentType();
-      if (arrayElementClazz.isPrimitive()) {
-        size += (long) len * primitiveSizes.get(arrayElementClazz);
-      } else {
-        size += (long) NUM_BYTES_OBJECT_REF * len;
-      }
-    }
-    return alignObjectSize(size);
   }
 
   /*
@@ -557,18 +462,6 @@ public final class RamUsageEstimator {
     }
   }
 
-  /** Return the set of unsupported JVM features that improve the estimation. */
-  public static EnumSet<JvmFeature> getUnsupportedFeatures() {
-    EnumSet<JvmFeature> unsupported = EnumSet.allOf(JvmFeature.class);
-    unsupported.removeAll(supportedFeatures);
-    return unsupported;
-  }
-
-  /** Return the set of supported JVM features that improve the estimation. */
-  public static EnumSet<JvmFeature> getSupportedFeatures() {
-    return EnumSet.copyOf(supportedFeatures);
-  }
-
   /**
    * Returns <code>size</code> in human-readable units (GB, MB, KB or bytes).
    */
@@ -590,15 +483,6 @@ public final class RamUsageEstimator {
     } else {
       return bytes + " bytes";
     }
-  }
-
-  /**
-   * Return a human-readable size of a given object.
-   *
-   *
-   */
-  public static String humanSizeOf(Object object) {
-    return humanReadableUnits(sizeOf(object));
   }
 
   /**
@@ -645,15 +529,7 @@ public final class RamUsageEstimator {
     public IdentityHashSet() {
       this(16, DEFAULT_LOAD_FACTOR);
     }
-    
-    /**
-     * Creates a hash set with the given capacity, load factor of
-     * {@value #DEFAULT_LOAD_FACTOR}.
-     */
-    public IdentityHashSet(int initialCapacity) {
-      this(initialCapacity, DEFAULT_LOAD_FACTOR);
-    }
-    
+
     /**
      * Creates a hash set with the given capacity and load factor.
      */
@@ -737,8 +613,7 @@ public final class RamUsageEstimator {
        * Rehash all assigned slots from the old hash table.
        */
       final int mask = keys.length - 1;
-      for (int i = 0; i < oldKeys.length; i++) {
-        final Object key = oldKeys[i];
+      for (final Object key : oldKeys) {
         if (key != null) {
           int slot = rehash(key) & mask;
           while (keys[slot] != null) {
@@ -840,9 +715,6 @@ public final class RamUsageEstimator {
     }
   }
 
-  // deprecated API (will be removed in 4.0):
-  private final boolean checkInterned;
-  
   /** Creates a new instance of {@code RamUsageEstimator} with intern checking
    * enabled. Don't ever use this method, as intern checking is deprecated,
    * because it is not free of side-effects and strains the garbage collector
@@ -852,30 +724,6 @@ public final class RamUsageEstimator {
    */
   @Deprecated
   public RamUsageEstimator() {
-    this(true);
   }
-  
-  /** Creates a new instance of {@code RamUsageEstimator}. 
-   * @param checkInterned check if Strings are interned and don't add to size
-   * if they are. Defaults to true but if you know the objects you are checking
-   * won't likely contain many interned Strings, it will be faster to turn off
-   * intern checking. Intern checking is deprecated altogether, as it is not free
-   * of side-effects and strains the garbage collector additionally.
-   * @deprecated Don't create instances of this class, instead use the static
-   * {@code #sizeOf(Object)} method.
-   */
-  @Deprecated
-  public RamUsageEstimator(boolean checkInterned) {
-    this.checkInterned = checkInterned;
-  }
-  
-  /** Creates a new istance of {@code RamUsageEstimator}. 
-   * @deprecated Don't create instances of this class, instead use the static
-   * {@code #sizeOf(Object)} method.
-   *
-   */
-  @Deprecated
-  public long estimateRamUsage(Object obj) {
-    return measureObjectSize(obj, checkInterned);
-  }
+
 }

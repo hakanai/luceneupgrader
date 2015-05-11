@@ -40,15 +40,6 @@ public class SimpleFSDirectory extends FSDirectory {
   public SimpleFSDirectory(File path, LockFactory lockFactory) throws IOException {
     super(path, lockFactory);
   }
-  
-  /** Create a new SimpleFSDirectory for the named location and {@code NativeFSLockFactory}.
-   *
-   * @param path the path of the directory
-   * @throws IOException
-   */
-  public SimpleFSDirectory(File path) throws IOException {
-    super(path, null);
-  }
 
   /** Creates an IndexInput for the file with the given name. */
   @Override
@@ -86,12 +77,6 @@ public class SimpleFSDirectory extends FSDirectory {
     boolean isClone;
     //  LUCENE-1566 - maximum read length on a 32bit JVM to prevent incorrect OOM 
     protected final int chunkSize;
-
-    /** @deprecated please pass resourceDesc */
-    @Deprecated
-    public SimpleFSIndexInput(File path, int bufferSize, int chunkSize) throws IOException {
-      this("anonymous SimpleFSIndexInput", path, bufferSize, chunkSize);
-    }
 
     public SimpleFSIndexInput(String resourceDesc, File path, int bufferSize, int chunkSize) throws IOException {
       super(resourceDesc, bufferSize);
@@ -165,14 +150,7 @@ public class SimpleFSDirectory extends FSDirectory {
       clone.isClone = true;
       return clone;
     }
-  
-    /** Method used for testing. Returns true if the underlying
-     *  file descriptor is valid.
-     */
-    boolean isFDValid() throws IOException {
-      return file.getFD().valid();
-    }
-    
+
     @Override
     public void copyBytes(IndexOutput out, long numBytes) throws IOException {
       numBytes -= flushBuffer(out, numBytes);

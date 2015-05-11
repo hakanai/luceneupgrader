@@ -440,10 +440,9 @@ public final class SegmentInfo implements Cloneable {
         String pattern;
         pattern = name + ".s";
         int patternLength = pattern.length();
-        for(int i = 0; i < result.length; i++){
-          String fileName = result[i];
+        for (String fileName : result) {
           if (filter.accept(null, fileName) && fileName.startsWith(pattern) && Character.isDigit(fileName.charAt(patternLength)))
-              return true;
+            return true;
         }
         return false;
       }
@@ -451,8 +450,8 @@ public final class SegmentInfo implements Cloneable {
       // This means this segment was saved with LOCKLESS
       // code so we first check whether any normGen's are >= 1
       // (meaning they definitely have separate norms):
-      for(int i=0;i<normGen.length;i++) {
-        if (normGen[i] >= YES) {
+      for (long aNormGen : normGen) {
+        if (aNormGen >= YES) {
           return true;
         }
       }
@@ -613,8 +612,8 @@ public final class SegmentInfo implements Cloneable {
       output.writeInt(NO);
     } else {
       output.writeInt(normGen.length);
-      for(int j = 0; j < normGen.length; j++) {
-        output.writeLong(normGen[j]);
+      for (long aNormGen : normGen) {
+        output.writeLong(aNormGen);
       }
     }
     output.writeByte(isCompoundFile);
@@ -732,8 +731,7 @@ public final class SegmentInfo implements Cloneable {
       int prefixLength = prefix.length();
       String[] allFiles = dir.listAll();
       final IndexFileNameFilter filter = IndexFileNameFilter.getFilter();
-      for(int i=0;i<allFiles.length;i++) {
-        String fileName = allFiles[i];
+      for (String fileName : allFiles) {
         if (filter.accept(null, fileName) && fileName.length() > prefixLength && Character.isDigit(fileName.charAt(prefixLength)) && fileName.startsWith(prefix)) {
           filesSet.add(fileName);
         }

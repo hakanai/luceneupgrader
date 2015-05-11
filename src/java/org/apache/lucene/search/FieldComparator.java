@@ -17,19 +17,13 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.search.FieldCache.*;
+import org.apache.lucene.util.Bits;
+
 import java.io.IOException;
 import java.text.Collator;
 import java.util.Locale;
-
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.search.FieldCache.DoubleParser;
-import org.apache.lucene.search.FieldCache.LongParser;
-import org.apache.lucene.search.FieldCache.ByteParser;
-import org.apache.lucene.search.FieldCache.FloatParser;
-import org.apache.lucene.search.FieldCache.IntParser;
-import org.apache.lucene.search.FieldCache.ShortParser;
-import org.apache.lucene.search.FieldCache.StringIndex;
-import org.apache.lucene.util.Bits;
 
 /**
  * Expert: a FieldComparator compares hits so as to determine their
@@ -971,10 +965,6 @@ public abstract class FieldComparator<T> {
 
     public String[] getValues() {
       return values;
-    }
-
-    public int getBottomSlot() {
-      return bottomSlot;
     }
 
     public String getField() {

@@ -1497,8 +1497,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
             // Forward any exceptions in background merge
             // threads to the current thread:
             final int size = mergeExceptions.size();
-            for(int i=0;i<size;i++) {
-              final MergePolicy.OneMerge merge = mergeExceptions.get(i);
+            for (final MergePolicy.OneMerge merge : mergeExceptions) {
               if (merge.maxNumSegments != -1) {
                 IOException err = new IOException("background merge hit exception: " + merge.segString(directory));
                 final Throwable t = merge.getException();
@@ -1632,25 +1631,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
       runningMerges.add(merge);
       return merge;
     }
-  }
-
-  /**
-   * Close the <code>IndexWriter</code> without committing
-   * any changes that have occurred since the last commit
-   * (or since it was opened, if commit hasn't been called).
-   * This removes any temporary files that had been created,
-   * after which the state of the index will be the same as
-   * it was when commit() was last called or when this
-   * writer was first opened.  This also clears a previous
-   * call to {@code #prepareCommit}.
-   * @throws IOException if there is a low-level IO error
-   */
-  public void rollback() throws IOException {
-    ensureOpen();
-
-    // Ensure that only one thread actually gets to do the closing:
-    if (shouldClose())
-      rollbackInternal();
   }
 
   private void rollbackInternal() throws IOException {
@@ -1830,18 +1810,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * deleted documents are flushed to the Directory.
    */
   protected void doBeforeFlush() throws IOException {}
-
-  /** Expert: prepare for commit.
-   *
-   * <p><b>NOTE</b>: if this method hits an OutOfMemoryError
-   * you should immediately close the writer.  See <a
-   * href="#OOME">above</a> for details.</p>
-   *
-   * */
-  public final void prepareCommit() throws IOException {
-    ensureOpen();
-    prepareCommit(null);
-  }
 
   /** <p>Expert: prepare for commit, specifying
    *  commitUserData Map (String -> String).  This does the

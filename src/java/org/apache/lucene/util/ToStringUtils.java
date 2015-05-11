@@ -33,14 +33,4 @@ public final class ToStringUtils {
     } else return "";
   }
 
-  public static void byteArray(StringBuilder buffer, byte[] bytes) {
-    for (int i = 0; i < bytes.length; i++) {
-      buffer.append("b[").append(i).append("]=").append(bytes[i]);
-      if (i < bytes.length - 1) {
-        buffer.append(',');
-      }
-
-    }
-  }
-
 }

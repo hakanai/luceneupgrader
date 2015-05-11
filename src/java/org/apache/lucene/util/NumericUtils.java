@@ -117,28 +117,6 @@ public final class NumericUtils {
     return len;
   }
 
-  /*
-   * Expert: Returns prefix coded bits after reducing the precision by <code>shift</code> bits.
-   * This is method is used by {@code LongRangeBuilder}.
-   * @param val the numeric value
-   * @param shift how many bits to strip from the right
-   */
-  public static String longToPrefixCoded(final long val, final int shift) {
-    final char[] buffer = new char[BUF_SIZE_LONG];
-    final int len = longToPrefixCoded(val, shift, buffer);
-    return new String(buffer, 0, len);
-  }
-
-  /*
-   * This is a convenience method, that returns prefix coded bits of a long without
-   * reducing the precision. It can be used to store the full precision value as a
-   * stored field in index.
-   * <p>To decode, use {@code #prefixCodedToLong}.
-   */
-  public static String longToPrefixCoded(final long val) {
-    return longToPrefixCoded(val, 0);
-  }
-  
   /**
    * Expert: Returns prefix coded bits after reducing the precision by <code>shift</code> bits.
    * This is method is used by {@code NumericTokenStream}.
@@ -163,28 +141,6 @@ public final class NumericUtils {
       sortableBits >>>= 7;
     }
     return len;
-  }
-
-  /*
-   * Expert: Returns prefix coded bits after reducing the precision by <code>shift</code> bits.
-   * This is method is used by {@code IntRangeBuilder}.
-   * @param val the numeric value
-   * @param shift how many bits to strip from the right
-   */
-  public static String intToPrefixCoded(final int val, final int shift) {
-    final char[] buffer = new char[BUF_SIZE_INT];
-    final int len = intToPrefixCoded(val, shift, buffer);
-    return new String(buffer, 0, len);
-  }
-
-  /*
-   * This is a convenience method, that returns prefix coded bits of an int without
-   * reducing the precision. It can be used to store the full precision value as a
-   * stored field in index.
-   * <p>To decode, use {@code #prefixCodedToInt}.
-   */
-  public static String intToPrefixCoded(final int val) {
-    return intToPrefixCoded(val, 0);
   }
 
   /*
@@ -256,14 +212,6 @@ public final class NumericUtils {
     return f;
   }
 
-  /*
-   * Convenience method: this just returns:
-   *   longToPrefixCoded(doubleToSortableLong(val))
-   */
-  public static String doubleToPrefixCoded(double val) {
-    return longToPrefixCoded(doubleToSortableLong(val));
-  }
-
   /**
    * Converts a sortable <code>long</code> back to a <code>double</code>.
    *
@@ -271,14 +219,6 @@ public final class NumericUtils {
   public static double sortableLongToDouble(long val) {
     if (val<0) val ^= 0x7fffffffffffffffL;
     return Double.longBitsToDouble(val);
-  }
-
-  /*
-   * Convenience method: this just returns:
-   *    sortableLongToDouble(prefixCodedToLong(val))
-   */
-  public static double prefixCodedToDouble(String val) {
-    return sortableLongToDouble(prefixCodedToLong(val));
   }
 
   /**
@@ -296,14 +236,6 @@ public final class NumericUtils {
     return f;
   }
 
-  /*
-   * Convenience method: this just returns:
-   *   intToPrefixCoded(floatToSortableInt(val))
-   */
-  public static String floatToPrefixCoded(float val) {
-    return intToPrefixCoded(floatToSortableInt(val));
-  }
-
   /**
    * Converts a sortable <code>int</code> back to a <code>float</code>.
    *
@@ -313,157 +245,4 @@ public final class NumericUtils {
     return Float.intBitsToFloat(val);
   }
 
-  /*
-   * Convenience method: this just returns:
-   *    sortableIntToFloat(prefixCodedToInt(val))
-   */
-  public static float prefixCodedToFloat(String val) {
-    return sortableIntToFloat(prefixCodedToInt(val));
-  }
-
-  /**
-   * Expert: Splits a long range recursively.
-   * You may implement a builder that adds clauses to a
-   * {@code org.apache.lucene.search.BooleanQuery} for each call to its
-   * {@code LongRangeBuilder#addRange(String,String)}
-   * method.
-   * <p>This method is used by {@code NumericRangeQuery}.
-   */
-  public static void splitLongRange(final LongRangeBuilder builder,
-    final int precisionStep,  final long minBound, final long maxBound
-  ) {
-    splitRange(builder, 64, precisionStep, minBound, maxBound);
-  }
-  
-  /**
-   * Expert: Splits an int range recursively.
-   * You may implement a builder that adds clauses to a
-   * {@code org.apache.lucene.search.BooleanQuery} for each call to its
-   * {@code IntRangeBuilder#addRange(String,String)}
-   * method.
-   * <p>This method is used by {@code NumericRangeQuery}.
-   */
-  public static void splitIntRange(final IntRangeBuilder builder,
-    final int precisionStep,  final int minBound, final int maxBound
-  ) {
-    splitRange(builder, 32, precisionStep, minBound, maxBound);
-  }
-  
-  /** This helper does the splitting for both 32 and 64 bit. */
-  private static void splitRange(
-    final Object builder, final int valSize,
-    final int precisionStep, long minBound, long maxBound
-  ) {
-    if (precisionStep < 1)
-      throw new IllegalArgumentException("precisionStep must be >=1");
-    if (minBound > maxBound) return;
-    for (int shift=0; ; shift += precisionStep) {
-      // calculate new bounds for inner precision
-      final long diff = 1L << (shift+precisionStep),
-        mask = ((1L<<precisionStep) - 1L) << shift;
-      final boolean
-        hasLower = (minBound & mask) != 0L,
-        hasUpper = (maxBound & mask) != mask;
-      final long
-        nextMinBound = (hasLower ? (minBound + diff) : minBound) & ~mask,
-        nextMaxBound = (hasUpper ? (maxBound - diff) : maxBound) & ~mask;
-      final boolean
-        lowerWrapped = nextMinBound < minBound,
-        upperWrapped = nextMaxBound > maxBound;
-      
-      if (shift+precisionStep>=valSize || nextMinBound>nextMaxBound || lowerWrapped || upperWrapped) {
-        // We are in the lowest precision or the next precision is not available.
-        addRange(builder, valSize, minBound, maxBound, shift);
-        // exit the split recursion loop
-        break;
-      }
-      
-      if (hasLower)
-        addRange(builder, valSize, minBound, minBound | mask, shift);
-      if (hasUpper)
-        addRange(builder, valSize, maxBound & ~mask, maxBound, shift);
-      
-      // recurse to next precision
-      minBound = nextMinBound;
-      maxBound = nextMaxBound;
-    }
-  }
-  
-  /** Helper that delegates to correct range builder */
-  private static void addRange(
-    final Object builder, final int valSize,
-    long minBound, long maxBound,
-    final int shift
-  ) {
-    // for the max bound set all lower bits (that were shifted away):
-    // this is important for testing or other usages of the splitted range
-    // (e.g. to reconstruct the full range). The prefixEncoding will remove
-    // the bits anyway, so they do not hurt!
-    maxBound |= (1L << shift) - 1L;
-    // delegate to correct range builder
-    switch(valSize) {
-      case 64:
-        ((LongRangeBuilder)builder).addRange(minBound, maxBound, shift);
-        break;
-      case 32:
-        ((IntRangeBuilder)builder).addRange((int)minBound, (int)maxBound, shift);
-        break;
-      default:
-        // Should not happen!
-        throw new IllegalArgumentException("valSize must be 32 or 64.");
-    }
-  }
-
-  /**
-   * Expert: Callback for {@code #splitLongRange}.
-   * You need to overwrite only one of the methods.
-   * <p><font color="red"><b>NOTE:</b> This is a very low-level interface,
-   * the method signatures may change in later versions.</font>
-   */
-  public static abstract class LongRangeBuilder {
-    
-    /**
-     * Overwrite this method, if you like to receive the already prefix encoded range bounds.
-     * You can directly build classical (inclusive) range queries from them.
-     */
-    public void addRange(String minPrefixCoded, String maxPrefixCoded) {
-      throw new UnsupportedOperationException();
-    }
-    
-    /**
-     * Overwrite this method, if you like to receive the raw long range bounds.
-     * You can use this for e.g. debugging purposes (print out range bounds).
-     */
-    public void addRange(final long min, final long max, final int shift) {
-      addRange(longToPrefixCoded(min, shift), longToPrefixCoded(max, shift));
-    }
-  
-  }
-  
-  /**
-   * Expert: Callback for {@code #splitIntRange}.
-   * You need to overwrite only one of the methods.
-   * <p><font color="red"><b>NOTE:</b> This is a very low-level interface,
-   * the method signatures may change in later versions.</font>
-   */
-  public static abstract class IntRangeBuilder {
-    
-    /**
-     * Overwrite this method, if you like to receive the already prefix encoded range bounds.
-     * You can directly build classical range (inclusive) queries from them.
-     */
-    public void addRange(String minPrefixCoded, String maxPrefixCoded) {
-      throw new UnsupportedOperationException();
-    }
-    
-    /**
-     * Overwrite this method, if you like to receive the raw int range bounds.
-     * You can use this for e.g. debugging purposes (print out range bounds).
-     */
-    public void addRange(final int min, final int max, final int shift) {
-      addRange(intToPrefixCoded(min, shift), intToPrefixCoded(max, shift));
-    }
-  
-  }
-  
 }

@@ -297,9 +297,9 @@ class DirectoryReader extends IndexReader implements Cloneable {
     if (writer != null) {
       buffer.append(":nrt");
     }
-    for(int i=0;i<subReaders.length;i++) {
+    for (SegmentReader subReader : subReaders) {
       buffer.append(' ');
-      buffer.append(subReaders[i]);
+      buffer.append(subReader);
     }
     buffer.append(')');
     return buffer.toString();
@@ -425,8 +425,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
     // numDocs... but that's harmless
     if (numDocs == -1) {        // check cache
       int n = 0;                // cache miss--recompute
-      for (int i = 0; i < subReaders.length; i++)
-        n += subReaders[i].numDocs();      // sum from readers
+      for (SegmentReader subReader : subReaders) n += subReader.numDocs();      // sum from readers
       numDocs = n;
     }
     return numDocs;
@@ -471,8 +470,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
   /** {@inheritDoc} */
   @Override @Deprecated
   protected void doUndeleteAll() throws IOException {
-    for (int i = 0; i < subReaders.length; i++)
-      subReaders[i].undeleteAll();
+    for (SegmentReader subReader : subReaders) subReader.undeleteAll();
 
     hasDeletions = false;
     numDocs = -1;                                 // invalidate cache
@@ -506,8 +504,8 @@ class DirectoryReader extends IndexReader implements Cloneable {
   @Override
   public boolean hasNorms(String field) throws IOException {
     ensureOpen();
-    for (int i = 0; i < subReaders.length; i++) {
-      if (subReaders[i].hasNorms(field)) return true;
+    for (SegmentReader subReader : subReaders) {
+      if (subReader.hasNorms(field)) return true;
     }
     return false;
   }
@@ -581,8 +579,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
   public int docFreq(Term t) throws IOException {
     ensureOpen();
     int total = 0;          // sum freqs in segments
-    for (int i = 0; i < subReaders.length; i++)
-      total += subReaders[i].docFreq(t);
+    for (SegmentReader subReader : subReaders) total += subReader.docFreq(t);
     return total;
   }
 
@@ -694,8 +691,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
 
       boolean success = false;
       try {
-        for (int i = 0; i < subReaders.length; i++)
-          subReaders[i].commit();
+        for (SegmentReader subReader : subReaders) subReader.commit();
 
         // Remove segments that contain only 100% deleted
         // docs:
@@ -743,15 +739,15 @@ class DirectoryReader extends IndexReader implements Cloneable {
 
   void startCommit() {
     rollbackHasChanges = hasChanges;
-    for (int i = 0; i < subReaders.length; i++) {
-      subReaders[i].startCommit();
+    for (SegmentReader subReader : subReaders) {
+      subReader.startCommit();
     }
   }
 
   void rollbackCommit() {
     hasChanges = rollbackHasChanges;
-    for (int i = 0; i < subReaders.length; i++) {
-      subReaders[i].rollbackCommit();
+    for (SegmentReader subReader : subReaders) {
+      subReader.rollbackCommit();
     }
   }
 
@@ -770,10 +766,10 @@ class DirectoryReader extends IndexReader implements Cloneable {
   protected synchronized void doClose() throws IOException {
     IOException ioe = null;
     normsCache = null;
-    for (int i = 0; i < subReaders.length; i++) {
+    for (SegmentReader subReader : subReaders) {
       // try to close each reader, even if an exception is thrown
       try {
-        subReaders[i].decRef();
+        subReader.decRef();
       } catch (IOException e) {
         if (ioe == null) ioe = e;
       }
@@ -815,13 +811,11 @@ class DirectoryReader extends IndexReader implements Cloneable {
 
     commits.add(new ReaderCommit(latest, dir));
 
-    for(int i=0;i<files.length;i++) {
-
-      final String fileName = files[i];
+    for (final String fileName : files) {
 
       if (fileName.startsWith(IndexFileNames.SEGMENTS) &&
-          !fileName.equals(IndexFileNames.SEGMENTS_GEN) &&
-          SegmentInfos.generationFromSegmentsFileName(fileName) < currentGen) {
+              !fileName.equals(IndexFileNames.SEGMENTS_GEN) &&
+              SegmentInfos.generationFromSegmentsFileName(fileName) < currentGen) {
 
         SegmentInfos sis = new SegmentInfos();
         try {
@@ -957,9 +951,8 @@ class DirectoryReader extends IndexReader implements Cloneable {
   
     @Override
     public boolean next() throws IOException {
-      for (int i=0; i<matchingSegments.length; i++) {
-        SegmentMergeInfo smi = matchingSegments[i];
-        if (smi==null) break;
+      for (SegmentMergeInfo smi : matchingSegments) {
+        if (smi == null) break;
         if (smi.next())
           queue.add(smi);
         else
@@ -1150,9 +1143,9 @@ class DirectoryReader extends IndexReader implements Cloneable {
     }
   
     public void close() throws IOException {
-      for (int i = 0; i < readerTermDocs.length; i++) {
-        if (readerTermDocs[i] != null)
-          readerTermDocs[i].close();
+      for (TermDocs readerTermDoc : readerTermDocs) {
+        if (readerTermDoc != null)
+          readerTermDoc.close();
       }
     }
   }

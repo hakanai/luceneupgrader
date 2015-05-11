@@ -20,7 +20,6 @@ package org.apache.lucene.util;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -50,11 +49,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class WeakIdentityMap<K,V> {
   private final ReferenceQueue<Object> queue = new ReferenceQueue<Object>();
   private final Map<IdentityWeakReference, V> backingStore;
-
-  /** Creates a new {@code WeakIdentityMap} based on a non-synchronized {@code HashMap}. */
-  public static <K,V> WeakIdentityMap<K,V> newHashMap() {
-    return new WeakIdentityMap<K,V>(new HashMap<IdentityWeakReference,V>());
-  }
 
   /** Creates a new {@code WeakIdentityMap} based on a {@code ConcurrentHashMap}. */
   public static <K,V> WeakIdentityMap<K,V> newConcurrentHashMap() {
@@ -114,7 +108,7 @@ public final class WeakIdentityMap<K,V> {
       private boolean nextIsSet = false;
     
       public boolean hasNext() {
-        return nextIsSet ? true : setNext();
+        return nextIsSet || setNext();
       }
       
       @SuppressWarnings("unchecked")
@@ -153,14 +147,6 @@ public final class WeakIdentityMap<K,V> {
         return false;
       }
     };
-  }
-  
-  /** Returns an iterator over all values of this map.
-   * This iterator may return values whose key is already
-   * garbage collected while iterator is consumed. */
-  public Iterator<V> valueIterator() {
-    reap();
-    return backingStore.values().iterator();
   }
 
   private void reap() {

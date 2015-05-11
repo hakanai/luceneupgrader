@@ -30,14 +30,6 @@ import java.util.Map;
 public interface TwoPhaseCommit {
 
   /**
-   * The first stage of a 2-phase commit. Implementations should do as much work
-   * as possible in this method, but avoid actual committing changes. If the
-   * 2-phase commit fails, {@code #rollback()} is called to discard all changes
-   * since last successful commit.
-   */
-  void prepareCommit() throws IOException;
-
-  /**
    * Like {@code #commit()}, but takes an additional commit data to be included
    * w/ the commit.
    * <p>
@@ -65,13 +57,5 @@ public interface TwoPhaseCommit {
    *
    */
   void commit(Map<String, String> commitData) throws IOException;
-
-  /**
-   * Discards any changes that have occurred since the last commit. In a 2-phase
-   * commit algorithm, where one of the objects failed to {@code #commit()} or
-   * {@code #prepareCommit()}, this method is used to roll all other objects
-   * back to their previous state.
-   */
-  void rollback() throws IOException;
 
 }

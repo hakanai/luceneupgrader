@@ -52,13 +52,6 @@ public abstract class LockFactory {
   }
 
   /**
-   * Get the prefix in use for all locks created in this LockFactory.
-   */
-  public String getLockPrefix() {
-    return this.lockPrefix;
-  }
-
-  /**
    * Return a new Lock instance identified by lockName.
    * @param lockName name of the lock to be created.
    */

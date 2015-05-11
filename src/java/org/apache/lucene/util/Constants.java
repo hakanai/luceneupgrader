@@ -17,8 +17,9 @@ package org.apache.lucene.util;
  * limitations under the License.
  */
 
-import java.lang.reflect.Field;
 import org.apache.lucene.LucenePackage;
+
+import java.lang.reflect.Field;
 
 /**
  * Some useful constants.
@@ -34,19 +35,6 @@ public final class Constants {
 
   /** The value of <tt>System.getProperty("java.version")<tt>. **/
   public static final String JAVA_VERSION = System.getProperty("java.version");
- 
-  /** True iff this is Java version 1.1.
-   * @deprecated This constant is useless since Lucene is on Java 5 */
-  @Deprecated
-  public static final boolean JAVA_1_1 = JAVA_VERSION.startsWith("1.1.");
-  /** True iff this is Java version 1.2.
-   * @deprecated This constant is useless since Lucene is on Java 5 */
-  @Deprecated
-  public static final boolean JAVA_1_2 = JAVA_VERSION.startsWith("1.2.");
-  /** True iff this is Java version 1.3.
-   * @deprecated This constant is useless since Lucene is on Java 5 */
-  @Deprecated
-  public static final boolean JAVA_1_3 = JAVA_VERSION.startsWith("1.3.");
 
   /** The value of <tt>System.getProperty("os.name")<tt>. **/
   public static final String OS_NAME = System.getProperty("os.name");
@@ -56,8 +44,6 @@ public final class Constants {
   public static final boolean WINDOWS = OS_NAME.startsWith("Windows");
   /** True iff running on SunOS. */
   public static final boolean SUN_OS = OS_NAME.startsWith("SunOS");
-  /** True iff running on Mac OS X */
-  public static final boolean MAC_OS_X = OS_NAME.startsWith("Mac OS X");
 
   public static final String OS_ARCH = System.getProperty("os.arch");
   public static final String OS_VERSION = System.getProperty("os.version");
@@ -70,7 +56,7 @@ public final class Constants {
   public static final boolean JRE_IS_64BIT;
   
   static {
-    boolean is64Bit = false;
+    boolean is64Bit;
     try {
       final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
       final Field unsafeField = unsafeClass.getDeclaredField("theUnsafe");
@@ -83,9 +69,10 @@ public final class Constants {
     } catch (Exception e) {
       final String x = System.getProperty("sun.arch.data.model");
       if (x != null) {
-        is64Bit = x.indexOf("64") != -1;
+        is64Bit = x.contains("64");
       } else {
-        if (OS_ARCH != null && OS_ARCH.indexOf("64") != -1) {
+        //noinspection RedundantIfStatement
+        if (OS_ARCH != null && OS_ARCH.contains("64")) {
           is64Bit = true;
         } else {
           is64Bit = false;
@@ -115,6 +102,7 @@ public final class Constants {
 
   // this method prevents inlining the final version constant in compiled classes,
   // see: http://www.javaworld.com/community/node/3400
+  @SuppressWarnings("RedundantStringToString")
   private static String ident(final String s) {
     return s.toString();
   }

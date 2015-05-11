@@ -17,10 +17,6 @@ package org.apache.lucene.util.packed;
  * limitations under the License.
  */
 
-import org.apache.lucene.store.DataInput;
-import org.apache.lucene.util.RamUsageEstimator;
-
-import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -140,31 +136,6 @@ class Packed64 extends PackedInts.ReaderImpl implements PackedInts.Mutable {
     updateCached();
   }
 
-  /**
-   * Creates an array with content retrieved from the given DataInput.
-   * @param in       a DataInput, positioned at the start of Packed64-content.
-   * @param valueCount  the number of elements.
-   * @param bitsPerValue the number of bits available for any given value.
-   * @throws java.io.IOException if the values for the backing array could not
-   *                             be retrieved.
-   */
-  public Packed64(DataInput in, int valueCount, int bitsPerValue)
-                                                            throws IOException {
-    super(valueCount, bitsPerValue);
-    int size = size(valueCount, bitsPerValue);
-    blocks = new long[size+1]; // +1 due to non-conditional tricks
-    // TODO: find a faster way to bulk-read longs...
-    for(int i=0;i<size;i++) {
-      blocks[i] = in.readLong();
-    }
-    updateCached();
-  }
-
-  private static int size(int valueCount, int bitsPerValue) {
-    final long totBitCount = (long) valueCount * bitsPerValue;
-    return (int)(totBitCount/64 + ((totBitCount % 64 == 0 ) ? 0:1));
-  }
-
   private void updateCached() {
     readMasks = MASKS[bitsPerValue];
     shifts = SHIFTS[bitsPerValue];
@@ -207,11 +178,7 @@ class Packed64 extends PackedInts.ReaderImpl implements PackedInts.Mutable {
             + ", elements.length=" + blocks.length + ")";
   }
 
-  public long ramBytesUsed() {
-    return RamUsageEstimator.sizeOf(blocks);
-  }
-
-  public void clear() {
+    public void clear() {
     Arrays.fill(blocks, 0L);
   }
 }

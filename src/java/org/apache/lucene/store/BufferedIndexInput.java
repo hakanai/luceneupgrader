@@ -41,16 +41,6 @@ public abstract class BufferedIndexInput extends IndexInput {
     return buffer[bufferPosition++];
   }
 
-  /** @deprecated please pass resourceDesc */
-  @Deprecated
-  public BufferedIndexInput() {
-    this("anonymous BuffereIndexInput");
-  }
-
-  public BufferedIndexInput(String resourceDesc) {
-    this(resourceDesc, BUFFER_SIZE);
-  }
-
   /** Inits BufferedIndexInput with a specific bufferSize
    *  @deprecated please pass resourceDesc */
   @Deprecated
@@ -94,11 +84,6 @@ public abstract class BufferedIndexInput extends IndexInput {
   protected void newBuffer(byte[] newBuffer) {
     // Subclasses can do something here
     buffer = newBuffer;
-  }
-
-  /** Returns buffer size.  */
-  public final int getBufferSize() {
-    return bufferSize;
   }
 
   private void checkBufferSize(int bufferSize) {

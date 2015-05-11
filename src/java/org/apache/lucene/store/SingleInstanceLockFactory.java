@@ -78,13 +78,6 @@ class SingleInstanceLock extends Lock {
   }
 
   @Override
-  public boolean isLocked() {
-    synchronized(locks) {
-      return locks.contains(lockName);
-    }
-  }
-
-  @Override
   public String toString() {
     return super.toString() + ": " + lockName;
   }

@@ -46,18 +46,6 @@ public class DefaultSimilarity extends Similarity {
     return (float)(1.0 / Math.sqrt(sumOfSquaredWeights));
   }
 
-  /** Implemented as <code>sqrt(freq)</code>. */
-  @Override
-  public float tf(float freq) {
-    return (float)Math.sqrt(freq);
-  }
-    
-  /** Implemented as <code>1 / (distance + 1)</code>. */
-  @Override
-  public float sloppyFreq(int distance) {
-    return 1.0f / (distance + 1);
-  }
-    
   /** Implemented as <code>log(numDocs/(docFreq+1)) + 1</code>. */
   @Override
   public float idf(int docFreq, int numDocs) {
@@ -73,21 +61,4 @@ public class DefaultSimilarity extends Similarity {
   // Default true
   protected boolean discountOverlaps = true;
 
-  /** Determines whether overlap tokens (Tokens with
-   *  0 position increment) are ignored when computing
-   *  norm.  By default this is true, meaning overlap
-   *  tokens do not count when computing norms.
-   *
-   *  @lucene.experimental
-   *
-   *
-   */
-  public void setDiscountOverlaps(boolean v) {
-    discountOverlaps = v;
-  }
-
-  /** */
-  public boolean getDiscountOverlaps() {
-    return discountOverlaps;
-  }
 }

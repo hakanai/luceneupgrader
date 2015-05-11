@@ -17,10 +17,6 @@ package org.apache.lucene.util.packed;
  * limitations under the License.
  */
 
-import org.apache.lucene.store.DataInput;
-import org.apache.lucene.util.RamUsageEstimator;
-
-import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -38,28 +34,6 @@ class Direct64 extends PackedInts.ReaderImpl
     values = new long[valueCount];
   }
 
-  public Direct64(DataInput in, int valueCount) throws IOException {
-    super(valueCount, BITS_PER_VALUE);
-    long[] values = new long[valueCount];
-    for(int i=0;i<valueCount;i++) {
-      values[i] = in.readLong();
-    }
-
-    this.values = values;
-  }
-
-  /**
-   * Creates an array backed by the given values.
-   * </p><p>
-   * Note: The values are used directly, so changes to the given values will
-   * affect the structure.
-   * @param values   used as the internal backing array.
-   */
-  public Direct64(long[] values) {
-    super(values.length, BITS_PER_VALUE);
-    this.values = values;
-  }
-
   public long get(final int index) {
     assert index >= 0 && index < size();
     return values[index];
@@ -67,10 +41,6 @@ class Direct64 extends PackedInts.ReaderImpl
 
   public void set(final int index, final long value) {
     values[index] = value;
-  }
-
-  public long ramBytesUsed() {
-    return RamUsageEstimator.sizeOf(values);
   }
 
   public void clear() {

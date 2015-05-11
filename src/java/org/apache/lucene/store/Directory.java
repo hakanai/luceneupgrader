@@ -17,13 +17,13 @@ package org.apache.lucene.store;
  * limitations under the License.
  */
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Closeable;
-import java.util.Collection;
-
 import org.apache.lucene.index.IndexFileNameFilter;
 import org.apache.lucene.util.IOUtils;
+
+import java.io.Closeable;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Collection;
 
 /** A Directory is a flat list of files.  Files may be written once, when they
  * are created.  Once a file is created it may only be opened for read, or
@@ -150,17 +150,6 @@ public abstract class Directory implements Closeable {
    */
   public Lock makeLock(String name) {
       return lockFactory.makeLock(name);
-  }
-  /**
-   * Attempt to clear (forcefully unlock and remove) the
-   * specified lock.  Only call this at a time when you are
-   * certain this lock is no longer in use.
-   * @param name name of the lock to be cleared.
-   */
-  public void clearLock(String name) throws IOException {
-    if (lockFactory != null) {
-      lockFactory.clearLock(name);
-    }
   }
 
   /** Closes the store. */

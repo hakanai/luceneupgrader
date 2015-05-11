@@ -100,44 +100,5 @@ public abstract class Lock {
   /** Releases exclusive access. */
   public abstract void release() throws IOException;
 
-  /** Returns true if the resource is currently locked.  Note that one must
-   * still call {@code #obtain()} before using the resource. */
-  public abstract boolean isLocked() throws IOException;
-
-
-  /** Utility class for executing code with exclusive access. */
-  public abstract static class With {
-    private Lock lock;
-    private long lockWaitTimeout;
-
-
-    /** Constructs an executor that will grab the named lock. */
-    public With(Lock lock, long lockWaitTimeout) {
-      this.lock = lock;
-      this.lockWaitTimeout = lockWaitTimeout;
-    }
-
-    /** Code to execute with exclusive access. */
-    protected abstract Object doBody() throws IOException;
-
-    /** Calls {@code #doBody} while <i>lock</i> is obtained.  Blocks if lock
-     * cannot be obtained immediately.  Retries to obtain lock once per second
-     * until it is obtained, or until it has tried ten times. Lock is released when
-     * {@code #doBody} exits.
-     * @throws LockObtainFailedException if lock could not
-     * be obtained
-     * @throws IOException if {@code Lock#obtain} throws IOException
-     */
-    public Object run() throws IOException {
-      boolean locked = false;
-      try {
-         locked = lock.obtain(lockWaitTimeout);
-         return doBody();
-      } finally {
-        if (locked)
-	      lock.release();
-      }
-    }
-  }
 
 }

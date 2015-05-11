@@ -17,12 +17,12 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery.BooleanWeight;
+
+import java.io.IOException;
+import java.util.List;
 
 /* Description from Doug Cutting (excerpted from
  * LUCENE-1483):
@@ -204,8 +204,8 @@ final class BooleanScorer extends Scorer {
   // Any time a prohibited clause matches we set bit 0:
   private static final int PROHIBITED_MASK = 1;
   
-  BooleanScorer(BooleanWeight weight, boolean disableCoord, Similarity similarity, int minNrShouldMatch,
-      List<Scorer> optionalScorers, List<Scorer> prohibitedScorers, int maxCoord) throws IOException {
+  BooleanScorer(BooleanWeight weight, boolean disableCoord, int minNrShouldMatch,
+                List<Scorer> optionalScorers, List<Scorer> prohibitedScorers, int maxCoord) throws IOException {
     super(weight);
     this.minNrShouldMatch = minNrShouldMatch;
 

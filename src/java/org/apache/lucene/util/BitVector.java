@@ -17,11 +17,11 @@ package org.apache.lucene.util;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.store.IndexOutput;
+
+import java.io.IOException;
 
 /** Optimized implementation of a vector of bits.  This is more-or-less like
  *  java.util.BitSet, but also includes the following:
@@ -134,8 +134,9 @@ public final class BitVector implements Cloneable, Bits {
     if (count == -1) {
       int c = 0;
       int end = bits.length;
-      for (int i = 0; i < end; i++)
-        c += BYTE_COUNTS[bits[i] & 0xFF];	  // sum bits per byte
+      for (byte bit : bits) {
+        c += BYTE_COUNTS[bit & 0xFF];      // sum bits per byte
+      }
       count = c;
     }
     return count;
@@ -145,8 +146,7 @@ public final class BitVector implements Cloneable, Bits {
   public final int getRecomputedCount() {
     int c = 0;
     int end = bits.length;
-    for (int i = 0; i < end; i++)
-      c += BYTE_COUNTS[bits[i] & 0xFF];	  // sum bits per byte
+    for (byte bit : bits) c += BYTE_COUNTS[bit & 0xFF];      // sum bits per byte
     return c;
   }
 

@@ -80,8 +80,8 @@ abstract class MultiLevelSkipListWriter {
     if (skipBuffer == null) {
       init();
     } else {
-      for (int i = 0; i < skipBuffer.length; i++) {
-        skipBuffer[i].reset();
+      for (RAMOutputStream aSkipBuffer : skipBuffer) {
+        aSkipBuffer.reset();
       }
     }      
   }

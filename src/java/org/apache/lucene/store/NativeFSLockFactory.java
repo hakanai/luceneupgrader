@@ -305,26 +305,6 @@ class NativeFSLock extends Lock {
   }
 
   @Override
-  public synchronized boolean isLocked() {
-    // The test for is isLocked is not directly possible with native file locks:
-    
-    // First a shortcut, if a lock reference in this instance is available
-    if (lockExists()) return true;
-    
-    // Look if lock file is present; if not, there can definitely be no lock!
-    if (!path.exists()) return false;
-    
-    // Try to obtain and release (if was locked) the lock
-    try {
-      boolean obtained = obtain();
-      if (obtained) release();
-      return !obtained;
-    } catch (IOException ioe) {
-      return false;
-    }    
-  }
-
-  @Override
   public String toString() {
     return "NativeFSLock@" + path;
   }

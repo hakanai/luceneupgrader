@@ -44,30 +44,8 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
     }
   }
 
-  /** Return the maximum number of clauses permitted, 1024 by default.
-   * Attempts to add more than the permitted number of clauses cause {@code
-   * TooManyClauses} to be thrown.
-   *
-   */
-  public static int getMaxClauseCount() { return maxClauseCount; }
-
-  /** 
-   * Set the maximum number of clauses permitted per BooleanQuery.
-   * Default value is 1024.
-   */
-  public static void setMaxClauseCount(int maxClauseCount) {
-    if (maxClauseCount < 1)
-      throw new IllegalArgumentException("maxClauseCount must be >= 1");
-    BooleanQuery.maxClauseCount = maxClauseCount;
-  }
-
   private ArrayList<BooleanClause> clauses = new ArrayList<BooleanClause>();
   private final boolean disableCoord;
-
-  /** Constructs an empty boolean query. */
-  public BooleanQuery() {
-    disableCoord = false;
-  }
 
   /** Constructs an empty boolean query.
    *
@@ -82,32 +60,6 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
     this.disableCoord = disableCoord;
   }
 
-  /** Returns true iff {@code Similarity#coord(int,int)} is disabled in
-   * scoring for this query instance.
-   *
-   */
-  public boolean isCoordDisabled() { return disableCoord; }
-
-  /**
-   * Specifies a minimum number of the optional BooleanClauses
-   * which must be satisfied.
-   *
-   * <p>
-   * By default no optional clauses are necessary for a match
-   * (unless there are no required clauses).  If this method is used,
-   * then the specified number of clauses is required.
-   * </p>
-   * <p>
-   * Use of this method is totally independent of specifying that
-   * any specific clauses are required (or prohibited).  This number will
-   * only be compared against the number of matching optional clauses.
-   * </p>
-   *
-   * @param min the number of optional clauses that must match
-   */
-  public void setMinimumNumberShouldMatch(int min) {
-    this.minNrShouldMatch = min;
-  }
   protected int minNrShouldMatch = 0;
 
   /**
@@ -171,8 +123,7 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
       this.similarity = getSimilarity(searcher);
       this.disableCoord = disableCoord;
       weights = new ArrayList<Weight>(clauses.size());
-      for (int i = 0 ; i < clauses.size(); i++) {
-        BooleanClause c = clauses.get(i);
+      for (BooleanClause c : clauses) {
         weights.add(c.getQuery().createWeight(searcher));
         if (!c.isProhibited()) maxCoord++;
       }
@@ -229,8 +180,7 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
       boolean fail = false;
       int shouldMatchCount = 0;
       Iterator<BooleanClause> cIter = clauses.iterator();
-      for (Iterator<Weight> wIter = weights.iterator(); wIter.hasNext();) {
-        Weight w = wIter.next();
+      for (Weight w : weights) {
         BooleanClause c = cIter.next();
         if (w.scorer(reader, true, true) == null) {
           if (c.isRequired()) {
@@ -248,7 +198,7 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
             coord++;
           } else {
             Explanation r =
-              new Explanation(0.0f, "match on prohibited clause (" + c.getQuery().toString() + ")");
+                    new Explanation(0.0f, "match on prohibited clause (" + c.getQuery().toString() + ")");
             r.addDetail(e);
             sumExpl.addDetail(r);
             fail = true;
@@ -318,7 +268,7 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
       
       // Check if we can return a BooleanScorer
       if (!scoreDocsInOrder && topScorer && required.size() == 0) {
-        return new BooleanScorer(this, disableCoord, similarity, minNrShouldMatch, optional, prohibited, maxCoord);
+        return new BooleanScorer(this, disableCoord, minNrShouldMatch, optional, prohibited, maxCoord);
       }
       
       if (required.size() == 0 && optional.size() == 0) {
@@ -332,21 +282,9 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
       }
       
       // Return a BooleanScorer2
-      return new BooleanScorer2(this, disableCoord, similarity, minNrShouldMatch, required, prohibited, optional, maxCoord);
+      return new BooleanScorer2(this, disableCoord, minNrShouldMatch, required, prohibited, optional, maxCoord);
     }
-    
-    @Override
-    public boolean scoresDocsOutOfOrder() {
-      for (BooleanClause c : clauses) {
-        if (c.isRequired()) {
-          return false; // BS2 (in-order) will be used by scorer()
-        }
-      }
-      
-      // scorer() will return an out-of-order scorer if requested.
-      return true;
-    }
-    
+
   }
 
   @Override

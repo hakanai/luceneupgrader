@@ -28,7 +28,6 @@ package org.apache.lucene.util;
 */
 public abstract class PriorityQueue<T> {
   private int size;
-  private int maxSize;
   private T[] heap;
 
   /** Determines the ordering of objects in this priority queue.  Subclasses
@@ -106,8 +105,7 @@ public abstract class PriorityQueue<T> {
       }
     }
     heap = (T[]) new Object[heapSize]; // T is unbounded type, so this unchecked cast works always
-    this.maxSize = maxSize;
-    
+
     // If sentinel objects are supported, populate the queue with them
     T sentinel = getSentinelObject();
     if (sentinel != null) {
@@ -131,30 +129,6 @@ public abstract class PriorityQueue<T> {
     heap[size] = element;
     upHeap();
     return heap[1];
-  }
-
-  /**
-   * Adds an Object to a PriorityQueue in log(size) time.
-   * It returns the object (if any) that was
-   * dropped off the heap because it was full. This can be
-   * the given parameter (in case it is smaller than the
-   * full heap's minimum, and couldn't be added), or another
-   * object that was previously the smallest value in the
-   * heap and now has been replaced by a larger one, or null
-   * if the queue wasn't yet full with maxSize elements.
-   */
-  public T insertWithOverflow(T element) {
-    if (size < maxSize) {
-      add(element);
-      return null;
-    } else if (size > 0 && !lessThan(element, heap[1])) {
-      T ret = heap[1];
-      heap[1] = element;
-      updateTop();
-      return ret;
-    } else {
-      return element;
-    }
   }
 
   /** Returns the least element of the PriorityQueue in constant time. */
@@ -247,11 +221,5 @@ public abstract class PriorityQueue<T> {
     }
     heap[i] = node;				  // install saved node
   }
-  
-  /** This method returns the internal heap array as Object[].
-   * @lucene.internal
-   */
-  protected final Object[] getHeapArray() {
-    return (Object[]) heap;
-  }
+
 }

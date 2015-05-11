@@ -17,10 +17,10 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
+import org.apache.lucene.index.IndexReader;
+
 import java.io.IOException;
 import java.io.Serializable;
-
-import org.apache.lucene.index.IndexReader;
 
 /**
  * Expert: Calculate query weights and build query scorers.
@@ -52,7 +52,7 @@ public abstract class Weight implements Serializable {
    * An explanation of the score computation for the named document.
    * 
    * @param reader sub-reader containing the give doc
-   * @param doc
+   * @param doc ...
    * @return an Explanation for the score
    * @throws IOException
    */
@@ -101,18 +101,5 @@ public abstract class Weight implements Serializable {
   
   /** The sum of squared weights of contained query clauses. */
   public abstract float sumOfSquaredWeights() throws IOException;
-
-  /**
-   * Returns true iff this implementation scores docs only out of order. This
-   * method is used in conjunction with {@code Collector}'s
-   * {@code Collector#acceptsDocsOutOfOrder() acceptsDocsOutOfOrder} and
-   * {@code #scorer(org.apache.lucene.index.IndexReader, boolean, boolean)} to
-   * create a matching {@code Scorer} instance for a given {@code Collector}, or
-   * vice versa.
-   * <p>
-   * <b>NOTE:</b> the default implementation returns <code>false</code>, i.e.
-   * the <code>Scorer</code> scores documents in-order.
-   */
-  public boolean scoresDocsOutOfOrder() { return false; }
 
 }

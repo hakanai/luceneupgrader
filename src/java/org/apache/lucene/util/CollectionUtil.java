@@ -94,18 +94,6 @@ public final class CollectionUtil {
   }
 
   /**
-   * Sorts the given random access {@code List} using the {@code Comparator}.
-   * The list must implement {@code RandomAccess}. This method uses the quick sort
-   * algorithm, but falls back to insertion sort for small lists.
-   * @throws IllegalArgumentException if list is e.g. a linked list without random access.
-   */
-  public static <T> void quickSort(List<T> list, Comparator<? super T> comp) {
-    final int size = list.size();
-    if (size <= 1) return;
-    getSorter(list, comp).quickSort(0, size-1);
-  }
-  
-  /**
    * Sorts the given random access {@code List} in natural order.
    * The list must implement {@code RandomAccess}. This method uses the quick sort
    * algorithm, but falls back to insertion sort for small lists.
@@ -142,31 +130,4 @@ public final class CollectionUtil {
     if (size <= 1) return;
     getSorter(list).mergeSort(0, size-1);
   }
-
-  // insertionSorts:
-  
-  /**
-   * Sorts the given random access {@code List} using the {@code Comparator}.
-   * The list must implement {@code RandomAccess}. This method uses the insertion sort
-   * algorithm. It is only recommended to use this algorithm for partially sorted small lists!
-   * @throws IllegalArgumentException if list is e.g. a linked list without random access.
-   */
-  public static <T> void insertionSort(List<T> list, Comparator<? super T> comp) {
-    final int size = list.size();
-    if (size <= 1) return;
-    getSorter(list, comp).insertionSort(0, size-1);
-  }
-  
-  /**
-   * Sorts the given random access {@code List} in natural order.
-   * The list must implement {@code RandomAccess}. This method uses the insertion sort
-   * algorithm. It is only recommended to use this algorithm for partially sorted small lists!
-   * @throws IllegalArgumentException if list is e.g. a linked list without random access.
-   */
-  public static <T extends Comparable<? super T>> void insertionSort(List<T> list) {
-    final int size = list.size();
-    if (size <= 1) return;
-    getSorter(list).insertionSort(0, size-1);
-  }
-  
 }
