@@ -105,7 +105,7 @@ import org.apache.lucene.util.AttributeReflector;
   </ul>
   </p>
   <p>
-  <b>Please note:</b> With Lucene 3.1, the <code>{@codeplain #toString toString()}</code> method had to be changed to match the
+  <b>Please note:</b> With Lucene 3.1, the <code>{@code toString()}</code> method had to be changed to match the
   {@code CharSequence} interface introduced by the interface {@code org.apache.lucene.analysis.tokenattributes.CharTermAttribute}.
   This method now only prints the term text, no additional information anymore.
   </p>
@@ -196,9 +196,10 @@ public class Token extends TermAttributeImpl
    *  offsets, & type.  <b>NOTE:</b> for better indexing
    *  speed you should instead use the char[] termBuffer
    *  methods to set the term text.
-   * @param text
-   * @param start
-   * @param end
+   *
+   * @param text ...
+   * @param start ...
+   * @param end ...
    * @param flags token type bits
    */
   public Token(String text, int start, int end, int flags) {
@@ -212,11 +213,12 @@ public class Token extends TermAttributeImpl
    *  Constructs a Token with the given term buffer (offset
    *  & length), start and end
    *  offsets
-   * @param startTermBuffer
-   * @param termBufferOffset
-   * @param termBufferLength
-   * @param start
-   * @param end
+   *
+   * @param startTermBuffer ...
+   * @param termBufferOffset ...
+   * @param termBufferLength ...
+   * @param start ...
+   * @param end ...
    */
   public Token(char[] startTermBuffer, int termBufferOffset, int termBufferLength, int start, int end) {
     copyBuffer(startTermBuffer, termBufferOffset, termBufferLength);
@@ -419,7 +421,7 @@ public class Token extends TermAttributeImpl
 
   /**
    * Copy the prototype token's fields into this one. Note: Payloads are shared.
-   * @param prototype
+   * @param prototype ...
    */
   public void reinit(Token prototype) {
     copyBuffer(prototype.buffer(), 0, prototype.length());

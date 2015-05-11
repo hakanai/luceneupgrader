@@ -26,7 +26,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.lucene.analysis.TokenStream; // for javadocs
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttributeImpl;
 

@@ -17,14 +17,12 @@ package org.apache.lucene.document;
  * limitations under the License.
  */
 
-import java.io.Reader;
-
-import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.NumericTokenStream;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.util.NumericUtils;
-import org.apache.lucene.search.SortField; // javadocs
-import org.apache.lucene.search.FieldCache; // javadocs
+
+import java.io.Reader;
 
 /**
  * <p>This class provides a {@code Field} that enables indexing
@@ -144,18 +142,6 @@ public final class NumericField extends AbstractField {
    * {@code NumericUtils#PRECISION_STEP_DEFAULT} (4). The instance is not yet initialized with
    * a numeric value, before indexing a document containing this field,
    * set a value using the various set<em>???</em>Value() methods.
-   * This constructor creates an indexed, but not stored field.
-   * @param name the field name
-   */
-  public NumericField(String name) {
-    this(name, NumericUtils.PRECISION_STEP_DEFAULT, Field.Store.NO, true);
-  }
-  
-  /**
-   * Creates a field for numeric values using the default <code>precisionStep</code>
-   * {@code NumericUtils#PRECISION_STEP_DEFAULT} (4). The instance is not yet initialized with
-   * a numeric value, before indexing a document containing this field,
-   * set a value using the various set<em>???</em>Value() methods.
    * @param name the field name
    * @param store if the field should be stored, {@code Document#getFieldable}
    * then returns {@code NumericField} instances on search results.
@@ -163,19 +149,6 @@ public final class NumericField extends AbstractField {
    */
   public NumericField(String name, Field.Store store, boolean index) {
     this(name, NumericUtils.PRECISION_STEP_DEFAULT, store, index);
-  }
-  
-  /**
-   * Creates a field for numeric values with the specified
-   * <code>precisionStep</code>. The instance is not yet initialized with
-   * a numeric value, before indexing a document containing this field,
-   * set a value using the various set<em>???</em>Value() methods.
-   * This constructor creates an indexed, but not stored field.
-   * @param name the field name
-   * @param precisionStep the used <a href="../search/NumericRangeQuery.html#precisionStepDesc">precision step</a>
-   */
-  public NumericField(String name, int precisionStep) {
-    this(name, precisionStep, Field.Store.NO, true);
   }
 
   /**
@@ -249,12 +222,7 @@ public final class NumericField extends AbstractField {
   public Number getNumericValue() {
     return (Number) fieldsData;
   }
-  
-  /** Returns the precision step. */
-  public int getPrecisionStep() {
-    return precisionStep;
-  }
-  
+
   /** Returns the data type of the current value, {@code null} if not yet set.
    * @since 3.2
    */
@@ -270,7 +238,7 @@ public final class NumericField extends AbstractField {
    */
   public NumericField setLongValue(final long value) {
     if (numericTS != null) numericTS.setLongValue(value);
-    fieldsData = Long.valueOf(value);
+    fieldsData = value;
     type = DataType.LONG;
     return this;
   }
@@ -283,7 +251,7 @@ public final class NumericField extends AbstractField {
    */
   public NumericField setIntValue(final int value) {
     if (numericTS != null) numericTS.setIntValue(value);
-    fieldsData = Integer.valueOf(value);
+    fieldsData = value;
     type = DataType.INT;
     return this;
   }
@@ -296,7 +264,7 @@ public final class NumericField extends AbstractField {
    */
   public NumericField setDoubleValue(final double value) {
     if (numericTS != null) numericTS.setDoubleValue(value);
-    fieldsData = Double.valueOf(value);
+    fieldsData = value;
     type = DataType.DOUBLE;
     return this;
   }
@@ -309,7 +277,7 @@ public final class NumericField extends AbstractField {
    */
   public NumericField setFloatValue(final float value) {
     if (numericTS != null) numericTS.setFloatValue(value);
-    fieldsData = Float.valueOf(value);
+    fieldsData = value;
     type = DataType.FLOAT;
     return this;
   }

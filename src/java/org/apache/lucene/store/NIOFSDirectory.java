@@ -21,9 +21,7 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ClosedChannelException; // javadoc
 import java.nio.channels.FileChannel;
-import java.util.concurrent.Future; // javadoc
 
 /**
  * An {@code FSDirectory} implementation that uses java.nio's FileChannel's

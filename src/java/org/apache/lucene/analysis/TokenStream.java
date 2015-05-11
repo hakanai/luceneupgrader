@@ -17,16 +17,11 @@ package org.apache.lucene.analysis;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.Closeable;
-import java.lang.reflect.Modifier;
-
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.util.Attribute;
-import org.apache.lucene.util.AttributeImpl;
 import org.apache.lucene.util.AttributeSource;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.lang.reflect.Modifier;
 
 /**
  * A <code>TokenStream</code> enumerates the sequence of tokens, either from

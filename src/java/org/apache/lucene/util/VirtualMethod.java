@@ -95,7 +95,7 @@ public final class VirtualMethod<C> {
     Integer distance = cache.get(subclazz);
     if (distance == null) {
       // we have the slight chance that another thread may do the same, but who cares?
-      cache.put(subclazz, distance = Integer.valueOf(reflectImplementationDistance(subclazz)));
+      cache.put(subclazz, distance = reflectImplementationDistance(subclazz));
     }
     return distance.intValue();
   }

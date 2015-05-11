@@ -71,7 +71,7 @@ public class PositionBasedTermVectorMapper extends TermVectorMapper{
   @Override
   public void map(String term, int frequency, TermVectorOffsetInfo[] offsets, int[] positions) {
     for (int i = 0; i < positions.length; i++) {
-      Integer posVal = Integer.valueOf(positions[i]);
+      Integer posVal = positions[i];
       TVPositionInfo pos = currentPositions.get(posVal);
       if (pos == null) {
         pos = new TVPositionInfo(positions[i], storeOffsets);

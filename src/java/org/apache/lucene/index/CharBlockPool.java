@@ -17,13 +17,13 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import static org.apache.lucene.util.RamUsageEstimator.NUM_BYTES_OBJECT_REF;
 import org.apache.lucene.util.ArrayUtil;
+
+import static org.apache.lucene.util.RamUsageEstimator.NUM_BYTES_OBJECT_REF;
 
 final class CharBlockPool {
 
   public char[][] buffers = new char[10][];
-  int numBuffer;
 
   int bufferUpto = -1;                        // Which buffer we are upto
   public int charUpto = DocumentsWriter.CHAR_BLOCK_SIZE;             // Where we are in head buffer

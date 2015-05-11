@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.lucene.index.ConcurrentMergeScheduler;
 import org.apache.lucene.index.IndexFileNames;
-import org.apache.lucene.index.IndexWriter;       // javadocs
 import org.apache.lucene.index.MergePolicy;
 import org.apache.lucene.index.MergeScheduler;
 import org.apache.lucene.store.RAMDirectory;      // javadocs

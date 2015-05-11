@@ -263,7 +263,7 @@ public abstract class FieldComparator<T> {
 
     @Override
     public Byte value(int slot) {
-      return Byte.valueOf(values[slot]);
+      return values[slot];
     }
   }
 
@@ -309,7 +309,7 @@ public abstract class FieldComparator<T> {
 
     @Override
     public Integer value(int slot) {
-      return Integer.valueOf(docIDs[slot]);
+      return docIDs[slot];
     }
   }
 
@@ -383,7 +383,7 @@ public abstract class FieldComparator<T> {
 
     @Override
     public Double value(int slot) {
-      return Double.valueOf(values[slot]);
+      return values[slot];
     }
   }
 
@@ -461,7 +461,7 @@ public abstract class FieldComparator<T> {
 
     @Override
     public Float value(int slot) {
-      return Float.valueOf(values[slot]);
+      return values[slot];
     }
   }
 
@@ -543,7 +543,7 @@ public abstract class FieldComparator<T> {
 
     @Override
     public Integer value(int slot) {
-      return Integer.valueOf(values[slot]);
+      return values[slot];
     }
   }
 
@@ -621,7 +621,7 @@ public abstract class FieldComparator<T> {
 
     @Override
     public Long value(int slot) {
-      return Long.valueOf(values[slot]);
+      return values[slot];
     }
   }
 
@@ -681,7 +681,7 @@ public abstract class FieldComparator<T> {
     
     @Override
     public Float value(int slot) {
-      return Float.valueOf(scores[slot]);
+      return scores[slot];
     }
 
     // Override because we sort reverse of natural Float order:
@@ -749,7 +749,7 @@ public abstract class FieldComparator<T> {
 
     @Override
     public Short value(int slot) {
-      return Short.valueOf(values[slot]);
+      return values[slot];
     }
   }
 

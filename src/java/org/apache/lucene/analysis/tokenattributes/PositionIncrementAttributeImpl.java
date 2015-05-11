@@ -19,7 +19,6 @@ package org.apache.lucene.analysis.tokenattributes;
 
 import java.io.Serializable;
 
-import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.util.AttributeImpl;
 
 /** The positionIncrement determines the position of this token

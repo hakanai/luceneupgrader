@@ -19,7 +19,6 @@ package org.apache.lucene.index;
 
 import java.io.Serializable;
 
-import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.util.ArrayUtil;
 
 /**

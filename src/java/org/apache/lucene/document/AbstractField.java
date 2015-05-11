@@ -18,7 +18,6 @@ package org.apache.lucene.document;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.util.StringHelper; // for javadocs
 import org.apache.lucene.index.FieldInfo.IndexOptions;
-import org.apache.lucene.index.FieldInvertState;  // for javadocs
 
 
 /**

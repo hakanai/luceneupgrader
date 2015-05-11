@@ -170,7 +170,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
     if (oldReaders != null) {
       // create a Map SegmentName->SegmentReader
       for (int i = 0; i < oldReaders.length; i++) {
-        segmentReaders.put(oldReaders[i].getSegmentName(), Integer.valueOf(i));
+        segmentReaders.put(oldReaders[i].getSegmentName(), i);
       }
     }
     
@@ -360,95 +360,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     }
 
     return newReader;
-  }
-
-  private IndexReader doOpenFromWriter(boolean openReadOnly, IndexCommit commit) throws IOException {
-    assert readOnly;
-
-    if (!openReadOnly) {
-      throw new IllegalArgumentException("a reader obtained from IndexWriter.getReader() can only be reopened with openReadOnly=true (got false)");
-    }
-
-    if (commit != null) {
-      throw new IllegalArgumentException("a reader obtained from IndexWriter.getReader() cannot currently accept a commit");
-    }
-
-    if (writer.nrtIsCurrent(segmentInfos)) {
-      return null;
-    }
-
-    IndexReader reader = writer.getReader(applyAllDeletes);
-
-    // If in fact no changes took place, return null:
-    if (reader.getVersion() == segmentInfos.getVersion()) {
-      reader.decRef();
-      return null;
-    }
-
-    return reader;
-  }
-
-  private IndexReader doOpenIfChanged(final boolean openReadOnly, IndexCommit commit) throws IOException {
-    ensureOpen();
-
-    assert commit == null || openReadOnly;
-
-    // If we were obtained by writer.getReader(), re-ask the
-    // writer to get a new reader.
-    if (writer != null) {
-      return doOpenFromWriter(openReadOnly, commit);
-    } else {
-      return doOpenNoWriter(openReadOnly, commit);
-    }
-  }
-
-  private synchronized IndexReader doOpenNoWriter(final boolean openReadOnly, IndexCommit commit) throws IOException {
-
-    if (commit == null) {
-      if (hasChanges) {
-        // We have changes, which means we are not readOnly:
-        assert readOnly == false;
-        // and we hold the write lock:
-        assert writeLock != null;
-        // so no other writer holds the write lock, which
-        // means no changes could have been done to the index:
-        assert isCurrent();
-
-        if (openReadOnly) {
-          return clone(openReadOnly);
-        } else {
-          return null;
-        }
-      } else if (isCurrent()) {
-        if (openReadOnly != readOnly) {
-          // Just fallback to clone
-          return clone(openReadOnly);
-        } else {
-          return null;
-        }
-      }
-    } else {
-      if (directory != commit.getDirectory()) {
-        throw new IOException("the specified commit does not match the specified Directory");
-      }
-      if (segmentInfos != null && commit.getSegmentsFileName().equals(segmentInfos.getSegmentsFileName())) {
-        if (readOnly != openReadOnly) {
-          // Just fallback to clone
-          return clone(openReadOnly);
-        } else {
-          return null;
-        }
-      }
-    }
-
-    return (IndexReader) new SegmentInfos.FindSegmentsFile(directory) {
-      @Override
-      protected Object doBody(String segmentFileName) throws IOException {
-        SegmentInfos infos = new SegmentInfos();
-        infos.read(directory, segmentFileName);
-        return doOpenIfChanged(infos, false, openReadOnly);
-      }
-    }.run(commit);
   }
 
   private synchronized DirectoryReader doOpenIfChanged(SegmentInfos infos, boolean doClone, boolean openReadOnly) throws IOException {

@@ -18,7 +18,6 @@ package org.apache.lucene.analysis;
  */
 
 import org.apache.lucene.document.Fieldable;
-import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.util.CloseableThreadLocal;
 
 import java.io.Closeable;
@@ -80,21 +79,6 @@ public abstract class Analyzer implements Closeable {
   }
 
   private CloseableThreadLocal<Object> tokenStreams = new CloseableThreadLocal<Object>();
-
-  /** Used by Analyzers that implement reusableTokenStream
-   *  to retrieve previously saved TokenStreams for re-use
-   *  by the same thread. */
-  protected Object getPreviousTokenStream() {
-    try {
-      return tokenStreams.get();
-    } catch (NullPointerException npe) {
-      if (tokenStreams == null) {
-        throw new AlreadyClosedException("this Analyzer is closed");
-      } else {
-        throw npe;
-      }
-    }
-  }
 
   /**
    * Invoked before indexing a Fieldable instance if

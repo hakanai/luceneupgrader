@@ -17,15 +17,15 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
+import org.apache.lucene.search.Query;
+import org.apache.lucene.util.RamUsageEstimator;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.lucene.search.Query;
-import org.apache.lucene.util.RamUsageEstimator;
+import java.util.concurrent.atomic.AtomicLong;
 
 /* Holds buffered deletes, by docID, term or query for a
  * single segment. This is used to hold buffered pending
@@ -38,35 +38,17 @@ import org.apache.lucene.util.RamUsageEstimator;
 // BufferedDeletes
 class BufferedDeletes {
 
-  /* Rough logic: HashMap has an array[Entry] w/ varying
-     load factor (say 2 * POINTER).  Entry is object w/ Term
-     key, Integer val, int hash, Entry next
-     (OBJ_HEADER + 3*POINTER + INT).  Term is object w/
-     String field and String text (OBJ_HEADER + 2*POINTER).
-     We don't count Term's field since it's interned.
-     Term's text is String (OBJ_HEADER + 4*INT + POINTER +
-     OBJ_HEADER + string.length*CHAR).  Integer is
-     OBJ_HEADER + INT. */
-  final static int BYTES_PER_DEL_TERM = 8*RamUsageEstimator.NUM_BYTES_OBJECT_REF + 5*RamUsageEstimator.NUM_BYTES_OBJECT_HEADER + 6*RamUsageEstimator.NUM_BYTES_INT;
-
   /* Rough logic: del docIDs are List<Integer>.  Say list
      allocates ~2X size (2*POINTER).  Integer is OBJ_HEADER
      + int */
   final static int BYTES_PER_DEL_DOCID = 2*RamUsageEstimator.NUM_BYTES_OBJECT_REF + RamUsageEstimator.NUM_BYTES_OBJECT_HEADER + RamUsageEstimator.NUM_BYTES_INT;
-
-  /* Rough logic: HashMap has an array[Entry] w/ varying
-     load factor (say 2 * POINTER).  Entry is object w/
-     Query key, Integer val, int hash, Entry next
-     (OBJ_HEADER + 3*POINTER + INT).  Query we often
-     undercount (say 24 bytes).  Integer is OBJ_HEADER + INT. */
-  final static int BYTES_PER_DEL_QUERY = 5*RamUsageEstimator.NUM_BYTES_OBJECT_REF + 2*RamUsageEstimator.NUM_BYTES_OBJECT_HEADER + 2*RamUsageEstimator.NUM_BYTES_INT + 24;
 
   final AtomicInteger numTermDeletes = new AtomicInteger();
   final Map<Term,Integer> terms = new HashMap<Term,Integer>();
   final Map<Query,Integer> queries = new HashMap<Query,Integer>();
   final List<Integer> docIDs = new ArrayList<Integer>();
 
-  public static final Integer MAX_INT = Integer.valueOf(Integer.MAX_VALUE);
+  public static final Integer MAX_INT = Integer.MAX_VALUE;
 
   final AtomicLong bytesUsed = new AtomicLong();
 
@@ -98,40 +80,7 @@ class BufferedDeletes {
       return s;
     }
   }
-  
-  public void addQuery(Query query, int docIDUpto) {
-    Integer current = queries.put(query, docIDUpto);
-    // increment bytes used only if the query wasn't added so far.
-    if (current == null) {
-      bytesUsed.addAndGet(BYTES_PER_DEL_QUERY);
-    }
-  }
 
-  public void addDocID(int docID) {
-    docIDs.add(Integer.valueOf(docID));
-    bytesUsed.addAndGet(BYTES_PER_DEL_DOCID);
-  }
-
-  public void addTerm(Term term, int docIDUpto) {
-    Integer current = terms.get(term);
-    if (current != null && docIDUpto < current) {
-      // Only record the new number if it's greater than the
-      // current one.  This is important because if multiple
-      // threads are replacing the same doc at nearly the
-      // same time, it's possible that one thread that got a
-      // higher docID is scheduled before the other
-      // threads.  If we blindly replace then we can
-      // incorrectly get both docs indexed.
-      return;
-    }
-
-    terms.put(term, Integer.valueOf(docIDUpto));
-    numTermDeletes.incrementAndGet();
-    if (current == null) {
-      bytesUsed.addAndGet(BYTES_PER_DEL_TERM + term.text.length() * RamUsageEstimator.NUM_BYTES_CHAR);
-    }
-  }
- 
   void clear() {
     terms.clear();
     queries.clear();
@@ -139,12 +88,7 @@ class BufferedDeletes {
     numTermDeletes.set(0);
     bytesUsed.set(0);
   }
-  
-  void clearDocIDs() {
-    bytesUsed.addAndGet(-docIDs.size()*BYTES_PER_DEL_DOCID);
-    docIDs.clear();
-  }
-  
+
   boolean any() {
     return terms.size() > 0 || docIDs.size() > 0 || queries.size() > 0;
   }

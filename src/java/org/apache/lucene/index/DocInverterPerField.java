@@ -17,12 +17,13 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.Reader;
-import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
+import org.apache.lucene.document.Fieldable;
+
+import java.io.IOException;
+import java.io.Reader;
 
 /**
  * Holds state for inverting all occurrences of a single
@@ -140,8 +141,6 @@ final class DocInverterPerField extends DocFieldConsumerPerField {
           // reset the TokenStream to the first token
           stream.reset();
 
-          final int startLength = fieldState.length;
-          
           try {
             boolean hasMoreTokens = stream.incrementToken();
 

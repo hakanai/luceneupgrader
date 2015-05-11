@@ -30,7 +30,7 @@ public class ComplexExplanation extends Explanation {
     // NOTE: use of "boolean" instead of "Boolean" in params is conscious
     // choice to encourage clients to be specific.
     super(value, description);
-    this.match = Boolean.valueOf(match);
+    this.match = match;
   }
 
   /**

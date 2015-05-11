@@ -17,16 +17,12 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
+import org.apache.lucene.store.*;
+
 import java.io.EOFException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-
-import org.apache.lucene.store.BufferedIndexInput;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.IndexInput;
-import org.apache.lucene.store.IndexOutput;
-import org.apache.lucene.store.Lock;
 
 /**
  * Class for accessing a compound stream.
@@ -116,7 +112,7 @@ class CompoundFileReader extends Directory {
       if (!success && (stream != null)) {
         try {
           stream.close();
-        } catch (IOException e) { }
+        } catch (IOException ignored) { }
       }
     }
   }
@@ -199,13 +195,7 @@ class CompoundFileReader extends Directory {
   public void deleteFile(String name) {
     throw new UnsupportedOperationException();
   }
-  
-  /** Not implemented
-   * @throws UnsupportedOperationException */
-  public void renameFile(String from, String to) {
-    throw new UnsupportedOperationException();
-  }
-  
+
   /** Returns the length of a file in the directory.
    * @throws IOException if the file does not exist */
   @Override
@@ -239,11 +229,7 @@ class CompoundFileReader extends Directory {
     IndexInput base;
     long fileOffset;
     long length;
-    
-    CSIndexInput(final IndexInput base, final long fileOffset, final long length) {
-      this(base, fileOffset, length, BufferedIndexInput.BUFFER_SIZE);
-    }
-    
+
     CSIndexInput(final IndexInput base, final long fileOffset, final long length, int readBufferSize) {
       super(readBufferSize);
       this.base = (IndexInput)base.clone();

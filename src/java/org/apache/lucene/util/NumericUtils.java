@@ -17,9 +17,6 @@ package org.apache.lucene.util;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.NumericTokenStream; // for javadocs
-import org.apache.lucene.document.NumericField; // for javadocs
-
 
 /**
  * This is a helper class to generate prefix-encoded representations for numerical values

@@ -23,8 +23,6 @@ import java.lang.reflect.Modifier;
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 
-import org.apache.lucene.analysis.tokenattributes.CharTermAttributeImpl; // deprecated
-
 /**
  * Base class for Attributes that can be added to a 
  * {@code org.apache.lucene.util.AttributeSource}.

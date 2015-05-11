@@ -190,9 +190,7 @@ public final class NumericTokenStream extends TokenStream {
   
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder("(numeric,valSize=").append(valSize);
-    sb.append(",precisionStep=").append(precisionStep).append(')');
-    return sb.toString();
+    return "(numeric,valSize=" + valSize + ",precisionStep=" + precisionStep + ')';
   }
 
   // members

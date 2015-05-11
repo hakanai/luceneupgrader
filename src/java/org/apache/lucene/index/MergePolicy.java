@@ -19,7 +19,6 @@ package org.apache.lucene.index;
 
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.SetOnce;
-import org.apache.lucene.util.SetOnce.AlreadySetException;
 
 import java.io.IOException;
 import java.util.List;

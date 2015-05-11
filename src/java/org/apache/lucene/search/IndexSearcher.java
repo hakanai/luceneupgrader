@@ -138,7 +138,7 @@ public class IndexSearcher extends Searcher {
         final IndexSearcher searchable = subSearchers[i];
         runner.submit(new Callable<Integer>() {
             public Integer call() throws IOException {
-              return Integer.valueOf(searchable.docFreq(term));
+              return searchable.docFreq(term);
             }
           });
       }

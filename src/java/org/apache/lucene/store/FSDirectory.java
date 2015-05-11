@@ -29,7 +29,6 @@ import static java.util.Collections.synchronizedSet;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Future;
 
 import org.apache.lucene.util.ThreadInterruptedException;
 import org.apache.lucene.util.Constants;
