@@ -26,18 +26,6 @@ import org.apache.lucene.store.DataInput;
 public class IndexFormatTooOldException extends CorruptIndexException {
 
   /** @lucene.internal */
-  public IndexFormatTooOldException(String resourceDesc, String version) {
-    super("Format version is not supported (resource: " + resourceDesc + "): " +
-        version + ". This version of Lucene only supports indexes created with release 1.9 and later.");
-    assert resourceDesc != null;
-  }
-  
-  /** @lucene.internal */
-  public IndexFormatTooOldException(DataInput in, String version) {
-    this(in.toString(), version);
-  }
-
-  /** @lucene.internal */
   public IndexFormatTooOldException(String resourceDesc, int version, int minVersion, int maxVersion) {
     super("Format version is not supported (resource: " + resourceDesc + "): " +
         version + " (needs to be between " + minVersion + " and " + maxVersion +

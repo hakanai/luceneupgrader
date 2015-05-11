@@ -228,7 +228,8 @@ public abstract class DataInput implements Cloneable {
     DataInput clone = null;
     try {
       clone = (DataInput)super.clone();
-    } catch (CloneNotSupportedException e) {}
+    } catch (CloneNotSupportedException ignored) {
+    }
 
     return clone;
   }

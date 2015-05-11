@@ -135,33 +135,6 @@ public final class IOUtils {
       throw new RuntimeException(th);
     }
   }
-  
-  /**
-   *
-   */
-  public static void close(Iterable<? extends Closeable> objects) throws IOException {
-    Throwable th = null;
-
-    for (Closeable object : objects) {
-      try {
-        if (object != null) {
-          object.close();
-        }
-      } catch (Throwable t) {
-        addSuppressed(th, t);
-        if (th == null) {
-          th = t;
-        }
-      }
-    }
-
-    if (th != null) {
-      if (th instanceof IOException) throw (IOException) th;
-      if (th instanceof RuntimeException) throw (RuntimeException) th;
-      if (th instanceof Error) throw (Error) th;
-      throw new RuntimeException(th);
-    }
-  }
 
   /**
    * Closes all given <tt>Closeable</tt>s, suppressing all thrown exceptions.
@@ -180,21 +153,7 @@ public final class IOUtils {
       }
     }
   }
-  
-  /**
-   *
-   */
-  public static void closeWhileHandlingException(Iterable<? extends Closeable> objects) throws IOException {
-    for (Closeable object : objects) {
-      try {
-        if (object != null) {
-          object.close();
-        }
-      } catch (Throwable t) {
-      }
-    }
-  }
-  
+
   /** This reflected {@code Method} is {@code null} before Java 7 */
   private static final Method SUPPRESS_METHOD;
   static {

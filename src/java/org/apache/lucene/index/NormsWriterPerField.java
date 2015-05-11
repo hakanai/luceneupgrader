@@ -59,22 +59,5 @@ final class NormsWriterPerField extends InvertedDocEndConsumerPerField implement
   public int compareTo(NormsWriterPerField other) {
     return fieldInfo.name.compareTo(other.fieldInfo.name);
   }
-  
-  @Override
-  void finish() {
-    if (fieldInfo.isIndexed && !fieldInfo.omitNorms) {
-      if (docIDs.length <= upto) {
-        assert docIDs.length == upto;
-        docIDs = ArrayUtil.grow(docIDs, 1+upto);
-      }
-      if (norms.length <= upto) {
-        assert norms.length == upto;
-        norms = ArrayUtil.grow(norms, 1+upto);
-      }
-      final float norm = docState.similarity.computeNorm(fieldInfo.name, fieldState);
-      norms[upto] = docState.similarity.encodeNormValue(norm);
-      docIDs[upto] = docState.docID;
-      upto++;
-    }
-  }
+
 }

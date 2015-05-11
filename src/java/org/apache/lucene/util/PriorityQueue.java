@@ -152,30 +152,6 @@ public abstract class PriorityQueue<T> {
     } else
       return null;
   }
-  
-  /**
-   * Should be called when the Object at top changes values. Still log(n) worst
-   * case, but it's at least twice as fast to
-   * 
-   * <pre>
-   * pq.top().change();
-   * pq.updateTop();
-   * </pre>
-   * 
-   * instead of
-   * 
-   * <pre>
-   * o = pq.pop();
-   * o.change();
-   * pq.push(o);
-   * </pre>
-   * 
-   * @return the new 'top' element.
-   */
-  public final T updateTop() {
-    downHeap();
-    return heap[1];
-  }
 
   /** Returns the number of elements currently stored in the PriorityQueue. */
   public final int size() {

@@ -17,7 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.*;
 import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.Directory;
@@ -27,7 +26,6 @@ import org.apache.lucene.util.IOUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.zip.DataFormatException;
 
 /**
@@ -491,22 +489,6 @@ final class FieldsReader implements Cloneable, Closeable {
         fieldsStreamTL.set(localFieldsStream);
       }
       return localFieldsStream;
-    }
-
-    /** The value of the field as a Reader, or null.  If null, the String value,
-     * binary value, or TokenStream value is used.  Exactly one of stringValue(), 
-     * readerValue(), getBinaryValue(), and tokenStreamValue() must be set. */
-    public Reader readerValue() {
-      ensureOpen();
-      return null;
-    }
-
-    /** The value of the field as a TokenStream, or null.  If null, the Reader value,
-     * String value, or binary value is used. Exactly one of stringValue(), 
-     * readerValue(), getBinaryValue(), and tokenStreamValue() must be set. */
-    public TokenStream tokenStreamValue() {
-      ensureOpen();
-      return null;
     }
 
     /** The value of the field as a String, or null.  If null, the Reader value,

@@ -30,7 +30,7 @@ final class FormatPostingsTermsWriter extends FormatPostingsTermsConsumer implem
   FormatPostingsTermsWriter(SegmentWriteState state, FormatPostingsFieldsWriter parent) throws IOException {
     this.parent = parent;
     termsOut = parent.termsOut;
-    docsWriter = new FormatPostingsDocsWriter(state, this);
+    docsWriter = new FormatPostingsDocsWriter(this);
   }
 
   void setField(FieldInfo fieldInfo) {

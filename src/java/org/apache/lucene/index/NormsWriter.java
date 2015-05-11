@@ -17,17 +17,12 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-
-import org.apache.lucene.store.IndexOutput;
 import org.apache.lucene.search.Similarity;
+import org.apache.lucene.store.IndexOutput;
 import org.apache.lucene.util.IOUtils;
+
+import java.io.IOException;
+import java.util.*;
 
 // TODO FI: norms could actually be stored as doc store
 
@@ -44,12 +39,6 @@ final class NormsWriter extends InvertedDocEndConsumer {
   public InvertedDocEndConsumerPerThread addThread(DocInverterPerThread docInverterPerThread) {
     return new NormsWriterPerThread(docInverterPerThread, this);
   }
-
-  @Override
-  public void abort() {}
-
-  // We only write the _X.nrm file at flush
-  void files(Collection<String> files) {}
 
   @Override
   void setFieldInfos(FieldInfos fieldInfos) {

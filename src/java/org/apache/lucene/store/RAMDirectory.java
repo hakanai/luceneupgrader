@@ -17,8 +17,6 @@ package org.apache.lucene.store;
  * limitations under the License.
  */
 
-import org.apache.lucene.util.ThreadInterruptedException;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
@@ -82,32 +80,6 @@ public class RAMDirectory extends Directory implements Serializable {
   public final boolean fileExists(String name) {
     ensureOpen();
     return fileMap.containsKey(name);
-  }
-
-  /** Set the modified time of an existing file to now.
-   * @throws IOException if the file does not exist
-   *  @deprecated Lucene never uses this API; it will be
-   *  removed in 4.0. */
-  @Override
-  @Deprecated
-  public void touchFile(String name) throws IOException {
-    ensureOpen();
-    RAMFile file = fileMap.get(name);
-    if (file == null) {
-      throw new FileNotFoundException(name);
-    }
-
-    long ts2, ts1 = System.currentTimeMillis();
-    do {
-      try {
-        Thread.sleep(0, 1);
-      } catch (InterruptedException ie) {
-        throw new ThreadInterruptedException(ie);
-      }
-      ts2 = System.currentTimeMillis();
-    } while(ts1 == ts2);
-
-    file.setLastModified(ts2);
   }
 
   /** Returns the length in bytes of a file in the directory.

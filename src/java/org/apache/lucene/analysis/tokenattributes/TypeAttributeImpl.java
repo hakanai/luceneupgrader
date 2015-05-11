@@ -70,10 +70,5 @@ public class TypeAttributeImpl extends AttributeImpl implements TypeAttribute, C
   public int hashCode() {
     return (type == null) ? 0 : type.hashCode();
   }
-  
-  @Override
-  public void copyTo(AttributeImpl target) {
-    TypeAttribute t = (TypeAttribute) target;
-    t.setType(type);
-  }
+
 }

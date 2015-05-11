@@ -65,21 +65,6 @@ public abstract class AbstractField implements Fieldable {
     setStoreTermVector(termVector);
   }
 
-  /** Returns the boost factor for hits for this field.
-   *
-   * <p>The default value is 1.0.
-   *
-   * <p>Note: this value is not stored directly with the document in the index.
-   * Documents returned from {@code org.apache.lucene.index.IndexReader#document(int)} and
-   * {@code org.apache.lucene.search.Searcher#doc(int)} may thus not have the same value present as when
-   * this field was indexed.
-   *
-   *
-   */
-  public float getBoost() {
-    return boost;
-  }
-
   /** Returns the name of the field as an interned string.
    * For example "date", "title", "body", ...
    */
@@ -176,9 +161,6 @@ public abstract class AbstractField implements Fieldable {
   public int getBinaryOffset() {
     return binaryOffset;
   }
-
-  /** True if norms are omitted for this indexed field */
-  public boolean getOmitNorms() { return omitNorms; }
 
   /** */
   public IndexOptions getIndexOptions() { return indexOptions; }

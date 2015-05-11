@@ -39,21 +39,6 @@ public final class FieldInvertState {
   }
 
   /**
-   * Re-initialize the state, using this boost value.
-   * @param docBoost boost value to use.
-   */
-  void reset(float docBoost) {
-    position = 0;
-    length = 0;
-    numOverlap = 0;
-    offset = 0;
-    maxTermFrequency = 0;
-    uniqueTermCount = 0;
-    boost = docBoost;
-    attributeSource = null;
-  }
-
-  /**
    * Get total number of terms in this field.
    * @return the length
    */

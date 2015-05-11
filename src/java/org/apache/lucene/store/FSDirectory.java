@@ -243,23 +243,6 @@ public abstract class FSDirectory extends Directory {
     return file.exists();
   }
 
-  /** Returns the time the named file was last modified. */
-  public static long fileModified(File directory, String name) {
-    File file = new File(directory, name);
-    return file.lastModified();
-  }
-
-  /** Set the modified time of an existing file to now.
-   *  @deprecated Lucene never uses this API; it will be
-   *  removed in 4.0. */
-  @Override
-  @Deprecated
-  public void touchFile(String name) {
-    ensureOpen();
-    File file = new File(directory, name);
-    file.setLastModified(System.currentTimeMillis());
-  }
-
   /** Returns the length in bytes of a file in the directory. */
   @Override
   public long fileLength(String name) throws IOException {

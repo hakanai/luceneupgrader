@@ -174,14 +174,7 @@ public abstract class AttributeImpl implements Cloneable, Serializable, Attribut
       throw new RuntimeException(e);
     }
   }
-  
-  /**
-   * Copies the values from this Attribute into the passed-in
-   * target attribute. The target implementation must support all the
-   * Attributes this implementation supports.
-   */
-  public abstract void copyTo(AttributeImpl target);
-    
+
   /**
    * Shallow clone. Subclasses must override this if they 
    * need to clone any members deeply,

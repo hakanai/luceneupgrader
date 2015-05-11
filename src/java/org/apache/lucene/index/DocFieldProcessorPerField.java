@@ -17,8 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import org.apache.lucene.document.Fieldable;
-
 /**
  * Holds all per thread, per field state.
  */
@@ -29,8 +27,6 @@ final class DocFieldProcessorPerField {
   FieldInfo fieldInfo;
   DocFieldProcessorPerField next;
   int lastGen = -1;
-
-  Fieldable[] fields = new Fieldable[1];
 
   public void abort() {
     consumer.abort();

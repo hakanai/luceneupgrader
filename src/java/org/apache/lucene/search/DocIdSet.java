@@ -25,28 +25,9 @@ import java.io.IOException;
  */
 public abstract class DocIdSet {
 
-  /** An empty {@code DocIdSet} instance for easy use, e.g. in Filters that hit no documents. */
-  public static final DocIdSet EMPTY_DOCIDSET = new DocIdSet() {
-    
-    private final DocIdSetIterator iterator = new DocIdSetIterator() {
-      @Override
-      public int advance(int target) throws IOException { return NO_MORE_DOCS; }
-      @Override
-      public int docID() { return NO_MORE_DOCS; }
-      @Override
-      public int nextDoc() throws IOException { return NO_MORE_DOCS; }
-    };
-    
-    @Override
-    public DocIdSetIterator iterator() {
-      return iterator;
-    }
-
-  };
-    
   /** Provides a {@code DocIdSetIterator} to access the set.
    * This implementation can return <code>null</code> or
-   * <code>{@codeplain #EMPTY_DOCIDSET}.iterator()</code> if there
+   * <code>{@code #EMPTY_DOCIDSET}.iterator()</code> if there
    * are no docs that match. */
   public abstract DocIdSetIterator iterator() throws IOException;
 

@@ -276,16 +276,6 @@ public class AttributeSource {
     }
     return s;
   }
-  
-  /**
-   * Resets all Attributes in this AttributeSource by calling
-   * {@code AttributeImpl#clear()} on each Attribute implementation.
-   */
-  public void clearAttributes() {
-    for (State state = getCurrentState(); state != null; state = state.next) {
-      state.attribute.clear();
-    }
-  }
 
   @Override
   public int hashCode() {

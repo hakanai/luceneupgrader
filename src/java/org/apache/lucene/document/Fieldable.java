@@ -16,10 +16,8 @@ package org.apache.lucene.document;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 
-import java.io.Reader;
 import java.io.Serializable;
 
 /**
@@ -33,19 +31,6 @@ import java.io.Serializable;
  *
  **/
 public interface Fieldable extends Serializable {
-
-  /** Returns the boost factor for hits for this field.
-   *
-   * <p>The default value is 1.0.
-   *
-   * <p>Note: this value is not stored directly with the document in the index.
-   * Documents returned from {@code org.apache.lucene.index.IndexReader#document(int)} and
-   * {@code org.apache.lucene.search.Searcher#doc(int)} may thus not have the same value present as when
-   * this field was indexed.
-   *
-   *
-   */
-  float getBoost();
 
   /** Returns the name of the field as an interned string.
    * For example "date", "title", "body", ...
@@ -62,16 +47,6 @@ public interface Fieldable extends Serializable {
    * else readerValue() will be used to generate indexed tokens if not null, else stringValue() will be used to generate tokens.
    */
   String stringValue();
-  
-  /** The value of the field as a Reader, which can be used at index time to generate indexed tokens.
-   *
-   */
-  Reader readerValue();
-  
-  /** The TokenStream for this field to be used when indexing, or null.
-   *
-   */
-  TokenStream tokenStreamValue();
 
   /** True if the value of the field is to be stored in the index for return
     with search hits. */
@@ -109,9 +84,6 @@ public interface Fieldable extends Serializable {
 
   /** True if the value of the field is stored as binary */
   boolean  isBinary();
-
-  /** True if norms are omitted for this indexed field */
-  boolean getOmitNorms();
 
   /** Expert:
    *

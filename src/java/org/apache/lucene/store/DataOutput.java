@@ -106,7 +106,7 @@ public abstract class DataOutput {
     writeBytes(utf8Result.bytes, 0, utf8Result.length);
   }
 
-  private static int COPY_BUFFER_SIZE = 16384;
+  private static final int COPY_BUFFER_SIZE = 16384;
   private byte[] copyBuffer;
 
   /** Copy numBytes bytes from input to ourself. */

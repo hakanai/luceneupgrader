@@ -147,7 +147,6 @@ public class RAMOutputStream extends IndexOutput {
 
   @Override
   public void flush() throws IOException {
-    file.setLastModified(System.currentTimeMillis());
     setFileLength();
   }
 

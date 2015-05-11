@@ -30,9 +30,6 @@ public class RAMFile implements Serializable {
   RAMDirectory directory;
   protected long sizeInBytes;
 
-  // This is publicly modifiable via Directory.touchFile(), so direct access not supported
-  private long lastModified = System.currentTimeMillis();
-
   // File used as buffer, in no RAMDirectory
   public RAMFile() {}
   
@@ -47,15 +44,6 @@ public class RAMFile implements Serializable {
 
   protected synchronized void setLength(long length) {
     this.length = length;
-  }
-
-  // For non-stream access from thread that might be concurrent with writing
-  public synchronized long getLastModified() {
-    return lastModified;
-  }
-
-  protected synchronized void setLastModified(long lastModified) {
-    this.lastModified = lastModified;
   }
 
   protected final byte[] addBuffer(int size) {

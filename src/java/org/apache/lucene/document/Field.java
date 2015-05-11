@@ -17,11 +17,9 @@ package org.apache.lucene.document;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.util.StringHelper;
 
-import java.io.Reader;
 import java.io.Serializable;
 
 /**
@@ -266,38 +264,8 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
    * binary value is used.  Exactly one of stringValue(),
    * readerValue(), and getBinaryValue() must be set. */
   public String stringValue()   { return fieldsData instanceof String ? (String)fieldsData : null; }
-  
-  /** The value of the field as a Reader, or null.  If null, the String value or
-   * binary value is used.  Exactly one of stringValue(),
-   * readerValue(), and getBinaryValue() must be set. */
-  public Reader readerValue()   { return fieldsData instanceof Reader ? (Reader)fieldsData : null; }
-    
-  /** The TokesStream for this field to be used when indexing, or null.  If null, the Reader value
-   * or String value is analyzed to produce the indexed tokens. */
-  public TokenStream tokenStreamValue()   { return tokenStream; }
 
 
-  /**
-   * Create a field by specifying its name, value and how it will
-   * be saved in the index.
-   * 
-   * @param name The name of the field
-   * @param value The string to process
-   * @param store Whether <code>value</code> should be stored in the index
-   * @param index Whether the field should be indexed, and if so, if it should
-   *  be tokenized before indexing 
-   * @param termVector Whether term vector should be stored
-   * @throws NullPointerException if name or value is <code>null</code>
-   * @throws IllegalArgumentException in any of the following situations:
-   * <ul> 
-   *  <li>the field is neither stored nor indexed</li> 
-   *  <li>the field is not indexed but termVector is <code>TermVector.YES</code></li>
-   * </ul> 
-   */ 
-  public Field(String name, String value, Store store, Index index, TermVector termVector) {
-    this(name, true, value, store, index, termVector);
-  }
-  
   /**
    * Create a field by specifying its name, value and how it will
    * be saved in the index.
@@ -347,68 +315,6 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
 
     this.isBinary = false;
 
-    setStoreTermVector(termVector);
-  }
-
-  /**
-   * Create a tokenized and indexed field that is not stored, optionally with 
-   * storing term vectors.  The Reader is read only when the Document is added to the index,
-   * i.e. you may not close the Reader until {@code IndexWriter#addDocument(Document)}
-   * has been called.
-   * 
-   * @param name The name of the field
-   * @param reader The reader with the content
-   * @param termVector Whether term vector should be stored
-   * @throws NullPointerException if name or reader is <code>null</code>
-   */ 
-  public Field(String name, Reader reader, TermVector termVector) {
-    if (name == null)
-      throw new NullPointerException("name cannot be null");
-    if (reader == null)
-      throw new NullPointerException("reader cannot be null");
-    
-    this.name = StringHelper.intern(name);        // field names are interned
-    this.fieldsData = reader;
-    
-    this.isStored = false;
-    
-    this.isIndexed = true;
-    this.isTokenized = true;
-    
-    this.isBinary = false;
-    
-    setStoreTermVector(termVector);
-  }
-
-  /**
-   * Create a tokenized and indexed field that is not stored, optionally with 
-   * storing term vectors.  This is useful for pre-analyzed fields.
-   * The TokenStream is read only when the Document is added to the index,
-   * i.e. you may not close the TokenStream until {@code IndexWriter#addDocument(Document)}
-   * has been called.
-   * 
-   * @param name The name of the field
-   * @param tokenStream The TokenStream with the content
-   * @param termVector Whether term vector should be stored
-   * @throws NullPointerException if name or tokenStream is <code>null</code>
-   */ 
-  public Field(String name, TokenStream tokenStream, TermVector termVector) {
-    if (name == null)
-      throw new NullPointerException("name cannot be null");
-    if (tokenStream == null)
-      throw new NullPointerException("tokenStream cannot be null");
-    
-    this.name = StringHelper.intern(name);        // field names are interned
-    this.fieldsData = null;
-    this.tokenStream = tokenStream;
-
-    this.isStored = false;
-    
-    this.isIndexed = true;
-    this.isTokenized = true;
-    
-    this.isBinary = false;
-    
     setStoreTermVector(termVector);
   }
 

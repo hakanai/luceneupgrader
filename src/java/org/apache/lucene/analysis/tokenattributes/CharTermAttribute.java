@@ -48,21 +48,6 @@ public interface CharTermAttribute extends Attribute, CharSequence, Appendable {
    */
   char[] resizeBuffer(int newSize);
 
-  /** Set number of valid characters (length of the term) in
-   *  the termBuffer array. Use this to truncate the termBuffer
-   *  or to synchronize with external manipulation of the termBuffer.
-   *  Note: to grow the size of the array,
-   *  use {@code #resizeBuffer(int)} first.
-   *  @param length the truncated length
-   */
-  CharTermAttribute setLength(int length);
-  
-  /** Sets the length of the termBuffer to zero.
-   * Use this method before appending contents
-   * using the {@code Appendable} interface.
-   */
-  CharTermAttribute setEmpty();
-  
   // the following methods are redefined to get rid of IOException declaration:
   CharTermAttribute append(CharSequence csq);
   CharTermAttribute append(CharSequence csq, int start, int end);

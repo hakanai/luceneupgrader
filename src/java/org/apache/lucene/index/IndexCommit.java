@@ -19,10 +19,6 @@ package org.apache.lucene.index;
 
 import org.apache.lucene.store.Directory;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
-
 /**
  * <p>Expert: represents a single commit into an index as seen by the
  * {@code IndexDeletionPolicy} or {@code IndexReader}.</p>
@@ -50,11 +46,6 @@ public abstract class IndexCommit implements Comparable<IndexCommit> {
   public abstract String getSegmentsFileName();
 
   /**
-   * Returns all index files referenced by this commit point.
-   */
-  public abstract Collection<String> getFileNames() throws IOException;
-
-  /**
    * Returns the {@code Directory} for the index.
    */
   public abstract Directory getDirectory();
@@ -74,9 +65,6 @@ public abstract class IndexCommit implements Comparable<IndexCommit> {
   public abstract void delete();
 
   public abstract boolean isDeleted();
-
-  /** Returns number of segments referenced by this commit. */
-  public abstract int getSegmentCount();
 
   /** Two IndexCommits are equal if both their Directory and versions are equal. */
   @Override
@@ -105,11 +93,6 @@ public abstract class IndexCommit implements Comparable<IndexCommit> {
    *  IndexCommit */
   public abstract long getGeneration();
 
-  /** Returns userData, previously passed to {@code
-   *  IndexWriter#commit(Map)} for this commit.  Map is
-   *  String -> String. */
-  public abstract Map<String,String> getUserData() throws IOException;
-  
   public int compareTo(IndexCommit commit) {
     if (getDirectory() != commit.getDirectory()) {
       throw new UnsupportedOperationException("cannot compare IndexCommits from different Directory instances");

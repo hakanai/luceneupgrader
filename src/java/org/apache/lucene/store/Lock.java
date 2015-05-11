@@ -94,7 +94,7 @@ public abstract class Lock {
       }
       locked = obtain();
     }
-    return locked;
+    return true;
   }
 
   /** Releases exclusive access. */

@@ -161,19 +161,6 @@ public final class IndexWriterConfig implements Cloneable {
     }
   }
 
-  /** Returns the default analyzer to use for indexing documents. */
-  public Analyzer getAnalyzer() {
-    return analyzer;
-  }
-
-  /** Specifies {@code OpenMode} of the index.
-   * 
-   * <p>Only takes effect when IndexWriter is first created. */
-  public IndexWriterConfig setOpenMode(OpenMode openMode) {
-    this.openMode = openMode;
-    return this;
-  }
-  
   /** Returns the {@code OpenMode} set by {@code #setOpenMode(OpenMode)}. */
   public OpenMode getOpenMode() {
     return openMode;
@@ -208,16 +195,6 @@ public final class IndexWriterConfig implements Cloneable {
    */
   public IndexDeletionPolicy getIndexDeletionPolicy() {
     return delPolicy;
-  }
-
-  /**
-   * Expert: allows to open a certain commit point. The default is null which
-   * opens the latest commit point.
-   *
-   * <p>Only takes effect when IndexWriter is first created. */
-  public IndexWriterConfig setIndexCommit(IndexCommit commit) {
-    this.commit = commit;
-    return this;
   }
 
   /**
@@ -278,29 +255,9 @@ public final class IndexWriterConfig implements Cloneable {
     return writeLockTimeout;
   }
 
-  /**
-   * Returns the number of buffered deleted terms that will trigger a flush if
-   * enabled.
-   * 
-   *
-   */
-  public int getMaxBufferedDeleteTerms() {
-    return maxBufferedDeleteTerms;
-  }
-
   /** Returns the value set by {@code #setRAMBufferSizeMB(double)} if enabled. */
   public double getRAMBufferSizeMB() {
     return ramBufferSizeMB;
-  }
-
-  /**
-   * Returns the number of buffered added documents that will trigger a flush if
-   * enabled.
-   * 
-   *
-   */
-  public int getMaxBufferedDocs() {
-    return maxBufferedDocs;
   }
 
   /** Returns the current merged segment warmer. See {@code IndexReaderWarmer}. */
@@ -328,12 +285,6 @@ public final class IndexWriterConfig implements Cloneable {
    */
   public MergePolicy getMergePolicy() {
     return mergePolicy;
-  }
-
-  /** Returns the max number of simultaneous threads that
-   *  may be indexing documents at once in IndexWriter. */
-  public int getMaxThreadStates() {
-    return maxThreadStates;
   }
 
   /** Returns true if IndexWriter should pool readers even

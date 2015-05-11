@@ -39,15 +39,7 @@ public enum FieldSelectorResult {
      */
   LAZY_LOAD,
 
-    /**
-     * Do not load the {@code Field}.  {@code Document#getField(String)} and {@code Document#getFieldable(String)} should return null.
-     * {@code Document#add(Fieldable)} is not called.
-     * <p/>
-     * {@code Document#add(Fieldable)} should not be called by the Reader.
-     */
-  NO_LOAD,
-
-    /**
+  /**
      * Load this field as in the {@code #LOAD} case, but immediately return from {@code Field} loading for the {@code Document}.  Thus, the
      * Document may not have its complete set of Fields.  {@code Document#getField(String)} and {@code Document#getFieldable(String)} should
      * both be valid for this {@code Field}

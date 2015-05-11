@@ -283,44 +283,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
 
 
   /**
-   * Check whether any new changes have occurred to the
-   * index since this reader was opened.
-   *
-   * <p>If this reader is based on a Directory (ie, was
-   * created by calling {@code #open}, or {@code #openIfChanged} on
-   * a reader based on a Directory), then this method checks
-   * if any further commits (see {@code IndexWriter#commit}
-   * have occurred in that directory).</p>
-   *
-   * <p>If instead this reader is a near real-time reader
-   * (ie, obtained by a call to {@code
-   * IndexWriter#getReader}, or by calling {@code #openIfChanged}
-   * on a near real-time reader), then this method checks if
-   * either a new commmit has occurred, or any new
-   * uncommitted changes have taken place via the writer.
-   * Note that even if the writer has only performed
-   * merging, this method will still return false.</p>
-   *
-   * <p>In any event, if this returns false, you should call
-   * {@code #openIfChanged} to get a new reader that sees the
-   * changes.</p>
-   *
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException           if there is a low-level IO error
-   * @throws UnsupportedOperationException unless overridden in subclass
-   */
-  public boolean isCurrent() throws IOException {
-    throw new UnsupportedOperationException("This reader does not support this method.");
-  }
-
-  /** @deprecated Check segment count using {@code
-   *  #getSequentialSubReaders} instead. */
-  @Deprecated
-  public boolean isOptimized() {
-    throw new UnsupportedOperationException("This reader does not support this method.");
-  }
-  
-  /**
    * Return an array of term frequency vectors for the specified document.
    * The array contains a vector for each vectorized field in the document.
    * Each vector contains terms and frequencies for all terms in a given vectorized field.
@@ -667,32 +629,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
   protected synchronized void acquireWriteLock() throws IOException {
     /* NOOP */
   }
-  
-  /**
-   * 
-   * @throws IOException
-   * @deprecated Write support will be removed in Lucene 4.0.
-   */
-  @Deprecated
-  public final synchronized void flush() throws IOException {
-    ensureOpen();
-    commit();
-  }
 
-  /**
-   * @param commitUserData Opaque Map (String -> String)
-   *  that's recorded into the segments file in the index,
-   *  and retrievable by {@code
-   *  IndexCommit#getUserData}.
-   * @throws IOException
-   * @deprecated Write support will be removed in Lucene 4.0.
-   */
-  @Deprecated
-  public final synchronized void flush(Map<String, String> commitUserData) throws IOException {
-    ensureOpen();
-    commit(commitUserData);
-  }
-  
   /**
    * Commit changes resulting from delete, undeleteAll, or
    * setNorm operations

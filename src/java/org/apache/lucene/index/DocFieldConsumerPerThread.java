@@ -17,10 +17,5 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 abstract class DocFieldConsumerPerThread {
-  abstract DocumentsWriter.DocWriter finishDocument() throws IOException;
-  abstract DocFieldConsumerPerField addField(FieldInfo fi);
-  abstract void abort();
 }

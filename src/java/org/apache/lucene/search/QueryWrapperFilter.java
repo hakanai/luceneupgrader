@@ -17,10 +17,9 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
-
 import org.apache.lucene.index.IndexReader;
+
+import java.io.IOException;
 
 /** 
  * Constrains search results to only match those which also match a provided
@@ -60,6 +59,7 @@ public class QueryWrapperFilter extends Filter {
 
   @Override
   public boolean equals(Object o) {
+    //noinspection SimplifiableIfStatement
     if (!(o instanceof QueryWrapperFilter))
       return false;
     return this.query.equals(((QueryWrapperFilter)o).query);

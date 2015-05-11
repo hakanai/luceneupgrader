@@ -17,10 +17,6 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
-import org.apache.lucene.index.Term;
-
 import java.io.IOException;
 
 /**
@@ -75,13 +71,8 @@ public abstract class Searcher implements Searchable {
     return weight;
   }
 
-  abstract public void search(Weight weight, Filter filter, Collector results) throws IOException;
   abstract public void close() throws IOException;
-  abstract public int docFreq(Term term) throws IOException;
-  abstract public int maxDoc() throws IOException;
 
-  abstract public Document doc(int i) throws IOException;
-  abstract public Document doc(int docid, FieldSelector fieldSelector) throws IOException;
   abstract public Query rewrite(Query query) throws IOException;
   /* End patch for GCJ bug #15411. */
 }

@@ -75,18 +75,6 @@ public class CharTermAttributeImpl extends AttributeImpl implements CharTermAttr
     }
   }
 
-  public final CharTermAttribute setLength(int length) {
-    if (length > termBuffer.length)
-      throw new IllegalArgumentException("length " + length + " exceeds the size of the termBuffer (" + termBuffer.length + ")");
-    termLength = length;
-    return this;
-  }
-  
-  public final CharTermAttribute setEmpty() {
-    termLength = 0;
-    return this;
-  }
-
   // *** CharSequence interface ***
   public final int length() {
     return termLength;
@@ -235,17 +223,6 @@ public class CharTermAttributeImpl extends AttributeImpl implements CharTermAttr
   @Override
   public void reflectWith(AttributeReflector reflector) {
     reflector.reflect(CharTermAttribute.class, "term", toString());
-  }
-  
-  @Override
-  public void copyTo(AttributeImpl target) {
-    if (target instanceof CharTermAttribute) {
-      CharTermAttribute t = (CharTermAttribute) target;
-      t.copyBuffer(termBuffer, 0, termLength);
-    } else {
-      TermAttribute t = (TermAttribute) target;
-      t.setTermBuffer(termBuffer, 0, termLength);
-    }
   }
 
 }

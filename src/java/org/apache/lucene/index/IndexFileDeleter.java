@@ -627,18 +627,8 @@ final class IndexFileDeleter {
     }
 
     @Override
-    public int getSegmentCount() {
-      return segmentCount;
-    }
-
-    @Override
     public String getSegmentsFileName() {
       return segmentsFileName;
-    }
-
-    @Override
-    public Collection<String> getFileNames() throws IOException {
-      return files;
     }
 
     @Override
@@ -654,11 +644,6 @@ final class IndexFileDeleter {
     @Override
     public long getGeneration() {
       return generation;
-    }
-
-    @Override
-    public Map<String,String> getUserData() {
-      return userData;
     }
 
     /**

@@ -48,16 +48,6 @@ import java.io.Serializable;
  */
 public abstract class Weight implements Serializable {
 
-  /**
-   * An explanation of the score computation for the named document.
-   * 
-   * @param reader sub-reader containing the give doc
-   * @param doc ...
-   * @return an Explanation for the score
-   * @throws IOException
-   */
-  public abstract Explanation explain(IndexReader reader, int doc) throws IOException;
-
   /** The query that this concerns. */
   public abstract Query getQuery();
 

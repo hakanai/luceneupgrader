@@ -92,11 +92,5 @@ public class PayloadAttributeImpl extends AttributeImpl implements PayloadAttrib
     return (payload == null) ? 0 : payload.hashCode();
   }
 
-  @Override
-  public void copyTo(AttributeImpl target) {
-    PayloadAttribute t = (PayloadAttribute) target;
-    t.setPayload((payload == null) ? null : (Payload) payload.clone());
-  }  
 
-  
 }

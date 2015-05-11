@@ -1,7 +1,5 @@
 package org.apache.lucene.search;
 
-import org.apache.lucene.index.FieldInvertState;
-
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -22,31 +20,10 @@ import org.apache.lucene.index.FieldInvertState;
 /** Expert: Default scoring implementation. */
 public class DefaultSimilarity extends Similarity {
 
-  /** Implemented as
-   *  <code>state.getBoost()*lengthNorm(numTerms)</code>, where
-   *  <code>numTerms</code> is {@code FieldInvertState#getLength()} if {@code
-   *  #setDiscountOverlaps} is false, else it's {@code
-   *  FieldInvertState#getLength()} - {@code
-   *  FieldInvertState#getNumOverlap()}.
-   *
-   *  @lucene.experimental */
-  @Override
-  public float computeNorm(String field, FieldInvertState state) {
-    final int numTerms;
-    if (discountOverlaps)
-      numTerms = state.getLength() - state.getNumOverlap();
-    else
-      numTerms = state.getLength();
-    return state.getBoost() * ((float) (1.0 / Math.sqrt(numTerms)));
-  }
-  
   /** Implemented as <code>1/sqrt(sumOfSquaredWeights)</code>. */
   @Override
   public float queryNorm(float sumOfSquaredWeights) {
     return (float)(1.0 / Math.sqrt(sumOfSquaredWeights));
   }
-
-  // Default true
-  protected boolean discountOverlaps = true;
 
 }

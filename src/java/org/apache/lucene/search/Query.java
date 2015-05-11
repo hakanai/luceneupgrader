@@ -18,10 +18,8 @@ package org.apache.lucene.search;
  */
 
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
 
 import java.io.IOException;
-import java.util.Set;
 
 /** The abstract base class for queries.
     <p>Instantiable subclasses are:
@@ -46,19 +44,7 @@ import java.util.Set;
 public abstract class Query implements java.io.Serializable, Cloneable {
   private float boost = 1.0f;                     // query boost factor
 
-  /** Sets the boost for this query clause to <code>b</code>.  Documents
-   * matching this clause will (in addition to the normal weightings) have
-   * their score multiplied by <code>b</code>.
-   */
-  public void setBoost(float b) { boost = b; }
-
-  /** Gets the boost for this clause.  Documents matching
-   * this clause will (in addition to the normal weightings) have their score
-   * multiplied by <code>b</code>.   The boost is 1.0 by default.
-   */
-  public float getBoost() { return boost; }
-
-  /** Prints a query to a string, with <code>field</code> assumed to be the 
+    /** Prints a query to a string, with <code>field</code> assumed to be the
    * default field and omitted.
    * <p>The representation used is one that is supposed to be readable
    * by {@code org.apache.lucene.queryParser.QueryParser QueryParser}. However,
@@ -90,18 +76,8 @@ public abstract class Query implements java.io.Serializable, Cloneable {
     throw new UnsupportedOperationException("Query " + this + " does not implement createWeight");
   }
 
-  /**
-   * Expert: Constructs and initializes a Weight for a <b>top-level</b> query.
-   * @deprecated never ever use this method in {@code Weight} implementations.
-   * Subclasses of {@code Query} should use {@code #createWeight}, instead.
-   */
-  @Deprecated
-  public final Weight weight(Searcher searcher) throws IOException {
-    return searcher.createNormalizedWeight(this);
-  }
-  
 
-  /** Expert: called to re-write queries into primitive queries. For example,
+    /** Expert: called to re-write queries into primitive queries. For example,
    * a PrefixQuery will be rewritten into a BooleanQuery that consists
    * of TermQuerys.
    */
@@ -110,19 +86,7 @@ public abstract class Query implements java.io.Serializable, Cloneable {
   }
 
 
-  /**
-   * Expert: adds all terms occurring in this query to the terms set. Only
-   * works if this query is in its {@code #rewrite rewritten} form.
-   * 
-   * @throws UnsupportedOperationException if this query is not yet rewritten
-   */
-  public void extractTerms(Set<Term> terms) {
-    // needs to be implemented by query subclasses
-    throw new UnsupportedOperationException();
-  }
-
-
-  /** Expert: Returns the Similarity implementation to be used for this query.
+    /** Expert: Returns the Similarity implementation to be used for this query.
    * Subclasses may override this method to specify their own Similarity
    * implementation, perhaps one that delegates through that of the Searcher.
    * By default the Searcher's Similarity implementation is returned.

@@ -23,14 +23,9 @@ package org.apache.lucene.index;
  *  when writing the segment. */
 final class DocumentsWriterThreadState {
 
-  boolean isIdle = true;                          // false if this is currently in use by a thread
-  int numThreads = 1;                             // Number of threads that share this instance
   DocConsumerPerThread consumer;
   DocumentsWriter.DocState docState;
 
   DocumentsWriter docWriter;
 
-  void doAfterFlush() {
-    numThreads = 0;
-  }
 }

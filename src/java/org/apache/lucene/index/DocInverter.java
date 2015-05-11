@@ -73,11 +73,7 @@ final class DocInverter extends DocFieldConsumer {
 
   @Override
   void abort() {
-    try {
-      consumer.abort();
-    } finally {
-      endConsumer.abort();
-    }
+    consumer.abort();
   }
 
   @Override

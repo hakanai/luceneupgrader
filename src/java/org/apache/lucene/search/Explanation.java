@@ -17,7 +17,6 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /** Expert: Describes the score computation for document and query. */
@@ -52,10 +51,6 @@ public class Explanation implements java.io.Serializable {
 
   /** A description of this explanation node. */
   public String getDescription() { return description; }
-  /** Sets the description of this explanation node. */
-  public void setDescription(String description) {
-    this.description = description;
-  }
 
   /**
    * A short one line summary which should contain all high level
@@ -70,13 +65,6 @@ public class Explanation implements java.io.Serializable {
     if (details == null)
       return null;
     return details.toArray(new Explanation[0]);
-  }
-
-  /** Adds a sub-node to this explanation node. */
-  public void addDetail(Explanation detail) {
-    if (details == null)
-      details = new ArrayList<Explanation>();
-    details.add(detail);
   }
 
   /** Render an explanation as text. */
@@ -103,14 +91,4 @@ public class Explanation implements java.io.Serializable {
   }
 
 
-  /**
-   * Small Util class used to pass both an idf factor as well as an
-   * explanation for that factor.
-   * 
-   * This class will likely be held on a {@code Weight}, so be aware
-   * before storing any large or un-serializable fields.
-   *
-   */
-  public static abstract class IDFExplanation implements Serializable {
-  }
 }

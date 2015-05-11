@@ -127,37 +127,6 @@ public class OpenBitSetIterator extends DocIdSetIterator {
     // it would only save one cycle in the best circumstances.
     return curDocId = (i<<6) + bitIndex;
   }
-  
-  @Override
-  public int advance(int target) {
-    indexArray = 0;
-    i = target >> 6;
-    if (i >= words) {
-      word = 0; // setup so next() will also return -1
-      return curDocId = NO_MORE_DOCS;
-    }
-    wordShift = target & 0x3f;
-    word = arr[i] >>> wordShift;
-    if (word != 0) {
-      wordShift--; // compensate for 1 based arrIndex
-    } else {
-      while (word == 0) {
-        if (++i >= words) {
-          return curDocId = NO_MORE_DOCS;
-        }
-        word = arr[i];
-      }
-      wordShift = -1;
-    }
-
-    shift();
-
-    int bitIndex = (indexArray & 0x0f) + wordShift;
-    indexArray >>>= 4;
-    // should i<<6 be cached as a separate variable?
-    // it would only save one cycle in the best circumstances.
-    return curDocId = (i<<6) + bitIndex;
-  }
 
   @Override
   public int docID() {

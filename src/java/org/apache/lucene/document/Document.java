@@ -36,7 +36,6 @@ import java.util.List;
 
 public final class Document implements java.io.Serializable {
   List<Fieldable> fields = new ArrayList<Fieldable>();
-  private float boost = 1.0f;
 
   /** Constructs a new document with no fields. */
   public Document() {}

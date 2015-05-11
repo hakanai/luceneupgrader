@@ -73,13 +73,6 @@ final class TermsHashPerThread extends InvertedDocConsumerPerThread {
   }
 
   @Override
-  public void startDocument() throws IOException {
-    consumer.startDocument();
-    if (nextPerThread != null)
-      nextPerThread.consumer.startDocument();
-  }
-
-  @Override
   public DocumentsWriter.DocWriter finishDocument() throws IOException {
     final DocumentsWriter.DocWriter doc = consumer.finishDocument();
 

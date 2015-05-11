@@ -64,17 +64,7 @@ public class NativeFSLockFactory extends FSLockFactory {
    * your create!
    */
   public NativeFSLockFactory() throws IOException {
-    this((File) null);
-  }
-
-  /**
-   * Create a NativeFSLockFactory instance, storing lock
-   * files into the specified lockDirName:
-   *
-   * @param lockDirName where lock files are created.
-   */
-  public NativeFSLockFactory(String lockDirName) throws IOException {
-    this(new File(lockDirName));
+    this(null);
   }
 
   /**
@@ -123,7 +113,7 @@ class NativeFSLock extends Lock {
    * (same FileChannel instance or not), so we may want to 
    * change this when Lucene moves to Java 1.6.
    */
-  private static HashSet<String> LOCK_HELD = new HashSet<String>();
+  private static final HashSet<String> LOCK_HELD = new HashSet<String>();
 
   public NativeFSLock(File lockDir, String lockFileName) {
     this.lockDir = lockDir;
@@ -259,6 +249,7 @@ class NativeFSLock extends Lock {
       // LUCENE-2421: we don't care anymore if the file cannot be deleted
       // because it's held up by another process (e.g. AntiVirus). NativeFSLock
       // does not depend on the existence/absence of the lock file
+      //noinspection ResultOfMethodCallIgnored
       path.delete();
     } else {
       // if we don't hold the lock, and somebody still called release(), for

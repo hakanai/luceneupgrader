@@ -403,14 +403,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     subReaders[i].getTermFreqVector(docNumber - starts[i], mapper);
   }
 
-  /** {@inheritDoc} */
-  @Deprecated
-  @Override
-  public boolean isOptimized() {
-    ensureOpen();
-    return segmentInfos.size() == 1 && !hasDeletions();
-  }
-
   @Override
   public int numDocs() {
     // Don't call ensureOpen() here (it could affect performance)
@@ -746,17 +738,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
   }
 
   @Override
-  public boolean isCurrent() throws IOException {
-    ensureOpen();
-    if (writer == null || writer.isClosed()) {
-      // we loaded SegmentInfos from the directory
-      return SegmentInfos.readCurrentVersion(directory) == segmentInfos.getVersion();
-    } else {
-      return writer.nrtIsCurrent(segmentInfos);
-    }
-  }
-
-  @Override
   protected synchronized void doClose() throws IOException {
     IOException ioe = null;
     normsCache = null;
@@ -863,18 +844,8 @@ class DirectoryReader extends IndexReader implements Cloneable {
     }
 
     @Override
-    public int getSegmentCount() {
-      return segmentCount;
-    }
-
-    @Override
     public String getSegmentsFileName() {
       return segmentsFileName;
-    }
-
-    @Override
-    public Collection<String> getFileNames() {
-      return files;
     }
 
     @Override
@@ -895,11 +866,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     @Override
     public boolean isDeleted() {
       return false;
-    }
-
-    @Override
-    public Map<String,String> getUserData() {
-      return userData;
     }
 
     @Override

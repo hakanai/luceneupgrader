@@ -555,32 +555,6 @@ public abstract class LogMergePolicy extends MergePolicy {
     return spec;
   }
 
-  /** <p>Determines the largest segment (measured by
-   * document count) that may be merged with other segments.
-   * Small values (e.g., less than 10,000) are best for
-   * interactive indexing, as this limits the length of
-   * pauses while indexing to a few seconds.  Larger values
-   * are best for batched indexing and speedier
-   * searches.</p>
-   *
-   * <p>The default value is {@code Integer#MAX_VALUE}.</p>
-   *
-   * <p>The default merge policy ({@code
-   * LogByteSizeMergePolicy}) also allows you to set this
-   * limit by net size (in MB) of the segment, using {@code
-   * LogByteSizeMergePolicy#setMaxMergeMB}.</p>
-   */
-  public void setMaxMergeDocs(int maxMergeDocs) {
-    this.maxMergeDocs = maxMergeDocs;
-  }
-
-  /** Returns the largest segment (measured by document
-   *  count) that may be merged with other segments.
-   *  */
-  public int getMaxMergeDocs() {
-    return maxMergeDocs;
-  }
-
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder("[" + getClass().getSimpleName() + ": ");

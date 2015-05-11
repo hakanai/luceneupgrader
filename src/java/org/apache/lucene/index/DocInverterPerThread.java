@@ -17,8 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 /** This is a DocFieldConsumer that inverts each field,
  *  separately, from a Document, and accepts a
  *  InvertedTermsConsumer to process those terms. */
@@ -39,25 +37,4 @@ final class DocInverterPerThread extends DocFieldConsumerPerThread {
     endConsumer = docInverter.endConsumer.addThread(this);
   }
 
-  @Override
-  public DocumentsWriter.DocWriter finishDocument() throws IOException {
-    // TODO: allow endConsumer.finishDocument to also return
-    // a DocWriter
-    endConsumer.finishDocument();
-    return consumer.finishDocument();
-  }
-
-  @Override
-  void abort() {
-    try {
-      consumer.abort();
-    } finally {
-      endConsumer.abort();
-    }
-  }
-
-  @Override
-  public DocFieldConsumerPerField addField(FieldInfo fi) {
-    return new DocInverterPerField(this, fi);
-  }
 }

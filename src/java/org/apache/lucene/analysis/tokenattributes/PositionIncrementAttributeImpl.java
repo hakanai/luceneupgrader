@@ -91,10 +91,5 @@ public class PositionIncrementAttributeImpl extends AttributeImpl implements Pos
   public int hashCode() {
     return positionIncrement;
   }
-  
-  @Override
-  public void copyTo(AttributeImpl target) {
-    PositionIncrementAttribute t = (PositionIncrementAttribute) target;
-    t.setPositionIncrement(positionIncrement);
-  }  
+
 }

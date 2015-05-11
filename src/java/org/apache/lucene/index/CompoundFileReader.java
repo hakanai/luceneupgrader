@@ -166,15 +166,6 @@ class CompoundFileReader extends Directory {
     return entries.containsKey(IndexFileNames.stripSegmentName(name));
   }
 
-  /** Set the modified time of the compound file to now.
-   *  @deprecated Lucene never uses this API; it will be
-   *  removed in 4.0. */
-  @Override
-  @Deprecated
-  public void touchFile(String name) throws IOException {
-    directory.touchFile(fileName);
-  }
-
   /** Not implemented
    * @throws UnsupportedOperationException */
   @Override

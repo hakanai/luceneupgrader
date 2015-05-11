@@ -28,16 +28,12 @@ package org.apache.lucene.index;
 
 final class DocInverterPerField extends DocFieldConsumerPerField {
 
-  final private DocInverterPerThread perThread;
-  final private FieldInfo fieldInfo;
   final InvertedDocConsumerPerField consumer;
   final InvertedDocEndConsumerPerField endConsumer;
   final DocumentsWriter.DocState docState;
   final FieldInvertState fieldState;
 
   public DocInverterPerField(DocInverterPerThread perThread, FieldInfo fieldInfo) {
-    this.perThread = perThread;
-    this.fieldInfo = fieldInfo;
     docState = perThread.docState;
     fieldState = perThread.fieldState;
     this.consumer = perThread.consumer.addField(this, fieldInfo);

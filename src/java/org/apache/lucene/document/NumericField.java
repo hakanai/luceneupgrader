@@ -18,11 +18,8 @@ package org.apache.lucene.document;
  */
 
 import org.apache.lucene.analysis.NumericTokenStream;
-import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.util.NumericUtils;
-
-import java.io.Reader;
 
 /**
  * <p>This class provides a {@code Field} that enables indexing
@@ -170,46 +167,12 @@ public final class NumericField extends AbstractField {
     setIndexOptions(IndexOptions.DOCS_ONLY);
   }
 
-  /** Returns a {@code NumericTokenStream} for indexing the numeric value. */
-  public TokenStream tokenStreamValue()   {
-    if (!isIndexed())
-      return null;
-    if (numericTS == null) {
-      // lazy init the TokenStream as it is heavy to instantiate (attributes,...),
-      // if not needed (stored field loading)
-      numericTS = new NumericTokenStream(precisionStep);
-      // initialize value in TokenStream
-      if (fieldsData != null) {
-        assert type != null;
-        final Number val = (Number) fieldsData;
-        switch (type) {
-          case INT:
-            numericTS.setIntValue(val.intValue()); break;
-          case LONG:
-            numericTS.setLongValue(val.longValue()); break;
-          case FLOAT:
-            numericTS.setFloatValue(val.floatValue()); break;
-          case DOUBLE:
-            numericTS.setDoubleValue(val.doubleValue()); break;
-          default:
-            assert false : "Should never get here";
-        }
-      }
-    }
-    return numericTS;
-  }
-  
   /** Returns always <code>null</code> for numeric fields */
   @Override
   public byte[] getBinaryValue(byte[] result){
     return null;
   }
 
-  /** Returns always <code>null</code> for numeric fields */
-  public Reader readerValue() {
-    return null;
-  }
-    
   /** Returns the numeric value as a string. This format is also returned if you call {@code Document#get(String)}
    * on search results. It is recommended to use {@code Document#getFieldable} instead
    * that returns {@code NumericField} instances. You can then use {@code #getNumericValue}

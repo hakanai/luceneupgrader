@@ -266,16 +266,4 @@ public final class BitUtil {
   }
 
 
-  /** returns the next highest power of two, or the current value if it's already a power of two or zero*/
-  public static int nextHighestPowerOfTwo(int v) {
-    v--;
-    v |= v >> 1;
-    v |= v >> 2;
-    v |= v >> 4;
-    v |= v >> 8;
-    v |= v >> 16;
-    v++;
-    return v;
-  }
-
 }

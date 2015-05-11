@@ -124,12 +124,8 @@ final class DocumentsWriter {
   static class DocState {
     DocumentsWriter docWriter;
     Analyzer analyzer;
-    int maxFieldLength;
-    PrintStream infoStream;
-    Similarity similarity;
     int docID;
     Document doc;
-    String maxTermPrefix;
 
     // Only called by asserts
     public boolean testPoint(String name) {
@@ -823,7 +819,6 @@ final class DocumentsWriter {
   private class WaitQueue {
     DocWriter[] waiting;
     int nextWriteDocID;
-    int nextWriteLoc;
     int numWaiting;
     long waitingBytes;
 

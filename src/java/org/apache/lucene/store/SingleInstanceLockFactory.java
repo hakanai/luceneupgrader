@@ -48,7 +48,7 @@ public class SingleInstanceLockFactory extends LockFactory {
 class SingleInstanceLock extends Lock {
 
   String lockName;
-  private HashSet<String> locks;
+  private final HashSet<String> locks;
 
   public SingleInstanceLock(HashSet<String> locks, String lockName) {
     this.locks = locks;

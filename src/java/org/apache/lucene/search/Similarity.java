@@ -18,7 +18,6 @@ package org.apache.lucene.search;
  */
 
 
-import org.apache.lucene.index.FieldInvertState;
 import org.apache.lucene.util.SmallFloat;
 
 import java.io.Serializable;
@@ -558,37 +557,6 @@ public abstract class Similarity implements Serializable {
     for (int i = 0; i < 256; i++)
       NORM_TABLE[i] = SmallFloat.byte315ToFloat((byte)i);
   }
-
-    /**
-   * Computes the normalization value for a field, given the accumulated
-   * state of term processing for this field (see {@code FieldInvertState}).
-   * 
-   * <p>Implementations should calculate a float value based on the field
-   * state and then return that value.
-   *
-   * <p>Matches in longer fields are less precise, so implementations of this
-   * method usually return smaller values when <code>state.getLength()</code> is large,
-   * and larger values when <code>state.getLength()</code> is small.
-   * 
-   * <p>Note that the return values are computed under 
-   * {@code org.apache.lucene.index.IndexWriter#addDocument(org.apache.lucene.document.Document)}
-   * and then stored using
-   * {@code #encodeNormValue(float)}.
-   * Thus they have limited precision, and documents
-   * must be re-indexed if this method is altered.
-   *
-   * <p>For backward compatibility this method by default calls
-   * {@code #lengthNorm(String, int)} passing
-   * {@code FieldInvertState#getLength()} as the second argument, and
-   * then multiplies this value by {@code FieldInvertState#getBoost()}.</p>
-   * 
-   * @lucene.experimental
-   * 
-   * @param field field name
-   * @param state current processing state for this field
-   * @return the calculated float norm
-   */
-  public abstract float computeNorm(String field, FieldInvertState state);
 
     /** Computes the normalization value for a query given the sum of the squared
    * weights of each of the query terms.  This value is multiplied into the

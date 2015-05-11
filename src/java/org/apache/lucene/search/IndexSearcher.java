@@ -17,19 +17,13 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.util.ReaderUtil;
-import org.apache.lucene.util.ThreadInterruptedException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
 
 /** Implements search over a single IndexReader.
  *
@@ -64,12 +58,8 @@ public class IndexSearcher extends Searcher {
   // in the next release
   protected final IndexReader[] subReaders;
   protected final int[] docStarts;
-  
-  // These are only used for multi-threaded search
-  private final ExecutorService executor;
-  protected final IndexSearcher[] subSearchers;
 
-  private final int docBase;
+  protected final IndexSearcher[] subSearchers;
 
   /** Creates a searcher searching the provided index. */
   public IndexSearcher(IndexReader r) {
@@ -79,11 +69,11 @@ public class IndexSearcher extends Searcher {
   // Used only when we are an atomic sub-searcher in a parent
   // IndexSearcher that has an ExecutorService, to record
   // our docBase in the parent IndexSearcher:
-  private IndexSearcher(IndexReader r, int docBase) {
+  private IndexSearcher(IndexReader r,
+                        @SuppressWarnings("UnusedParameters") int docBase) // keeping to keep the methods unique. :(
+  {
     reader = r;
-    this.executor = null;
     closeReader = false;
-    this.docBase = docBase;
     subReaders = new IndexReader[] {r};
     docStarts = new int[] {0};
     subSearchers = null;
@@ -91,7 +81,6 @@ public class IndexSearcher extends Searcher {
 
   private IndexSearcher(IndexReader r, boolean closeReader, ExecutorService executor) {
     reader = r;
-    this.executor = executor;
     this.closeReader = closeReader;
 
     List<IndexReader> subReadersList = new ArrayList<IndexReader>();
@@ -111,57 +100,12 @@ public class IndexSearcher extends Searcher {
         subSearchers[i] = new IndexSearcher(subReaders[i], docStarts[i]);
       }
     }
-    docBase = 0;
   }
 
   protected void gatherSubReaders(List<IndexReader> allSubReaders, IndexReader r) {
     ReaderUtil.gatherSubReaders(allSubReaders, r);
   }
 
-  /** Expert: Returns one greater than the largest possible document number.
-   * 
-   *
-   */
-  @Override
-  public int maxDoc() {
-    return reader.maxDoc();
-  }
-
-  /** Returns total docFreq for this term. */
-  @Override
-  public int docFreq(final Term term) throws IOException {
-    if (executor == null) {
-      return reader.docFreq(term);
-    } else {
-      final ExecutionHelper<Integer> runner = new ExecutionHelper<Integer>(executor);
-      for(int i = 0; i < subReaders.length; i++) {
-        final IndexSearcher searchable = subSearchers[i];
-        runner.submit(new Callable<Integer>() {
-            public Integer call() throws IOException {
-              return searchable.docFreq(term);
-            }
-          });
-      }
-      int docFreq = 0;
-      for (Integer num : runner) {
-        docFreq += num.intValue();
-      }
-      return docFreq;
-    }
-  }
-
-  /* Sugar for .getIndexReader().document(docID) */
-  @Override
-  public Document doc(int docID) throws IOException {
-    return reader.document(docID);
-  }
-  
-  /* Sugar for .getIndexReader().document(docID, fieldSelector) */
-  @Override
-  public Document doc(int docID, FieldSelector fieldSelector) throws IOException {
-    return reader.document(docID, fieldSelector);
-  }
-  
   /** Expert: Set the Similarity implementation used by this Searcher.
    *
    *
@@ -190,44 +134,6 @@ public class IndexSearcher extends Searcher {
   }
 
 
-  /**
-   * Lower-level search API.
-   * 
-   * <p>
-   * {@code Collector#collect(int)} is called for every document. <br>
-   * Collector-based access to remote indexes is discouraged.
-   * 
-   * <p>
-   * Applications should only use this if they need <i>all</i> of the matching
-   * documents. The high-level search API ({@code Searcher#search(Query,int)}) is
-   * usually more efficient, as it skips non-high-scoring hits.
-   * 
-   * @param weight
-   *          to match documents
-   * @param filter
-   *          if non-null, used to permit documents to be collected.
-   * @param collector
-   *          to receive hits
-   */
-  @Override
-  public void search(Weight weight, Filter filter, Collector collector)
-      throws IOException {
-
-    // TODO: should we make this
-    // threaded...?  the Collector could be sync'd?
-
-    // always use single thread:
-    for (int i = 0; i < subReaders.length; i++) { // search each subreader
-      collector.setNextReader(subReaders[i], docBase + docStarts[i]);
-      final Scorer scorer = (filter == null) ?
-        weight.scorer(subReaders[i], !collector.acceptsDocsOutOfOrder(), true) :
-        FilteredQuery.getFilteredScorer(subReaders[i], getSimilarity(), weight, weight, filter);
-      if (scorer != null) {
-        scorer.score(collector);
-      }
-    }
-  }
-
   /** Expert: called to re-write queries into primitive queries.
    */
   @Override
@@ -251,54 +157,6 @@ public class IndexSearcher extends Searcher {
     return super.createNormalizedWeight(query);
   }
 
-
-  /**
-   * A helper class that wraps a {@code CompletionService} and provides an
-   * iterable interface to the completed {@code Callable} instances.
-   * 
-   * @param <T>
-   *          the type of the {@code Callable} return value
-   */
-  private static final class ExecutionHelper<T> implements Iterator<T>, Iterable<T> {
-    private final CompletionService<T> service;
-    private int numTasks;
-
-    ExecutionHelper(final Executor executor) {
-      this.service = new ExecutorCompletionService<T>(executor);
-    }
-
-    public boolean hasNext() {
-      return numTasks > 0;
-    }
-
-    public void submit(Callable<T> task) {
-      this.service.submit(task);
-      ++numTasks;
-    }
-
-    public T next() {
-      if(!this.hasNext())
-        throw new NoSuchElementException();
-      try {
-        return service.take().get();
-      } catch (InterruptedException e) {
-        throw new ThreadInterruptedException(e);
-      } catch (ExecutionException e) {
-        throw new RuntimeException(e);
-      } finally {
-        --numTasks;
-      }
-    }
-
-    public void remove() {
-      throw new UnsupportedOperationException();
-    }
-
-    public Iterator<T> iterator() {
-      // use the shortcut here - this is only used in a private context
-      return this;
-    }
-  }
 
   @Override
   public String toString() {

@@ -64,11 +64,6 @@ public final class WeakIdentityMap<K,V> {
     reap();
   }
 
-  public boolean containsKey(Object key) {
-    reap();
-    return backingStore.containsKey(new IdentityWeakReference(key, null));
-  }
-
   public V get(Object key) {
     reap();
     return backingStore.get(new IdentityWeakReference(key, null));

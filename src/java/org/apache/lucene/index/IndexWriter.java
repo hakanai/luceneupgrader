@@ -17,11 +17,12 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.search.Similarity;
 import org.apache.lucene.store.*;
-import org.apache.lucene.util.*;
+import org.apache.lucene.util.Constants;
+import org.apache.lucene.util.ThreadInterruptedException;
+import org.apache.lucene.util.TwoPhaseCommit;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -193,7 +194,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   volatile private boolean hitOOM;
 
   private final Directory directory;  // where this index resides
-  private final Analyzer analyzer;    // how to analyze text
 
   // TODO 4.0: this should be made final once the setter is out
   private /*final*/Similarity similarity = Similarity.getDefault(); // how to normalize
@@ -260,111 +260,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   // for testing
   boolean anyNonBulkMerges;
-
-  /**
-   * Expert: returns a readonly reader, covering all
-   * committed as well as un-committed changes to the index.
-   * This provides "near real-time" searching, in that
-   * changes made during an IndexWriter session can be
-   * quickly made available for searching without closing
-   * the writer nor calling {@code #commit}.
-   *
-   * <p>Note that this is functionally equivalent to calling
-   * {#flush} and then using {@code IndexReader#open} to
-   * open a new reader.  But the turarnound time of this
-   * method should be faster since it avoids the potentially
-   * costly {@code #commit}.</p>
-   *
-   * <p>You must close the {@code IndexReader} returned by
-   * this method once you are done using it.</p>
-   *
-   * <p>It's <i>near</i> real-time because there is no hard
-   * guarantee on how quickly you can get a new reader after
-   * making changes with IndexWriter.  You'll have to
-   * experiment in your situation to determine if it's
-   * fast enough.  As this is a new and experimental
-   * feature, please report back on your findings so we can
-   * learn, improve and iterate.</p>
-   *
-   * <p>The resulting reader supports {@code
-   * IndexReader#reopen}, but that call will simply forward
-   * back to this method (though this may change in the
-   * future).</p>
-   *
-   * <p>The very first time this method is called, this
-   * writer instance will make every effort to pool the
-   * readers that it opens for doing merges, applying
-   * deletes, etc.  This means additional resources (RAM,
-   * file descriptors, CPU time) will be consumed.</p>
-   *
-   * <p>For lower latency on reopening a reader, you should
-   * call {@code #setMergedSegmentWarmer} to
-   * pre-warm a newly merged segment before it's committed
-   * to the index.  This is important for minimizing
-   * index-to-search delay after a large merge.  </p>
-   *
-   * <p>If an addIndexes* call is running in another thread,
-   * then this reader will only search those segments from
-   * the foreign index that have been successfully copied
-   * over, so far</p>.
-   *
-   * <p><b>NOTE</b>: Once the writer is closed, any
-   * outstanding readers may continue to be used.  However,
-   * if you attempt to reopen any of those readers, you'll
-   * hit an {@code AlreadyClosedException}.</p>
-   *
-   * @lucene.experimental
-   *
-   * @return IndexReader that covers entire index plus all
-   * changes made so far by this IndexWriter instance
-   *
-   * @deprecated Please use {@code
-   * IndexReader#open(IndexWriter,boolean)} instead.
-   *
-   * @throws IOException
-   */
-  @Deprecated
-  public IndexReader getReader() throws IOException {
-    return getReader(config.getReaderTermsIndexDivisor(), true);
-  }
-
-  IndexReader getReader(boolean applyAllDeletes) throws IOException {
-    return getReader(config.getReaderTermsIndexDivisor(), applyAllDeletes);
-  }
-
-  IndexReader getReader(int termInfosIndexDivisor, boolean applyAllDeletes) throws IOException {
-    ensureOpen();
-    
-    final long tStart = System.currentTimeMillis();
-
-    if (infoStream != null) {
-      message("flush at getReader");
-    }
-
-    // Do this up front before flushing so that the readers
-    // obtained during this flush are pooled, the first time
-    // this method is called:
-    poolReaders = true;
-
-    // Prevent segmentInfos from changing while opening the
-    // reader; in theory we could do similar retry logic,
-    // just like we do when loading segments_N
-    IndexReader r;
-    synchronized(this) {
-      flush(false, applyAllDeletes);
-      r = new ReadOnlyDirectoryReader(this, segmentInfos, termInfosIndexDivisor, applyAllDeletes);
-      if (infoStream != null) {
-        message("return reader version=" + r.getVersion() + " reader=" + r);
-      }
-    }
-
-    maybeMerge();
-
-    if (infoStream != null) {
-      message("getReader took " + (System.currentTimeMillis() - tStart) + " msec");
-    }
-    return r;
-  }
 
   /** Holds shared SegmentReader instances. IndexWriter uses
    *  SegmentReaders for 1) applying deletes, 2) doing
@@ -665,189 +560,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
       infoStream.println("IW " + messageID + " [" + new Date() + "; " + Thread.currentThread().getName() + "]: " + message);
   }
 
-  /** Expert: Set the Similarity implementation used by this IndexWriter.
-   *
-   *
-   * @deprecated use {@code IndexWriterConfig#setSimilarity(Similarity)} instead
-   */
-  @Deprecated
-  public void setSimilarity(Similarity similarity) {
-    ensureOpen();
-    this.similarity = similarity;
-    docWriter.setSimilarity(similarity);
-    // Required so config.getSimilarity returns the right value. But this will
-    // go away together with the method in 4.0.
-    config.setSimilarity(similarity);
-  }
-
-  /** Expert: Return the Similarity implementation used by this IndexWriter.
-   *
-   * <p>This defaults to the current value of {@code Similarity#getDefault()}.
-   * @deprecated use {@code IndexWriterConfig#getSimilarity()} instead
-   */
-  @Deprecated
-  public Similarity getSimilarity() {
-    ensureOpen();
-    return similarity;
-  }
-
-  /**
-   * Constructs an IndexWriter for the index in <code>d</code>.
-   * Text will be analyzed with <code>a</code>.  If <code>create</code>
-   * is true, then a new, empty index will be created in
-   * <code>d</code>, replacing the index already there, if any.
-   *
-   * @param d the index directory
-   * @param a the analyzer to use
-   * @param create <code>true</code> to create the index or overwrite
-   *  the existing one; <code>false</code> to append to the existing
-   *  index
-   * @param mfl Maximum field length in number of terms/tokens: LIMITED, UNLIMITED, or user-specified
-   *   via the MaxFieldLength constructor.
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws LockObtainFailedException if another writer
-   *  has this index open (<code>write.lock</code> could not
-   *  be obtained)
-   * @throws IOException if the directory cannot be read/written to, or
-   *  if it does not exist and <code>create</code> is
-   *  <code>false</code> or if there is any other low-level
-   *  IO error
-   *  @deprecated use {@code #IndexWriter(Directory, IndexWriterConfig)} instead
-   */
-  @Deprecated
-  public IndexWriter(Directory d, Analyzer a, boolean create, MaxFieldLength mfl)
-       throws IOException {
-    this(d, new IndexWriterConfig(Version.LUCENE_31, a).setOpenMode(
-        create ? OpenMode.CREATE : OpenMode.APPEND));
-    setMaxFieldLength(mfl.getLimit());
-  }
-
-  /**
-   * Constructs an IndexWriter for the index in
-   * <code>d</code>, first creating it if it does not
-   * already exist.  Text will be analyzed with
-   * <code>a</code>.
-   *
-   * @param d the index directory
-   * @param a the analyzer to use
-   * @param mfl Maximum field length in number of terms/tokens: LIMITED, UNLIMITED, or user-specified
-   *   via the MaxFieldLength constructor.
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws LockObtainFailedException if another writer
-   *  has this index open (<code>write.lock</code> could not
-   *  be obtained)
-   * @throws IOException if the directory cannot be
-   *  read/written to or if there is any other low-level
-   *  IO error
-   *  @deprecated use {@code #IndexWriter(Directory, IndexWriterConfig)} instead
-   */
-  @Deprecated
-  public IndexWriter(Directory d, Analyzer a, MaxFieldLength mfl)
-    throws IOException {
-    this(d, new IndexWriterConfig(Version.LUCENE_31, a));
-    setMaxFieldLength(mfl.getLimit());
-  }
-
-  /**
-   * Expert: constructs an IndexWriter with a custom {@code
-   * IndexDeletionPolicy}, for the index in <code>d</code>,
-   * first creating it if it does not already exist.  Text
-   * will be analyzed with <code>a</code>.
-   *
-   * @param d the index directory
-   * @param a the analyzer to use
-   * @param deletionPolicy see <a href="#deletionPolicy">above</a>
-   * @param mfl whether or not to limit field lengths
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws LockObtainFailedException if another writer
-   *  has this index open (<code>write.lock</code> could not
-   *  be obtained)
-   * @throws IOException if the directory cannot be
-   *  read/written to or if there is any other low-level
-   *  IO error
-   *  @deprecated use {@code #IndexWriter(Directory, IndexWriterConfig)} instead
-   */
-  @Deprecated
-  public IndexWriter(Directory d, Analyzer a, IndexDeletionPolicy deletionPolicy, MaxFieldLength mfl)
-    throws IOException {
-    this(d, new IndexWriterConfig(Version.LUCENE_31, a).setIndexDeletionPolicy(deletionPolicy));
-    setMaxFieldLength(mfl.getLimit());
-  }
-
-  /**
-   * Expert: constructs an IndexWriter with a custom {@code
-   * IndexDeletionPolicy}, for the index in <code>d</code>.
-   * Text will be analyzed with <code>a</code>.  If
-   * <code>create</code> is true, then a new, empty index
-   * will be created in <code>d</code>, replacing the index
-   * already there, if any.
-   *
-   * @param d the index directory
-   * @param a the analyzer to use
-   * @param create <code>true</code> to create the index or overwrite
-   *  the existing one; <code>false</code> to append to the existing
-   *  index
-   * @param deletionPolicy see <a href="#deletionPolicy">above</a>
-   * @param mfl {@code org.apache.lucene.index.IndexWriter.MaxFieldLength}, whether or not to limit field lengths.  Value is in number of terms/tokens
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws LockObtainFailedException if another writer
-   *  has this index open (<code>write.lock</code> could not
-   *  be obtained)
-   * @throws IOException if the directory cannot be read/written to, or
-   *  if it does not exist and <code>create</code> is
-   *  <code>false</code> or if there is any other low-level
-   *  IO error
-   *  @deprecated use {@code #IndexWriter(Directory, IndexWriterConfig)} instead
-   */
-  @Deprecated
-  public IndexWriter(Directory d, Analyzer a, boolean create, IndexDeletionPolicy deletionPolicy, MaxFieldLength mfl)
-       throws IOException {
-    this(d, new IndexWriterConfig(Version.LUCENE_31, a).setOpenMode(
-        create ? OpenMode.CREATE : OpenMode.APPEND).setIndexDeletionPolicy(deletionPolicy));
-    setMaxFieldLength(mfl.getLimit());
-  }
-  
-  /**
-   * Expert: constructs an IndexWriter on specific commit
-   * point, with a custom {@code IndexDeletionPolicy}, for
-   * the index in <code>d</code>.  Text will be analyzed
-   * with <code>a</code>.
-   *
-   * <p> This is only meaningful if you've used a {@code
-   * IndexDeletionPolicy} in that past that keeps more than
-   * just the last commit.
-   * 
-   * <p>This operation is similar to {@code #rollback()},
-   * except that method can only rollback what's been done
-   * with the current instance of IndexWriter since its last
-   * commit, whereas this method can rollback to an
-   * arbitrary commit point from the past, assuming the
-   * {@code IndexDeletionPolicy} has preserved past
-   * commits.
-   *
-   * @param d the index directory
-   * @param a the analyzer to use
-   * @param deletionPolicy see <a href="#deletionPolicy">above</a>
-   * @param mfl whether or not to limit field lengths, value is in number of terms/tokens.  See {@code org.apache.lucene.index.IndexWriter.MaxFieldLength}.
-   * @param commit which commit to open
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws LockObtainFailedException if another writer
-   *  has this index open (<code>write.lock</code> could not
-   *  be obtained)
-   * @throws IOException if the directory cannot be read/written to, or
-   *  if it does not exist and <code>create</code> is
-   *  <code>false</code> or if there is any other low-level
-   *  IO error
-   *  @deprecated use {@code #IndexWriter(Directory, IndexWriterConfig)} instead
-   */
-  @Deprecated
-  public IndexWriter(Directory d, Analyzer a, IndexDeletionPolicy deletionPolicy, MaxFieldLength mfl, IndexCommit commit)
-       throws IOException {
-    this(d, new IndexWriterConfig(Version.LUCENE_31, a)
-        .setOpenMode(OpenMode.APPEND).setIndexDeletionPolicy(deletionPolicy).setIndexCommit(commit));
-    setMaxFieldLength(mfl.getLimit());
-  }
-
   /**
    * Constructs a new IndexWriter per the settings given in <code>conf</code>.
    * Note that the passed in {@code IndexWriterConfig} is
@@ -876,8 +588,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
       throws IOException {
     config = (IndexWriterConfig) conf.clone();
     directory = d;
-    analyzer = conf.getAnalyzer();
-    infoStream = defaultInfoStream;
+    infoStream = null;
     writeLockTimeout = conf.getWriteLockTimeout();
     similarity = conf.getSimilarity();
     mergePolicy = conf.getMergePolicy();
@@ -1104,15 +815,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
             config.toString());
   }
 
-  /**
-   * Returns the current infoStream in use by this writer.
-   *
-   */
-  public PrintStream getInfoStream() {
-    ensureOpen();
-    return infoStream;
-  }
-
   /** Returns true if verbosing is enabled (i.e., infoStream != null). */
   public boolean verbose() {
     return infoStream != null;
@@ -1298,42 +1000,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     return directory;
   }
 
-  /** Returns total number of docs in this index, including
-   *  docs not yet flushed (still in the RAM buffer),
-   *  not counting deletions.
-   *  */
-  public synchronized int maxDoc() {
-    ensureOpen();
-    int count;
-    if (docWriter != null)
-      count = docWriter.getNumDocs();
-    else
-      count = 0;
-
-    count += segmentInfos.totalDocCount();
-    return count;
-  }
-
-  /** Returns total number of docs in this index, including
-   *  docs not yet flushed (still in the RAM buffer), and
-   *  including deletions.  <b>NOTE:</b> buffered deletions
-   *  are not counted.  If you really need these to be
-   *  counted you should call {@code #commit()} first.
-   *  */
-  public synchronized int numDocs() throws IOException {
-    ensureOpen();
-    int count;
-    if (docWriter != null)
-      count = docWriter.getNumDocs();
-    else
-      count = 0;
-
-    for (final SegmentInfo info : segmentInfos) {
-      count += info.docCount - numDeletedDocs(info);
-    }
-    return count;
-  }
-
   /**
    * The maximum number of terms that will be indexed for a single field in a
    * document.  This limits the amount of memory required for indexing, so that
@@ -1370,7 +1036,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   /** If non-null, information about merges will be printed to this.
    */
   private PrintStream infoStream;
-  private static PrintStream defaultInfoStream;
 
   /**
    * Forces merge policy to merge segments until there's <=
@@ -2101,7 +1766,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
         if (result.anyDeletes) {
           checkpoint();
         }
-        if (!keepFullyDeletedSegments && result.allDeleted != null) {
+        if (!false && result.allDeleted != null) {
           if (infoStream != null) {
             message("drop 100% deleted segments: " + result.allDeleted);
           }
@@ -2283,10 +1948,10 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     final boolean allDeleted = mergedReader.numDocs() == 0;
 
     if (infoStream != null && allDeleted) {
-      message("merged segment " + merge.info + " is 100% deleted" +  (keepFullyDeletedSegments ? "" : "; skipping insert"));
+      message("merged segment " + merge.info + " is 100% deleted" +  (false ? "" : "; skipping insert"));
     }
 
-    final boolean dropSegment = allDeleted && !keepFullyDeletedSegments;
+    final boolean dropSegment = allDeleted && !false;
     segmentInfos.applyMergeChanges(merge, dropSegment);
     
     if (dropSegment) {
@@ -2526,7 +2191,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
       checkpoint();
     }
 
-    if (!keepFullyDeletedSegments && result.allDeleted != null) {
+    if (!false && result.allDeleted != null) {
       if (infoStream != null) {
         message("drop 100% deleted segments: " + result.allDeleted);
       }
@@ -2926,10 +2591,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     }
   }
 
-  private boolean keepFullyDeletedSegments;
-
   boolean getKeepFullyDeletedSegments() {
-    return keepFullyDeletedSegments;
+    return false;
   }
 
   // called only from assert
@@ -3088,12 +2751,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     public static final MaxFieldLength UNLIMITED
         = new MaxFieldLength("UNLIMITED", Integer.MAX_VALUE);
 
-    /**
-     *  Sets the maximum field length to 
-     * {@code #DEFAULT_MAX_FIELD_LENGTH}
-     * */
-    public static final MaxFieldLength LIMITED
-        = new MaxFieldLength("LIMITED", 10000);
   }
 
   /** If {@code #getReader} has been called (ie, this writer
@@ -3202,65 +2859,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
       delCount = 0;
     }
 
-    public synchronized boolean waitUpdate(int docInc, int delInc) {
-      return waitUpdate(docInc, delInc, false);
-    }
-
-    public synchronized boolean waitUpdate(int docInc, int delInc, boolean skipWait) {
-      while(flushPending) {
-        try {
-          wait();
-        } catch (InterruptedException ie) {
-          throw new ThreadInterruptedException(ie);
-        }
-      }
-
-      docCount += docInc;
-      delCount += delInc;
-
-      // skipWait is only used when a thread is BOTH adding
-      // a doc and buffering a del term, and, the adding of
-      // the doc already triggered a flush
-      if (skipWait) {
-        return false;
-      }
-
-      final int maxBufferedDocs = config.getMaxBufferedDocs();
-      if (maxBufferedDocs != IndexWriterConfig.DISABLE_AUTO_FLUSH &&
-          docCount >= maxBufferedDocs) {
-        return setFlushPending("maxBufferedDocs", true);
-      }
-
-      final int maxBufferedDeleteTerms = config.getMaxBufferedDeleteTerms();
-      if (maxBufferedDeleteTerms != IndexWriterConfig.DISABLE_AUTO_FLUSH &&
-          delCount >= maxBufferedDeleteTerms) {
-        flushDeletes = true;
-        return setFlushPending("maxBufferedDeleteTerms", true);
-      }
-
-      return flushByRAMUsage("add delete/doc");
-    }
-
-    public synchronized boolean flushByRAMUsage(String reason) {
-      final double ramBufferSizeMB = config.getRAMBufferSizeMB();
-      if (ramBufferSizeMB != IndexWriterConfig.DISABLE_AUTO_FLUSH) {
-        final long limit = (long) (ramBufferSizeMB*1024*1024);
-        long used = bufferedDeletesStream.bytesUsed() + docWriter.bytesUsed();
-        if (used >= limit) {
-          
-          // DocumentsWriter may be able to free up some
-          // RAM:
-          // Lock order: FC -> DW
-          docWriter.balanceRAM();
-
-          used = bufferedDeletesStream.bytesUsed() + docWriter.bytesUsed();
-          if (used >= limit) {
-            return setFlushPending("ram full: " + reason, false);
-          }
-        }
-      }
-      return false;
-    }
   }
 
   final FlushControl flushControl = new FlushControl();
