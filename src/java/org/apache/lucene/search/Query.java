@@ -17,8 +17,6 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
-import org.apache.lucene.index.IndexReader;
-
 import java.io.IOException;
 
 /** The abstract base class for queries.
@@ -72,7 +70,7 @@ public abstract class Query implements java.io.Serializable, Cloneable {
    * <p>
    * Only implemented by primitive queries, which re-write to themselves.
    */
-  public Weight createWeight(Searcher searcher) throws IOException {
+  public Weight createWeight() throws IOException {
     throw new UnsupportedOperationException("Query " + this + " does not implement createWeight");
   }
 
@@ -81,7 +79,7 @@ public abstract class Query implements java.io.Serializable, Cloneable {
    * a PrefixQuery will be rewritten into a BooleanQuery that consists
    * of TermQuerys.
    */
-  public Query rewrite(IndexReader reader) throws IOException {
+  public Query rewrite() throws IOException {
     return this;
   }
 

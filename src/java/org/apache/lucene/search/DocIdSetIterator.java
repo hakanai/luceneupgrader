@@ -22,31 +22,11 @@ import java.io.IOException;
 /**
  * This abstract class defines methods to iterate over a set of non-decreasing
  * doc ids. Note that this class assumes it iterates on doc Ids, and therefore
- * {@code #NO_MORE_DOCS} is set to {@value #NO_MORE_DOCS} in order to be used as
+ * {@code #NO_MORE_DOCS} is set to {@code #NO_MORE_DOCS} in order to be used as
  * a sentinel object. Implementations of this class are expected to consider
  * {@code Integer#MAX_VALUE} as an invalid value.
  */
 public abstract class DocIdSetIterator {
-  
-  /**
-   * When returned by {@code #nextDoc()}, {@code #advance(int)} and
-   * {@code #docID()} it means there are no more docs in the iterator.
-   */
-  public static final int NO_MORE_DOCS = Integer.MAX_VALUE;
-
-  /**
-   * Returns the following:
-   * <ul>
-   * <li>-1 or {@code #NO_MORE_DOCS} if {@code #nextDoc()} or
-   * {@code #advance(int)} were not called yet.
-   * <li>{@code #NO_MORE_DOCS} if the iterator has exhausted.
-   * <li>Otherwise it should return the doc ID it is currently on.
-   * </ul>
-   * <p>
-   * 
-   * @since 2.9
-   */
-  public abstract int docID();
 
   /**
    * Advances to the next document in the set and returns the doc it is

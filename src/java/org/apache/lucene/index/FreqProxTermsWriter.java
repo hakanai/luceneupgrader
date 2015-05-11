@@ -18,15 +18,14 @@ package org.apache.lucene.index;
  */
 
 import org.apache.lucene.index.FieldInfo.IndexOptions;
-import org.apache.lucene.util.UnicodeUtil;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.lucene.util.BitVector;
 import org.apache.lucene.util.CollectionUtil;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 final class FreqProxTermsWriter extends TermsHashConsumer {
 
@@ -170,12 +169,7 @@ final class FreqProxTermsWriter extends TermsHashConsumer {
 
     final IndexOptions currentFieldIndexOptions = fields[0].fieldInfo.indexOptions;
 
-    final Map<Term,Integer> segDeletes;
-    if (state.segDeletes != null && state.segDeletes.terms.size() > 0) {
-      segDeletes = state.segDeletes.terms;
-    } else {
-      segDeletes = null;
-    }
+    final Map<Term,Integer> segDeletes = null;
 
     try {
       // TODO: really TermsHashPerField should take over most
@@ -319,6 +313,4 @@ final class FreqProxTermsWriter extends TermsHashConsumer {
       termsConsumer.finish();
     }
   }
-
-  final UnicodeUtil.UTF8Result termsUTF8 = new UnicodeUtil.UTF8Result();
 }

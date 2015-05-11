@@ -584,7 +584,7 @@ public class SegmentReader extends IndexReader implements Cloneable {
         
         // singleNormFile means multiple norms share this file
         boolean singleNormFile = IndexFileNames.matchesExtension(fileName, IndexFileNames.NORMS_EXTENSION);
-        IndexInput normInput = null;
+        IndexInput normInput;
         long normSeek;
 
         if (singleNormFile) {
@@ -780,14 +780,6 @@ public class SegmentReader extends IndexReader implements Cloneable {
     // cloned/reopened reader needs to commit, it may call
     // this method on the closed original reader
     return core.dir;
-  }
-
-  // This is necessary so that cloned SegmentReaders (which
-  // share the underlying postings data) will map to the
-  // same entry in the FieldCache.  See LUCENE-1579.
-  @Override
-  public final Object getCoreCacheKey() {
-    return core.freqStream;
   }
 
   /**

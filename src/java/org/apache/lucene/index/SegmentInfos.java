@@ -22,7 +22,6 @@ import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.store.IndexOutput;
 import org.apache.lucene.store.ChecksumIndexOutput;
 import org.apache.lucene.store.ChecksumIndexInput;
-import org.apache.lucene.store.NoSuchDirectoryException;
 import org.apache.lucene.util.IOUtils;
 import org.apache.lucene.util.ThreadInterruptedException;
 
@@ -117,7 +116,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
                                    // or wrote; this is normally the same as generation except if
                                    // there was an IOException that had interrupted a commit
 
-  private Map<String,String> userData = Collections.<String,String>emptyMap();       // Opaque Map<String, String> that user can specify during IndexWriter.commit
+  private Map<String,String> userData = Collections.emptyMap();       // Opaque Map<String, String> that user can specify during IndexWriter.commit
 
   private int format;
   
@@ -164,45 +163,6 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
       }
     }
     return max;
-  }
-
-  /**
-   * Get the generation of the most recent commit to the
-   * index in this directory (N in the segments_N file).
-   *
-   * @param directory -- directory to search for the latest segments_N file
-   */
-  public static long getLastCommitGeneration(Directory directory) throws IOException {
-    try {
-      return getLastCommitGeneration(directory.listAll());
-    } catch (NoSuchDirectoryException nsde) {
-      return -1;
-    }
-  }
-
-  /**
-   * Get the filename of the segments_N file for the most
-   * recent commit in the list of index files.
-   *
-   * @param files -- array of file names to check
-   */
-
-  public static String getLastCommitSegmentsFileName(String[] files) throws IOException {
-    return IndexFileNames.fileNameFromGeneration(IndexFileNames.SEGMENTS,
-                                                 "",
-                                                 getLastCommitGeneration(files));
-  }
-
-  /**
-   * Get the filename of the segments_N file for the most
-   * recent commit to the index in this Directory.
-   *
-   * @param directory -- directory to search for the latest segments_N file
-   */
-  public static String getLastCommitSegmentsFileName(Directory directory) throws IOException {
-    return IndexFileNames.fileNameFromGeneration(IndexFileNames.SEGMENTS,
-                                                 "",
-                                                 getLastCommitGeneration(directory));
   }
 
   /**
@@ -321,10 +281,10 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
         } else if (0 != input.readByte()) {
           userData = Collections.singletonMap("userData", input.readString());
         } else {
-          userData = Collections.<String,String>emptyMap();
+          userData = Collections.emptyMap();
         }
       } else {
-        userData = Collections.<String,String>emptyMap();
+        userData = Collections.emptyMap();
       }
 
       if (format <= FORMAT_CHECKSUM) {
@@ -458,9 +418,6 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
   public long getGeneration() {
     return generation;
   }
-  public long getLastGeneration() {
-    return lastGeneration;
-  }
 
   /**
    * Current version number from segments file.
@@ -483,44 +440,9 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
     return sis.version;
   }
 
-  /** If non-null, information about retries when loading
-   * the segments file will be printed to this.
-   */
-  public static void setInfoStream(PrintStream infoStream) {
-    SegmentInfos.infoStream = infoStream;
-  }
-
   /* Advanced configuration of retry logic in loading
      segments_N file */
   private static int defaultGenLookaheadCount = 10;
-
-  /**
-   * Advanced: set how many times to try incrementing the
-   * gen when loading the segments file.  This only runs if
-   * the primary (listing directory) and secondary (opening
-   * segments.gen file) methods fail to find the segments
-   * file.
-   *
-   * @lucene.experimental
-   */
-  public static void setDefaultGenLookaheadCount(int count) {
-    defaultGenLookaheadCount = count;
-  }
-  /**
-   *
-   *
-   * @lucene.experimental
-   */
-  public static int getDefaultGenLookahedCount() {
-    return defaultGenLookaheadCount;
-  }
-
-  /**
-   *
-   */
-  public static PrintStream getInfoStream() {
-    return infoStream;
-  }
 
   /**
    * Prints the given message to the infoStream. Note, this method does not
@@ -560,7 +482,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
         return doBody(commit.getSegmentsFileName());
       }
 
-      String segmentFileName = null;
+      String segmentFileName;
       long lastGen = -1;
       long gen = 0;
       int genLookaheadCount = 0;
@@ -594,7 +516,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
           // as there is no stale caching on the directory
           // contents (NOTE: NFS clients often have such stale
           // caching):
-          String[] files = null;
+          String[] files;
 
           long genA = -1;
 
@@ -953,7 +875,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
 
   void setUserData(Map<String,String> data) {
     if (data == null) {
-      userData = Collections.<String,String>emptyMap();
+      userData = Collections.emptyMap();
     } else {
       userData = data;
     }
@@ -966,16 +888,6 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
   void replace(SegmentInfos other) {
     rollbackSegmentInfos(other.asList());
     lastGeneration = other.lastGeneration;
-  }
-
-  /** Returns sum of all segment's docCounts.  Note that
-   *  this does not include deletions */
-  public int totalDocCount() {
-    int count = 0;
-    for(SegmentInfo info : this) {
-      count += info.docCount;
-    }
-    return count;
   }
 
   /** Call this before committing if changes have been made to the
@@ -1055,16 +967,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
     }
     return cachedUnmodifiableList;
   }
-  
-  /** Returns all contained segments as an <b>unmodifiable</b> {@code Set} view.
-   * The iterator is not sorted, use {@code List} view or {@code #iterator} to get all segments in order. */
-  public Set<SegmentInfo> asSet() {
-    if (cachedUnmodifiableSet == null) {
-      cachedUnmodifiableSet = Collections.unmodifiableSet(segmentSet);
-    }
-    return cachedUnmodifiableSet;
-  }
-  
+
   public int size() {
     return segments.size();
   }

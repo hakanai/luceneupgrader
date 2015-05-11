@@ -57,7 +57,7 @@ class SegmentTermVector implements TermFreqVector {
     return terms == null ? 0 : terms.length;
   }
 
-  public String [] getTerms() {
+  public String[] getTerms() {
     return terms;
   }
 

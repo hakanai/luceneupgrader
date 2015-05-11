@@ -17,8 +17,9 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
 import org.apache.lucene.store.IndexInput;
+
+import java.io.IOException;
 
 final class SegmentTermEnum extends TermEnum implements Cloneable {
   private IndexInput input;
@@ -195,29 +196,11 @@ final class SegmentTermEnum extends TermEnum implements Cloneable {
     return new TermInfo(termInfo);
   }
 
-  /** Sets the argument to the current TermInfo in the enumeration.
-   Initially invalid, valid after next() called for the first time.*/
-  final void termInfo(TermInfo ti) {
-    ti.set(termInfo);
-  }
-
   /** Returns the docFreq from the current TermInfo in the enumeration.
    Initially invalid, valid after next() called for the first time.*/
   @Override
   public final int docFreq() {
     return termInfo.docFreq;
-  }
-
-  /* Returns the freqPointer from the current TermInfo in the enumeration.
-    Initially invalid, valid after next() called for the first time.*/
-  final long freqPointer() {
-    return termInfo.freqPointer;
-  }
-
-  /* Returns the proxPointer from the current TermInfo in the enumeration.
-    Initially invalid, valid after next() called for the first time.*/
-  final long proxPointer() {
-    return termInfo.proxPointer;
   }
 
   /** Closes the enumeration to further activity, freeing resources. */

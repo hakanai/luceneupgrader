@@ -27,7 +27,7 @@ final class FormatPostingsTermsWriter extends FormatPostingsTermsConsumer implem
   final TermInfosWriter termsOut;
   FieldInfo fieldInfo;
 
-  FormatPostingsTermsWriter(SegmentWriteState state, FormatPostingsFieldsWriter parent) throws IOException {
+  FormatPostingsTermsWriter(FormatPostingsFieldsWriter parent) throws IOException {
     this.parent = parent;
     termsOut = parent.termsOut;
     docsWriter = new FormatPostingsDocsWriter(this);

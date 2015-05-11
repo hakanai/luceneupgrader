@@ -264,7 +264,6 @@ public final class BitVector implements Cloneable, Bits {
         version = CodecUtil.checkHeader(input, CODEC, VERSION_START, VERSION_START);
         size = input.readInt();
       } else {
-        version = VERSION_PRE;
         size = firstInt;
       }
       if (size == -1) {

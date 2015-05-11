@@ -37,9 +37,7 @@ class CompoundFileReader extends Directory {
     long offset;
     long length;
   }
-    
-  // Base info
-  private Directory directory;
+
   private String fileName;
   
   private IndexInput stream;
@@ -51,7 +49,6 @@ class CompoundFileReader extends Directory {
   
   public CompoundFileReader(Directory dir, String name, int readBufferSize) throws IOException {
     assert !(dir instanceof CompoundFileReader) : "compound file inside of compound file: " + name;
-    directory = dir;
     fileName = name;
     this.readBufferSize = readBufferSize;
     

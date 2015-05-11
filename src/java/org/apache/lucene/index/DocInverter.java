@@ -77,11 +77,6 @@ final class DocInverter extends DocFieldConsumer {
   }
 
   @Override
-  public boolean freeRAM() {
-    return consumer.freeRAM();
-  }
-
-  @Override
   public DocFieldConsumerPerThread addThread(DocFieldProcessorPerThread docFieldProcessorPerThread) {
     return new DocInverterPerThread(docFieldProcessorPerThread, this);
   }

@@ -173,7 +173,6 @@ public final class PagedBytes {
       }
       currentBlock = new byte[blockSize];
       upto = 0;
-      left = blockSize;
       assert bytes.length <= blockSize;
       // TODO: we could also support variable block sizes
     }

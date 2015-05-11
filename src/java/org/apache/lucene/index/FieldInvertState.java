@@ -28,15 +28,11 @@ import org.apache.lucene.util.AttributeSource;
 public final class FieldInvertState {
   int position;
   int length;
-  int numOverlap;
   int offset;
   int maxTermFrequency;
   int uniqueTermCount;
   float boost;
   AttributeSource attributeSource;
-
-  public FieldInvertState() {
-  }
 
   /**
    * Get total number of terms in this field.
@@ -45,23 +41,4 @@ public final class FieldInvertState {
   public int getLength() {
     return length;
   }
-
-  /**
-   * Get the number of terms with <code>positionIncrement == 0</code>.
-   * @return the numOverlap
-   */
-  public int getNumOverlap() {
-    return numOverlap;
-  }
-
-  /**
-   * Get boost value. This is the cumulative product of
-   * document boost and field boost for all field instances
-   * sharing the same field name.
-   * @return the boost
-   */
-  public float getBoost() {
-    return boost;
-  }
-
 }

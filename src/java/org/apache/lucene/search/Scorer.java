@@ -38,27 +38,16 @@ import java.io.IOException;
  * with these scores.
  */
 public abstract class Scorer extends DocIdSetIterator {
-  private final Similarity similarity;
   protected final Weight weight;
 
   /**
    * Constructs a Scorer
-   * @param similarity The <code>Similarity</code> implementation used by this scorer.
    * @param weight The scorers <code>Weight</code>
    * @deprecated Use {@code #Scorer(Weight)} instead.
    */
   @Deprecated
-  protected Scorer(Similarity similarity, Weight weight) {
-    this.similarity = similarity;
+  protected Scorer(Weight weight) {
     this.weight = weight;
-  }
-
-  /** Returns the Similarity implementation used by this scorer. 
-   * @deprecated Store any Similarity you might need privately in your implementation instead.
-   */
-  @Deprecated
-  public Similarity getSimilarity() {
-    return this.similarity;
   }
 
   /** Returns number of matches for the current document.

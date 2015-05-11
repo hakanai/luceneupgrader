@@ -17,11 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.index.MergePolicy.MergeAbortedException;
@@ -31,6 +26,11 @@ import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.store.IndexOutput;
 import org.apache.lucene.util.IOUtils;
 import org.apache.lucene.util.ReaderUtil;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * The SegmentMerger class combines two or more Segments, represented by an IndexReader ({@code #add},
@@ -58,10 +58,7 @@ final class SegmentMerger {
 
   private SegmentWriteState segmentWriteState;
 
-  private final PayloadProcessorProvider payloadProcessorProvider;
-  
-  SegmentMerger(Directory dir, int termIndexInterval, String name, MergePolicy.OneMerge merge, PayloadProcessorProvider payloadProcessorProvider, FieldInfos fieldInfos) {
-    this.payloadProcessorProvider = payloadProcessorProvider;
+  SegmentMerger(Directory dir, int termIndexInterval, String name, MergePolicy.OneMerge merge, FieldInfos fieldInfos) {
     directory = dir;
     this.fieldInfos = fieldInfos;
     segment = name;
@@ -232,13 +229,13 @@ final class SegmentMerger {
       fieldsWriter.close();
     }
 
-    segmentWriteState = new SegmentWriteState(null, directory, segment, fieldInfos, docCount, termIndexInterval, null);
+    segmentWriteState = new SegmentWriteState(null, directory, segment, fieldInfos, docCount, termIndexInterval);
     return docCount;
   }
 
   private int copyFieldsWithDeletions(final FieldsWriter fieldsWriter, final IndexReader reader,
                                       final FieldsReader matchingFieldsReader)
-    throws IOException, CorruptIndexException {
+    throws IOException {
     int docCount = 0;
     final int maxDoc = reader.maxDoc();
     if (matchingFieldsReader != null) {
@@ -286,7 +283,7 @@ final class SegmentMerger {
 
   private int copyFieldsNoDeletions(final FieldsWriter fieldsWriter, final IndexReader reader,
                                     final FieldsReader matchingFieldsReader)
-    throws IOException, CorruptIndexException {
+    throws IOException {
     final int maxDoc = reader.maxDoc();
     int docCount = 0;
     if (matchingFieldsReader != null) {
@@ -447,9 +444,6 @@ final class SegmentMerger {
       IndexReader reader = readers.get(i);
       TermEnum termEnum = reader.terms();
       SegmentMergeInfo smi = new SegmentMergeInfo(base, termEnum, reader);
-      if (payloadProcessorProvider != null) {
-        smi.readerPayloadProcessor = payloadProcessorProvider.getReaderProcessor(reader);
-      }
       int[] docMap  = smi.getDocMap();
       if (docMap != null) {
         if (docMaps == null) {

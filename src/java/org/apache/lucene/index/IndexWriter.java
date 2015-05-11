@@ -18,7 +18,6 @@ package org.apache.lucene.index;
  */
 
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
-import org.apache.lucene.search.Similarity;
 import org.apache.lucene.store.*;
 import org.apache.lucene.util.Constants;
 import org.apache.lucene.util.ThreadInterruptedException;
@@ -157,14 +156,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class IndexWriter implements Closeable, TwoPhaseCommit {
 
-  /**
-   * Default value for the write lock timeout (1,000).
-   *
-   * @deprecated use {@code IndexWriterConfig#WRITE_LOCK_TIMEOUT} instead
-   */
-  @Deprecated
-  public static long WRITE_LOCK_TIMEOUT = IndexWriterConfig.WRITE_LOCK_TIMEOUT;
-
   private long writeLockTimeout;
 
   /**
@@ -194,9 +185,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   volatile private boolean hitOOM;
 
   private final Directory directory;  // where this index resides
-
-  // TODO 4.0: this should be made final once the setter is out
-  private /*final*/Similarity similarity = Similarity.getDefault(); // how to normalize
 
   private volatile long changeCount; // increments every time a change is completed
   private long lastCommitChangeCount; // last changeCount that was committed
@@ -255,9 +243,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   // to allow users to query an IndexWriter settings.
   private final IndexWriterConfig config;
 
-  // The PayloadProcessorProvider to use when segments are merged
-  private PayloadProcessorProvider payloadProcessorProvider;
-
   // for testing
   boolean anyNonBulkMerges;
 
@@ -302,7 +287,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
      * @return true if this release altered the index (eg
      * the SegmentReader had pending changes to del docs and
      * was closed).  Caller must call checkpoint() if so.
-     * @param sr
+     * @param sr ...
      * @throws IOException
      */
     public synchronized boolean release(SegmentReader sr) throws IOException {
@@ -315,7 +300,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
      * @return true if this release altered the index (eg
      * the SegmentReader had pending changes to del docs and
      * was closed).  Caller must call checkpoint() if so.
-     * @param sr
+     * @param sr ...
      * @throws IOException
      */
     public synchronized boolean release(SegmentReader sr, boolean drop) throws IOException {
@@ -442,8 +427,8 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
      * Obtain a SegmentReader from the readerPool.  The reader
      * must be returned by calling {@code #release(SegmentReader)}
      *
-     * @param info
-     * @param doOpenStores
+     * @param info ...
+     * @param doOpenStores ...
      * @throws IOException
      */
     public synchronized SegmentReader get(SegmentInfo info, boolean doOpenStores) throws IOException {
@@ -455,10 +440,10 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
      * must be returned by calling {@code #release(SegmentReader)}
      * 
      *
-     * @param info
-     * @param doOpenStores
-     * @param readBufferSize
-     * @param termsIndexDivisor
+     * @param info ...
+     * @param doOpenStores ...
+     * @param readBufferSize ...
+     * @param termsIndexDivisor ...
      * @throws IOException
      */
     public synchronized SegmentReader get(SegmentInfo info, boolean doOpenStores, int readBufferSize, int termsIndexDivisor) throws IOException {
@@ -590,7 +575,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     directory = d;
     infoStream = null;
     writeLockTimeout = conf.getWriteLockTimeout();
-    similarity = conf.getSimilarity();
     mergePolicy = conf.getMergePolicy();
     mergePolicy.setIndexWriter(this);
     mergeScheduler = conf.getMergeScheduler();
@@ -763,37 +747,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     return config;
   }
 
-  /**
-   * The maximum number of terms that will be indexed for a single field in a
-   * document. This limits the amount of memory required for indexing, so that
-   * collections with very large files will not crash the indexing process by
-   * running out of memory. This setting refers to the number of running terms,
-   * not to the number of different terms.
-   * <p/>
-   * <strong>Note:</strong> this silently truncates large documents, excluding
-   * from the index all terms that occur further in the document. If you know
-   * your source documents are large, be sure to set this value high enough to
-   * accomodate the expected size. If you set it to Integer.MAX_VALUE, then the
-   * only limit is your memory, but you should anticipate an OutOfMemoryError.
-   * <p/>
-   * By default, no more than {@code #DEFAULT_MAX_FIELD_LENGTH} terms will be
-   * indexed for a field.
-   * 
-   * @deprecated use {@code LimitTokenCountAnalyzer} instead. Note that the
-   *             behvaior slightly changed - the analyzer limits the number of
-   *             tokens per token stream created, while this setting limits the
-   *             total number of tokens to index. This only matters if you index
-   *             many multi-valued fields though.
-   */
-  @Deprecated
-  public void setMaxFieldLength(int maxFieldLength) {
-    ensureOpen();
-    this.maxFieldLength = maxFieldLength;
-    docWriter.setMaxFieldLength(maxFieldLength);
-    if (infoStream != null)
-      message("setMaxFieldLength " + maxFieldLength);
-  }
-
   /** If non-null, information about merges, deletes and a
    * message when maxFieldLength is reached will be printed
    * to this.
@@ -815,7 +768,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
             config.toString());
   }
 
-  /** Returns true if verbosing is enabled (i.e., infoStream != null). */
+  /** Returns true if verbose is enabled (i.e., infoStream != null). */
   public boolean verbose() {
     return infoStream != null;
   }
@@ -1747,10 +1700,10 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
         // tiny segments:
         if (flushControl.getFlushDeletes() ||
             (config.getRAMBufferSizeMB() != IndexWriterConfig.DISABLE_AUTO_FLUSH &&
-             bufferedDeletesStream.bytesUsed() > (1024*1024*config.getRAMBufferSizeMB()/2))) {
+             (long) 0 > (1024*1024*config.getRAMBufferSizeMB()/2))) {
           applyAllDeletes = true;
           if (infoStream != null) {
-            message("force apply deletes bytesUsed=" + bufferedDeletesStream.bytesUsed() + " vs ramBuffer=" + (1024*1024*config.getRAMBufferSizeMB()));
+            message("force apply deletes bytesUsed=" + (long) 0 + " vs ramBuffer=" + (1024*1024*config.getRAMBufferSizeMB()));
           }
         }
       }
@@ -1762,11 +1715,11 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
         
         flushDeletesCount.incrementAndGet();
         final BufferedDeletesStream.ApplyDeletesResult result = bufferedDeletesStream
-          .applyDeletes(readerPool, segmentInfos.asList());
+          .applyDeletes(segmentInfos.asList());
         if (result.anyDeletes) {
           checkpoint();
         }
-        if (!false && result.allDeleted != null) {
+        if (result.allDeleted != null) {
           if (infoStream != null) {
             message("drop 100% deleted segments: " + result.allDeleted);
           }
@@ -1786,10 +1739,10 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
         }
         bufferedDeletesStream.prune(segmentInfos);
 
-        assert !bufferedDeletesStream.any();
+        assert true;
         flushControl.clearDeletes();
       } else if (infoStream != null) {
-        message("don't apply deletes now delTermCount=" + bufferedDeletesStream.numTerms() + " bytesUsed=" + bufferedDeletesStream.bytesUsed());
+        message("don't apply deletes now delTermCount=" + 0 + " bytesUsed=" + (long) 0);
       }
       
 
@@ -1948,10 +1901,10 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     final boolean allDeleted = mergedReader.numDocs() == 0;
 
     if (infoStream != null && allDeleted) {
-      message("merged segment " + merge.info + " is 100% deleted" +  (false ? "" : "; skipping insert"));
+      message("merged segment " + merge.info + " is 100% deleted; skipping insert");
     }
 
-    final boolean dropSegment = allDeleted && !false;
+    final boolean dropSegment = allDeleted;
     segmentInfos.applyMergeChanges(merge, dropSegment);
     
     if (dropSegment) {
@@ -2185,13 +2138,13 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     merge.info = new SegmentInfo(newSegmentName(), 0, directory, false, true, false, hasVectors);
 
     // Lock order: IW -> BD
-    final BufferedDeletesStream.ApplyDeletesResult result = bufferedDeletesStream.applyDeletes(readerPool, merge.segments);
+    final BufferedDeletesStream.ApplyDeletesResult result = bufferedDeletesStream.applyDeletes(merge.segments);
 
     if (result.anyDeletes) {
       checkpoint();
     }
 
-    if (!false && result.allDeleted != null) {
+    if (result.allDeleted != null) {
       if (infoStream != null) {
         message("drop 100% deleted segments: " + result.allDeleted);
       }
@@ -2347,8 +2300,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     List<SegmentInfo> sourceSegments = merge.segments;
 
     SegmentMerger merger = new SegmentMerger(directory, config.getTermIndexInterval(), mergedName, merge,
-                                             payloadProcessorProvider,
-                                             ((FieldInfos) docWriter.getFieldInfos().clone()));
+            ((FieldInfos) docWriter.getFieldInfos().clone()));
 
     if (infoStream != null) {
       message("merging " + merge.segString(directory) + " mergeVectors=" + merge.info.getHasVectors());
@@ -2792,12 +2744,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     return true;
   }
 
-  synchronized boolean nrtIsCurrent(SegmentInfos infos) {
-    //System.out.println("IW.nrtIsCurrent " + (infos.version == segmentInfos.version && !docWriter.anyChanges() && !bufferedDeletesStream.any()));
-    ensureOpen();
-    return infos.version == segmentInfos.version && !docWriter.anyChanges() && !bufferedDeletesStream.any();
-  }
-
   synchronized boolean isClosed() {
     return closed;
   }
@@ -2812,14 +2758,11 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
     private boolean flushPending;
     private boolean flushDeletes;
-    private int delCount;
-    private int docCount;
-    private boolean flushing;
 
     private synchronized boolean setFlushPending(String reason, boolean doWait) {
-      if (flushPending || flushing) {
+      if (flushPending) {
         if (doWait) {
-          while(flushPending || flushing) {
+          while(flushPending) {
             try {
               wait();
             } catch (InterruptedException ie) {
@@ -2833,7 +2776,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
           message("now trigger flush reason=" + reason);
         }
         flushPending = true;
-        return flushPending;
+        return true;
       }
     }
 
@@ -2851,12 +2794,10 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
       }
       flushPending = false;
       flushDeletes = false;
-      docCount = 0;
       notifyAll();
     }
 
     public synchronized void clearDeletes() {
-      delCount = 0;
     }
 
   }

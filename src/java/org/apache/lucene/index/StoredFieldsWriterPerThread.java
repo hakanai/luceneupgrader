@@ -17,9 +17,10 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import org.apache.lucene.store.IndexOutput;
 import org.apache.lucene.document.Fieldable;
+import org.apache.lucene.store.IndexOutput;
+
+import java.io.IOException;
 
 final class StoredFieldsWriterPerThread {
 
@@ -32,17 +33,8 @@ final class StoredFieldsWriterPerThread {
   public StoredFieldsWriterPerThread(DocumentsWriter.DocState docState, StoredFieldsWriter storedFieldsWriter) throws IOException {
     this.storedFieldsWriter = storedFieldsWriter;
     this.docState = docState;
+    //noinspection RedundantCast
     localFieldsWriter = new FieldsWriter((IndexOutput) null, (IndexOutput) null, storedFieldsWriter.fieldInfos);
-  }
-
-  public void startDocument() {
-    if (doc != null) {
-      // Only happens if previous document hit non-aborting
-      // exception while writing stored fields into
-      // localFieldsWriter:
-      doc.reset();
-      doc.docID = docState.docID;
-    }
   }
 
   public void addField(Fieldable field, FieldInfo fieldInfo) throws IOException {

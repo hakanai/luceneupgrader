@@ -116,8 +116,4 @@ final class TermsHash extends InvertedDocConsumer {
       nextTermsHash.flush(nextThreadsAndFields, state);
   }
 
-  @Override
-  synchronized public boolean freeRAM() {
-    return false;
-  }
 }

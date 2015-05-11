@@ -61,7 +61,7 @@ public abstract class Searcher implements Searchable {
    */
   public Weight createNormalizedWeight(Query query) throws IOException {
     query = rewrite(query);
-    Weight weight = query.createWeight(this);
+    Weight weight = query.createWeight();
     float sum = weight.sumOfSquaredWeights();
     // this is a hack for backwards compatibility:
     float norm = query.getSimilarity(this).queryNorm(sum);

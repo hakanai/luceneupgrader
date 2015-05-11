@@ -97,7 +97,7 @@ public final class IndexUpgrader {
       printUsage();
     }
     
-    Directory dir = null;
+    Directory dir;
     if (dirImpl == null) {
       dir = FSDirectory.open(new File(path));
     } else {
@@ -133,23 +133,23 @@ public final class IndexUpgrader {
     this.infoStream = infoStream;
     this.deletePriorCommits = deletePriorCommits;
   }
-  
+
   public void upgrade() throws IOException {
     if (!IndexReader.indexExists(dir)) {
       throw new IndexNotFoundException(dir.toString());
     }
-  
+
     if (!deletePriorCommits) {
       final Collection<IndexCommit> commits = IndexReader.listCommits(dir);
       if (commits.size() > 1) {
         throw new IllegalArgumentException("This tool was invoked to not delete prior commit points, but the following commits were found: " + commits);
       }
     }
-    
+
     final IndexWriterConfig c = (IndexWriterConfig) iwc.clone();
     c.setMergePolicy(new UpgradeIndexMergePolicy(c.getMergePolicy()));
     c.setIndexDeletionPolicy(new KeepOnlyLastCommitDeletionPolicy());
-    
+
     final IndexWriter w = new IndexWriter(dir, c);
     try {
       w.setInfoStream(infoStream);
@@ -160,5 +160,5 @@ public final class IndexUpgrader {
       w.close();
     }
   }
-  
+
 }

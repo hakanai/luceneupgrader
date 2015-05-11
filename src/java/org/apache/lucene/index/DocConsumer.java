@@ -23,5 +23,4 @@ import java.util.Collection;
 abstract class DocConsumer {
   abstract void flush(final Collection<DocConsumerPerThread> threads, final SegmentWriteState state) throws IOException;
   abstract void abort();
-  abstract boolean freeRAM();
 }

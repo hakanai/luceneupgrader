@@ -151,17 +151,6 @@ public final class IndexFileNames {
     TERMS_INDEX_EXTENSION,
     NORMS_EXTENSION
   };
-  
-  /** File extensions of old-style index files */
-  public static final String COMPOUND_EXTENSIONS[] = new String[] {
-    FIELD_INFOS_EXTENSION,
-    FREQ_EXTENSION,
-    PROX_EXTENSION,
-    FIELDS_INDEX_EXTENSION,
-    FIELDS_EXTENSION,
-    TERMS_INDEX_EXTENSION,
-    TERMS_EXTENSION
-  };
 
   /**
    * Computes the full file name from base, extension and generation. If the

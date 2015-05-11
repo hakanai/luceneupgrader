@@ -186,7 +186,6 @@ public final class RamUsageEstimator {
         final Field baseField = DummyOneFieldObject.class.getDeclaredField("base");
         objectHeader = ((Number) objectFieldOffsetM.invoke(theUnsafe, baseField)).intValue();
         supportedFeatures.add(JvmFeature.FIELD_OFFSETS);
-        tempObjectFieldOffsetMethod = objectFieldOffsetM;
       }
     } catch (Exception e) {
       // Ignore.

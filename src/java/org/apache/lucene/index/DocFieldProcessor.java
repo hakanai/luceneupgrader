@@ -76,9 +76,4 @@ final class DocFieldProcessor extends DocConsumer {
     }
   }
 
-  @Override
-  public boolean freeRAM() {
-    return consumer.freeRAM();
-  }
-
 }

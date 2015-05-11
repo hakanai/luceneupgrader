@@ -406,9 +406,9 @@ class TermVectorsReader implements Cloneable, Closeable {
       storeOffsets = false;
     }
     mapper.setExpectations(field, numTerms, storeOffsets, storePositions);
-    int start = 0;
-    int deltaLength = 0;
-    int totalLength = 0;
+    int start;
+    int deltaLength;
+    int totalLength;
     byte[] byteBuffer;
     char[] charBuffer;
     final boolean preUTF8 = format < FORMAT_UTF8_LENGTH_IN_BYTES;

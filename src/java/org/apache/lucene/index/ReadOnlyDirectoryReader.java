@@ -31,11 +31,7 @@ class ReadOnlyDirectoryReader extends DirectoryReader {
                           int termInfosIndexDivisor) throws IOException {
     super(directory, infos, oldReaders, oldStarts, oldNormsCache, true, doClone, termInfosIndexDivisor);
   }
-  
-  ReadOnlyDirectoryReader(IndexWriter writer, SegmentInfos infos, int termInfosIndexDivisor, boolean applyAllDeletes) throws IOException {
-    super(writer, infos, termInfosIndexDivisor, applyAllDeletes);
-  }
-  
+
   @Override
   protected void acquireWriteLock() {
     ReadOnlySegmentReader.noWrite();

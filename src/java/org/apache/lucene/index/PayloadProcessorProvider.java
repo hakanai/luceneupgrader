@@ -19,8 +19,6 @@ package org.apache.lucene.index;
 
 import java.io.IOException;
 
-import org.apache.lucene.store.Directory;
-
 /**
  * Provides a {@code ReaderPayloadProcessor} to be used for a {@code Directory}.
  * This allows using different {@code ReaderPayloadProcessor}s for different
@@ -59,12 +57,6 @@ public abstract class PayloadProcessorProvider {
   }
 
   /**
-   * @deprecated Use {@code ReaderPayloadProcessor} instead.
-   */
-  @Deprecated
-  public static abstract class DirPayloadProcessor extends ReaderPayloadProcessor {}
-
-  /**
    * Processes the given payload. One should call {@code #payloadLength()} to
    * get the length of the processed payload.
    * 
@@ -85,26 +77,4 @@ public abstract class PayloadProcessorProvider {
 
   }
 
-  /**
-   * Returns a {@code ReaderPayloadProcessor} for the given {@code Directory},
-   * through which {@code PayloadProcessor}s can be obtained for each
-   * {@code Term}, or <code>null</code> if none should be used.
-   * You should override this method, not {@code #getDirProcessor}.
-   */
-  public ReaderPayloadProcessor getReaderProcessor(IndexReader reader) throws IOException {
-    return this.getDirProcessor(reader.directory());
-  }
-
-  /**
-   * Returns a {@code DirPayloadProcessor} for the given {@code Directory},
-   * through which {@code PayloadProcessor}s can be obtained for each
-   * {@code Term}, or <code>null</code> if none should be used.
-   * @deprecated Use {@code #getReaderProcessor} instead. You can still select by {@code Directory},
-   * if you retrieve the underlying directory from {@code IndexReader#directory()}.
-   */
-  @Deprecated
-  public DirPayloadProcessor getDirProcessor(Directory dir) throws IOException {
-    throw new UnsupportedOperationException("You must either implement getReaderProcessor() or getDirProcessor().");
-  }
-  
 }

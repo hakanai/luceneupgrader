@@ -86,15 +86,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
   private final Set<ReaderClosedListener> readerClosedListeners = 
       Collections.synchronizedSet(new LinkedHashSet<ReaderClosedListener>());
 
-  /** Expert: adds a {@code ReaderClosedListener}.  The
-   * provided listener will be invoked when this reader is closed.
-   *
-   * @lucene.experimental */
-  public final void addReaderClosedListener(ReaderClosedListener listener) {
-    ensureOpen();
-    readerClosedListeners.add(listener);
-  }
-
   private void notifyReaderClosedListeners() {
     synchronized(readerClosedListeners) {
       for(ReaderClosedListener listener : readerClosedListeners) {
@@ -730,13 +721,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
   public IndexReader[] getSequentialSubReaders() {
     ensureOpen();
     return null;
-  }
-
-  /** Expert */
-  public Object getCoreCacheKey() {
-    // Don't can ensureOpen since FC calls this (to evict)
-    // on close
-    return this;
   }
 
 }

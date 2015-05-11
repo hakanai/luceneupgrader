@@ -19,10 +19,8 @@ package org.apache.lucene.index;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.search.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMFile;
-import org.apache.lucene.util.BitVector;
 import org.apache.lucene.util.RamUsageEstimator;
 
 import java.io.IOException;
@@ -116,11 +114,7 @@ final class DocumentsWriter {
 
   PrintStream infoStream;
   int maxFieldLength = IndexWriter.DEFAULT_MAX_FIELD_LENGTH;
-  Similarity similarity;
 
-  // Deletes for our still-in-RAM (to be flushed next) segment
-  private BufferedDeletes pendingDeletes = new BufferedDeletes();
-  
   static class DocState {
     DocumentsWriter docWriter;
     Analyzer analyzer;
@@ -242,8 +236,6 @@ final class DocumentsWriter {
   // How much RAM we can use before flushing.  This is 0 if
   // we are flushing by doc count instead.
 
-  private final IndexWriterConfig config;
-
   private final FieldInfos fieldInfos;
 
   private final BufferedDeletesStream bufferedDeletesStream;
@@ -251,12 +243,10 @@ final class DocumentsWriter {
   DocumentsWriter(IndexWriterConfig config, Directory directory, IndexWriter writer, FieldInfos fieldInfos, BufferedDeletesStream bufferedDeletesStream) throws IOException {
     this.directory = directory;
     this.writer = writer;
-    this.similarity = config.getSimilarity();
     this.fieldInfos = fieldInfos;
     this.bufferedDeletesStream = bufferedDeletesStream;
 
     consumer = config.getIndexingChain().getChain(this);
-    this.config = config;
   }
 
   public FieldInfos getFieldInfos() {
@@ -271,10 +261,6 @@ final class DocumentsWriter {
 
   synchronized void setMaxFieldLength(int maxFieldLength) {
     this.maxFieldLength = maxFieldLength;
-  }
-
-  synchronized void setSimilarity(Similarity similarity) {
-    this.similarity = similarity;
   }
 
   /** Get current segment name we are writing. */
@@ -324,8 +310,6 @@ final class DocumentsWriter {
         assert 0 == waitQueue.numWaiting: "waitQueue.numWaiting=" + waitQueue.numWaiting;
         waitQueue.waitingBytes = 0;
         
-        pendingDeletes.clear();
-
         try {
           consumer.abort();
         } catch (Throwable ignored) {
@@ -361,36 +345,10 @@ final class DocumentsWriter {
     return true;
   }
 
-  synchronized boolean anyChanges() {
-    return numDocs != 0 || pendingDeletes.any();
-  }
-
-  private void pushDeletes(SegmentInfo newSegment, SegmentInfos segmentInfos) {
+  private void pushDeletes(SegmentInfo newSegment) {
     // Lock order: DW -> BD
     final long delGen = bufferedDeletesStream.getNextGen();
-    if (pendingDeletes.any()) {
-      if (segmentInfos.size() > 0 || newSegment != null) {
-        final FrozenBufferedDeletes packet = new FrozenBufferedDeletes(pendingDeletes, delGen);
-        if (infoStream != null) {
-          message("flush: push buffered deletes startSize=" + pendingDeletes.bytesUsed.get() + " frozenSize=" + packet.bytesUsed);
-        }
-        bufferedDeletesStream.push(packet);
-        if (infoStream != null) {
-          message("flush: delGen=" + packet.gen);
-        }
-        if (newSegment != null) {
-          newSegment.setBufferedDeletesGen(packet.gen);
-        }
-      } else {
-        if (infoStream != null) {
-          message("flush: drop buffered deletes: no segments");
-        }
-        // We can safely discard these deletes: since
-        // there are no segments, the deletions cannot
-        // affect anything.
-      }
-      pendingDeletes.clear();
-    } else if (newSegment != null) {
+    if (newSegment != null) {
       newSegment.setBufferedDeletesGen(delGen);
     }
   }
@@ -412,7 +370,7 @@ final class DocumentsWriter {
         message("flush: no docs; skipping");
       }
       // Lock order: IW -> DW -> BD
-      pushDeletes(null, segmentInfos);
+      pushDeletes(null);
       return null;
     }
 
@@ -438,19 +396,8 @@ final class DocumentsWriter {
       }
 
       final SegmentWriteState flushState = new SegmentWriteState(infoStream, directory, segment, fieldInfos,
-                                                                 numDocs, writer.getConfig().getTermIndexInterval(),
-                                                                 pendingDeletes);
-      // Apply delete-by-docID now (delete-byDocID only
-      // happens when an exception is hit processing that
-      // doc, eg if analyzer has some problem w/ the text):
-      if (pendingDeletes.docIDs.size() > 0) {
-        flushState.deletedDocs = new BitVector(numDocs);
-        for(int delDocID : pendingDeletes.docIDs) {
-          flushState.deletedDocs.set(delDocID);
-        }
-        pendingDeletes.bytesUsed.addAndGet(-pendingDeletes.docIDs.size() * BufferedDeletes.BYTES_PER_DEL_DOCID);
-        pendingDeletes.docIDs.clear();
-      }
+                                                                 numDocs, writer.getConfig().getTermIndexInterval()
+      );
 
       newSegment = new SegmentInfo(segment, numDocs, directory, false, true, fieldInfos.hasProx(), false);
 
@@ -543,7 +490,7 @@ final class DocumentsWriter {
     doAfterFlush();
 
     // Lock order: IW -> DW -> BD
-    pushDeletes(newSegment, segmentInfos);
+    pushDeletes(newSegment);
     if (infoStream != null) {
       message("flush time " + (System.currentTimeMillis()-startTime) + " msec");
     }
@@ -640,7 +587,7 @@ final class DocumentsWriter {
   }
 
   long bytesUsed() {
-    return bytesUsed.get() + pendingDeletes.bytesUsed.get();
+    return bytesUsed.get();
   }
 
   /* Return int[]s to the pool */
@@ -666,151 +613,11 @@ final class DocumentsWriter {
 
   private ArrayList<char[]> freeCharBlocks = new ArrayList<char[]>();
 
-  /* Allocate another char[] from the shared pool */
-  synchronized char[] getCharBlock() {
-    final int size = freeCharBlocks.size();
-    final char[] c;
-    if (0 == size) {
-      bytesUsed.addAndGet(CHAR_BLOCK_SIZE * RamUsageEstimator.NUM_BYTES_CHAR);
-      c = new char[CHAR_BLOCK_SIZE];
-    } else
-      c = freeCharBlocks.remove(size-1);
-    // We always track allocations of char blocks, for now,
-    // because nothing that skips allocation tracking
-    // (currently only term vectors) uses its own char
-    // blocks.
-    return c;
-  }
-
   /* Return char[]s to the pool */
   synchronized void recycleCharBlocks(char[][] blocks, int numBlocks) {
     for(int i=0;i<numBlocks;i++) {
       freeCharBlocks.add(blocks[i]);
       blocks[i] = null;
-    }
-  }
-
-  String toMB(long v) {
-    return nf.format(v/1024./1024.);
-  }
-
-  /* We have four pools of RAM: Postings, byte blocks
-   * (holds freq/prox posting data), char blocks (holds
-   * characters in the term) and per-doc buffers (stored fields/term vectors).  
-   * Different docs require varying amount of storage from 
-   * these four classes.
-   * 
-   * For example, docs with many unique single-occurrence
-   * short terms will use up the Postings RAM and hardly any
-   * of the other two.  Whereas docs with very large terms
-   * will use alot of char blocks RAM and relatively less of
-   * the other two.  This method just frees allocations from
-   * the pools once we are over-budget, which balances the
-   * pools to match the current docs. */
-  void balanceRAM() {
-
-    final boolean doBalance;
-    final long deletesRAMUsed;
-
-    deletesRAMUsed = bufferedDeletesStream.bytesUsed();
-
-    final long ramBufferSize;
-    final double mb = config.getRAMBufferSizeMB();
-    if (mb == IndexWriterConfig.DISABLE_AUTO_FLUSH) {
-      ramBufferSize = IndexWriterConfig.DISABLE_AUTO_FLUSH;
-    } else {
-      ramBufferSize = (long) (mb*1024*1024);
-    }
-
-    synchronized(this) {
-      if (ramBufferSize == IndexWriterConfig.DISABLE_AUTO_FLUSH || bufferIsFull) {
-        return;
-      }
-    
-      doBalance = bytesUsed() + deletesRAMUsed >= ramBufferSize;
-    }
-
-    if (doBalance) {
-
-      if (infoStream != null) {
-        message("  RAM: balance allocations: usedMB=" + toMB(bytesUsed()) +
-                " vs trigger=" + toMB(ramBufferSize) +
-                " deletesMB=" + toMB(deletesRAMUsed) +
-                " byteBlockFree=" + toMB(byteBlockAllocator.freeByteBlocks.size()*BYTE_BLOCK_SIZE) +
-                " perDocFree=" + toMB(perDocAllocator.freeByteBlocks.size()*PER_DOC_BLOCK_SIZE) +
-                " charBlockFree=" + toMB(freeCharBlocks.size()*CHAR_BLOCK_SIZE*RamUsageEstimator.NUM_BYTES_CHAR));
-      }
-
-      final long startBytesUsed = bytesUsed() + deletesRAMUsed;
-
-      int iter = 0;
-
-      // We free equally from each pool in 32 KB
-      // chunks until we are below our threshold
-      // (freeLevel)
-
-      boolean any = true;
-
-      final long freeLevel = (long) (0.95 * ramBufferSize);
-
-      while(bytesUsed()+deletesRAMUsed > freeLevel) {
-      
-        synchronized(this) {
-          if (0 == perDocAllocator.freeByteBlocks.size() 
-              && 0 == byteBlockAllocator.freeByteBlocks.size() 
-              && 0 == freeCharBlocks.size() 
-              && 0 == freeIntBlocks.size() 
-              && !any) {
-            // Nothing else to free -- must flush now.
-            bufferIsFull = bytesUsed()+deletesRAMUsed > ramBufferSize;
-            if (infoStream != null) {
-              if (bytesUsed()+deletesRAMUsed > ramBufferSize) {
-                message("    nothing to free; set bufferIsFull");
-              } else {
-                message("    nothing to free");
-              }
-            }
-            break;
-          }
-
-          if ((0 == iter % 5) && byteBlockAllocator.freeByteBlocks.size() > 0) {
-            byteBlockAllocator.freeByteBlocks.remove(byteBlockAllocator.freeByteBlocks.size()-1);
-            bytesUsed.addAndGet(-BYTE_BLOCK_SIZE);
-          }
-
-          if ((1 == iter % 5) && freeCharBlocks.size() > 0) {
-            freeCharBlocks.remove(freeCharBlocks.size()-1);
-            bytesUsed.addAndGet(-CHAR_BLOCK_SIZE * RamUsageEstimator.NUM_BYTES_CHAR);
-          }
-
-          if ((2 == iter % 5) && freeIntBlocks.size() > 0) {
-            freeIntBlocks.remove(freeIntBlocks.size()-1);
-            bytesUsed.addAndGet(-INT_BLOCK_SIZE * RamUsageEstimator.NUM_BYTES_INT);
-          }
-
-          if ((3 == iter % 5) && perDocAllocator.freeByteBlocks.size() > 0) {
-            // Remove upwards of 32 blocks (each block is 1K)
-            for (int i = 0; i < 32; ++i) {
-              perDocAllocator.freeByteBlocks.remove(perDocAllocator.freeByteBlocks.size() - 1);
-              bytesUsed.addAndGet(-PER_DOC_BLOCK_SIZE);
-              if (perDocAllocator.freeByteBlocks.size() == 0) {
-                break;
-              }
-            }
-          }
-        }
-
-        if ((4 == iter % 5) && any) {
-          // Ask consumer to free any recycled state
-          any = consumer.freeRAM();
-        }
-
-        iter++;
-      }
-
-      if (infoStream != null) {
-        message("    after free: freedMB=" + nf.format((startBytesUsed-bytesUsed()-deletesRAMUsed)/1024./1024.) + " usedMB=" + nf.format((bytesUsed()+deletesRAMUsed)/1024./1024.));
-      }
     }
   }
 

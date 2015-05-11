@@ -181,7 +181,7 @@ public abstract class AttributeImpl implements Cloneable, Serializable, Attribut
    */
   @Override
   public Object clone() {
-    Object clone = null;
+    Object clone;
     try {
       clone = super.clone();
     } catch (CloneNotSupportedException e) {

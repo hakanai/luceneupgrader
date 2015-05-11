@@ -608,7 +608,6 @@ final class IndexFileDeleter {
     long version;
     long generation;
     final Map<String,String> userData;
-    private final int segmentCount;
 
     public CommitPoint(Collection<CommitPoint> commitsToDelete, Directory directory, SegmentInfos segmentInfos) throws IOException {
       this.directory = directory;
@@ -618,7 +617,6 @@ final class IndexFileDeleter {
       version = segmentInfos.getVersion();
       generation = segmentInfos.getGeneration();
       files = Collections.unmodifiableCollection(segmentInfos.files(directory, true));
-      segmentCount = segmentInfos.size();
     }
 
     @Override

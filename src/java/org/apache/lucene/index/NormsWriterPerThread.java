@@ -35,8 +35,6 @@ final class NormsWriterPerThread extends InvertedDocEndConsumerPerThread {
   void abort() {}
 
   @Override
-  void startDocument() {}
-  @Override
   void finishDocument() {}
 
   boolean freeRAM() {

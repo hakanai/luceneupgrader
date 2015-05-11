@@ -17,11 +17,11 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.store.IndexOutput;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Byte[] referencing is used because a new norm object needs 
@@ -170,11 +170,6 @@ final class SegmentNorms implements Cloneable {
     }
 
     return bytes;
-  }
-
-  // Only for testing
-  AtomicInteger bytesRef() {
-    return bytesRef;
   }
 
   // Called if we intend to change a norm value.  We make a

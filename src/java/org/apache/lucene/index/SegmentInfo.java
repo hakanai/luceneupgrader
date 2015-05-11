@@ -153,10 +153,6 @@ public final class SegmentInfo implements Cloneable {
     this.diagnostics = diagnostics;
   }
 
-  public Map<String, String> getDiagnostics() {
-    return diagnostics;
-  }
-
   /**
    * Construct a new SegmentInfo instance by reading a
    * previously saved SegmentInfo from input.
@@ -564,32 +560,11 @@ public final class SegmentInfo implements Cloneable {
   public boolean getDocStoreIsCompoundFile() {
     return docStoreIsCompoundFile;
   }
-  
-  void setDocStoreIsCompoundFile(boolean v) {
-    docStoreIsCompoundFile = v;
-    clearFiles();
-  }
-  
+
   public String getDocStoreSegment() {
     return docStoreSegment;
   }
-  
-  public void setDocStoreSegment(String segment) {
-    docStoreSegment = segment;
-  }
-  
-  void setDocStoreOffset(int offset) {
-    docStoreOffset = offset;
-    clearFiles();
-  }
 
-  void setDocStore(int offset, String segment, boolean isCompoundFile) {        
-    docStoreOffset = offset;
-    docStoreSegment = segment;
-    docStoreIsCompoundFile = isCompoundFile;
-    clearFiles();
-  }
-  
   /**
    * Save this segment's info.
    */
@@ -626,10 +601,6 @@ public final class SegmentInfo implements Cloneable {
   void setHasProx(boolean hasProx) {
     this.hasProx = hasProx;
     clearFiles();
-  }
-
-  public boolean getHasProx() {
-    return hasProx;
   }
 
   private void addIfExists(Set<String> files, String fileName) throws IOException {
