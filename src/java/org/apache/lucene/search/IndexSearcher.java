@@ -208,7 +208,6 @@ public class IndexSearcher extends Searcher {
    *          if non-null, used to permit documents to be collected.
    * @param collector
    *          to receive hits
-   * @throws BooleanQuery.TooManyClauses
    */
   @Override
   public void search(Weight weight, Filter filter, Collector collector)
@@ -230,7 +229,6 @@ public class IndexSearcher extends Searcher {
   }
 
   /** Expert: called to re-write queries into primitive queries.
-   * @throws BooleanQuery.TooManyClauses
    */
   @Override
   public Query rewrite(Query original) throws IOException {

@@ -43,7 +43,7 @@ public final class Term implements Comparable<Term>, java.io.Serializable {
    * This serves two purposes: 1) reuse of a Term with the same field.
    * 2) pattern for a query.
    * 
-   * @param fld
+   * @param fld ...
    */
   public Term(String fld) {
     this(fld, "", true);

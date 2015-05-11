@@ -23,7 +23,6 @@ import org.apache.lucene.util.CloseableThreadLocal;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
-import java.lang.reflect.Modifier;
 
 /** An Analyzer builds TokenStreams, which analyze text.  It thus represents a
  *  policy for extracting index terms from text.
@@ -37,29 +36,6 @@ import java.lang.reflect.Modifier;
  * when Java assertions are enabled.
  */
 public abstract class Analyzer implements Closeable {
-
-  protected Analyzer() {
-    super();
-    assert assertFinal();
-  }
-  
-  private boolean assertFinal() {
-    try {
-      final Class<?> clazz = getClass();
-      if (!clazz.desiredAssertionStatus())
-        return true;
-      assert clazz.isAnonymousClass() ||
-        (clazz.getModifiers() & (Modifier.FINAL | Modifier.PRIVATE)) != 0 ||
-        (
-          Modifier.isFinal(clazz.getMethod("tokenStream", String.class, Reader.class).getModifiers()) &&
-          Modifier.isFinal(clazz.getMethod("reusableTokenStream", String.class, Reader.class).getModifiers())
-        ) :
-        "Analyzer implementation classes or at least their tokenStream() and reusableTokenStream() implementations must be final";
-      return true;
-    } catch (NoSuchMethodException nsme) {
-      return false;
-    }
-  }
 
   /** Creates a TokenStream which tokenizes all the text in the provided
    * Reader.  Must be able to handle null field name for

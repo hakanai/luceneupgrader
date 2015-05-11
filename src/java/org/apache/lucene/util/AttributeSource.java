@@ -356,23 +356,4 @@ public class AttributeSource {
     return sb.append(')').toString();
   }
 
-  /**
-   * Copies the contents of this {@code AttributeSource} to the given target {@code AttributeSource}.
-   * The given instance has to provide all {@code Attribute}s this instance contains.
-   * The actual attribute implementations must be identical in both {@code AttributeSource} instances;
-   * ideally both AttributeSource instances should use the same {@code AttributeFactory}.
-   * You can use this method as a replacement for {@code #restoreState}, if you use
-   * {@code #cloneAttributes} instead of {@code #captureState}.
-   */
-  public final void copyTo(AttributeSource target) {
-    for (State state = getCurrentState(); state != null; state = state.next) {
-      final AttributeImpl targetImpl = target.attributeImpls.get(state.attribute.getClass());
-      if (targetImpl == null) {
-        throw new IllegalArgumentException("This AttributeSource contains AttributeImpl of type " +
-          state.attribute.getClass().getName() + " that is not in the target");
-      }
-      state.attribute.copyTo(targetImpl);
-    }
-  }
-
 }

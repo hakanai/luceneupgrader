@@ -66,7 +66,6 @@ public interface Searchable extends Closeable {
    *          if non-null, used to permit documents to be collected.
    * @param collector
    *          to receive hits
-   * @throws BooleanQuery.TooManyClauses
    */
   void search(Weight weight, Filter filter, Collector collector) throws IOException;
 
@@ -121,7 +120,6 @@ public interface Searchable extends Closeable {
   Document doc(int n, FieldSelector fieldSelector) throws IOException;
   
   /** Expert: called to re-write queries into primitive queries.
-   * @throws BooleanQuery.TooManyClauses
    */
   Query rewrite(Query query) throws IOException;
 

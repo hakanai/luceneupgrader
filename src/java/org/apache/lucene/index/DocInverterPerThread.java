@@ -19,10 +19,6 @@ package org.apache.lucene.index;
 
 import java.io.IOException;
 
-import org.apache.lucene.util.AttributeSource;
-import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-
 /** This is a DocFieldConsumer that inverts each field,
  *  separately, from a Document, and accepts a
  *  InvertedTermsConsumer to process those terms. */
@@ -31,41 +27,16 @@ final class DocInverterPerThread extends DocFieldConsumerPerThread {
   final DocInverter docInverter;
   final InvertedDocConsumerPerThread consumer;
   final InvertedDocEndConsumerPerThread endConsumer;
-  final SingleTokenAttributeSource singleToken = new SingleTokenAttributeSource();
-  
-  static class SingleTokenAttributeSource extends AttributeSource {
-    final CharTermAttribute termAttribute;
-    final OffsetAttribute offsetAttribute;
-    
-    private SingleTokenAttributeSource() {
-      termAttribute = addAttribute(CharTermAttribute.class);
-      offsetAttribute = addAttribute(OffsetAttribute.class);
-    }
-    
-    public void reinit(String stringValue, int startOffset,  int endOffset) {
-      termAttribute.setEmpty().append(stringValue);
-      offsetAttribute.setOffset(startOffset, endOffset);
-    }
-  }
-  
+
   final DocumentsWriter.DocState docState;
 
   final FieldInvertState fieldState = new FieldInvertState();
-
-  // Used to read a string value for a field
-  final ReusableStringReader stringReader = new ReusableStringReader();
 
   public DocInverterPerThread(DocFieldProcessorPerThread docFieldProcessorPerThread, DocInverter docInverter) {
     this.docInverter = docInverter;
     docState = docFieldProcessorPerThread.docState;
     consumer = docInverter.consumer.addThread(this);
     endConsumer = docInverter.endConsumer.addThread(this);
-  }
-
-  @Override
-  public void startDocument() throws IOException {
-    consumer.startDocument();
-    endConsumer.startDocument();
   }
 
   @Override

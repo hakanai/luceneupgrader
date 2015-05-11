@@ -75,17 +75,4 @@ public interface CharTermAttribute extends Attribute, CharSequence, Appendable {
    */
   CharTermAttribute append(String s);
 
-  /** Appends the specified {@code StringBuilder} to this character sequence. 
-   * <p>The characters of the {@code StringBuilder} argument are appended, in order, increasing the length of
-   * this sequence by the length of the argument. If argument is {@code null}, then the four
-   * characters {@code "null"} are appended. 
-   */
-  CharTermAttribute append(StringBuilder sb);
-
-  /** Appends the contents of the other {@code CharTermAttribute} to this character sequence. 
-   * <p>The characters of the {@code CharTermAttribute} argument are appended, in order, increasing the length of
-   * this sequence by the length of the argument. If argument is {@code null}, then the four
-   * characters {@code "null"} are appended. 
-   */
-  CharTermAttribute append(CharTermAttribute termAtt);
 }

@@ -17,8 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 /** Used by DocumentsWriter to maintain per-thread state.
  *  We keep a separate Posting hash and other state for each
  *  thread and then merge postings hashes from all threads
@@ -27,20 +25,10 @@ final class DocumentsWriterThreadState {
 
   boolean isIdle = true;                          // false if this is currently in use by a thread
   int numThreads = 1;                             // Number of threads that share this instance
-  final DocConsumerPerThread consumer;
-  final DocumentsWriter.DocState docState;
+  DocConsumerPerThread consumer;
+  DocumentsWriter.DocState docState;
 
-  final DocumentsWriter docWriter;
-
-  public DocumentsWriterThreadState(DocumentsWriter docWriter) throws IOException {
-    this.docWriter = docWriter;
-    docState = new DocumentsWriter.DocState();
-    docState.maxFieldLength = docWriter.maxFieldLength;
-    docState.infoStream = docWriter.infoStream;
-    docState.similarity = docWriter.similarity;
-    docState.docWriter = docWriter;
-    consumer = docWriter.consumer.addThread(this);
-  }
+  DocumentsWriter docWriter;
 
   void doAfterFlush() {
     numThreads = 0;

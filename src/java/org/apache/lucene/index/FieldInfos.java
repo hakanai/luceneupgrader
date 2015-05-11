@@ -17,8 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.IndexInput;
@@ -26,7 +24,9 @@ import org.apache.lucene.store.IndexOutput;
 import org.apache.lucene.util.StringHelper;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /** 
  * Collection of {@code FieldInfo}s (accessible by number or by name).
@@ -119,15 +119,6 @@ public final class FieldInfos implements Iterable<FieldInfo> {
     return fis;
   }
 
-  /** Adds field info for a Document. */
-  synchronized public void add(Document doc) {
-    List<Fieldable> fields = doc.getFields();
-    for (Fieldable field : fields) {
-      add(field.name(), field.isIndexed(), field.isTermVectorStored(),
-          field.getOmitNorms(), false, field.getIndexOptions());
-    }
-  }
-
   /** Returns true if any fields do not omitTermFreqAndPositions */
   public boolean hasProx() {
     final int numFields = byNumber.size();
@@ -139,45 +130,7 @@ public final class FieldInfos implements Iterable<FieldInfo> {
     }
     return false;
   }
-  
-  /**
-   * Calls 5 parameter add with false for all TermVector parameters.
-   * 
-   * @param name The name of the Fieldable
-   * @param isIndexed true if the field is indexed
-   *
-   */
-  synchronized public void add(String name, boolean isIndexed) {
-    add(name, isIndexed, false, false);
-  }
 
-  /**
-   * Calls 5 parameter add with false for term vector positions and offsets.
-   * 
-   * @param name The name of the field
-   * @param isIndexed  true if the field is indexed
-   * @param storeTermVector true if the term vector should be stored
-   */
-  synchronized public void add(String name, boolean isIndexed, boolean storeTermVector){
-    add(name, isIndexed, storeTermVector, false);
-  }
-  
-  /** If the field is not yet known, adds it. If it is known, checks to make
-   *  sure that the isIndexed flag is the same as was given previously for this
-   *  field. If not - marks it as being indexed.  Same goes for the TermVector
-   * parameters.
-   *
-   * @param name The name of the field
-   * @param isIndexed true if the field is indexed
-   * @param storeTermVector true if the term vector should be stored
-   * @param omitNorms true if the norms for the indexed field should be omitted
-   */
-  synchronized public void add(String name, boolean isIndexed, boolean storeTermVector,
-                               boolean omitNorms) {
-    add(name, isIndexed, storeTermVector,
-        omitNorms, false, IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);
-  }
-  
   /** If the field is not yet known, adds it. If it is known, checks to make
    *  sure that the isIndexed flag is the same as was given previously for this
    *  field. If not - marks it as being indexed.  Same goes for the TermVector

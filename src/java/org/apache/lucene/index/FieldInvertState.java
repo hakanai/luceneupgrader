@@ -38,14 +38,6 @@ public final class FieldInvertState {
   public FieldInvertState() {
   }
 
-  public FieldInvertState(int position, int length, int numOverlap, int offset, float boost) {
-    this.position = position;
-    this.length = length;
-    this.numOverlap = numOverlap;
-    this.offset = offset;
-    this.boost = boost;
-  }
-
   /**
    * Re-initialize the state, using this boost value.
    * @param docBoost boost value to use.
@@ -62,14 +54,6 @@ public final class FieldInvertState {
   }
 
   /**
-   * Get the last processed term position.
-   * @return the position
-   */
-  public int getPosition() {
-    return position;
-  }
-
-  /**
    * Get total number of terms in this field.
    * @return the length
    */
@@ -77,24 +61,12 @@ public final class FieldInvertState {
     return length;
   }
 
-  public void setLength(int length) {
-    this.length = length;
-  }
-  
   /**
    * Get the number of terms with <code>positionIncrement == 0</code>.
    * @return the numOverlap
    */
   public int getNumOverlap() {
     return numOverlap;
-  }
-
-  /**
-   * Get end offset of the last processed term.
-   * @return the offset
-   */
-  public int getOffset() {
-    return offset;
   }
 
   /**
@@ -105,10 +77,6 @@ public final class FieldInvertState {
    */
   public float getBoost() {
     return boost;
-  }
-  
-  public void setBoost(float boost) {
-    this.boost = boost;
   }
 
 }

@@ -19,12 +19,8 @@ package org.apache.lucene.search;
 
 
 import org.apache.lucene.index.FieldInvertState;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.Explanation.IDFExplanation;
 import org.apache.lucene.util.SmallFloat;
-import org.apache.lucene.util.VirtualMethod;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 
@@ -528,16 +524,7 @@ import java.io.Serializable;
  */
 public abstract class Similarity implements Serializable {
 
-  // NOTE: this static code must precede setting the static defaultImpl:
-  private static final VirtualMethod<Similarity> withoutDocFreqMethod =
-    new VirtualMethod<Similarity>(Similarity.class, "idfExplain", Term.class, Searcher.class);
-  private static final VirtualMethod<Similarity> withDocFreqMethod =
-    new VirtualMethod<Similarity>(Similarity.class, "idfExplain", Term.class, Searcher.class, int.class);
-
-  private final boolean hasIDFExplainWithDocFreqAPI =
-    VirtualMethod.compareImplementationDistance(getClass(),
-        withDocFreqMethod, withoutDocFreqMethod) >= 0; // its ok for both to be overridden
-  /**
+    /**
    * The Similarity implementation used by default.
    **/
   private static Similarity defaultImpl = new DefaultSimilarity();
@@ -639,92 +626,5 @@ public abstract class Similarity implements Serializable {
   public byte encodeNormValue(float f) {
     return SmallFloat.floatToByte315(f);
   }
-
-    /**
-   * Computes a score factor for a simple term and returns an explanation
-   * for that score factor.
-   * 
-   * <p>
-   * The default implementation uses:
-   * 
-   * <pre>
-   * idf(searcher.docFreq(term), searcher.maxDoc());
-   * </pre>
-   * 
-   * Note that {@code Searcher#maxDoc()} is used instead of
-   * {@code org.apache.lucene.index.IndexReader#numDocs() IndexReader#numDocs()} because also
-   * {@code Searcher#docFreq(Term)} is used, and when the latter
-   * is inaccurate, so is {@code Searcher#maxDoc()}, and in the same direction.
-   * In addition, {@code Searcher#maxDoc()} is more efficient to compute
-   *   
-   * @param term the term in question
-   * @param searcher the document collection being searched
-   * @return an IDFExplain object that includes both an idf score factor 
-             and an explanation for the term.
-   * @throws IOException
-   */
-  public IDFExplanation idfExplain(final Term term, final Searcher searcher, int docFreq) throws IOException {
-
-    if (!hasIDFExplainWithDocFreqAPI) {
-      // Fallback to slow impl
-      return idfExplain(term, searcher);
-    }
-    final int df = docFreq;
-    final int max = searcher.maxDoc();
-    final float idf = idf(df, max);
-    return new IDFExplanation() {
-        @Override
-        public String explain() {
-          return "idf(docFreq=" + df +
-          ", maxDocs=" + max + ")";
-        }
-        @Override
-        public float getIdf() {
-          return idf;
-        }};
-  }
-
-  /**
-   * This method forwards to {@code
-   * #idfExplain(Term,Searcher,int)} by passing
-   * <code>searcher.docFreq(term)</code> as the docFreq.
-   *
-   * WARNING: if you subclass Similariary and override this
-   * method then you may hit a peformance hit for certain
-   * queries.  Better to override {@code
-   * #idfExplain(Term,Searcher,int)} instead.
-   */
-  public IDFExplanation idfExplain(final Term term, final Searcher searcher) throws IOException {
-    return idfExplain(term, searcher, searcher.docFreq(term));
-  }
-
-    /** Computes a score factor based on a term's document frequency (the number
-   * of documents which contain the term).  This value is multiplied by the
-   * {@code #tf(int)} factor for each term in the query and these products are
-   * then summed to form the initial score for a document.
-   *
-   * <p>Terms that occur in fewer documents are better indicators of topic, so
-   * implementations of this method usually return larger values for rare terms,
-   * and smaller values for common terms.
-   *
-   * @param docFreq the number of documents which contain the term
-   * @param numDocs the total number of documents in the collection
-   * @return a score factor based on the term's document frequency
-   */
-  public abstract float idf(int docFreq, int numDocs);
-
-  /** Computes a score factor based on the fraction of all query terms that a
-   * document contains.  This value is multiplied into scores.
-   *
-   * <p>The presence of a large portion of the query terms indicates a better
-   * match with the query, so implementations of this method usually return
-   * larger values when the ratio between these parameters is large and smaller
-   * values when the ratio between them is small.
-   *
-   * @param overlap the number of query terms matched in the document
-   * @param maxOverlap the total number of terms in the query
-   * @return a score factor based on term overlap with the query
-   */
-  public abstract float coord(int overlap, int maxOverlap);
 
 }

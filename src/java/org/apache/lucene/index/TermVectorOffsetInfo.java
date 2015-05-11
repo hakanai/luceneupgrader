@@ -32,9 +32,6 @@ public class TermVectorOffsetInfo implements Serializable {
   private int startOffset;
   private int endOffset;
 
-  public TermVectorOffsetInfo() {
-  }
-
   public TermVectorOffsetInfo(int startOffset, int endOffset) {
     this.endOffset = endOffset;
     this.startOffset = startOffset;
@@ -48,10 +45,6 @@ public class TermVectorOffsetInfo implements Serializable {
     return endOffset;
   }
 
-  public void setEndOffset(int endOffset) {
-    this.endOffset = endOffset;
-  }
-
   /**
    * The accessor for the starting offset of the term.
    *
@@ -59,10 +52,6 @@ public class TermVectorOffsetInfo implements Serializable {
    */
   public int getStartOffset() {
     return startOffset;
-  }
-
-  public void setStartOffset(int startOffset) {
-    this.startOffset = startOffset;
   }
 
   /**

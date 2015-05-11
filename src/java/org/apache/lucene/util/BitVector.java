@@ -98,15 +98,6 @@ public final class BitVector implements Cloneable, Bits {
     }
   }
 
-  /** Sets the value of <code>bit</code> to zero. */
-  public final void clear(int bit) {
-    if (bit >= size) {
-      throw new ArrayIndexOutOfBoundsException(bit);
-    }
-    bits[bit >> 3] &= ~(1 << (bit & 7));
-    count = -1;
-  }
-
   /** Returns <code>true</code> if <code>bit</code> is one and
     <code>false</code> if it is zero. */
   public final boolean get(int bit) {

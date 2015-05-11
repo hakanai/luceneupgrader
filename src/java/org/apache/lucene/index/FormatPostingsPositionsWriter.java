@@ -34,7 +34,7 @@ final class FormatPostingsPositionsWriter extends FormatPostingsPositionsConsume
   boolean storePayloads;
   int lastPayloadLength = -1;
 
-  FormatPostingsPositionsWriter(SegmentWriteState state, FormatPostingsDocsWriter parent) throws IOException {
+  FormatPostingsPositionsWriter(FormatPostingsDocsWriter parent) throws IOException {
     this.parent = parent;
     omitTermFreqAndPositions = parent.omitTermFreqAndPositions;
     if (parent.parent.parent.fieldInfos.hasProx()) {

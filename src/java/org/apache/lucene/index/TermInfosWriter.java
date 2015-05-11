@@ -18,13 +18,14 @@ package org.apache.lucene.index;
  */
 
 
-import java.io.Closeable;
-import java.io.IOException;
-import org.apache.lucene.store.IndexOutput;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.IndexOutput;
+import org.apache.lucene.util.ArrayUtil;
 import org.apache.lucene.util.IOUtils;
 import org.apache.lucene.util.UnicodeUtil;
-import org.apache.lucene.util.ArrayUtil;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 
 /** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
@@ -122,11 +123,6 @@ final class TermInfosWriter implements Closeable {
         IOUtils.closeWhileHandlingException(output);
       }
     }
-  }
-
-  void add(Term term, TermInfo ti) throws IOException {
-    UnicodeUtil.UTF16toUTF8(term.text, 0, term.text.length(), utf8Result);
-    add(fieldInfos.fieldNumber(term.field), utf8Result.result, utf8Result.length, ti);
   }
 
   // Currently used only by assert statements

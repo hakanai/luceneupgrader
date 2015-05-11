@@ -203,24 +203,6 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
   }
 
   /**
-   * Appends the bytes from the given {@code BytesRef}
-   * <p>
-   * NOTE: if this would exceed the array size, this method creates a 
-   * new reference array.
-   */
-  public void append(BytesRef other) {
-    int newLen = length + other.length;
-    if (bytes.length - offset < newLen) {
-      byte[] newBytes = new byte[newLen];
-      System.arraycopy(bytes, offset, newBytes, 0, length);
-      offset = 0;
-      bytes = newBytes;
-    }
-    System.arraycopy(other.bytes, other.offset, bytes, length+offset, other.length);
-    length = newLen;
-  }
-
-  /** 
    * Used to grow the reference array. 
    * 
    * In general this should not be used as it does not take the offset into account.

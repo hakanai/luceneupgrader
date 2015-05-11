@@ -17,8 +17,6 @@ package org.apache.lucene.util;
  * limitations under the License.
  */
 
-import java.util.Comparator;
-
 /**
  * Methods for manipulating arrays.
  *
@@ -26,14 +24,7 @@ import java.util.Comparator;
  */
 public final class ArrayUtil {
 
-  /**
-   * @deprecated This constructor was not intended to be public and should not be used.
-   *  This class contains solely a static utility methods.
-   *  It will be made private in Lucene 4.0
-   */
-  // make private in 4.0!
-  @Deprecated
-  public ArrayUtil() {} // no instance
+  private ArrayUtil() {} // no instance
 
   /** Returns an array size >= minTargetSize, generally
    *  over-allocating exponentially to achieve amortized
@@ -133,48 +124,6 @@ public final class ArrayUtil {
       return currentSize;
   }
 
-  public static short[] grow(short[] array, int minSize) {
-    assert minSize >= 0: "size must be positive (got " + minSize + "): likely integer overflow?";
-    if (array.length < minSize) {
-      short[] newArray = new short[oversize(minSize, RamUsageEstimator.NUM_BYTES_SHORT)];
-      System.arraycopy(array, 0, newArray, 0, array.length);
-      return newArray;
-    } else
-      return array;
-  }
-
-  public static short[] grow(short[] array) {
-    return grow(array, 1 + array.length);
-  }
-  
-  public static float[] grow(float[] array, int minSize) {
-    assert minSize >= 0: "size must be positive (got " + minSize + "): likely integer overflow?";
-    if (array.length < minSize) {
-      float[] newArray = new float[oversize(minSize, RamUsageEstimator.NUM_BYTES_FLOAT)];
-      System.arraycopy(array, 0, newArray, 0, array.length);
-      return newArray;
-    } else
-      return array;
-  }
-
-  public static float[] grow(float[] array) {
-    return grow(array, 1 + array.length);
-  }
-
-  public static double[] grow(double[] array, int minSize) {
-    assert minSize >= 0: "size must be positive (got " + minSize + "): likely integer overflow?";
-    if (array.length < minSize) {
-      double[] newArray = new double[oversize(minSize, RamUsageEstimator.NUM_BYTES_DOUBLE)];
-      System.arraycopy(array, 0, newArray, 0, array.length);
-      return newArray;
-    } else
-      return array;
-  }
-
-  public static double[] grow(double[] array) {
-    return grow(array, 1 + array.length);
-  }
-
   public static int[] grow(int[] array, int minSize) {
     assert minSize >= 0: "size must be positive (got " + minSize + "): likely integer overflow?";
     if (array.length < minSize) {
@@ -224,10 +173,6 @@ public final class ArrayUtil {
       return array;
   }
 
-  public static byte[] grow(byte[] array) {
-    return grow(array, 1 + array.length);
-  }
-
   public static byte[] shrink(byte[] array, int targetSize) {
     assert targetSize >= 0: "size must be positive (got " + targetSize + "): likely integer overflow?";
     final int newSize = getShrinkSize(array.length, targetSize, 1);
@@ -239,20 +184,6 @@ public final class ArrayUtil {
       return array;
   }
 
-  public static boolean[] grow(boolean[] array, int minSize) {
-    assert minSize >= 0: "size must be positive (got " + minSize + "): likely integer overflow?";
-    if (array.length < minSize) {
-      boolean[] newArray = new boolean[oversize(minSize, 1)];
-      System.arraycopy(array, 0, newArray, 0, array.length);
-      return newArray;
-    } else
-      return array;
-  }
-
-  public static boolean[] grow(boolean[] array) {
-    return grow(array, 1 + array.length);
-  }
-
   public static char[] grow(char[] array, int minSize) {
     assert minSize >= 0: "size must be positive (got " + minSize + "): likely integer overflow?";
     if (array.length < minSize) {
@@ -261,40 +192,6 @@ public final class ArrayUtil {
       return newArray;
     } else
       return array;
-  }
-
-  public static char[] grow(char[] array) {
-    return grow(array, 1 + array.length);
-  }
-
-  public static int[][] grow(int[][] array, int minSize) {
-    assert minSize >= 0: "size must be positive (got " + minSize + "): likely integer overflow?";
-    if (array.length < minSize) {
-      int[][] newArray = new int[oversize(minSize, RamUsageEstimator.NUM_BYTES_OBJECT_REF)][];
-      System.arraycopy(array, 0, newArray, 0, array.length);
-      return newArray;
-    } else {
-      return array;
-    }
-  }
-
-  public static int[][] grow(int[][] array) {
-    return grow(array, 1 + array.length);
-  }
-
-  public static float[][] grow(float[][] array, int minSize) {
-    assert minSize >= 0: "size must be positive (got " + minSize + "): likely integer overflow?";
-    if (array.length < minSize) {
-      float[][] newArray = new float[oversize(minSize, RamUsageEstimator.NUM_BYTES_OBJECT_REF)][];
-      System.arraycopy(array, 0, newArray, 0, array.length);
-      return newArray;
-    } else {
-      return array;
-    }
-  }
-
-  public static float[][] grow(float[][] array) {
-    return grow(array, 1 + array.length);
   }
 
   /**
@@ -321,86 +218,9 @@ public final class ArrayUtil {
 
 
   // Since Arrays.equals doesn't implement offsets for equals
-  /**
-   * See if two array slices are the same.
-   *
-   * @param left        The left array to compare
-   * @param offsetLeft  The offset into the array.  Must be positive
-   * @param right       The right array to compare
-   * @param offsetRight the offset into the right array.  Must be positive
-   * @param length      The length of the section of the array to compare
-   * @return true if the two arrays, starting at their respective offsets, are equal
-   * 
-   *
-   */
-  public static boolean equals(char[] left, int offsetLeft, char[] right, int offsetRight, int length) {
-    if ((offsetLeft + length <= left.length) && (offsetRight + length <= right.length)) {
-      for (int i = 0; i < length; i++) {
-        if (left[offsetLeft + i] != right[offsetRight + i]) {
-          return false;
-        }
-
-      }
-      return true;
-    }
-    return false;
-  }
 
   // Since Arrays.equals doesn't implement offsets for equals
-  /**
-   * See if two array slices are the same.
-   *
-   * @param left        The left array to compare
-   * @param offsetLeft  The offset into the array.  Must be positive
-   * @param right       The right array to compare
-   * @param offsetRight the offset into the right array.  Must be positive
-   * @param length      The length of the section of the array to compare
-   * @return true if the two arrays, starting at their respective offsets, are equal
-   * 
-   *
-   */
-  public static boolean equals(int[] left, int offsetLeft, int[] right, int offsetRight, int length) {
-    if ((offsetLeft + length <= left.length) && (offsetRight + length <= right.length)) {
-      for (int i = 0; i < length; i++) {
-        if (left[offsetLeft + i] != right[offsetRight + i]) {
-          return false;
-        }
 
-      }
-      return true;
-    }
-    return false;
-  }
-
-    /** SorterTemplate with custom {@code Comparator} */
-  private static <T> SorterTemplate getSorter(final T[] a, final Comparator<? super T> comp) {
-    return new SorterTemplate() {
-      @Override
-      protected void swap(int i, int j) {
-        final T o = a[i];
-        a[i] = a[j];
-        a[j] = o;
-      }
-      
-      @Override
-      protected int compare(int i, int j) {
-        return comp.compare(a[i], a[j]);
-      }
-
-      @Override
-      protected void setPivot(int i) {
-        pivot = a[i];
-      }
-  
-      @Override
-      protected int comparePivot(int j) {
-        return comp.compare(pivot, a[j]);
-      }
-      
-      private T pivot;
-    };
-  }
-  
   /** Natural SorterTemplate */
   private static <T extends Comparable<? super T>> SorterTemplate getSorter(final T[] a) {
     return new SorterTemplate() {
@@ -433,27 +253,7 @@ public final class ArrayUtil {
   // quickSorts (endindex is exclusive!):
 
     // mergeSorts:
-  
-  /**
-   * Sorts the given array slice using the {@code Comparator}. This method uses the merge sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   * @param fromIndex start index (inclusive)
-   * @param toIndex end index (exclusive)
-   */
-  public static <T> void mergeSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> comp) {
-    if (toIndex-fromIndex <= 1) return;
-    //System.out.println("SORT: " + (toIndex-fromIndex));
-    getSorter(a, comp).mergeSort(fromIndex, toIndex-1);
-  }
-  
-  /**
-   * Sorts the given array using the {@code Comparator}. This method uses the merge sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   */
-  public static <T> void mergeSort(T[] a, Comparator<? super T> comp) {
-    mergeSort(a, 0, a.length, comp);
-  }
-  
+
   /**
    * Sorts the given array slice in natural order. This method uses the merge sort
    * algorithm, but falls back to insertion sort for small arrays.

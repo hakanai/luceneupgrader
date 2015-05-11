@@ -17,7 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import org.apache.lucene.store.BufferedIndexInput;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.util.ArrayUtil;
@@ -62,16 +61,6 @@ class TermVectorsReader implements Cloneable, Closeable {
   
   private final int format;
 
-  TermVectorsReader(Directory d, String segment, FieldInfos fieldInfos)
-    throws IOException {
-    this(d, segment, fieldInfos, BufferedIndexInput.BUFFER_SIZE);
-  }
-
-  TermVectorsReader(Directory d, String segment, FieldInfos fieldInfos, int readBufferSize)
-    throws IOException {
-    this(d, segment, fieldInfos, readBufferSize, -1, 0);
-  }
-    
   TermVectorsReader(Directory d, String segment, FieldInfos fieldInfos, int readBufferSize, int docStoreOffset, int size)
     throws IOException {
     boolean success = false;
@@ -207,14 +196,6 @@ class TermVectorsReader implements Cloneable, Closeable {
     IOUtils.close(tvx, tvd, tvf);
   }
 
-  /**
-   * 
-   * @return The number of documents in the reader
-   */
-  int size() {
-    return size;
-  }
-
   public void get(int docNum, String field, TermVectorMapper mapper) throws IOException {
     if (tvx != null) {
       int fieldNumber = fieldInfos.fieldNumber(field);
@@ -258,11 +239,7 @@ class TermVectorsReader implements Cloneable, Closeable {
 
         mapper.setDocumentNumber(docNum);
         readTermVector(field, position, mapper);
-      } else {
-        //System.out.println("Fieldable not found");
       }
-    } else {
-      //System.out.println("No tvx file");
     }
   }
 

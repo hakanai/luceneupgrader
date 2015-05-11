@@ -116,15 +116,7 @@ class CompoundFileReader extends Directory {
       }
     }
   }
-  
-  public Directory getDirectory() {
-    return directory;
-  }
-  
-  public String getName() {
-    return fileName;
-  }
-  
+
   @Override
   public synchronized void close() throws IOException {
     if (stream == null) {
@@ -173,13 +165,7 @@ class CompoundFileReader extends Directory {
   public boolean fileExists(String name) {
     return entries.containsKey(IndexFileNames.stripSegmentName(name));
   }
-  
-  /** Returns the time the compound file was last modified. */
-  @Override
-  public long fileModified(String name) throws IOException {
-    return directory.fileModified(fileName);
-  }
-  
+
   /** Set the modified time of the compound file to now.
    *  @deprecated Lucene never uses this API; it will be
    *  removed in 4.0. */
@@ -188,7 +174,7 @@ class CompoundFileReader extends Directory {
   public void touchFile(String name) throws IOException {
     directory.touchFile(fileName);
   }
-  
+
   /** Not implemented
    * @throws UnsupportedOperationException */
   @Override

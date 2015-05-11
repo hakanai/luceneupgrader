@@ -45,6 +45,7 @@ import org.apache.lucene.util.AttributeImpl;
  *
  * </ul>
  */
+@SuppressWarnings("unused") // Reflected
 public class PositionIncrementAttributeImpl extends AttributeImpl implements PositionIncrementAttribute, Cloneable, Serializable {
   private int positionIncrement = 1;
   

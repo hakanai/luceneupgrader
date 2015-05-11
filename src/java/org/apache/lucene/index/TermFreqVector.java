@@ -47,25 +47,6 @@ public interface TermFreqVector {
    *  term occurs in the document or the document field.
    */
   int[] getTermFrequencies();
-  
 
-  /** Return an index in the term numbers array returned from
-   *  <code>getTerms</code> at which the term with the specified
-   *  <code>term</code> appears. If this term does not appear in the array,
-   *  return -1.
-   */
-  int indexOf(String term);
-
-
-  /** Just like <code>indexOf(int)</code> but searches for a number of terms
-   *  at the same time. Returns an array that has the same size as the number
-   *  of terms searched for, each slot containing the result of searching for
-   *  that term number.
-   *
-   *  @param terms array containing terms to look for
-   *  @param start index in the array where the list of terms starts
-   *  @param len the number of terms in the list
-   */
-  int[] indexesOf(String[] terms, int start, int len);
 
 }

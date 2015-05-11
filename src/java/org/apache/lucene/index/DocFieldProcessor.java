@@ -81,8 +81,4 @@ final class DocFieldProcessor extends DocConsumer {
     return consumer.freeRAM();
   }
 
-  @Override
-  public DocConsumerPerThread addThread(DocumentsWriterThreadState threadState) throws IOException {
-    return new DocFieldProcessorPerThread(threadState, this);
-  }
 }

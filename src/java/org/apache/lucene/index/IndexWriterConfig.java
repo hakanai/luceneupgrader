@@ -92,24 +92,6 @@ public final class IndexWriterConfig implements Cloneable {
   /** Default value is 1. Change using {@code #setReaderTermsIndexDivisor(int)}. */
   public static final int DEFAULT_READER_TERMS_INDEX_DIVISOR = IndexReader.DEFAULT_TERMS_INDEX_DIVISOR;
 
-  /**
-   * Sets the default (for any instance) maximum time to wait for a write lock
-   * (in milliseconds).
-   */
-  public static void setDefaultWriteLockTimeout(long writeLockTimeout) {
-    WRITE_LOCK_TIMEOUT = writeLockTimeout;
-  }
-
-  /**
-   * Returns the default write lock timeout for newly instantiated
-   * IndexWriterConfigs.
-   * 
-   *
-   */
-  public static long getDefaultWriteLockTimeout() {
-    return WRITE_LOCK_TIMEOUT;
-  }
-
   private final Analyzer analyzer;
   private volatile IndexDeletionPolicy delPolicy;
   private volatile IndexCommit commit;
@@ -269,35 +251,6 @@ public final class IndexWriterConfig implements Cloneable {
   public Similarity getSimilarity() {
     return similarity;
   }
-  
-  /**
-   * Expert: set the interval between indexed terms. Large values cause less
-   * memory to be used by IndexReader, but slow random-access to terms. Small
-   * values cause more memory to be used by an IndexReader, and speed
-   * random-access to terms.
-   * <p>
-   * This parameter determines the amount of computation required per query
-   * term, regardless of the number of documents that contain that term. In
-   * particular, it is the maximum number of other terms that must be scanned
-   * before a term is located and its frequency and position information may be
-   * processed. In a large index with user-entered query terms, query processing
-   * time is likely to be dominated not by term lookup but rather by the
-   * processing of frequency and positional data. In a small index or when many
-   * uncommon query terms are generated (e.g., by wildcard queries) term lookup
-   * may become a dominant cost.
-   * <p>
-   * In particular, <code>numUniqueTerms/interval</code> terms are read into
-   * memory by an IndexReader, and, on average, <code>interval/2</code> terms
-   * must be scanned for each random term access.
-   * 
-   *
-   *
-   * <p>Takes effect immediately, but only applies to newly
-   *  flushed/merged segments. */
-  public IndexWriterConfig setTermIndexInterval(int interval) {
-    this.termIndexInterval = interval;
-    return this;
-  }
 
   /**
    * Returns the interval between indexed terms.
@@ -309,19 +262,6 @@ public final class IndexWriterConfig implements Cloneable {
   }
 
   /**
-   * Expert: sets the merge scheduler used by this writer. The default is
-   * {@code ConcurrentMergeScheduler}.
-   * <p>
-   * <b>NOTE:</b> the merge scheduler cannot be null. If <code>null</code> is
-   * passed, the merge scheduler will be set to the default.
-   *
-   * <p>Only takes effect when IndexWriter is first created. */
-  public IndexWriterConfig setMergeScheduler(MergeScheduler mergeScheduler) {
-    this.mergeScheduler = mergeScheduler == null ? new ConcurrentMergeScheduler() : mergeScheduler;
-    return this;
-  }
-
-  /**
    * Returns the {@code MergeScheduler} that was set by
    * {@code #setMergeScheduler(MergeScheduler)}
    */
@@ -330,47 +270,12 @@ public final class IndexWriterConfig implements Cloneable {
   }
 
   /**
-   * Sets the maximum time to wait for a write lock (in milliseconds) for this
-   * instance. You can change the default value for all instances by calling
-   * {@code #setDefaultWriteLockTimeout(long)}.
-   *
-   * <p>Only takes effect when IndexWriter is first created. */
-  public IndexWriterConfig setWriteLockTimeout(long writeLockTimeout) {
-    this.writeLockTimeout = writeLockTimeout;
-    return this;
-  }
-  
-  /**
    * Returns allowed timeout when acquiring the write lock.
    * 
    *
    */
   public long getWriteLockTimeout() {
     return writeLockTimeout;
-  }
-
-  /**
-   * Determines the minimal number of delete terms required before the buffered
-   * in-memory delete terms are applied and flushed. If there are documents
-   * buffered in memory at the time, they are merged and a new segment is
-   * created.
-
-   * <p>Disabled by default (writer flushes by RAM usage).
-   * 
-   * @throws IllegalArgumentException if maxBufferedDeleteTerms
-   * is enabled but smaller than 1
-   *
-   *
-   * <p>Takes effect immediately, but only the next time a
-   * document is added, updated or deleted.
-   */
-  public IndexWriterConfig setMaxBufferedDeleteTerms(int maxBufferedDeleteTerms) {
-    if (maxBufferedDeleteTerms != DISABLE_AUTO_FLUSH
-        && maxBufferedDeleteTerms < 1)
-      throw new IllegalArgumentException(
-          "maxBufferedDeleteTerms must at least be 1 when enabled");
-    this.maxBufferedDeleteTerms = maxBufferedDeleteTerms;
-    return this;
   }
 
   /**
@@ -383,99 +288,9 @@ public final class IndexWriterConfig implements Cloneable {
     return maxBufferedDeleteTerms;
   }
 
-  /**
-   * Determines the amount of RAM that may be used for buffering added documents
-   * and deletions before they are flushed to the Directory. Generally for
-   * faster indexing performance it's best to flush by RAM usage instead of
-   * document count and use as large a RAM buffer as you can.
-   * 
-   * <p>
-   * When this is set, the writer will flush whenever buffered documents and
-   * deletions use this much RAM. Pass in {@code #DISABLE_AUTO_FLUSH} to prevent
-   * triggering a flush due to RAM usage. Note that if flushing by document
-   * count is also enabled, then the flush will be triggered by whichever comes
-   * first.
-   * 
-   * <p>
-   * <b>NOTE</b>: the account of RAM usage for pending deletions is only
-   * approximate. Specifically, if you delete by Query, Lucene currently has no
-   * way to measure the RAM usage of individual Queries so the accounting will
-   * under-estimate and you should compensate by either calling commit()
-   * periodically yourself, or by using {@code #setMaxBufferedDeleteTerms(int)}
-   * to flush by count instead of RAM usage (each buffered delete Query counts 
-   * as one).
-   * 
-   * <p>
-   * <b>NOTE</b>: because IndexWriter uses <code>int</code>s when managing its
-   * internal storage, the absolute maximum value for this setting is somewhat
-   * less than 2048 MB. The precise limit depends on various factors, such as
-   * how large your documents are, how many fields have norms, etc., so it's
-   * best to set this value comfortably under 2048.
-   * 
-   * <p>
-   * The default value is {@code #DEFAULT_RAM_BUFFER_SIZE_MB}.
-   * 
-   * <p>Takes effect immediately, but only the next time a
-   * document is added, updated or deleted.
-   *
-   * @throws IllegalArgumentException
-   *           if ramBufferSize is enabled but non-positive, or it disables
-   *           ramBufferSize when maxBufferedDocs is already disabled
-   */
-  public IndexWriterConfig setRAMBufferSizeMB(double ramBufferSizeMB) {
-    if (ramBufferSizeMB > 2048.0) {
-      throw new IllegalArgumentException("ramBufferSize " + ramBufferSizeMB
-          + " is too large; should be comfortably less than 2048");
-    }
-    if (ramBufferSizeMB != DISABLE_AUTO_FLUSH && ramBufferSizeMB <= 0.0)
-      throw new IllegalArgumentException(
-          "ramBufferSize should be > 0.0 MB when enabled");
-    if (ramBufferSizeMB == DISABLE_AUTO_FLUSH && maxBufferedDocs == DISABLE_AUTO_FLUSH)
-      throw new IllegalArgumentException(
-          "at least one of ramBufferSize and maxBufferedDocs must be enabled");
-    this.ramBufferSizeMB = ramBufferSizeMB;
-    return this;
-  }
-
   /** Returns the value set by {@code #setRAMBufferSizeMB(double)} if enabled. */
   public double getRAMBufferSizeMB() {
     return ramBufferSizeMB;
-  }
-
-  /**
-   * Determines the minimal number of documents required before the buffered
-   * in-memory documents are flushed as a new Segment. Large values generally
-   * give faster indexing.
-   * 
-   * <p>
-   * When this is set, the writer will flush every maxBufferedDocs added
-   * documents. Pass in {@code #DISABLE_AUTO_FLUSH} to prevent triggering a
-   * flush due to number of buffered documents. Note that if flushing by RAM
-   * usage is also enabled, then the flush will be triggered by whichever comes
-   * first.
-   * 
-   * <p>
-   * Disabled by default (writer flushes by RAM usage).
-   * 
-   * <p>Takes effect immediately, but only the next time a
-   * document is added, updated or deleted.
-   *
-   *
-   * 
-   * @throws IllegalArgumentException
-   *           if maxBufferedDocs is enabled but smaller than 2, or it disables
-   *           maxBufferedDocs when ramBufferSize is already disabled
-   */
-  public IndexWriterConfig setMaxBufferedDocs(int maxBufferedDocs) {
-    if (maxBufferedDocs != DISABLE_AUTO_FLUSH && maxBufferedDocs < 2)
-      throw new IllegalArgumentException(
-          "maxBufferedDocs must at least be 2 when enabled");
-    if (maxBufferedDocs == DISABLE_AUTO_FLUSH
-        && ramBufferSizeMB == DISABLE_AUTO_FLUSH)
-      throw new IllegalArgumentException(
-          "at least one of ramBufferSize and maxBufferedDocs must be enabled");
-    this.maxBufferedDocs = maxBufferedDocs;
-    return this;
   }
 
   /**
@@ -486,14 +301,6 @@ public final class IndexWriterConfig implements Cloneable {
    */
   public int getMaxBufferedDocs() {
     return maxBufferedDocs;
-  }
-
-  /** Set the merged segment warmer. See {@code IndexReaderWarmer}.
-   *
-   * <p>Takes effect on the next merge. */
-  public IndexWriterConfig setMergedSegmentWarmer(IndexReaderWarmer mergeSegmentWarmer) {
-    this.mergedSegmentWarmer = mergeSegmentWarmer;
-    return this;
   }
 
   /** Returns the current merged segment warmer. See {@code IndexReaderWarmer}. */
@@ -523,37 +330,10 @@ public final class IndexWriterConfig implements Cloneable {
     return mergePolicy;
   }
 
-  /**
-   * Sets the max number of simultaneous threads that may be indexing documents
-   * at once in IndexWriter. Values &lt; 1 are invalid and if passed
-   * <code>maxThreadStates</code> will be set to
-   * {@code #DEFAULT_MAX_THREAD_STATES}.
-   *
-   * <p>Only takes effect when IndexWriter is first created. */
-  public IndexWriterConfig setMaxThreadStates(int maxThreadStates) {
-    this.maxThreadStates = maxThreadStates < 1 ? DEFAULT_MAX_THREAD_STATES : maxThreadStates;
-    return this;
-  }
-
   /** Returns the max number of simultaneous threads that
    *  may be indexing documents at once in IndexWriter. */
   public int getMaxThreadStates() {
     return maxThreadStates;
-  }
-
-  /** By default, IndexWriter does not pool the
-   *  SegmentReaders it must open for deletions and
-   *  merging, unless a near-real-time reader has been
-   *  obtained by calling {@code IndexWriter#getReader}.
-   *  This method lets you enable pooling without getting a
-   *  near-real-time reader.  NOTE: if you set this to
-   *  false, IndexWriter will still pool readers once
-   *  {@code IndexWriter#getReader} is called.
-   *
-   * <p>Only takes effect when IndexWriter is first created. */
-  public IndexWriterConfig setReaderPooling(boolean readerPooling) {
-    this.readerPooling = readerPooling;
-    return this;
   }
 
   /** Returns true if IndexWriter should pool readers even
@@ -562,35 +342,9 @@ public final class IndexWriterConfig implements Cloneable {
     return readerPooling;
   }
 
-  /** Expert: sets the {@code DocConsumer} chain to be used to process documents.
-   *
-   * <p>Only takes effect when IndexWriter is first created. */
-  IndexWriterConfig setIndexingChain(IndexingChain indexingChain) {
-    this.indexingChain = indexingChain == null ? DocumentsWriter.defaultIndexingChain : indexingChain;
-    return this;
-  }
-  
   /** Returns the indexing chain set on {@code #setIndexingChain(IndexingChain)}. */
   IndexingChain getIndexingChain() {
     return indexingChain;
-  }
-
-  /** Sets the termsIndexDivisor passed to any readers that
-   *  IndexWriter opens, for example when applying deletes
-   *  or creating a near-real-time reader in {@code
-   *  IndexWriter#getReader}. If you pass -1, the terms index 
-   *  won't be loaded by the readers. This is only useful in 
-   *  advanced situations when you will only .next() through 
-   *  all terms; attempts to seek will hit an exception.
-   *
-   * <p>Takes effect immediately, but only applies to
-   * readers opened after this call */
-  public IndexWriterConfig setReaderTermsIndexDivisor(int divisor) {
-    if (divisor <= 0 && divisor != -1) {
-      throw new IllegalArgumentException("divisor must be >= 1, or -1 (got " + divisor + ")");
-    }
-    readerTermsIndexDivisor = divisor;
-    return this;
   }
 
   /** */

@@ -23,5 +23,6 @@ package org.apache.lucene.analysis.tokenattributes;
  * AttributeFactory uses the replacement implementation.
  */
 @Deprecated
+@SuppressWarnings("unused") // Reflected
 public class TermAttributeImpl extends CharTermAttributeImpl {
 }

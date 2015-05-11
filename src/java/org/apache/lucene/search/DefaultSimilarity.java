@@ -46,18 +46,6 @@ public class DefaultSimilarity extends Similarity {
     return (float)(1.0 / Math.sqrt(sumOfSquaredWeights));
   }
 
-  /** Implemented as <code>log(numDocs/(docFreq+1)) + 1</code>. */
-  @Override
-  public float idf(int docFreq, int numDocs) {
-    return (float)(Math.log(numDocs/(double)(docFreq+1)) + 1.0);
-  }
-    
-  /** Implemented as <code>overlap / maxOverlap</code>. */
-  @Override
-  public float coord(int overlap, int maxOverlap) {
-    return overlap / (float)maxOverlap;
-  }
-
   // Default true
   protected boolean discountOverlaps = true;
 

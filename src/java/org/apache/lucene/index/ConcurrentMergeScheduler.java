@@ -406,7 +406,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
         if (!(exc instanceof MergePolicy.MergeAbortedException)) {
           // suppressExceptions is normally only set during
           // testing.
-          anyExceptions = true;
           handleMergeException(exc);
         }
       } finally {
@@ -435,7 +434,4 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
     throw new MergePolicy.MergeException(exc, dir);
   }
-
-  static boolean anyExceptions = false;
-
 }

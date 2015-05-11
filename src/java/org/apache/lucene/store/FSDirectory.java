@@ -244,14 +244,6 @@ public abstract class FSDirectory extends Directory {
   }
 
   /** Returns the time the named file was last modified. */
-  @Override
-  public long fileModified(String name) {
-    ensureOpen();
-    File file = new File(directory, name);
-    return file.lastModified();
-  }
-
-  /** Returns the time the named file was last modified. */
   public static long fileModified(File directory, String name) {
     File file = new File(directory, name);
     return file.lastModified();

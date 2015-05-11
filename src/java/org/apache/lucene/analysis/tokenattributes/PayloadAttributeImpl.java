@@ -17,14 +17,15 @@ package org.apache.lucene.analysis.tokenattributes;
  * limitations under the License.
  */
 
-import java.io.Serializable;
-
 import org.apache.lucene.index.Payload;
 import org.apache.lucene.util.AttributeImpl;
+
+import java.io.Serializable;
 
 /**
  * The payload of a Token. See also {@code Payload}.
  */
+@SuppressWarnings("unused") // Reflected
 public class PayloadAttributeImpl extends AttributeImpl implements PayloadAttribute, Cloneable, Serializable {
   private Payload payload;  
   

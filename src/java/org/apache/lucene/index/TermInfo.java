@@ -29,12 +29,6 @@ class TermInfo {
 
   TermInfo() {}
 
-  TermInfo(int df, long fp, long pp) {
-    docFreq = df;
-    freqPointer = fp;
-    proxPointer = pp;
-  }
-
   TermInfo(TermInfo ti) {
     docFreq = ti.docFreq;
     freqPointer = ti.freqPointer;

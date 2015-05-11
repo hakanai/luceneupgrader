@@ -117,33 +117,7 @@ public abstract class TokenStream extends AttributeSource implements Closeable {
       return false;
     }
   }
-  
-  /**
-   * Consumers (i.e., {@code IndexWriter}) use this method to advance the stream to
-   * the next token. Implementing classes must implement this method and update
-   * the appropriate {@code AttributeImpl}s with the attributes of the next
-   * token.
-   * <P>
-   * The producer must make no assumptions about the attributes after the method
-   * has been returned: the caller may arbitrarily change it. If the producer
-   * needs to preserve the state for subsequent calls, it can use
-   * {@code #captureState} to create a copy of the current attribute state.
-   * <p>
-   * This method is called for every token of a document, so an efficient
-   * implementation is crucial for good performance. To avoid calls to
-   * {@code #addAttribute(Class)} and {@code #getAttribute(Class)},
-   * references to all {@code AttributeImpl}s that this stream uses should be
-   * retrieved during instantiation.
-   * <p>
-   * To ensure that filters and consumers know which attributes are available,
-   * the attributes must be added during instantiation. Filters and consumers
-   * are not required to check for availability of attributes in
-   * {@code #incrementToken()}.
-   * 
-   * @return false for end of stream; true otherwise
-   */
-  public abstract boolean incrementToken() throws IOException;
-  
+
   /**
    * This method is called by the consumer after the last token has been
    * consumed, after {@code #incrementToken()} returned <code>false</code>

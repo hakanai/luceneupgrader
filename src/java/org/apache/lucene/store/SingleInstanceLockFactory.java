@@ -43,14 +43,6 @@ public class SingleInstanceLockFactory extends LockFactory {
     return new SingleInstanceLock(locks, lockName);
   }
 
-  @Override
-  public void clearLock(String lockName) throws IOException {
-    synchronized(locks) {
-      if (locks.contains(lockName)) {
-        locks.remove(lockName);
-      }
-    }
-  }
 }
 
 class SingleInstanceLock extends Lock {

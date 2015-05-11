@@ -17,12 +17,8 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import org.apache.lucene.util.ArrayUtil;
-import org.apache.lucene.util.RamUsageEstimator;
-
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashSet;
 
 /**
@@ -36,18 +32,15 @@ import java.util.HashSet;
 
 final class DocFieldProcessorPerThread extends DocConsumerPerThread {
 
-  int fieldGen;
   final DocFieldProcessor docFieldProcessor;
   final FieldInfos fieldInfos;
   final DocFieldConsumerPerThread consumer;
 
   // Holds all fields seen in current doc
   DocFieldProcessorPerField[] fields = new DocFieldProcessorPerField[1];
-  int fieldCount;
 
   // Hash table for all fields ever seen
   DocFieldProcessorPerField[] fieldHash = new DocFieldProcessorPerField[2];
-  int hashMask = 1;
   int totalFieldCount;
 
   final StoredFieldsWriterPerThread fieldsWriter;
@@ -60,49 +53,6 @@ final class DocFieldProcessorPerThread extends DocConsumerPerThread {
     this.fieldInfos = docFieldProcessor.fieldInfos;
     this.consumer = docFieldProcessor.consumer.addThread(this);
     fieldsWriter = docFieldProcessor.fieldsWriter.addThread(docState);
-  }
-
-  @Override
-  public void abort() {
-    Throwable th = null;
-
-    for (DocFieldProcessorPerField field : fieldHash) {
-      while (field != null) {
-        final DocFieldProcessorPerField next = field.next;
-        try {
-          field.abort(); 
-        } catch (Throwable t) {
-          if (th == null) {
-            th = t;
-          }
-        }
-        field = next;
-      }
-    }
-    
-    try {
-      fieldsWriter.abort();
-    } catch (Throwable t) {
-      if (th == null) {
-        th = t;
-      }
-    }
-    
-    try {
-      consumer.abort();
-    } catch (Throwable t) {
-      if (th == null) {
-        th = t;
-      }
-    }
-    
-    // If any errors occured, throw it.
-    if (th != null) {
-      if (th instanceof RuntimeException) throw (RuntimeException) th;
-      if (th instanceof Error) throw (Error) th;
-      // defensive code - we should not hit unchecked exceptions
-      throw new RuntimeException(th);
-    }
   }
 
   public Collection<DocFieldConsumerPerField> fields() {
@@ -158,53 +108,8 @@ final class DocFieldProcessorPerThread extends DocConsumerPerThread {
     }
   }
 
-  private void rehash() {
-    final int newHashSize = (fieldHash.length*2);
-    assert newHashSize > fieldHash.length;
-
-    final DocFieldProcessorPerField newHashArray[] = new DocFieldProcessorPerField[newHashSize];
-
-    // Rehash
-    int newHashMask = newHashSize-1;
-    for (DocFieldProcessorPerField aFieldHash : fieldHash) {
-      DocFieldProcessorPerField fp0 = aFieldHash;
-      while (fp0 != null) {
-        final int hashPos2 = fp0.fieldInfo.name.hashCode() & newHashMask;
-        DocFieldProcessorPerField nextFP0 = fp0.next;
-        fp0.next = newHashArray[hashPos2];
-        newHashArray[hashPos2] = fp0;
-        fp0 = nextFP0;
-      }
-    }
-
-    fieldHash = newHashArray;
-    hashMask = newHashMask;
-  }
-
-  private static final Comparator<DocFieldProcessorPerField> fieldsComp = new Comparator<DocFieldProcessorPerField>() {
-    public int compare(DocFieldProcessorPerField o1, DocFieldProcessorPerField o2) {
-      return o1.fieldInfo.name.compareTo(o2.fieldInfo.name);
-    }
-  };
-
   PerDoc[] docFreeList = new PerDoc[1];
   int freeCount;
-  int allocCount;
-
-  synchronized PerDoc getPerDoc() {
-    if (freeCount == 0) {
-      allocCount++;
-      if (allocCount > docFreeList.length) {
-        // Grow our free list up front to make sure we have
-        // enough space to recycle all outstanding PerDoc
-        // instances
-        assert allocCount == 1+docFreeList.length;
-        docFreeList = new PerDoc[ArrayUtil.oversize(allocCount, RamUsageEstimator.NUM_BYTES_OBJECT_REF)];
-      }
-      return new PerDoc();
-    } else
-      return docFreeList[--freeCount];
-  }
 
   synchronized void freePerDoc(PerDoc perDoc) {
     assert freeCount < docFreeList.length;

@@ -17,8 +17,6 @@ package org.apache.lucene.search;
  * limitations under the License.
  */
 
-import org.apache.lucene.search.BooleanClause.Occur;
-
 import java.io.IOException;
 
 /**
@@ -138,70 +136,4 @@ public abstract class Scorer extends DocIdSetIterator {
     throw new UnsupportedOperationException(this + " does not implement freq()");
   }
 
-  /**
-   * A callback to gather information from a scorer and its sub-scorers. Each
-   * the top-level scorer as well as each of its sub-scorers are passed to
-   * either one of the visit methods depending on their boolean relationship in
-   * the query.
-   * @lucene.experimental
-   */
-  public static abstract class ScorerVisitor<P extends Query, C extends Query, S extends Scorer> {
-    /**
-     * Invoked for all optional scorer 
-     * 
-     * @param parent the parent query of the child query or <code>null</code> if the child is a top-level query
-     * @param child the query of the currently visited scorer
-     * @param scorer the current scorer
-     */
-    public void visitOptional(P parent, C child, S scorer) {}
-    
-    /**
-     * Invoked for all required scorer 
-     * 
-     * @param parent the parent query of the child query or <code>null</code> if the child is a top-level query
-     * @param child the query of the currently visited scorer
-     * @param scorer the current scorer
-     */
-    public void visitRequired(P parent, C child, S scorer) {}
-    
-    /**
-     * Invoked for all prohibited scorer 
-     * 
-     * @param parent the parent query of the child query or <code>null</code> if the child is a top-level query
-     * @param child the query of the currently visited scorer
-     * @param scorer the current scorer
-     */
-    public void visitProhibited(P parent, C child, S scorer) {}
-  }
-
-  /**
-   * {@code Scorer} subclasses should implement this method if the subclass
-   * itself contains multiple scorers to support gathering details for
-   * sub-scorers via {@code ScorerVisitor}
-   * <p>
-   * Note: this method will throw {@code UnsupportedOperationException} if no
-   * associated {@code Weight} instance is provided to
-   * {@code #Scorer(Weight)}
-   * </p>
-   * 
-   * @lucene.experimental
-   */
-  public void visitSubScorers(Query parent, Occur relationship,
-      ScorerVisitor<Query, Query, Scorer> visitor) {
-    if (weight == null)
-      throw new UnsupportedOperationException();
-
-    final Query q = weight.getQuery();
-    switch (relationship) {
-    case MUST:
-      visitor.visitRequired(parent, q, this);
-      break;
-    case MUST_NOT:
-      visitor.visitProhibited(parent, q, this);
-      break;
-    case SHOULD:
-      visitor.visitOptional(parent, q, this);
-      break;
-    }
-  }
 }

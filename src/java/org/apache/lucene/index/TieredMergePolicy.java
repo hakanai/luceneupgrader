@@ -84,159 +84,6 @@ public class TieredMergePolicy extends MergePolicy {
   private double noCFSRatio = 0.1;
   private double reclaimDeletesWeight = 2.0;
 
-  /** Maximum number of segments to be merged at a time
-   *  during "normal" merging.  For explicit merging (eg,
-   *  forceMerge or forceMergeDeletes was called), see {@code
-   *  #setMaxMergeAtOnceExplicit}.  Default is 10. */
-  public TieredMergePolicy setMaxMergeAtOnce(int v) {
-    if (v < 2) {
-      throw new IllegalArgumentException("maxMergeAtOnce must be > 1 (got " + v + ")");
-    }
-    maxMergeAtOnce = v;
-    return this;
-  }
-
-  /** */
-  public int getMaxMergeAtOnce() {
-    return maxMergeAtOnce;
-  }
-
-  // TODO: should addIndexes do explicit merging, too?  And,
-  // if user calls IW.maybeMerge "explicitly"
-
-  /** Maximum number of segments to be merged at a time,
-   *  during forceMerge or forceMergeDeletes. Default is 30. */
-  public TieredMergePolicy setMaxMergeAtOnceExplicit(int v) {
-    if (v < 2) {
-      throw new IllegalArgumentException("maxMergeAtOnceExplicit must be > 1 (got " + v + ")");
-    }
-    maxMergeAtOnceExplicit = v;
-    return this;
-  }
-
-  /** */
-  public int getMaxMergeAtOnceExplicit() {
-    return maxMergeAtOnceExplicit;
-  }
-
-  /** Maximum sized segment to produce during
-   *  normal merging.  This setting is approximate: the
-   *  estimate of the merged segment size is made by summing
-   *  sizes of to-be-merged segments (compensating for
-   *  percent deleted docs).  Default is 5 GB. */
-  public TieredMergePolicy setMaxMergedSegmentMB(double v) {
-    maxMergedSegmentBytes = (long) (v*1024*1024);
-    return this;
-  }
-
-  /** */
-  public double getMaxMergedSegmentMB() {
-    return maxMergedSegmentBytes/1024/1024.;
-  }
-
-  /** Controls how aggressively merges that reclaim more
-   *  deletions are favored.  Higher values favor selecting
-   *  merges that reclaim deletions.  A value of 0.0 means
-   *  deletions don't impact merge selection. */
-  public TieredMergePolicy setReclaimDeletesWeight(double v) {
-    if (v < 0.0) {
-      throw new IllegalArgumentException("reclaimDeletesWeight must be >= 0.0 (got " + v + ")");
-    }
-    reclaimDeletesWeight = v;
-    return this;
-  }
-
-  /** See {@code #setReclaimDeletesWeight}. */
-  public double getReclaimDeletesWeight() {
-    return reclaimDeletesWeight;
-  }
-
-  /** Segments smaller than this are "rounded up" to this
-   *  size, ie treated as equal (floor) size for merge
-   *  selection.  This is to prevent frequent flushing of
-   *  tiny segments from allowing a long tail in the index.
-   *  Default is 2 MB. */
-  public TieredMergePolicy setFloorSegmentMB(double v) {
-    if (v <= 0.0) {
-      throw new IllegalArgumentException("floorSegmentMB must be >= 0.0 (got " + v + ")");
-    }
-    floorSegmentBytes = (long) (v*1024*1024);
-    return this;
-  }
-
-  /** */
-  public double getFloorSegmentMB() {
-    return floorSegmentBytes/(1024*1024.);
-  }
-
-  /** When forceMergeDeletes is called, we only merge away a
-   *  segment if its delete percentage is over this
-   *  threshold.  Default is 10%. */ 
-  public TieredMergePolicy setForceMergeDeletesPctAllowed(double v) {
-    if (v < 0.0 || v > 100.0) {
-      throw new IllegalArgumentException("forceMergeDeletesPctAllowed must be between 0.0 and 100.0 inclusive (got " + v + ")");
-    }
-    forceMergeDeletesPctAllowed = v;
-    return this;
-  }
-
-  /** */
-  public double getForceMergeDeletesPctAllowed() {
-    return forceMergeDeletesPctAllowed;
-  }
-
-  /** Sets the allowed number of segments per tier.  Smaller
-   *  values mean more merging but fewer segments.
-   *
-   *  <p><b>NOTE</b>: this value should be >= the {@code
-   *  #setMaxMergeAtOnce} otherwise you'll force too much
-   *  merging to occur.</p>
-   *
-   *  <p>Default is 10.0.</p> */
-  public TieredMergePolicy setSegmentsPerTier(double v) {
-    if (v < 2.0) {
-      throw new IllegalArgumentException("segmentsPerTier must be >= 2.0 (got " + v + ")");
-    }
-    segsPerTier = v;
-    return this;
-  }
-
-  /** */
-  public double getSegmentsPerTier() {
-    return segsPerTier;
-  }
-
-  /** Sets whether compound file format should be used for
-   *  newly flushed and newly merged segments.  Default
-   *  true. */
-  public TieredMergePolicy setUseCompoundFile(boolean useCompoundFile) {
-    this.useCompoundFile = useCompoundFile;
-    return this;
-  }
-
-  /** */
-  public boolean getUseCompoundFile() {
-    return useCompoundFile;
-  }
-
-  /** If a merged segment will be more than this percentage
-   *  of the total size of the index, leave the segment as
-   *  non-compound file even if compound file is enabled.
-   *  Set to 1.0 to always use CFS regardless of merge
-   *  size.  Default is 0.1. */
-  public TieredMergePolicy setNoCFSRatio(double noCFSRatio) {
-    if (noCFSRatio < 0.0 || noCFSRatio > 1.0) {
-      throw new IllegalArgumentException("noCFSRatio must be 0.0 to 1.0 inclusive; got " + noCFSRatio);
-    }
-    this.noCFSRatio = noCFSRatio;
-    return this;
-  }
-  
-  /** */
-  public double getNoCFSRatio() {
-    return noCFSRatio;
-  }
-
   private class SegmentByteSizeDescending implements Comparator<SegmentInfo> {
     public int compare(SegmentInfo o1, SegmentInfo o2) {
       try {
@@ -385,7 +232,7 @@ public class TieredMergePolicy extends MergePolicy {
             totAfterMergeBytes += segBytes;
           }
 
-          final MergeScore score = score(candidate, hitTooLarge, mergingBytes);
+          final MergeScore score = score(candidate, hitTooLarge);
           message("  maybe=" + writer.get().segString(candidate) + " score=" + score.getScore() + " " + score.getExplanation() + " tooLarge=" + hitTooLarge + " size=" + String.format("%.3f MB", totAfterMergeBytes/1024./1024.));
 
           // If we are already running a max sized merge
@@ -422,7 +269,7 @@ public class TieredMergePolicy extends MergePolicy {
   }
 
   /** Expert: scores one merge; subclasses can override. */
-  protected MergeScore score(List<SegmentInfo> candidate, boolean hitTooLarge, long mergingBytes) throws IOException {
+  protected MergeScore score(List<SegmentInfo> candidate, boolean hitTooLarge) throws IOException {
     long totBeforeMergeBytes = 0;
     long totAfterMergeBytes = 0;
     long totAfterMergeBytesFloored = 0;

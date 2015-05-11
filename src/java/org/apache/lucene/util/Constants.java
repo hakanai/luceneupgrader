@@ -49,9 +49,6 @@ public final class Constants {
   public static final String OS_VERSION = System.getProperty("os.version");
   public static final String JAVA_VENDOR = System.getProperty("java.vendor");
 
-  public static final boolean JRE_IS_MINIMUM_JAVA6;
-  public static final boolean JRE_IS_MINIMUM_JAVA7;
-  
   /** True iff running on a 64bit JVM */
   public static final boolean JRE_IS_64BIT;
   
@@ -80,24 +77,6 @@ public final class Constants {
       }
     }
     JRE_IS_64BIT = is64Bit;
-
-    // this method only exists in Java 6:
-    boolean v6 = true;
-    try {
-      String.class.getMethod("isEmpty");
-    } catch (NoSuchMethodException nsme) {
-      v6 = false;
-    }
-    JRE_IS_MINIMUM_JAVA6 = v6;
-    
-    // this method only exists in Java 7:
-    boolean v7 = true;
-    try {
-      Throwable.class.getMethod("getSuppressed");
-    } catch (NoSuchMethodException nsme) {
-      v7 = false;
-    }
-    JRE_IS_MINIMUM_JAVA7 = v7;
   }
 
   // this method prevents inlining the final version constant in compiled classes,

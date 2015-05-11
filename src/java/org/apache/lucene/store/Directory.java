@@ -17,9 +17,6 @@ package org.apache.lucene.store;
  * limitations under the License.
  */
 
-import org.apache.lucene.index.IndexFileNameFilter;
-import org.apache.lucene.util.IOUtils;
-
 import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -60,12 +57,6 @@ public abstract class Directory implements Closeable {
 
   /** Returns true iff a file with the given name exists. */
   public abstract boolean fileExists(String name)
-       throws IOException;
-
-  /** Returns the time the named file was last modified.
-   * @deprecated */
-  @Deprecated
-  public abstract long fileModified(String name)
        throws IOException;
 
   /** Set the modified time of an existing file to now.
@@ -196,79 +187,6 @@ public abstract class Directory implements Closeable {
   @Override
   public String toString() {
     return super.toString() + " lockFactory=" + getLockFactory();
-  }
-
-  /**
-   * Copies the file <i>src</i> to {@code Directory} <i>to</i> under the new
-   * file name <i>dest</i>.
-   * <p>
-   * If you want to copy the entire source directory to the destination one, you
-   * can do so like this:
-   * 
-   * <pre>
-   * Directory to; // the directory to copy to
-   * for (String file : dir.listAll()) {
-   *   dir.copy(to, file, newFile); // newFile can be either file, or a new name
-   * }
-   * </pre>
-   * <p>
-   * <b>NOTE:</b> this method does not check whether <i>dest<i> exist and will
-   * overwrite it if it does.
-   */
-  public void copy(Directory to, String src, String dest) throws IOException {
-    IndexOutput os = null;
-    IndexInput is = null;
-    IOException priorException = null;
-    try {
-      os = to.createOutput(dest);
-      is = openInput(src);
-      is.copyBytes(os, is.length());
-    } catch (IOException ioe) {
-      priorException = ioe;
-    } finally {
-      IOUtils.closeWhileHandlingException(priorException, os, is);
-    }
-  }
-
-  /**
-   * Copy contents of a directory src to a directory dest. If a file in src
-   * already exists in dest then the one in dest will be blindly overwritten.
-   * <p>
-   * <b>NOTE:</b> the source directory cannot change while this method is
-   * running. Otherwise the results are undefined and you could easily hit a
-   * FileNotFoundException.
-   * <p>
-   * <b>NOTE:</b> this method only copies files that look like index files (ie,
-   * have extensions matching the known extensions of index files).
-   * 
-   * @param src source directory
-   * @param dest destination directory
-   * @param closeDirSrc if <code>true</code>, call {@code #close()} method on
-   *        source directory
-   * @deprecated should be replaced with calls to
-   *             {@code #copy(Directory, String, String)} for every file that
-   *             needs copying. You can use the following code:
-   * 
-   * <pre>
-   * IndexFileNameFilter filter = IndexFileNameFilter.getFilter();
-   * for (String file : src.listAll()) {
-   *   if (filter.accept(null, file)) {
-   *     src.copy(dest, file, file);
-   *   }
-   * }
-   * </pre>
-   */
-  @Deprecated
-  public static void copy(Directory src, Directory dest, boolean closeDirSrc) throws IOException {
-    IndexFileNameFilter filter = IndexFileNameFilter.getFilter();
-    for (String file : src.listAll()) {
-      if (filter.accept(null, file)) {
-        src.copy(dest, file, file);
-      }
-    }
-    if (closeDirSrc) {
-      src.close();
-    }
   }
 
   /**

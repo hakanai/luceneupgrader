@@ -103,17 +103,7 @@ public final class CompoundFileWriter {
         entries = new LinkedList<FileEntry>();
     }
 
-    /** Returns the directory of the compound file. */
-    public Directory getDirectory() {
-        return directory;
-    }
-
-    /** Returns the name of the compound file. */
-    public String getName() {
-        return fileName;
-    }
-
-    /** Add a source stream. <code>file</code> is the string by which the 
+    /** Add a source stream. <code>file</code> is the string by which the
      *  sub-stream will be known in the compound stream.
      * 
      *  @throws IllegalStateException if this writer is closed

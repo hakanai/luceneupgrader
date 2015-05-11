@@ -147,15 +147,6 @@ public abstract class BufferedIndexInput extends IndexInput {
   }
 
   @Override
-  public final short readShort() throws IOException {
-    if (2 <= (bufferLength-bufferPosition)) {
-      return (short) (((buffer[bufferPosition++] & 0xFF) <<  8) |  (buffer[bufferPosition++] & 0xFF));
-    } else {
-      return super.readShort();
-    }
-  }
-  
-  @Override
   public final int readInt() throws IOException {
     if (4 <= (bufferLength-bufferPosition)) {
       return ((buffer[bufferPosition++] & 0xFF) << 24) | ((buffer[bufferPosition++] & 0xFF) << 16)

@@ -33,28 +33,6 @@ import java.io.Serializable;
  *
  **/
 public interface Fieldable extends Serializable {
-  /** Sets the boost factor hits on this field.  This value will be
-   * multiplied into the score of all hits on this this field of this
-   * document.
-   *
-   * <p>The boost is multiplied by {@code org.apache.lucene.document.Document#getBoost()} of the document
-   * containing this field.  If a document has multiple fields with the same
-   * name, all such values are multiplied together.  This product is then
-   * used to compute the norm factor for the field.  By
-   * default, in the {@code
-   * org.apache.lucene.search.Similarity#computeNorm(String,
-   * FieldInvertState)} method, the boost value is multiplied
-   * by the {@code
-   * org.apache.lucene.search.Similarity#lengthNorm(String,
-   * int)} and then rounded by {@code org.apache.lucene.search.Similarity#encodeNormValue(float)} before it is stored in the
-   * index.  One should attempt to ensure that this product does not overflow
-   * the range of that encoding.
-   *
-   *
-   *
-   *
-   */
-  void setBoost(float boost);
 
   /** Returns the boost factor for hits for this field.
    *

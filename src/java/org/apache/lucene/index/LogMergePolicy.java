@@ -86,48 +86,9 @@ public abstract class LogMergePolicy extends MergePolicy {
     return w != null && w.verbose();
   }
 
-  /** */
-  public double getNoCFSRatio() {
-    return noCFSRatio;
-  }
-
-  /** If a merged segment will be more than this percentage
-   *  of the total size of the index, leave the segment as
-   *  non-compound file even if compound file is enabled.
-   *  Set to 1.0 to always use CFS regardless of merge
-   *  size. */
-  public void setNoCFSRatio(double noCFSRatio) {
-    if (noCFSRatio < 0.0 || noCFSRatio > 1.0) {
-      throw new IllegalArgumentException("noCFSRatio must be 0.0 to 1.0 inclusive; got " + noCFSRatio);
-    }
-    this.noCFSRatio = noCFSRatio;
-  }
-  
   protected void message(String message) {
     if (verbose())
       writer.get().message("LMP: " + message);
-  }
-
-  /** <p>Returns the number of segments that are merged at
-   * once and also controls the total number of segments
-   * allowed to accumulate in the index.</p> */
-  public int getMergeFactor() {
-    return mergeFactor;
-  }
-
-  /** Determines how often segment indices are merged by
-   * addDocument().  With smaller values, less RAM is used
-   * while indexing, and searches are
-   * faster, but indexing speed is slower.  With larger
-   * values, more RAM is used during indexing, and while
-   * searches is slower, indexing is
-   * faster.  Thus larger values (> 10) are best for batch
-   * index creation, and smaller values (< 10) for indices
-   * that are interactively maintained. */
-  public void setMergeFactor(int mergeFactor) {
-    if (mergeFactor < 2)
-      throw new IllegalArgumentException("mergeFactor cannot be less than 2");
-    this.mergeFactor = mergeFactor;
   }
 
   // Javadoc inherited
@@ -147,31 +108,6 @@ public abstract class LogMergePolicy extends MergePolicy {
       doCFS = size(mergedInfo) <= noCFSRatio * totalSize;
     }
     return doCFS;
-  }
-
-  /** Sets whether compound file format should be used for
-   *  newly flushed and newly merged segments. */
-  public void setUseCompoundFile(boolean useCompoundFile) {
-    this.useCompoundFile = useCompoundFile;
-  }
-
-  /** Returns true if newly flushed and newly merge segments
-   *  are written in compound file format. @see
-   *  #setUseCompoundFile */
-  public boolean getUseCompoundFile() {
-    return useCompoundFile;
-  }
-
-  /** Sets whether the segment size should be calibrated by
-   *  the number of deletes when choosing segments for merge. */
-  public void setCalibrateSizeByDeletes(boolean calibrateSizeByDeletes) {
-    this.calibrateSizeByDeletes = calibrateSizeByDeletes;
-  }
-
-  /** Returns true if the segment size should be calibrated 
-   *  by the number of deletes when choosing segments for merge. */
-  public boolean getCalibrateSizeByDeletes() {
-    return calibrateSizeByDeletes;
   }
 
   @Override

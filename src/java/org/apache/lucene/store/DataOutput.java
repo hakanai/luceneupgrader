@@ -61,14 +61,6 @@ public abstract class DataOutput {
     writeByte((byte) i);
   }
 
-  /** Writes a short as two bytes.
-   *
-   */
-  public void writeShort(short i) throws IOException {
-    writeByte((byte)(i >>  8));
-    writeByte((byte) i);
-  }
-
   /** Writes an int in a variable-length format.  Writes between one and
    * five bytes.  Smaller values take fewer bytes.  Negative numbers are
    * supported, but should be avoided.

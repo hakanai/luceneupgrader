@@ -42,37 +42,6 @@ public final class Document implements java.io.Serializable {
   public Document() {}
 
 
-  /** Sets a boost factor for hits on any field of this document.  This value
-   * will be multiplied into the score of all hits on this document.
-   *
-   * <p>The default value is 1.0.
-   * 
-   * <p>Values are multiplied into the value of {@code Fieldable#getBoost()} of
-   * each field in this document.  Thus, this method in effect sets a default
-   * boost for the fields of this document.
-   *
-   *
-   */
-  public void setBoost(float boost) {
-    this.boost = boost;
-  }
-
-  /** Returns, at indexing time, the boost factor as set by {@code #setBoost(float)}.
-   *
-   * <p>Note that once a document is indexed this value is no longer available
-   * from the index.  At search time, for retrieved documents, this method always 
-   * returns 1. This however does not mean that the boost value set at  indexing 
-   * time was ignored - it was just combined with other indexing time factors and 
-   * stored elsewhere, for better indexing and search performance. (For more 
-   * information see the "norm(t,d)" part of the scoring formula in 
-   * {@code org.apache.lucene.search.Similarity Similarity}.)
-   *
-   *
-   */
-  public float getBoost() {
-    return boost;
-  }
-
   /**
    * <p>Adds a field to a document.  Several fields may be added with
    * the same name.  In this case, if the fields are indexed, their text is
@@ -87,21 +56,6 @@ public final class Document implements java.io.Serializable {
     fields.add(field);
   }
 
-
-    /** Returns the string value of the field with the given name if any exist in
-   * this document, or null.  If multiple fields exist with this name, this
-   * method returns the first value added. If only binary fields with this name
-   * exist, returns null.
-   * For {@code NumericField} it returns the string value of the number. If you want
-   * the actual {@code NumericField} instance back, use {@code #getFieldable}.
-   */
-  public final String get(String name) {
-   for (Fieldable field : fields) {
-      if (field.name().equals(name) && (!field.isBinary()))
-        return field.stringValue();
-    }
-    return null;
-  }
 
   /** Returns a List of all the fields in a document.
    * <p>Note that fields which are <i>not</i> {@code Fieldable#isStored() stored} are

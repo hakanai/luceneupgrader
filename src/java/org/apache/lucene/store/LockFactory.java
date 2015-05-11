@@ -17,8 +17,6 @@ package org.apache.lucene.store;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 /**
  * <p>Base class for Locking implementation.  {@code Directory} uses
  * instances of this class to implement locking.</p>
@@ -57,11 +55,4 @@ public abstract class LockFactory {
    */
   public abstract Lock makeLock(String lockName);
 
-  /**
-   * Attempt to clear (forcefully unlock and remove) the
-   * specified lock.  Only call this at a time when you are
-   * certain this lock is no longer in use.
-   * @param lockName name of the lock to be cleared.
-   */
-  abstract public void clearLock(String lockName) throws IOException;
 }

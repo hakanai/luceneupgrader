@@ -22,10 +22,8 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMFile;
-import org.apache.lucene.util.ArrayUtil;
 import org.apache.lucene.util.BitVector;
 import org.apache.lucene.util.RamUsageEstimator;
-import org.apache.lucene.util.ThreadInterruptedException;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -111,9 +109,6 @@ final class DocumentsWriter {
   private int nextDocID;                  // Next docID to be added
   private int numDocs;                    // # of docs added, but not yet flushed
 
-  // Max # ThreadState instances; if there are more threads
-  // than this they share ThreadStates
-  private DocumentsWriterThreadState[] threadStates = new DocumentsWriterThreadState[0];
   private final HashMap<Thread,DocumentsWriterThreadState> threadBindings = new HashMap<Thread,DocumentsWriterThreadState>();
 
   boolean bufferIsFull;                   // True when it's time to write segment
@@ -122,10 +117,6 @@ final class DocumentsWriter {
   PrintStream infoStream;
   int maxFieldLength = IndexWriter.DEFAULT_MAX_FIELD_LENGTH;
   Similarity similarity;
-
-  // max # simultaneous threads; if there are more than
-  // this, they wait for others to finish first
-  private final int maxThreadStates;
 
   // Deletes for our still-in-RAM (to be flushed next) segment
   private BufferedDeletes pendingDeletes = new BufferedDeletes();
@@ -265,7 +256,6 @@ final class DocumentsWriter {
     this.directory = directory;
     this.writer = writer;
     this.similarity = config.getSimilarity();
-    this.maxThreadStates = config.getMaxThreadStates();
     this.fieldInfos = fieldInfos;
     this.bufferedDeletesStream = bufferedDeletesStream;
 
@@ -281,23 +271,14 @@ final class DocumentsWriter {
    *  here. */
   synchronized void setInfoStream(PrintStream infoStream) {
     this.infoStream = infoStream;
-    for (DocumentsWriterThreadState threadState : threadStates) {
-      threadState.docState.infoStream = infoStream;
-    }
   }
 
   synchronized void setMaxFieldLength(int maxFieldLength) {
     this.maxFieldLength = maxFieldLength;
-    for (DocumentsWriterThreadState threadState : threadStates) {
-      threadState.docState.maxFieldLength = maxFieldLength;
-    }
   }
 
   synchronized void setSimilarity(Similarity similarity) {
     this.similarity = similarity;
-    for (DocumentsWriterThreadState threadState : threadStates) {
-      threadState.docState.similarity = similarity;
-    }
   }
 
   /** Get current segment name we are writing. */
@@ -314,13 +295,6 @@ final class DocumentsWriter {
     if (infoStream != null) {
       writer.message("DW: " + message);
     }
-  }
-
-  synchronized void setAborting() {
-    if (infoStream != null) {
-      message("setAborting");
-    }
-    aborting = true;
   }
 
   /** Called if we hit an exception at a bad time (when
@@ -355,14 +329,7 @@ final class DocumentsWriter {
         waitQueue.waitingBytes = 0;
         
         pendingDeletes.clear();
-        
-        for (DocumentsWriterThreadState threadState : threadStates) {
-          try {
-            threadState.consumer.abort();
-          } catch (Throwable ignored) {
-          }
-        }
-          
+
         try {
           consumer.abort();
         } catch (Throwable ignored) {
@@ -392,17 +359,9 @@ final class DocumentsWriter {
     numDocs = 0;
     nextDocID = 0;
     bufferIsFull = false;
-    for (DocumentsWriterThreadState threadState : threadStates) {
-      threadState.doAfterFlush();
-    }
   }
 
   private synchronized boolean allThreadsIdle() {
-    for (DocumentsWriterThreadState threadState : threadStates) {
-      if (!threadState.isIdle) {
-        return false;
-      }
-    }
     return true;
   }
 
@@ -500,9 +459,6 @@ final class DocumentsWriter {
       newSegment = new SegmentInfo(segment, numDocs, directory, false, true, fieldInfos.hasProx(), false);
 
       Collection<DocConsumerPerThread> threads = new HashSet<DocConsumerPerThread>();
-      for (DocumentsWriterThreadState threadState : threadStates) {
-        threads.add(threadState.consumer);
-      }
 
       double startMBUsed = bytesUsed()/1024./1024.;
 
@@ -604,28 +560,7 @@ final class DocumentsWriter {
   }
 
   public synchronized void waitIdle() {
-    while (!allThreadsIdle()) {
-      try {
-        wait();
-      } catch (InterruptedException ie) {
-        throw new ThreadInterruptedException(ie);
-      }
-    }
   }
-
-  private static class SkipDocWriter extends DocWriter {
-    @Override
-    void finish() {
-    }
-    @Override
-    void abort() {
-    }
-    @Override
-    long sizeInBytes() {
-      return 0;
-    }
-  }
-  final SkipDocWriter skipDocWriter = new SkipDocWriter();
 
   NumberFormat nf = NumberFormat.getInstance();
 
@@ -732,8 +667,6 @@ final class DocumentsWriter {
   final static int CHAR_BLOCK_SHIFT = 14;
   final static int CHAR_BLOCK_SIZE = 1 << CHAR_BLOCK_SHIFT;
   final static int CHAR_BLOCK_MASK = CHAR_BLOCK_SIZE - 1;
-
-  final static int MAX_TERM_LENGTH = CHAR_BLOCK_SIZE-1;
 
   private ArrayList<char[]> freeCharBlocks = new ArrayList<char[]>();
 
@@ -905,17 +838,6 @@ final class DocumentsWriter {
       nextWriteDocID = 0;
     }
 
-    synchronized boolean doPause() {
-      final double mb = config.getRAMBufferSizeMB();
-      final long waitQueuePauseBytes;
-      if (mb == IndexWriterConfig.DISABLE_AUTO_FLUSH) {
-        waitQueuePauseBytes = 4*1024*1024;
-      } else {
-        waitQueuePauseBytes = (long) (mb*1024*1024*0.1);
-      }
-      return waitingBytes > waitQueuePauseBytes;
-    }
-
     synchronized void abort() {
       int count = 0;
       for(int i=0;i<waiting.length;i++) {
@@ -931,78 +853,5 @@ final class DocumentsWriter {
       numWaiting = 0;
     }
 
-    private void writeDocument(DocWriter doc) throws IOException {
-      assert doc == skipDocWriter || nextWriteDocID == doc.docID;
-      boolean success = false;
-      try {
-        doc.finish();
-        nextWriteDocID++;
-        nextWriteLoc++;
-        assert nextWriteLoc <= waiting.length;
-        if (nextWriteLoc == waiting.length) {
-          nextWriteLoc = 0;
-        }
-        success = true;
-      } finally {
-        if (!success) {
-          setAborting();
-        }
-      }
-    }
-
-    synchronized public boolean add(DocWriter doc) throws IOException {
-
-      assert doc.docID >= nextWriteDocID;
-
-      if (doc.docID == nextWriteDocID) {
-        writeDocument(doc);
-        while(true) {
-          doc = waiting[nextWriteLoc];
-          if (doc != null) {
-            numWaiting--;
-            waiting[nextWriteLoc] = null;
-            waitingBytes -= doc.sizeInBytes();
-            writeDocument(doc);
-          } else {
-            break;
-          }
-        }
-      } else {
-
-        // I finished before documents that were added
-        // before me.  This can easily happen when I am a
-        // small doc and the docs before me were large, or,
-        // just due to luck in the thread scheduling.  Just
-        // add myself to the queue and when that large doc
-        // finishes, it will flush me:
-        int gap = doc.docID - nextWriteDocID;
-        if (gap >= waiting.length) {
-          // Grow queue
-          DocWriter[] newArray = new DocWriter[ArrayUtil.oversize(gap, RamUsageEstimator.NUM_BYTES_OBJECT_REF)];
-          assert nextWriteLoc >= 0;
-          System.arraycopy(waiting, nextWriteLoc, newArray, 0, waiting.length-nextWriteLoc);
-          System.arraycopy(waiting, 0, newArray, waiting.length-nextWriteLoc, nextWriteLoc);
-          nextWriteLoc = 0;
-          waiting = newArray;
-          gap = doc.docID - nextWriteDocID;
-        }
-
-        int loc = nextWriteLoc + gap;
-        if (loc >= waiting.length) {
-          loc -= waiting.length;
-        }
-
-        // We should only wrap one time
-        assert loc < waiting.length;
-
-        // Nobody should be in my spot!
-        assert waiting[loc] == null;
-        waiting[loc] = doc;
-        numWaiting++;
-        waitingBytes += doc.sizeInBytes();
-      }
-      
-      return doPause();
-    }
   }
 }

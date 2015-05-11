@@ -84,19 +84,6 @@ public class RAMDirectory extends Directory implements Serializable {
     return fileMap.containsKey(name);
   }
 
-  /** Returns the time the named file was last modified.
-   * @throws IOException if the file does not exist
-   */
-  @Override
-  public final long fileModified(String name) throws IOException {
-    ensureOpen();
-    RAMFile file = fileMap.get(name);
-    if (file == null) {
-      throw new FileNotFoundException(name);
-    }
-    return file.getLastModified();
-  }
-
   /** Set the modified time of an existing file to now.
    * @throws IOException if the file does not exist
    *  @deprecated Lucene never uses this API; it will be
@@ -109,7 +96,7 @@ public class RAMDirectory extends Directory implements Serializable {
     if (file == null) {
       throw new FileNotFoundException(name);
     }
-    
+
     long ts2, ts1 = System.currentTimeMillis();
     do {
       try {
@@ -119,7 +106,7 @@ public class RAMDirectory extends Directory implements Serializable {
       }
       ts2 = System.currentTimeMillis();
     } while(ts1 == ts2);
-    
+
     file.setLastModified(ts2);
   }
 

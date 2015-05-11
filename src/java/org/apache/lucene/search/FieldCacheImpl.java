@@ -142,9 +142,6 @@ class FieldCacheImpl implements FieldCache {
 
   /** Expert: Internal cache. */
   abstract static class Cache {
-    Cache() {
-      this.wrapper = null;
-    }
 
     Cache(FieldCacheImpl wrapper) {
       this.wrapper = wrapper;

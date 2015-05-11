@@ -17,20 +17,14 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.NoSuchDirectoryException;
 import org.apache.lucene.util.CollectionUtil;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.*;
 
 /*
  * This class keeps track of each SegmentInfos instance that
@@ -154,7 +148,7 @@ final class IndexFileDeleter {
     IndexFileNameFilter filter = IndexFileNameFilter.getFilter();
 
     CommitPoint currentCommitPoint = null;
-    String[] files = null;
+    String[] files;
     try {
       files = directory.listAll();
     } catch (NoSuchDirectoryException e) {  
@@ -267,7 +261,7 @@ final class IndexFileDeleter {
     // sometime it may not be the most recent commit
     checkpoint(segmentInfos, false);
     
-    startingCommitDeleted = currentCommitPoint == null ? false : currentCommitPoint.isDeleted();
+    startingCommitDeleted = currentCommitPoint != null && currentCommitPoint.isDeleted();
 
     deleteCommits();
   }
@@ -381,33 +375,11 @@ final class IndexFileDeleter {
     deletePendingFiles();
   }
 
-  /**
-   * Revisits the {@code IndexDeletionPolicy} by calling its
-   * {@code IndexDeletionPolicy#onCommit(List)} again with the known commits.
-   * This is useful in cases where a deletion policy which holds onto index
-   * commits is used. The application may know that some commits are not held by
-   * the deletion policy anymore and call
-   * {@code IndexWriter#deleteUnusedFiles()}, which will attempt to delete the
-   * unused commits again.
-   */
-  void revisitPolicy() throws IOException {
-    assert locked();
-    if (infoStream != null) {
-      message("now revisitPolicy");
-    }
-
-    if (commits.size() > 0) {
-      policy.onCommit(commits);
-      deleteCommits();
-    }
-  }
-  
   public void deletePendingFiles() throws IOException {
     assert locked();
     if (deletable != null) {
       List<String> oldDeletable = deletable;
       deletable = null;
-      int size = oldDeletable.size();
       for (String anOldDeletable : oldDeletable) {
         if (infoStream != null) {
           message("delete pending file " + anOldDeletable);
@@ -527,6 +499,7 @@ final class IndexFileDeleter {
 
   public boolean exists(String fileName) {
     assert locked();
+    //noinspection SimplifiableIfStatement
     if (!refCounts.containsKey(fileName)) {
       return false;
     } else {
@@ -544,13 +517,6 @@ final class IndexFileDeleter {
       rc = refCounts.get(fileName);
     }
     return rc;
-  }
-
-  void deleteFiles(List<String> files) throws IOException {
-    assert locked();
-    for(final String file: files) {
-      deleteFile(file);
-    }
   }
 
   /** Deletes the specified files, but only if they are new

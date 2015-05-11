@@ -54,7 +54,7 @@ final class FormatPostingsDocsWriter extends FormatPostingsDocsConsumer implemen
       skipListWriter = parent.parent.skipListWriter;
       skipListWriter.setFreqOutput(out);
       
-      posWriter = new FormatPostingsPositionsWriter(state, this);
+      posWriter = new FormatPostingsPositionsWriter(this);
       success = true;
     } finally {
       if (!success) {

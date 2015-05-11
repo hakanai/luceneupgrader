@@ -158,37 +158,6 @@ public final class NumericTokenStream extends TokenStream {
   }
 
   @Override
-  public boolean incrementToken() {
-    if (valSize == 0)
-      throw new IllegalStateException("call set???Value() before usage");
-    if (shift >= valSize)
-      return false;
-
-    clearAttributes();
-    final char[] buffer;
-    switch (valSize) {
-      case 64:
-        buffer = termAtt.resizeBuffer(NumericUtils.BUF_SIZE_LONG);
-        termAtt.setLength(NumericUtils.longToPrefixCoded(value, shift, buffer));
-        break;
-      
-      case 32:
-        buffer = termAtt.resizeBuffer(NumericUtils.BUF_SIZE_INT);
-        termAtt.setLength(NumericUtils.intToPrefixCoded((int) value, shift, buffer));
-        break;
-      
-      default:
-        // should not happen
-        throw new IllegalArgumentException("valSize must be 32 or 64");
-    }
-    
-    typeAtt.setType((shift == 0) ? TOKEN_TYPE_FULL_PREC : TOKEN_TYPE_LOWER_PREC);
-    posIncrAtt.setPositionIncrement((shift == 0) ? 1 : 0);
-    shift += precisionStep;
-    return true;
-  }
-  
-  @Override
   public String toString() {
     return "(numeric,valSize=" + valSize + ",precisionStep=" + precisionStep + ')';
   }

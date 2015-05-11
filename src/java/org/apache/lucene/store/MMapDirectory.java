@@ -268,17 +268,6 @@ public class MMapDirectory extends FSDirectory {
         throw new AlreadyClosedException("MMapIndexInput already closed: " + this);
       }
     }
-  
-    @Override
-    public short readShort() throws IOException {
-      try {
-        return curBuf.getShort();
-      } catch (BufferUnderflowException e) {
-        return super.readShort();
-      } catch (NullPointerException npe) {
-        throw new AlreadyClosedException("MMapIndexInput already closed: " + this);
-      }
-    }
 
     @Override
     public int readInt() throws IOException {

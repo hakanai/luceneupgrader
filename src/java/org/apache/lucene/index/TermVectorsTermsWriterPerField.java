@@ -17,13 +17,13 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.store.IndexOutput;
-import org.apache.lucene.util.UnicodeUtil;
 import org.apache.lucene.util.RamUsageEstimator;
+import org.apache.lucene.util.UnicodeUtil;
+
+import java.io.IOException;
 
 final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
 
@@ -94,9 +94,7 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
     //perThread.postingsCount = 0;
 
     return doVectors;
-  }     
-
-  public void abort() {}
+  }
 
   /** Called once per field per document if term vectors
    *  are enabled, to write the vectors to

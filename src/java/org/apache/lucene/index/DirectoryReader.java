@@ -58,8 +58,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
   // opened on a past IndexCommit:
   private long maxIndexVersion;
 
-  private final boolean applyAllDeletes;
-
   static IndexReader open(final Directory directory, final IndexDeletionPolicy deletionPolicy, final IndexCommit commit, final boolean readOnly,
                           final int termInfosIndexDivisor) throws IOException {
     return (IndexReader) new SegmentInfos.FindSegmentsFile(directory) {
@@ -82,8 +80,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     this.segmentInfos = sis;
     this.deletionPolicy = deletionPolicy;
     this.termInfosIndexDivisor = termInfosIndexDivisor;
-
-    applyAllDeletes = false;
 
     // To reduce the chance of hitting FileNotFound
     // (and having to retry), we open segments in
@@ -112,7 +108,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
   DirectoryReader(IndexWriter writer, SegmentInfos infos, int termInfosIndexDivisor, boolean applyAllDeletes) throws IOException {
     this.directory = writer.getDirectory();
     this.readOnly = true;
-    this.applyAllDeletes = applyAllDeletes;       // saved for reopen
 
     this.termInfosIndexDivisor = termInfosIndexDivisor;
 
@@ -161,7 +156,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     this.readOnly = readOnly;
     this.segmentInfos = infos;
     this.termInfosIndexDivisor = termInfosIndexDivisor;
-    applyAllDeletes = false;
 
     // we put the old SegmentReaders in a map, that allows us
     // to lookup a reader using its segment name

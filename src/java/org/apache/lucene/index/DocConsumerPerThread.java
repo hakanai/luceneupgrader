@@ -19,5 +19,4 @@ package org.apache.lucene.index;
 
 abstract class DocConsumerPerThread {
 
-  abstract void abort();
 }

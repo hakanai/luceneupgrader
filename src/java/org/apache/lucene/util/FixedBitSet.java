@@ -70,12 +70,6 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     return numBits;
   }
 
-  /** This DocIdSet implementation is cacheable. */
-  @Override
-  public boolean isCacheable() {
-    return true;
-  }
-
   /** Expert. */
   public long[] getBits() {
     return bits;

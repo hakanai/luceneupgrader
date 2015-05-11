@@ -2015,13 +2015,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     }
   }
 
-  /** NOTE: flushDocStores is ignored now (hardwired to
-   *  true); this method is only here for backwards
-   *  compatibility */
-  protected final void flush(boolean triggerMerge, boolean flushDocStores, boolean flushDeletes) throws IOException {
-    flush(triggerMerge, flushDeletes);
-  }
-
   /**
    * Flush all in-memory buffered updates (adds and deletes)
    * to the Directory.

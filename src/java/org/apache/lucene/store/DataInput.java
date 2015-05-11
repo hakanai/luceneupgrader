@@ -70,13 +70,6 @@ public abstract class DataInput implements Cloneable {
     readBytes(b, offset, len);
   }
 
-  /** Reads two bytes and returns a short.
-   *
-   */
-  public short readShort() throws IOException {
-    return (short) (((readByte() & 0xFF) <<  8) |  (readByte() & 0xFF));
-  }
-
   /** Reads four bytes and returns an int.
    *
    */

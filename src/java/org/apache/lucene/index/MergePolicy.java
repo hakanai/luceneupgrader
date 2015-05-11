@@ -162,30 +162,7 @@ public abstract class MergePolicy implements java.io.Closeable {
       }
       return b.toString();
     }
-    
-    /**
-     * Returns the total size in bytes of this merge. Note that this does not
-     * indicate the size of the merged segment, but the input total size.
-     * */
-    public long totalBytesSize() throws IOException {
-      long total = 0;
-      for (SegmentInfo info : segments) {
-        total += info.sizeInBytes(true);
-      }
-      return total;
-    }
 
-    /**
-     * Returns the total number of documents that are included with this merge.
-     * Note that this does not indicate the number of documents after the merge.
-     * */
-    public int totalNumDocs() throws IOException {
-      int total = 0;
-      for (SegmentInfo info : segments) {
-        total += info.docCount;
-      }
-      return total;
-    }
   }
 
   /**
@@ -206,14 +183,6 @@ public abstract class MergePolicy implements java.io.Closeable {
       merges.add(merge);
     }
 
-    public String segString(Directory dir) {
-      StringBuilder b = new StringBuilder();
-      b.append("MergeSpec:\n");
-      final int count = merges.size();
-      for(int i=0;i<count;i++)
-        b.append("  ").append(1 + i).append(": ").append(merges.get(i).segString(dir));
-      return b.toString();
-    }
   }
 
   /** Exception thrown if there are any problems while
@@ -238,9 +207,6 @@ public abstract class MergePolicy implements java.io.Closeable {
   }
 
   public static class MergeAbortedException extends IOException {
-    public MergeAbortedException() {
-      super("merge is aborted");
-    }
     public MergeAbortedException(String message) {
       super(message);
     }

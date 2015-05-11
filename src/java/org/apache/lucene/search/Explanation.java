@@ -26,8 +26,6 @@ public class Explanation implements java.io.Serializable {
   private String description;                     // what it represents
   private ArrayList<Explanation> details;                      // sub-explanations
 
-  public Explanation() {}
-
   public Explanation(float value, String description) {
     this.value = value;
     this.description = description;
@@ -105,28 +103,6 @@ public class Explanation implements java.io.Serializable {
   }
 
 
-  /** Render an explanation as HTML. */
-  public String toHtml() {
-    StringBuilder buffer = new StringBuilder();
-    buffer.append("<ul>\n");
-
-    buffer.append("<li>");
-    buffer.append(getSummary());
-    buffer.append("<br />\n");
-
-    Explanation[] details = getDetails();
-    if (details != null) {
-      for (Explanation detail : details) {
-        buffer.append(detail.toHtml());
-      }
-    }
-
-    buffer.append("</li>\n");
-    buffer.append("</ul>\n");
-
-    return buffer.toString();
-  }
-  
   /**
    * Small Util class used to pass both an idf factor as well as an
    * explanation for that factor.
@@ -136,15 +112,5 @@ public class Explanation implements java.io.Serializable {
    *
    */
   public static abstract class IDFExplanation implements Serializable {
-    /**
-     * @return the idf factor
-     */
-    public abstract float getIdf();
-    /**
-     * This should be calculated lazily if possible.
-     * 
-     * @return the explanation for the idf factor.
-     */
-    public abstract String explain();
   }
 }
