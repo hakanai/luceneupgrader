@@ -17,8 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 final class TermsHashPerThread extends InvertedDocConsumerPerThread {
 
   final TermsHash termsHash;
@@ -69,23 +67,6 @@ final class TermsHashPerThread extends InvertedDocConsumerPerThread {
       if (nextPerThread != null) {
         nextPerThread.abort();
       }
-    }
-  }
-
-  @Override
-  public DocumentsWriter.DocWriter finishDocument() throws IOException {
-    final DocumentsWriter.DocWriter doc = consumer.finishDocument();
-
-    final DocumentsWriter.DocWriter doc2;
-    if (nextPerThread != null)
-      doc2 = nextPerThread.consumer.finishDocument();
-    else
-      doc2 = null;
-    if (doc == null)
-      return doc2;
-    else {
-      doc.setNext(doc2);
-      return doc;
     }
   }
 

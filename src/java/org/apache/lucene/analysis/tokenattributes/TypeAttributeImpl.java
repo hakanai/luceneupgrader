@@ -35,22 +35,6 @@ public class TypeAttributeImpl extends AttributeImpl implements TypeAttribute, C
   public TypeAttributeImpl(String type) {
     this.type = type;
   }
-  
-  /** Returns this Token's lexical type.  Defaults to "word". */
-  public String type() {
-    return type;
-  }
-
-  /** Set the lexical type.
-      */
-  public void setType(String type) {
-    this.type = type;
-  }
-
-  @Override
-  public void clear() {
-    type = DEFAULT_TYPE;    
-  }
 
   @Override
   public boolean equals(Object other) {

@@ -17,9 +17,9 @@ package org.apache.lucene.analysis.tokenattributes;
  * limitations under the License.
  */
 
-import java.io.Serializable;
-
 import org.apache.lucene.util.AttributeImpl;
+
+import java.io.Serializable;
 
 /** The positionIncrement determines the position of this token
  * relative to the previous Token in a {@code TokenStream}, used in phrase
@@ -48,31 +48,7 @@ import org.apache.lucene.util.AttributeImpl;
 @SuppressWarnings("unused") // Reflected
 public class PositionIncrementAttributeImpl extends AttributeImpl implements PositionIncrementAttribute, Cloneable, Serializable {
   private int positionIncrement = 1;
-  
-  /** Set the position increment. The default value is one.
-   *
-   * @param positionIncrement the distance from the prior term
-   */
-  public void setPositionIncrement(int positionIncrement) {
-    if (positionIncrement < 0) {
-      throw new IllegalArgumentException
-        ("Increment must be zero or greater: got " + positionIncrement);
-    }
-    this.positionIncrement = positionIncrement;
-  }
 
-  /** Returns the position increment of this Token.
-   *
-   */
-  public int getPositionIncrement() {
-    return positionIncrement;
-  }
-
-  @Override
-  public void clear() {
-    this.positionIncrement = 1;
-  }
-  
   @Override
   public boolean equals(Object other) {
     if (other == this) {

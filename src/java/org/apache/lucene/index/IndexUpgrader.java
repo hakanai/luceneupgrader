@@ -114,14 +114,14 @@ public final class IndexUpgrader {
   /** Creates index upgrader on the given directory, using an {@code IndexWriter} using the given
    * {@code matchVersion}. The tool refuses to upgrade indexes with multiple commit points. */
   public IndexUpgrader(Directory dir, Version matchVersion) {
-    this(dir, new IndexWriterConfig(matchVersion, null), null, false);
+    this(dir, new IndexWriterConfig(matchVersion), null, false);
   }
   
   /** Creates index upgrader on the given directory, using an {@code IndexWriter} using the given
    * {@code matchVersion}. You have the possibility to upgrade indexes with multiple commit points by removing
    * all older ones. If {@code infoStream} is not {@code null}, all logging output will be sent to this stream. */
   public IndexUpgrader(Directory dir, Version matchVersion, PrintStream infoStream, boolean deletePriorCommits) {
-    this(dir, new IndexWriterConfig(matchVersion, null), infoStream, deletePriorCommits);
+    this(dir, new IndexWriterConfig(matchVersion), infoStream, deletePriorCommits);
   }
   
   /** Creates index upgrader on the given directory, using an {@code IndexWriter} using the given

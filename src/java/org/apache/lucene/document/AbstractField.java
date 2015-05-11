@@ -15,9 +15,8 @@ package org.apache.lucene.document;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.util.StringHelper; // for javadocs
 import org.apache.lucene.index.FieldInfo.IndexOptions;
+import org.apache.lucene.util.StringHelper;
 
 
 /**
@@ -37,11 +36,8 @@ public abstract class AbstractField implements Fieldable {
   protected boolean isBinary = false;
   protected boolean lazy = false;
   protected IndexOptions indexOptions = IndexOptions.DOCS_AND_FREQS_AND_POSITIONS;
-  protected float boost = 1.0f;
   // the data object for all different kind of field values
   protected Object fieldsData = null;
-  // pre-analyzed tokenStream for indexed fields
-  protected TokenStream tokenStream;
   // length/offset for all primitive types
   protected int binaryLength;
   protected int binaryOffset;
@@ -162,9 +158,6 @@ public abstract class AbstractField implements Fieldable {
     return binaryOffset;
   }
 
-  /** */
-  public IndexOptions getIndexOptions() { return indexOptions; }
-  
   /** Expert:
    *
    * If set, omit normalization factors associated with this indexed field.

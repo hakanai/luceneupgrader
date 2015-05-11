@@ -61,6 +61,7 @@ public final class BitVector implements Cloneable, Bits {
     return bytesLength;
   }
   
+  @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   public Object clone() {
     byte[] copyBits = new byte[bits.length];
@@ -111,12 +112,6 @@ public final class BitVector implements Cloneable, Bits {
     return size;
   }
 
-  /** Returns the number of bits in this vector.  This is also one greater than
-    the number of the largest valid bit number. */
-  public final int length() {
-    return size;
-  }
-
   /** Returns the total number of one bits in this vector.  This is efficiently
     computed and cached, so that, if the vector is not changed, no
     recomputation is done for repeated calls. */
@@ -124,7 +119,6 @@ public final class BitVector implements Cloneable, Bits {
     // if the vector has been modified
     if (count == -1) {
       int c = 0;
-      int end = bits.length;
       for (byte bit : bits) {
         c += BYTE_COUNTS[bit & 0xFF];      // sum bits per byte
       }
@@ -136,7 +130,6 @@ public final class BitVector implements Cloneable, Bits {
   /** For testing */
   public final int getRecomputedCount() {
     int c = 0;
-    int end = bits.length;
     for (byte bit : bits) c += BYTE_COUNTS[bit & 0xFF];      // sum bits per byte
     return c;
   }
@@ -161,9 +154,6 @@ public final class BitVector implements Cloneable, Bits {
   };
 
   private static String CODEC = "BitVector";
-
-  // Version before version tracking was added:
-  private final static int VERSION_PRE = -1;
 
   // First version:
   private final static int VERSION_START = 0;
@@ -258,10 +248,9 @@ public final class BitVector implements Cloneable, Bits {
 
     try {
       final int firstInt = input.readInt();
-      final int version;
       if (firstInt == -2) {
         // New format, with full header & version:
-        version = CodecUtil.checkHeader(input, CODEC, VERSION_START, VERSION_START);
+        CodecUtil.checkHeader(input, CODEC, VERSION_START, VERSION_START);
         size = input.readInt();
       } else {
         size = firstInt;

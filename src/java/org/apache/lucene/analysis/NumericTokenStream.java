@@ -17,11 +17,6 @@ package org.apache.lucene.analysis;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
-import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
-import org.apache.lucene.util.NumericUtils;
-
 /**
  * <b>Expert:</b> This class provides a {@code TokenStream}
  * for indexing numeric values that can be used by {@code
@@ -80,24 +75,6 @@ import org.apache.lucene.util.NumericUtils;
  */
 public final class NumericTokenStream extends TokenStream {
 
-  /** The full precision token gets this token type assigned. */
-  public static final String TOKEN_TYPE_FULL_PREC  = "fullPrecNumeric";
-
-  /** The lower precision tokens gets this token type assigned. */
-  public static final String TOKEN_TYPE_LOWER_PREC = "lowerPrecNumeric";
-
-  /**
-   * Creates a token stream for numeric values with the specified
-   * <code>precisionStep</code>. The stream is not yet initialized,
-   * before using set a value using the various set<em>???</em>Value() methods.
-   */
-  public NumericTokenStream(final int precisionStep) {
-    super();
-    this.precisionStep = precisionStep;
-    if (precisionStep < 1)
-      throw new IllegalArgumentException("precisionStep must be >=1");
-  }
-
   /**
    * Initializes the token stream with the supplied <code>long</code> value.
    * @param value the value, for which this TokenStream should enumerate tokens.
@@ -105,9 +82,7 @@ public final class NumericTokenStream extends TokenStream {
    * <code>new Field(name, new NumericTokenStream(precisionStep).setLongValue(value))</code>
    */
   public NumericTokenStream setLongValue(final long value) {
-    this.value = value;
     valSize = 64;
-    shift = 0;
     return this;
   }
   
@@ -118,9 +93,7 @@ public final class NumericTokenStream extends TokenStream {
    * <code>new Field(name, new NumericTokenStream(precisionStep).setIntValue(value))</code>
    */
   public NumericTokenStream setIntValue(final int value) {
-    this.value = value;
     valSize = 32;
-    shift = 0;
     return this;
   }
   
@@ -131,9 +104,7 @@ public final class NumericTokenStream extends TokenStream {
    * <code>new Field(name, new NumericTokenStream(precisionStep).setDoubleValue(value))</code>
    */
   public NumericTokenStream setDoubleValue(final double value) {
-    this.value = NumericUtils.doubleToSortableLong(value);
     valSize = 64;
-    shift = 0;
     return this;
   }
   
@@ -144,9 +115,7 @@ public final class NumericTokenStream extends TokenStream {
    * <code>new Field(name, new NumericTokenStream(precisionStep).setFloatValue(value))</code>
    */
   public NumericTokenStream setFloatValue(final float value) {
-    this.value = NumericUtils.floatToSortableInt(value);
     valSize = 32;
-    shift = 0;
     return this;
   }
   
@@ -154,7 +123,6 @@ public final class NumericTokenStream extends TokenStream {
   public void reset() {
     if (valSize == 0)
       throw new IllegalStateException("call set???Value() before usage");
-    shift = 0;
   }
 
   @Override
@@ -162,13 +130,7 @@ public final class NumericTokenStream extends TokenStream {
     return "(numeric,valSize=" + valSize + ",precisionStep=" + precisionStep + ')';
   }
 
-  // members
-  private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
-  private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
-  private final PositionIncrementAttribute posIncrAtt = addAttribute(PositionIncrementAttribute.class);
-  
-  private int shift = 0, valSize = 0; // valSize==0 means not initialized
-  private final int precisionStep;
-  
-  private long value = 0L;
+  private int valSize = 0; // valSize==0 means not initialized
+  private final int precisionStep = 0;
+
 }

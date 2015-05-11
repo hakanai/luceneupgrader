@@ -63,6 +63,7 @@ final class FieldsReader implements Cloneable, Closeable {
    *  job not to close the original FieldsReader until all
    *  clones are called (eg, currently SegmentReader manages
    *  this logic). */
+  @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   public Object clone() {
     ensureOpen();

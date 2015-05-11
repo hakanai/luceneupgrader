@@ -86,23 +86,7 @@ public abstract class TokenStream extends AttributeSource implements Closeable {
     super();
     assert assertFinal();
   }
-  
-  /**
-   * A TokenStream that uses the same attributes as the supplied one.
-   */
-  protected TokenStream(AttributeSource input) {
-    super(input);
-    assert assertFinal();
-  }
-  
-  /**
-   * A TokenStream using the supplied AttributeFactory for creating new {@code Attribute} instances.
-   */
-  protected TokenStream(AttributeFactory factory) {
-    super(factory);
-    assert assertFinal();
-  }
-  
+
   private boolean assertFinal() {
     try {
       final Class<?> clazz = getClass();

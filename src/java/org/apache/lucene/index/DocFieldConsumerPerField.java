@@ -18,6 +18,5 @@ package org.apache.lucene.index;
  */
 
 abstract class DocFieldConsumerPerField {
-  abstract void abort();
   abstract void close();
 }

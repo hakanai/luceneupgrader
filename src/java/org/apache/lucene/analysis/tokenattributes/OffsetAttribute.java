@@ -31,11 +31,6 @@ public interface OffsetAttribute extends Attribute {
   stemmer or some other filter. */
   int startOffset();
 
-  
-  /** Set the starting and ending offset.
-    */
-  void setOffset(int startOffset, int endOffset);
-  
 
   /** Returns this Token's ending offset, one greater than the position of the
   last character corresponding to this token in the source text. The length

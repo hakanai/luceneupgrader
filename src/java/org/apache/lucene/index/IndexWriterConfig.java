@@ -17,10 +17,8 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.DocumentsWriter.IndexingChain;
 import org.apache.lucene.index.IndexWriter.IndexReaderWarmer;
-import org.apache.lucene.search.Similarity;
 import org.apache.lucene.util.Version;
 
 /**
@@ -92,11 +90,9 @@ public final class IndexWriterConfig implements Cloneable {
   /** Default value is 1. Change using {@code #setReaderTermsIndexDivisor(int)}. */
   public static final int DEFAULT_READER_TERMS_INDEX_DIVISOR = IndexReader.DEFAULT_TERMS_INDEX_DIVISOR;
 
-  private final Analyzer analyzer;
   private volatile IndexDeletionPolicy delPolicy;
   private volatile IndexCommit commit;
   private volatile OpenMode openMode;
-  private volatile Similarity similarity;
   private volatile int termIndexInterval;
   private volatile MergeScheduler mergeScheduler;
   private volatile long writeLockTimeout;
@@ -124,13 +120,11 @@ public final class IndexWriterConfig implements Cloneable {
    * should switch to {@code LogByteSizeMergePolicy} or
    * {@code LogDocMergePolicy}.
    */
-  public IndexWriterConfig(Version matchVersion, Analyzer analyzer) {
+  public IndexWriterConfig(Version matchVersion) {
     this.matchVersion = matchVersion;
-    this.analyzer = analyzer;
     delPolicy = new KeepOnlyLastCommitDeletionPolicy();
     commit = null;
     openMode = OpenMode.CREATE_OR_APPEND;
-    similarity = Similarity.getDefault();
     termIndexInterval = DEFAULT_TERM_INDEX_INTERVAL;
     mergeScheduler = new ConcurrentMergeScheduler();
     writeLockTimeout = WRITE_LOCK_TIMEOUT;
@@ -204,29 +198,6 @@ public final class IndexWriterConfig implements Cloneable {
    */
   public IndexCommit getIndexCommit() {
     return commit;
-  }
-
-  /**
-   * Expert: set the {@code Similarity} implementation used by this IndexWriter.
-   * <p>
-   * <b>NOTE:</b> the similarity cannot be null. If <code>null</code> is passed,
-   * the similarity will be set to the default.
-   * 
-   *
-   *
-   * <p>Only takes effect when IndexWriter is first created. */
-  public IndexWriterConfig setSimilarity(Similarity similarity) {
-    this.similarity = similarity == null ? Similarity.getDefault() : similarity;
-    return this;
-  }
-
-  /**
-   * Expert: returns the {@code Similarity} implementation used by this
-   * IndexWriter. This defaults to the current value of
-   * {@code Similarity#getDefault()}.
-   */
-  public Similarity getSimilarity() {
-    return similarity;
   }
 
   /**
@@ -307,11 +278,9 @@ public final class IndexWriterConfig implements Cloneable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("matchVersion=").append(matchVersion).append("\n");
-    sb.append("analyzer=").append(analyzer == null ? "null" : analyzer.getClass().getName()).append("\n");
     sb.append("delPolicy=").append(delPolicy.getClass().getName()).append("\n");
     sb.append("commit=").append(commit == null ? "null" : commit).append("\n");
     sb.append("openMode=").append(openMode).append("\n");
-    sb.append("similarity=").append(similarity.getClass().getName()).append("\n");
     sb.append("termIndexInterval=").append(termIndexInterval).append("\n");
     sb.append("mergeScheduler=").append(mergeScheduler.getClass().getName()).append("\n");
     sb.append("default WRITE_LOCK_TIMEOUT=").append(WRITE_LOCK_TIMEOUT).append("\n");

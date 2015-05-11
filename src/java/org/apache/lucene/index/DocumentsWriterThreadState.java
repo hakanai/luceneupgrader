@@ -23,9 +23,4 @@ package org.apache.lucene.index;
  *  when writing the segment. */
 final class DocumentsWriterThreadState {
 
-  DocConsumerPerThread consumer;
-  DocumentsWriter.DocState docState;
-
-  DocumentsWriter docWriter;
-
 }

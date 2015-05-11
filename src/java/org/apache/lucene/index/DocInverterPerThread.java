@@ -22,19 +22,7 @@ package org.apache.lucene.index;
  *  InvertedTermsConsumer to process those terms. */
 
 final class DocInverterPerThread extends DocFieldConsumerPerThread {
-  final DocInverter docInverter;
-  final InvertedDocConsumerPerThread consumer;
-  final InvertedDocEndConsumerPerThread endConsumer;
-
-  final DocumentsWriter.DocState docState;
-
-  final FieldInvertState fieldState = new FieldInvertState();
-
-  public DocInverterPerThread(DocFieldProcessorPerThread docFieldProcessorPerThread, DocInverter docInverter) {
-    this.docInverter = docInverter;
-    docState = docFieldProcessorPerThread.docState;
-    consumer = docInverter.consumer.addThread(this);
-    endConsumer = docInverter.endConsumer.addThread(this);
-  }
-
+  final InvertedDocConsumerPerThread consumer = null;
+  final InvertedDocEndConsumerPerThread endConsumer = null;
+  final DocumentsWriter.DocState docState = null;
 }

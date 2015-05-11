@@ -32,28 +32,13 @@ import java.util.HashSet;
 
 final class DocFieldProcessorPerThread extends DocConsumerPerThread {
 
-  final DocFieldProcessor docFieldProcessor;
-  final FieldInfos fieldInfos;
-  final DocFieldConsumerPerThread consumer;
-
-  // Holds all fields seen in current doc
-  DocFieldProcessorPerField[] fields = new DocFieldProcessorPerField[1];
+  final DocFieldConsumerPerThread consumer = null;
 
   // Hash table for all fields ever seen
   DocFieldProcessorPerField[] fieldHash = new DocFieldProcessorPerField[2];
   int totalFieldCount;
 
-  final StoredFieldsWriterPerThread fieldsWriter;
-
-  final DocumentsWriter.DocState docState;
-
-  public DocFieldProcessorPerThread(DocumentsWriterThreadState threadState, DocFieldProcessor docFieldProcessor) throws IOException {
-    this.docState = threadState.docState;
-    this.docFieldProcessor = docFieldProcessor;
-    this.fieldInfos = docFieldProcessor.fieldInfos;
-    this.consumer = docFieldProcessor.consumer.addThread(this);
-    fieldsWriter = docFieldProcessor.fieldsWriter.addThread(docState);
-  }
+  final DocumentsWriter.DocState docState = null;
 
   public Collection<DocFieldConsumerPerField> fields() {
     Collection<DocFieldConsumerPerField> fields = new HashSet<DocFieldConsumerPerField>();

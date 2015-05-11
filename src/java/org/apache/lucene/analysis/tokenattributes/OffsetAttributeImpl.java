@@ -39,18 +39,6 @@ public class OffsetAttributeImpl extends AttributeImpl implements OffsetAttribut
     return startOffset;
   }
 
-  
-  /** Set the starting and ending offset.
-    */
-  public void setOffset(int startOffset, int endOffset) {
-    // TODO: check that these are valid!  IE, each should be
-    // >= 0, and endOffset should be >= startOffset.
-    // Problem is this could "break" existing
-    // tokenizers/filters.
-    this.startOffset = startOffset;
-    this.endOffset = endOffset;
-  }
-  
 
   /** Returns this Token's ending offset, one greater than the position of the
   last character corresponding to this token in the source text. The length
@@ -60,12 +48,6 @@ public class OffsetAttributeImpl extends AttributeImpl implements OffsetAttribut
   }
 
 
-  @Override
-  public void clear() {
-    startOffset = 0;
-    endOffset = 0;
-  }
-  
   @Override
   public boolean equals(Object other) {
     if (other == this) {

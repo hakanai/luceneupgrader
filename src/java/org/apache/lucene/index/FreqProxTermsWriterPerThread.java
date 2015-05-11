@@ -32,14 +32,5 @@ final class FreqProxTermsWriterPerThread extends TermsHashConsumerPerThread {
   }
 
   @Override
-  void startDocument() {
-  }
-
-  @Override
-  DocumentsWriter.DocWriter finishDocument() {
-    return null;
-  }
-
-  @Override
   public void abort() {}
 }

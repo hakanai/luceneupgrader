@@ -27,10 +27,4 @@ public interface TypeAttribute extends Attribute {
   /** the default type */
   String DEFAULT_TYPE = "word";
 
-  /** Returns this Token's lexical type.  Defaults to "word". */
-  String type();
-
-  /** Set the lexical type.
-      */
-  void setType(String type);
 }

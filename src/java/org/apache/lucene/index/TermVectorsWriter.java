@@ -62,7 +62,7 @@ final class TermVectorsWriter {
    * Add a complete document specified by all its term vectors. If document has no
    * term vectors, add value for tvx.
    * 
-   * @param vectors
+   * @param vectors ...
    * @throws IOException
    */
   public final void addAllDocVectors(TermFreqVector[] vectors) throws IOException {

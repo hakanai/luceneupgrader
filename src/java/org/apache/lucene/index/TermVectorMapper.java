@@ -35,16 +35,6 @@ public abstract class TermVectorMapper {
   }
 
   /**
-   *
-   * @param ignoringPositions true if this mapper should tell Lucene to ignore positions even if they are stored
-   * @param ignoringOffsets similar to ignoringPositions
-   */
-  protected TermVectorMapper(boolean ignoringPositions, boolean ignoringOffsets) {
-    this.ignoringPositions = ignoringPositions;
-    this.ignoringOffsets = ignoringOffsets;
-  }
-
-  /**
    * Tell the mapper what to expect in regards to field, number of terms, offset and position storage.
    * This method will be called once before retrieving the vector for a field.
    *

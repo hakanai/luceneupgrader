@@ -28,7 +28,7 @@ final class NormsWriterPerThread extends InvertedDocEndConsumerPerThread {
 
   @Override
   InvertedDocEndConsumerPerField addField(DocInverterPerField docInverterPerField, final FieldInfo fieldInfo) {
-    return new NormsWriterPerField(docInverterPerField, this, fieldInfo);
+    return new NormsWriterPerField(this, fieldInfo);
   }
 
   @Override

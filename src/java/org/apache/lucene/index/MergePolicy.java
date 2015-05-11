@@ -199,11 +199,6 @@ public abstract class MergePolicy implements java.io.Closeable {
       super(exc);
       this.dir = dir;
     }
-    /** Returns the {@code Directory} of the index that hit
-     *  the exception. */
-    public Directory getDirectory() {
-      return dir;
-    }
   }
 
   public static class MergeAbortedException extends IOException {

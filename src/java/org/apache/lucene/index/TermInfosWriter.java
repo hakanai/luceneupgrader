@@ -80,7 +80,6 @@ final class TermInfosWriter implements Closeable {
   private int lastFieldNumber = -1;
 
   private TermInfosWriter other;
-  private UnicodeUtil.UTF8Result utf8Result = new UnicodeUtil.UTF8Result();
 
   TermInfosWriter(Directory directory, String segment, FieldInfos fis,
                   int interval)

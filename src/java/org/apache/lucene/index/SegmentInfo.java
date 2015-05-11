@@ -366,6 +366,7 @@ public final class SegmentInfo implements Cloneable {
     clearFiles();
   }
 
+  @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   public Object clone() {
     SegmentInfo si = new SegmentInfo(name, docCount, dir, false, hasSingleNormFile,

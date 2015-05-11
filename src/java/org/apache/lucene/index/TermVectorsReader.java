@@ -52,7 +52,6 @@ class TermVectorsReader implements Cloneable, Closeable {
   private IndexInput tvx;
   private IndexInput tvd;
   private IndexInput tvf;
-  private int size;
   private int numTotalDocs;
 
   // The docID offset where our docs begin in the index
@@ -88,11 +87,9 @@ class TermVectorsReader implements Cloneable, Closeable {
 
       if (-1 == docStoreOffset) {
         this.docStoreOffset = 0;
-        this.size = numTotalDocs;
         assert size == 0 || numTotalDocs == size;
       } else {
         this.docStoreOffset = docStoreOffset;
-        this.size = size;
         // Verify the file is long enough to hold all of our
         // docs
         assert numTotalDocs >= size + docStoreOffset: "numTotalDocs=" + numTotalDocs + " size=" + size + " docStoreOffset=" + docStoreOffset;
@@ -322,8 +319,6 @@ class TermVectorsReader implements Cloneable, Closeable {
         final long[] tvfPointers = readTvfPointers(fieldCount);
         result = readTermVectors(docNum, fields, tvfPointers);
       }
-    } else {
-      //System.out.println("No tvx file");
     }
     return result;
   }
@@ -346,8 +341,6 @@ class TermVectorsReader implements Cloneable, Closeable {
         mapper.setDocumentNumber(docNumber);
         readTermVectors(fields, tvfPointers, mapper);
       }
-    } else {
-      //System.out.println("No tvx file");
     }
   }
 
@@ -448,7 +441,7 @@ class TermVectorsReader implements Cloneable, Closeable {
       int [] positions = null;
       if (storePositions) { //read in the positions
         //does the mapper even care about positions?
-        if (mapper.isIgnoringPositions() == false) {
+        if (!mapper.isIgnoringPositions()) {
           positions = new int[freq];
           int prevPosition = 0;
           for (int j = 0; j < freq; j++)
@@ -468,7 +461,7 @@ class TermVectorsReader implements Cloneable, Closeable {
       TermVectorOffsetInfo[] offsets = null;
       if (storeOffsets) {
         //does the mapper even care about offsets?
-        if (mapper.isIgnoringOffsets() == false) {
+        if (!mapper.isIgnoringOffsets()) {
           offsets = new TermVectorOffsetInfo[freq];
           int prevOffset = 0;
           for (int j = 0; j < freq; j++) {

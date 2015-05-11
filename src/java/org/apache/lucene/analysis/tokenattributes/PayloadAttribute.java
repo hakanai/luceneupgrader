@@ -29,8 +29,4 @@ public interface PayloadAttribute extends Attribute {
    */
   Payload getPayload();
 
-  /** 
-   * Sets this Token's payload.
-   */
-  void setPayload(Payload payload);
 }

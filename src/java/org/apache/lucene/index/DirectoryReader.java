@@ -58,21 +58,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
   // opened on a past IndexCommit:
   private long maxIndexVersion;
 
-  static IndexReader open(final Directory directory, final IndexDeletionPolicy deletionPolicy, final IndexCommit commit, final boolean readOnly,
-                          final int termInfosIndexDivisor) throws IOException {
-    return (IndexReader) new SegmentInfos.FindSegmentsFile(directory) {
-      @Override
-      protected Object doBody(String segmentFileName) throws IOException {
-        SegmentInfos infos = new SegmentInfos();
-        infos.read(directory, segmentFileName);
-        if (readOnly)
-          return new ReadOnlyDirectoryReader(directory, infos, deletionPolicy, termInfosIndexDivisor);
-        else
-          return new DirectoryReader(directory, infos, deletionPolicy, false, termInfosIndexDivisor);
-      }
-    }.run(commit);
-  }
-
   /** Construct reading the named set of readers. */
   DirectoryReader(Directory directory, SegmentInfos sis, IndexDeletionPolicy deletionPolicy, boolean readOnly, int termInfosIndexDivisor) throws IOException {
     this.directory = directory;
@@ -102,51 +87,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     }
 
     initialize(readers);
-  }
-
-  // Used by near real-time search
-  DirectoryReader(IndexWriter writer, SegmentInfos infos, int termInfosIndexDivisor, boolean applyAllDeletes) throws IOException {
-    this.directory = writer.getDirectory();
-    this.readOnly = true;
-
-    this.termInfosIndexDivisor = termInfosIndexDivisor;
-
-    // IndexWriter synchronizes externally before calling
-    // us, which ensures infos will not change; so there's
-    // no need to process segments in reverse order
-    final int numSegments = infos.size();
-
-    List<SegmentReader> readers = new ArrayList<SegmentReader>();
-    final Directory dir = writer.getDirectory();
-
-    segmentInfos = (SegmentInfos) infos.clone();
-    int infosUpto = 0;
-    for (int i=0;i<numSegments;i++) {
-      IOException prior = null;
-      boolean success = false;
-      try {
-        final SegmentInfo info = infos.info(i);
-        assert info.dir == dir;
-        final SegmentReader reader = writer.readerPool.getReadOnlyClone(info, true, termInfosIndexDivisor);
-        if (reader.numDocs() > 0 || writer.getKeepFullyDeletedSegments()) {
-          readers.add(reader);
-          infosUpto++;
-        } else {
-          reader.close();
-          segmentInfos.remove(infosUpto);
-        }
-        success = true;
-      } catch(IOException ex) {
-        prior = ex;
-      } finally {
-        if (!success)
-          IOUtils.closeWhileHandlingException(prior, readers);
-      }
-    }
-
-    this.writer = writer;
-
-    initialize(readers.toArray(new SegmentReader[readers.size()]));
   }
 
   /** This constructor is only used for {@code #doOpenIfChanged()} */
@@ -322,6 +262,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
     }
   }
 
+  @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   public final synchronized Object clone() {
     try {
@@ -364,13 +305,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
       reader = new DirectoryReader(directory, infos, subReaders, starts, normsCache, false, doClone, termInfosIndexDivisor);
     }
     return reader;
-  }
-
-  /** Version number when this IndexReader was opened. */
-  @Override
-  public long getVersion() {
-    ensureOpen();
-    return segmentInfos.getVersion();
   }
 
   @Override
@@ -821,21 +755,15 @@ class DirectoryReader extends IndexReader implements Cloneable {
 
   private static final class ReaderCommit extends IndexCommit {
     private String segmentsFileName;
-    Collection<String> files;
     Directory dir;
     long generation;
     long version;
-    final Map<String,String> userData;
-    private final int segmentCount;
 
     ReaderCommit(SegmentInfos infos, Directory dir) throws IOException {
       segmentsFileName = infos.getSegmentsFileName();
       this.dir = dir;
-      userData = infos.getUserData();
-      files = Collections.unmodifiableCollection(infos.files(dir, true));
       version = infos.getVersion();
       generation = infos.getGeneration();
-      segmentCount = infos.size();
     }
 
     @Override

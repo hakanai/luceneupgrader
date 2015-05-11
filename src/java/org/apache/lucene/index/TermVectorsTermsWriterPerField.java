@@ -263,9 +263,6 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
   }
 
   @Override
-  void skippingLongTerm() {}
-
-  @Override
   ParallelPostingsArray createPostingsArray(int size) {
     return new TermVectorsPostingsArray(size);
   }

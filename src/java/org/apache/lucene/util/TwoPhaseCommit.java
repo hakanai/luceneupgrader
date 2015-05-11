@@ -42,14 +42,6 @@ public interface TwoPhaseCommit {
   void prepareCommit(Map<String, String> commitData) throws IOException;
 
   /**
-   * The second phase of a 2-phase commit. Implementations should ideally do
-   * very little work in this method (following {@code #prepareCommit()}, and
-   * after it returns, the caller can assume that the changes were successfully
-   * committed to the underlying storage.
-   */
-  void commit() throws IOException;
-
-  /**
    * Like {@code #commit()}, but takes an additional commit data to be included
    * w/ the commit.
    * 

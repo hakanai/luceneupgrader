@@ -17,18 +17,18 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
+import org.apache.lucene.util.BitUtil;
+import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.util.PagedBytes;
+import org.apache.lucene.util.PagedBytes.PagedBytesDataInput;
+import org.apache.lucene.util.PagedBytes.PagedBytesDataOutput;
+import org.apache.lucene.util.packed.GrowableWriter;
+import org.apache.lucene.util.packed.PackedInts;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import org.apache.lucene.util.BitUtil;
-import org.apache.lucene.util.BytesRef;
-import org.apache.lucene.util.PagedBytes.PagedBytesDataInput;
-import org.apache.lucene.util.PagedBytes.PagedBytesDataOutput;
-import org.apache.lucene.util.PagedBytes;
-import org.apache.lucene.util.packed.GrowableWriter;
-import org.apache.lucene.util.packed.PackedInts;
 
 /**
  * This stores a monotonically increasing set of <Term, TermInfo> pairs in an
@@ -162,24 +162,6 @@ class TermInfosReaderIndex {
         return mid;
     }
     return hi;
-  }
-
-  /**
-   * Gets the term at the given position.  For testing.
-   * 
-   * @param termIndex
-   *          the position to read the term from the index.
-   * @return the term.
-   * @throws IOException
-   */
-  Term getTerm(int termIndex) throws IOException {
-    PagedBytesDataInput input = (PagedBytesDataInput) dataInput.clone();
-    input.setPosition(indexToDataOffset.get(termIndex));
-
-    // read the term
-    int fieldId = input.readVInt();
-    Term field = fields[fieldId];
-    return field.createTerm(input.readString());
   }
 
   /**

@@ -107,6 +107,7 @@ public final class FieldInfos implements Iterable<FieldInfo> {
   /**
    * Returns a deep clone of this FieldInfos instance.
    */
+  @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   synchronized public Object clone() {
     FieldInfos fis = new FieldInfos();

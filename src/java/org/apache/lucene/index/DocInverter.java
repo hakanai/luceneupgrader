@@ -76,8 +76,4 @@ final class DocInverter extends DocFieldConsumer {
     consumer.abort();
   }
 
-  @Override
-  public DocFieldConsumerPerThread addThread(DocFieldProcessorPerThread docFieldProcessorPerThread) {
-    return new DocInverterPerThread(docFieldProcessorPerThread, this);
-  }
 }

@@ -155,11 +155,6 @@ public class RAMOutputStream extends IndexOutput {
     return currentBufferIndex < 0 ? 0 : bufferStart + bufferPosition;
   }
 
-  /** Returns byte usage of all buffers. */
-  public long sizeInBytes() {
-    return (long) file.numBuffers() * (long) BUFFER_SIZE;
-  }
-  
   @Override
   public void copyBytes(DataInput input, long numBytes) throws IOException {
     assert numBytes >= 0: "numBytes=" + numBytes;

@@ -25,23 +25,5 @@ import org.apache.lucene.util.Attribute;
  */
 @Deprecated
 public interface TermAttribute extends Attribute {
-  /** Returns the Token's term text.
-   * 
-   * This method has a performance penalty
-   * because the text is stored internally in a char[].  If
-   * possible, use {@code #termBuffer()} and {@code
-   * #termLength()} directly instead.  If you really need a
-   * String, use this method, which is nothing more than
-   * a convenience call to <b>new String(token.termBuffer(), 0, token.termLength())</b>
-   */
-  String term();
-  
-  /** Copies the contents of buffer, starting at offset for
-   *  length characters, into the termBuffer array.
-   *  @param buffer the buffer to copy
-   *  @param offset the index in the buffer of the first character to copy
-   *  @param length the number of characters to copy
-   */
-  void setTermBuffer(char[] buffer, int offset, int length);
 
 }

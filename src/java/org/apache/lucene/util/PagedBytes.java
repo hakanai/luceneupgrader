@@ -19,7 +19,6 @@ package org.apache.lucene.util;
 
 import org.apache.lucene.store.DataInput;
 import org.apache.lucene.store.DataOutput;
-import org.apache.lucene.store.IndexInput;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,9 +51,6 @@ public final class PagedBytes {
   public final static class Reader {
     private final byte[][] blocks;
     private final int[] blockEnds;
-    private final int blockBits;
-    private final int blockMask;
-    private final int blockSize;
 
     public Reader(PagedBytes pagedBytes) {
       blocks = new byte[pagedBytes.blocks.size()][];
@@ -65,37 +61,8 @@ public final class PagedBytes {
       for(int i=0;i< blockEnds.length;i++) {
         blockEnds[i] = pagedBytes.blockEnd.get(i);
       }
-      blockBits = pagedBytes.blockBits;
-      blockMask = pagedBytes.blockMask;
-      blockSize = pagedBytes.blockSize;
     }
 
-    /**
-     * Reads length as 1 or 2 byte vInt prefix, starting at <i>start</i>.
-     * <p>
-     * <b>Note:</b> this method does not support slices spanning across block
-     * borders.
-     * </p>
-     * 
-     * @return the given {@code BytesRef}
-     * 
-     * @lucene.internal
-     **/
-    public BytesRef fill(BytesRef b, long start) {
-      final int index = (int) (start >> blockBits);
-      final int offset = (int) (start & blockMask);
-      final byte[] block = b.bytes = blocks[index];
-
-      if ((block[offset] & 128) == 0) {
-        b.length = block[offset];
-        b.offset = offset+1;
-      } else {
-        b.length = ((block[offset] & 0x7f) << 8) | (block[1+offset] & 0xff);
-        b.offset = offset+2;
-        assert b.length > 0;
-      }
-      return b;
-    }
   }
 
   /** 1<<blockBits must be bigger than biggest single
@@ -105,84 +72,6 @@ public final class PagedBytes {
     this.blockBits = blockBits;
     blockMask = blockSize-1;
     upto = blockSize;
-  }
-
-  /** Read this many bytes from in */
-  public void copy(IndexInput in, long byteCount) throws IOException {
-    while (byteCount > 0) {
-      int left = blockSize - upto;
-      if (left == 0) {
-        if (currentBlock != null) {
-          blocks.add(currentBlock);
-          blockEnd.add(upto);
-        }
-        currentBlock = new byte[blockSize];
-        upto = 0;
-        left = blockSize;
-      }
-      if (left < byteCount) {
-        in.readBytes(currentBlock, upto, left, false);
-        upto = blockSize;
-        byteCount -= left;
-      } else {
-        in.readBytes(currentBlock, upto, (int) byteCount, false);
-        upto += byteCount;
-        break;
-      }
-    }
-  }
-
-  /** Copy BytesRef in */
-  public void copy(BytesRef bytes) throws IOException {
-    int byteCount = bytes.length;
-    int bytesUpto = bytes.offset;
-    while (byteCount > 0) {
-      int left = blockSize - upto;
-      if (left == 0) {
-        if (currentBlock != null) {
-          blocks.add(currentBlock);
-          blockEnd.add(upto);          
-        }
-        currentBlock = new byte[blockSize];
-        upto = 0;
-        left = blockSize;
-      }
-      if (left < byteCount) {
-        System.arraycopy(bytes.bytes, bytesUpto, currentBlock, upto, left);
-        upto = blockSize;
-        byteCount -= left;
-        bytesUpto += left;
-      } else {
-        System.arraycopy(bytes.bytes, bytesUpto, currentBlock, upto, byteCount);
-        upto += byteCount;
-        break;
-      }
-    }
-  }
-
-  /** Copy BytesRef in, setting BytesRef out to the result.
-   * Do not use this if you will use freeze(true).
-   * This only supports bytes.length <= blockSize */
-  public void copy(BytesRef bytes, BytesRef out) throws IOException {
-    int left = blockSize - upto;
-    if (bytes.length > left || currentBlock==null) {
-      if (currentBlock != null) {
-        blocks.add(currentBlock);
-        blockEnd.add(upto);
-        didSkipBytes = true;
-      }
-      currentBlock = new byte[blockSize];
-      upto = 0;
-      assert bytes.length <= blockSize;
-      // TODO: we could also support variable block sizes
-    }
-
-    out.bytes = currentBlock;
-    out.offset = upto;
-    out.length = bytes.length;
-
-    System.arraycopy(bytes.bytes, bytes.offset, currentBlock, upto, bytes.length);
-    upto += bytes.length;
   }
 
   /** Commits final byte[], trimming it if necessary and if trim=true */
@@ -217,6 +106,7 @@ public final class PagedBytes {
       currentBlock = blocks.get(0);
     }
 
+    @SuppressWarnings("CloneDoesntCallSuperClone")
     @Override
     public Object clone() {
       PagedBytesDataInput clone = getDataInput();

@@ -22,10 +22,7 @@ final class CharBlockPool {
   public char[][] buffers = new char[10][];
 
   int bufferUpto = -1;                        // Which buffer we are upto
-  public int charUpto = DocumentsWriter.CHAR_BLOCK_SIZE;             // Where we are in head buffer
 
-  public char[] buffer;                              // Current head buffer
-  public int charOffset = -DocumentsWriter.CHAR_BLOCK_SIZE;          // Current head offset
   final private DocumentsWriter docWriter;
 
   public CharBlockPool(DocumentsWriter docWriter) {
@@ -35,8 +32,6 @@ final class CharBlockPool {
   public void reset() {
     docWriter.recycleCharBlocks(buffers, 1+bufferUpto);
     bufferUpto = -1;
-    charUpto = DocumentsWriter.CHAR_BLOCK_SIZE;
-    charOffset = -DocumentsWriter.CHAR_BLOCK_SIZE;
   }
 
 }

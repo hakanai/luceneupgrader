@@ -17,8 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMFile;
 import org.apache.lucene.util.RamUsageEstimator;
@@ -109,17 +107,13 @@ final class DocumentsWriter {
 
   private final HashMap<Thread,DocumentsWriterThreadState> threadBindings = new HashMap<Thread,DocumentsWriterThreadState>();
 
-  boolean bufferIsFull;                   // True when it's time to write segment
   private boolean aborting;               // True if an abort is pending
 
   PrintStream infoStream;
-  int maxFieldLength = IndexWriter.DEFAULT_MAX_FIELD_LENGTH;
 
   static class DocState {
     DocumentsWriter docWriter;
-    Analyzer analyzer;
     int docID;
-    Document doc;
 
     // Only called by asserts
     public boolean testPoint(String name) {
@@ -127,10 +121,6 @@ final class DocumentsWriter {
     }
 
     public void clear() {
-      // don't hold onto doc nor analyzer, in case it is
-      // largish:
-      doc = null;
-      analyzer = null;
     }
   }
 
@@ -144,9 +134,6 @@ final class DocumentsWriter {
     abstract void abort();
     abstract long sizeInBytes();
 
-    void setNext(DocWriter next) {
-      this.next = next;
-    }
   }
 
   /**
@@ -259,18 +246,9 @@ final class DocumentsWriter {
     this.infoStream = infoStream;
   }
 
-  synchronized void setMaxFieldLength(int maxFieldLength) {
-    this.maxFieldLength = maxFieldLength;
-  }
-
   /** Get current segment name we are writing. */
   synchronized String getSegment() {
     return segment;
-  }
-
-  /** Returns how many docs are currently buffered in RAM. */
-  synchronized int getNumDocs() {
-    return numDocs;
   }
 
   void message(String message) {
@@ -338,7 +316,6 @@ final class DocumentsWriter {
     segment = null;
     numDocs = 0;
     nextDocID = 0;
-    bufferIsFull = false;
   }
 
   private synchronized boolean allThreadsIdle() {

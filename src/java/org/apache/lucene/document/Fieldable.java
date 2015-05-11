@@ -132,10 +132,7 @@ public interface Fieldable extends Serializable {
    * @return reference to the Field value as byte[].
    */
   byte[] getBinaryValue(byte[] result);
-  
-  /** */
-  IndexOptions getIndexOptions();
-  
+
   /** Expert:
   *
   * If set, omit term freq, and optionally positions and payloads from

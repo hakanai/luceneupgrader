@@ -67,6 +67,7 @@ public class TermVectorOffsetInfo implements Serializable {
     final TermVectorOffsetInfo termVectorOffsetInfo = (TermVectorOffsetInfo) o;
 
     if (endOffset != termVectorOffsetInfo.endOffset) return false;
+    //noinspection RedundantIfStatement
     if (startOffset != termVectorOffsetInfo.startOffset) return false;
 
     return true;

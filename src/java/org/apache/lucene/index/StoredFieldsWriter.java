@@ -17,10 +17,11 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
 import org.apache.lucene.store.RAMOutputStream;
 import org.apache.lucene.util.ArrayUtil;
 import org.apache.lucene.util.RamUsageEstimator;
+
+import java.io.IOException;
 
 /** This is a DocFieldConsumer that writes stored fields. */
 final class StoredFieldsWriter {
@@ -36,10 +37,6 @@ final class StoredFieldsWriter {
   public StoredFieldsWriter(DocumentsWriter docWriter, FieldInfos fieldInfos) {
     this.docWriter = docWriter;
     this.fieldInfos = fieldInfos;
-  }
-
-  public StoredFieldsWriterPerThread addThread(DocumentsWriter.DocState docState) throws IOException {
-    return new StoredFieldsWriterPerThread(docState, this);
   }
 
   synchronized public void flush(SegmentWriteState state) throws IOException {

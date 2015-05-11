@@ -18,7 +18,6 @@ package org.apache.lucene.util;
  */
 
 import java.util.Comparator;
-import java.io.UnsupportedEncodingException;
 
 /** Represents byte[], as a slice (offset + length) into an
  *  existing byte[].
@@ -124,6 +123,7 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
     }
   }
 
+  @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   public BytesRef clone() {
     return new BytesRef(bytes, offset, length);
@@ -159,18 +159,6 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
     return false;
   }
 
-  /** Interprets stored bytes as UTF8 bytes, returning the
-   *  resulting string */
-  public String utf8ToString() {
-    try {
-      return new String(bytes, offset, length, "UTF-8");
-    } catch (UnsupportedEncodingException uee) {
-      // should not happen -- UTF8 is presumably supported
-      // by all JREs
-      throw new RuntimeException(uee);
-    }
-  }
-
   /** Returns hex encoded bytes, eg [0x6c 0x75 0x63 0x65 0x6e 0x65] */
   @Override
   public String toString() {
@@ -185,21 +173,6 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
     }
     sb.append(']');
     return sb.toString();
-  }
-
-  /**
-   * Copies the bytes from the given {@code BytesRef}
-   * <p>
-   * NOTE: if this would exceed the array size, this method creates a 
-   * new reference array.
-   */
-  public void copyBytes(BytesRef other) {
-    if (bytes.length - offset < other.length) {
-      bytes = new byte[other.length];
-      offset = 0;
-    }
-    System.arraycopy(other.bytes, other.offset, bytes, offset, other.length);
-    length = other.length;
   }
 
   /**

@@ -30,14 +30,8 @@ import java.util.LinkedList;
  * Attributes are used to add data in a dynamic, yet type-safe way to a source
  * of usually streamed objects, e. g. a {@code org.apache.lucene.analysis.TokenStream}.
  */
-public abstract class AttributeImpl implements Cloneable, Serializable, Attribute {  
-  /**
-   * Clears the values in this AttributeImpl and resets it to its 
-   * default value. If this implementation implements more than one Attribute interface
-   * it clears all.
-   */
-  public abstract void clear();
-  
+public abstract class AttributeImpl implements Cloneable, Serializable, Attribute {
+
   /**
    * Returns a string representation of the object. In general, the {@code toString} method
    * returns a string that &quot;textually represents&quot; this object.

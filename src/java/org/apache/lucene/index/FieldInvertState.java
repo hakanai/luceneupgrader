@@ -27,18 +27,9 @@ import org.apache.lucene.util.AttributeSource;
  */
 public final class FieldInvertState {
   int position;
-  int length;
   int offset;
   int maxTermFrequency;
   int uniqueTermCount;
-  float boost;
   AttributeSource attributeSource;
 
-  /**
-   * Get total number of terms in this field.
-   * @return the length
-   */
-  public int getLength() {
-    return length;
-  }
 }

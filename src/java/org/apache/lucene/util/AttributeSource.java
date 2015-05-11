@@ -104,6 +104,7 @@ public class AttributeSource {
     AttributeImpl attribute;
     State next;
     
+    @SuppressWarnings("CloneDoesntCallSuperClone")
     @Override
     public Object clone() {
       State clone = new State();
@@ -131,20 +132,7 @@ public class AttributeSource {
   public AttributeSource() {
     this(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
   }
-  
-  /**
-   * An AttributeSource that uses the same attributes as the supplied one.
-   */
-  public AttributeSource(AttributeSource input) {
-    if (input == null) {
-      throw new IllegalArgumentException("input AttributeSource must not be null");
-    }
-    this.attributes = input.attributes;
-    this.attributeImpls = input.attributeImpls;
-    this.currentState = input.currentState;
-    this.factory = input.factory;
-  }
-  
+
   /**
    * An AttributeSource using the supplied {@code AttributeFactory} for creating new {@code Attribute} instances.
    */

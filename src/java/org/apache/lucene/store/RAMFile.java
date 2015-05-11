@@ -23,6 +23,7 @@ import java.io.Serializable;
 /** @lucene.internal */
 public class RAMFile implements Serializable {
 
+  @SuppressWarnings("unused")
   private static final long serialVersionUID = 1l;
 
   protected ArrayList<byte[]> buffers = new ArrayList<byte[]>();

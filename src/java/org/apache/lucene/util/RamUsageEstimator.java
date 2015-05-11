@@ -17,9 +17,8 @@ package org.apache.lucene.util;
  * limitations under the License.
  */
 
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.*;
-import java.util.*;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 /**
  * Estimates the size (memory representation) of Java objects.
@@ -43,39 +42,6 @@ import java.util.*;
  * @lucene.internal
  */
 public final class RamUsageEstimator {
-  /**
-   * JVM diagnostic features.
-   */
-  public enum JvmFeature {
-    OBJECT_REFERENCE_SIZE("Object reference size estimated using array index scale"),
-    ARRAY_HEADER_SIZE("Array header size estimated using array based offset"),
-    FIELD_OFFSETS("Shallow instance size based on field offsets"),
-    OBJECT_ALIGNMENT("Object alignment retrieved from HotSpotDiagnostic MX bean");
-
-    public final String description;
-
-    JvmFeature(String description) {
-      this.description = description;
-    }
-    
-    @Override
-    public String toString() {
-      return super.name() + " (" + description + ")";
-    }
-  }
-
-  /** JVM info string for debugging and reports. */
-  public final static String JVM_INFO_STRING;
-
-  /** One kilobyte bytes. */
-  public static final long ONE_KB = 1024;
-  
-  /** One megabyte bytes. */
-  public static final long ONE_MB = ONE_KB * ONE_KB;
-
-  /** One gigabyte bytes.*/
-  public static final long ONE_GB = ONE_KB * ONE_MB;
-
   public final static int NUM_BYTES_BOOLEAN = 1;
   public final static int NUM_BYTES_BYTE = 1;
   public final static int NUM_BYTES_CHAR = 2;
@@ -89,22 +55,6 @@ public final class RamUsageEstimator {
    * Number of bytes this jvm uses to represent an object reference. 
    */
   public final static int NUM_BYTES_OBJECT_REF;
-
-  /**
-   * Number of bytes to represent an object header (no fields, no alignments).
-   */
-  public final static int NUM_BYTES_OBJECT_HEADER;
-
-  /**
-   * Number of bytes to represent an array header (no content, but with alignments).
-   */
-  public final static int NUM_BYTES_ARRAY_HEADER;
-  
-  /**
-   * A constant specifying the object alignment boundary inside the JVM. Objects will
-   * always take a full multiple of this constant, possibly wasting some space. 
-   */
-  public final static int NUM_BYTES_OBJECT_ALIGNMENT;
 
   /**
    * Sizes of primitive classes.
@@ -122,15 +72,6 @@ public final class RamUsageEstimator {
     primitiveSizes.put(long.class, NUM_BYTES_LONG);
   }
 
-  /**
-   * A handle to <code>sun.misc.Unsafe</code>.
-   */
-  private final static Object theUnsafe;
-
-  /**
-   * All the supported "internal" JVM features detected at clinit. 
-   */
-  private final static EnumSet<JvmFeature> supportedFeatures;
 
   /**
    * Initialize constants and try to collect information about the JVM internals. 
@@ -138,99 +79,7 @@ public final class RamUsageEstimator {
   static {
     // Initialize empirically measured defaults. We'll modify them to the current
     // JVM settings later on if possible.
-    int referenceSize = Constants.JRE_IS_64BIT ? 8 : 4;
-
-    supportedFeatures = EnumSet.noneOf(JvmFeature.class);
-
-    Class<?> unsafeClass = null;
-    Object tempTheUnsafe = null;
-    try {
-      unsafeClass = Class.forName("sun.misc.Unsafe");
-      final Field unsafeField = unsafeClass.getDeclaredField("theUnsafe");
-      unsafeField.setAccessible(true);
-      tempTheUnsafe = unsafeField.get(null);
-    } catch (Exception e) {
-      // Ignore.
-    }
-    theUnsafe = tempTheUnsafe;
-
-    // get object reference size by getting scale factor of Object[] arrays:
-    try {
-      final Method arrayIndexScaleM = unsafeClass.getMethod("arrayIndexScale", Class.class);
-      referenceSize = ((Number) arrayIndexScaleM.invoke(theUnsafe, Object[].class)).intValue();
-      supportedFeatures.add(JvmFeature.OBJECT_REFERENCE_SIZE);
-    } catch (Exception e) {
-      // ignore.
-    }
-
-    // "best guess" based on reference size. We will attempt to modify
-    // these to exact values if there is supported infrastructure.
-    int objectHeader = Constants.JRE_IS_64BIT ? (8 + referenceSize) : 8;
-    // The following is objectHeader + NUM_BYTES_INT, but aligned (object alignment)
-    // so on 64 bit JVMs it'll be align(16 + 4, @8) = 24.
-    int arrayHeader =  Constants.JRE_IS_64BIT ? (8 + 2 * referenceSize) : 12;
-
-    // get the object header size:
-    // - first try out if the field offsets are not scaled (see warning in Unsafe docs)
-    // - get the object header size by getting the field offset of the first field of a dummy object
-    // If the scaling is byte-wise and unsafe is available, enable dynamic size measurement for
-    // estimateRamUsage().
-    Method tempObjectFieldOffsetMethod = null;
-    try {
-      final Method objectFieldOffsetM = unsafeClass.getMethod("objectFieldOffset", Field.class);
-      final Field dummy1Field = DummyTwoLongObject.class.getDeclaredField("dummy1");
-      final int ofs1 = ((Number) objectFieldOffsetM.invoke(theUnsafe, dummy1Field)).intValue();
-      final Field dummy2Field = DummyTwoLongObject.class.getDeclaredField("dummy2");
-      final int ofs2 = ((Number) objectFieldOffsetM.invoke(theUnsafe, dummy2Field)).intValue();
-      if (Math.abs(ofs2 - ofs1) == NUM_BYTES_LONG) {
-        final Field baseField = DummyOneFieldObject.class.getDeclaredField("base");
-        objectHeader = ((Number) objectFieldOffsetM.invoke(theUnsafe, baseField)).intValue();
-        supportedFeatures.add(JvmFeature.FIELD_OFFSETS);
-      }
-    } catch (Exception e) {
-      // Ignore.
-    }
-
-    // Get the array header size by retrieving the array base offset
-    // (offset of the first element of an array).
-    try {
-      final Method arrayBaseOffsetM = unsafeClass.getMethod("arrayBaseOffset", Class.class);
-      // we calculate that only for byte[] arrays, it's actually the same for all types:
-      arrayHeader = ((Number) arrayBaseOffsetM.invoke(theUnsafe, byte[].class)).intValue();
-      supportedFeatures.add(JvmFeature.ARRAY_HEADER_SIZE);
-    } catch (Exception e) {
-      // Ignore.
-    }
-
-    NUM_BYTES_OBJECT_REF = referenceSize;
-    NUM_BYTES_OBJECT_HEADER = objectHeader;
-    NUM_BYTES_ARRAY_HEADER = arrayHeader;
-    
-    // Try to get the object alignment (the default seems to be 8 on Hotspot, 
-    // regardless of the architecture). Retrieval only works with Java 6.
-    int objectAlignment = 8;
-    try {
-      final Class<?> beanClazz = Class.forName("com.sun.management.HotSpotDiagnosticMXBean");
-      final Object hotSpotBean = ManagementFactory.newPlatformMXBeanProxy(
-        ManagementFactory.getPlatformMBeanServer(),
-        "com.sun.management:type=HotSpotDiagnostic",
-        beanClazz
-      );
-      final Method getVMOptionMethod = beanClazz.getMethod("getVMOption", String.class);
-      final Object vmOption = getVMOptionMethod.invoke(hotSpotBean, "ObjectAlignmentInBytes");
-      objectAlignment = Integer.parseInt(
-          vmOption.getClass().getMethod("getValue").invoke(vmOption).toString()
-      );
-      supportedFeatures.add(JvmFeature.OBJECT_ALIGNMENT);
-    } catch (Exception e) {
-      // Ignore.
-    }
-
-    NUM_BYTES_OBJECT_ALIGNMENT = objectAlignment;
-
-    JVM_INFO_STRING = "[JVM: " +
-        Constants.JVM_NAME + ", " + Constants.JVM_VERSION + ", " + Constants.JVM_VENDOR + ", " + 
-        Constants.JAVA_VENDOR + ", " + Constants.JAVA_VERSION + "]";
+    NUM_BYTES_OBJECT_REF = Constants.JRE_IS_64BIT ? 8 : 4;
   }
 
   // Object with just one field to determine the object header size by getting the offset of the dummy field:

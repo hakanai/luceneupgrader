@@ -17,8 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.apache.lucene.analysis.tokenattributes.PayloadAttribute;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
@@ -58,9 +56,6 @@ final class FreqProxTermsWriterPerField extends TermsHashConsumerPerField implem
   void finish() {}
 
   boolean hasPayloads;
-
-  @Override
-  void skippingLongTerm() throws IOException {}
 
   public int compareTo(FreqProxTermsWriterPerField other) {
     return fieldInfo.name.compareTo(other.fieldInfo.name);
@@ -222,7 +217,6 @@ final class FreqProxTermsWriterPerField extends TermsHashConsumerPerField implem
       return ParallelPostingsArray.BYTES_PER_POSTING + 4 * RamUsageEstimator.NUM_BYTES_INT;
     }
   }
-  
-  public void abort() {}
+
 }
 

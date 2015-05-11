@@ -34,22 +34,11 @@ public class CharTermAttributeImpl extends AttributeImpl implements CharTermAttr
   
   private char[] termBuffer = new char[ArrayUtil.oversize(MIN_BUFFER_SIZE, RamUsageEstimator.NUM_BYTES_CHAR)];
   private int termLength = 0;
-  
-  @Deprecated
-  public String term() {
-    // don't delegate to toString() here!
-    return new String(termBuffer, 0, termLength);
-  }
 
   public final void copyBuffer(char[] buffer, int offset, int length) {
     growTermBuffer(length);
     System.arraycopy(buffer, offset, termBuffer, 0, length);
     termLength = length;
-  }
-
-  @Deprecated
-  public void setTermBuffer(char[] buffer, int offset, int length) {
-    copyBuffer(buffer, offset, length);
   }
 
   public final char[] buffer() {
@@ -142,15 +131,6 @@ public class CharTermAttributeImpl extends AttributeImpl implements CharTermAttr
   }
   
   // *** For performance some convenience methods in addition to CSQ's ***
-  
-  public final CharTermAttribute append(String s) {
-    if (s == null) // needed for Appendable compliance
-      return appendNull();
-    final int len = s.length();
-    s.getChars(0, len, resizeBuffer(termLength + len), termLength);
-    termLength += len;
-    return this;
-  }
 
   private CharTermAttribute appendNull() {
     resizeBuffer(termLength + 4);
@@ -168,11 +148,6 @@ public class CharTermAttributeImpl extends AttributeImpl implements CharTermAttr
     int code = termLength;
     code = code * 31 + ArrayUtil.hashCode(termBuffer, 0, termLength);
     return code;
-  }
-
-  @Override
-  public void clear() {
-    termLength = 0;    
   }
 
   @Override

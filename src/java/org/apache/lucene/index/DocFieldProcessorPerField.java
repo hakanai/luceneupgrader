@@ -28,7 +28,4 @@ final class DocFieldProcessorPerField {
   DocFieldProcessorPerField next;
   int lastGen = -1;
 
-  public void abort() {
-    consumer.abort();
-  }
 }

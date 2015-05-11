@@ -74,22 +74,6 @@ public final class WeakIdentityMap<K,V> {
     return backingStore.put(new IdentityWeakReference(key, queue), value);
   }
 
-  public boolean isEmpty() {
-    return size() == 0;
-  }
-
-  public V remove(Object key) {
-    reap();
-    return backingStore.remove(new IdentityWeakReference(key, null));
-  }
-
-  public int size() {
-    if (backingStore.isEmpty())
-      return 0;
-    reap();
-    return backingStore.size();
-  }
-  
   /** Returns an iterator over all weak keys of this map.
    * Keys already garbage collected will not be returned.
    * This Iterator does not support removals. */

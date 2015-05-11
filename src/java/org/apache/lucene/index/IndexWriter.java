@@ -408,32 +408,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
         }
       }
     }
-    
-    /**
-     * Returns a ref to a clone.  NOTE: this clone is not
-     * enrolled in the pool, so you should simply close()
-     * it when you're done (ie, do not call release()).
-     */
-    public synchronized SegmentReader getReadOnlyClone(SegmentInfo info, boolean doOpenStores, int termInfosIndexDivisor) throws IOException {
-      SegmentReader sr = get(info, doOpenStores, BufferedIndexInput.BUFFER_SIZE, termInfosIndexDivisor);
-      try {
-        return (SegmentReader) sr.clone(true);
-      } finally {
-        sr.decRef();
-      }
-    }
-   
-    /**
-     * Obtain a SegmentReader from the readerPool.  The reader
-     * must be returned by calling {@code #release(SegmentReader)}
-     *
-     * @param info ...
-     * @param doOpenStores ...
-     * @throws IOException
-     */
-    public synchronized SegmentReader get(SegmentInfo info, boolean doOpenStores) throws IOException {
-      return get(info, doOpenStores, BufferedIndexInput.BUFFER_SIZE, config.getReaderTermsIndexDivisor());
-    }
 
     /**
      * Obtain a SegmentReader from the readerPool.  The reader
@@ -649,7 +623,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
       docWriter = new DocumentsWriter(config, directory, this, getCurrentFieldInfos(), bufferedDeletesStream);
       docWriter.setInfoStream(infoStream);
-      docWriter.setMaxFieldLength(maxFieldLength);
 
       // Default deleter (for backwards compatibility) is
       // KeepOnlyLastCommitDeleter:
@@ -1114,7 +1087,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
           if (mergeExceptions.size() > 0) {
             // Forward any exceptions in background merge
             // threads to the current thread:
-            final int size = mergeExceptions.size();
             for (final MergePolicy.OneMerge merge : mergeExceptions) {
               if (merge.maxNumSegments != -1) {
                 IOException err = new IOException("background merge hit exception: " + merge.segString(directory));
@@ -1525,40 +1497,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   // Used only by commit, below; lock order is commitLock -> IW
   private final Object commitLock = new Object();
-
-  /**
-   * <p>Commits all pending changes (added & deleted
-   * documents, segment merges, added
-   * indexes, etc.) to the index, and syncs all referenced
-   * index files, such that a reader will see the changes
-   * and the index updates will survive an OS or machine
-   * crash or power loss.  Note that this does not wait for
-   * any running background merges to finish.  This may be a
-   * costly operation, so you should test the cost in your
-   * application and do it only when really necessary.</p>
-   *
-   * <p> Note that this operation calls Directory.sync on
-   * the index files.  That call should not return until the
-   * file contents & metadata are on stable storage.  For
-   * FSDirectory, this calls the OS's fsync.  But, beware:
-   * some hardware devices may in fact cache writes even
-   * during fsync, and return before the bits are actually
-   * on stable storage, to give the appearance of faster
-   * performance.  If you have such a device, and it does
-   * not have a battery backup (for example) then on power
-   * loss it may still lose data.  Lucene cannot guarantee
-   * consistency on such devices.  </p>
-   *
-   * <p><b>NOTE</b>: if this method hits an OutOfMemoryError
-   * you should immediately close the writer.  See <a
-   * href="#OOME">above</a> for details.</p>
-   *
-   *
-   *
-   */
-  public final void commit() throws IOException {
-    commit(null);
-  }
 
   /** Commits all changes to the index, specifying a
    *  commitUserData Map (String -> String).  This just
@@ -2543,10 +2481,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     }
   }
 
-  boolean getKeepFullyDeletedSegments() {
-    return false;
-  }
-
   // called only from assert
   private boolean filesExist(SegmentInfos toSync) throws IOException {
     Collection<String> files = toSync.files(directory, false);
@@ -2742,10 +2676,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   //   DocumentsWriter.ThreadState.init start
   boolean testPoint(String name) {
     return true;
-  }
-
-  synchronized boolean isClosed() {
-    return closed;
   }
 
   // Called by DirectoryReader.doClose

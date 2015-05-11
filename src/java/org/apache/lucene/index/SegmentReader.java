@@ -186,6 +186,7 @@ public class SegmentReader extends IndexReader implements Cloneable {
     return (BitVector)bv.clone();
   }
 
+  @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   public final synchronized Object clone() {
     try {

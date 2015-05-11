@@ -40,24 +40,6 @@ final class TermVectorsTermsWriterPerThread extends TermsHashConsumerPerThread {
                                                 new UnicodeUtil.UTF8Result()};
 
   @Override
-  public void startDocument() {
-    assert clearLastVectorFieldName();
-    if (doc != null) {
-      doc.reset();
-      doc.docID = docState.docID;
-    }
-  }
-
-  @Override
-  public DocumentsWriter.DocWriter finishDocument() {
-    try {
-      return doc;
-    } finally {
-      doc = null;
-    }
-  }
-
-  @Override
   public TermsHashConsumerPerField addField(TermsHashPerField termsHashPerField, FieldInfo fieldInfo) {
     return new TermVectorsTermsWriterPerField(termsHashPerField, this, fieldInfo);
   }
@@ -68,12 +50,6 @@ final class TermVectorsTermsWriterPerThread extends TermsHashConsumerPerThread {
       doc.abort();
       doc = null;
     }
-  }
-
-  // Called only by assert
-  final boolean clearLastVectorFieldName() {
-    lastVectorFieldName = null;
-    return true;
   }
 
   // Called only by assert

@@ -46,14 +46,5 @@ import org.apache.lucene.util.Attribute;
  *
  */
 public interface PositionIncrementAttribute extends Attribute {
-  /** Set the position increment. The default value is one.
-   *
-   * @param positionIncrement the distance from the prior term
-   */
-  void setPositionIncrement(int positionIncrement);
 
-  /** Returns the position increment of this Token.
-   *
-   */
-  int getPositionIncrement();
 }

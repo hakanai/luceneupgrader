@@ -17,10 +17,8 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 abstract class InvertedDocConsumerPerThread {
   abstract InvertedDocConsumerPerField addField(DocInverterPerField docInverterPerField, FieldInfo fieldInfo);
-  abstract DocumentsWriter.DocWriter finishDocument() throws IOException;
+
   abstract void abort();
 }

@@ -131,19 +131,5 @@ public final class VirtualMethod<C> {
     }
     return distance;
   }
-  
-  /**
-   * Utility method that compares the implementation/override distance of two methods.
-   * @return <ul>
-   *  <li>&gt; 1, iff {@code m1} is overridden/implemented in a subclass of the class overriding/declaring {@code m2}
-   *  <li>&lt; 1, iff {@code m2} is overridden in a subclass of the class overriding/declaring {@code m1}
-   *  <li>0, iff both methods are overridden in the same class (or are not overridden at all)
-   * </ul>
-   */
-  public static <C> int compareImplementationDistance(final Class<? extends C> clazz,
-    final VirtualMethod<C> m1, final VirtualMethod<C> m2)
-  {
-    return Integer.valueOf(m1.getImplementationDistance(clazz)).compareTo(m2.getImplementationDistance(clazz));
-  }
-  
+
 }

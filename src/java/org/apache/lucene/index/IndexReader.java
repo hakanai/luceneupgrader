@@ -191,23 +191,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
     }
   }
 
-  /** Returns an IndexReader reading the index in the given
-   *  Directory.  You should pass readOnly=true, since it
-   *  gives much better concurrent performance, unless you
-   *  intend to do write operations (delete documents or
-   *  change norms) with the reader.
-   * @param directory the index directory
-   * @param readOnly true if no changes (deletions, norms) will be made with this IndexReader
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@code #open(Directory)} instead
-   */
-  @Deprecated
-  public static IndexReader open(final Directory directory, boolean readOnly) throws IOException {
-    return DirectoryReader.open(directory, null, null, readOnly, DEFAULT_TERMS_INDEX_DIVISOR);
-  }
-
   /**
    * Efficiently clones the IndexReader (sharing most
    * internal state).
@@ -225,6 +208,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * the changes are not seen by other readers.
    * <p>
    */
+  @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   public synchronized Object clone() {
     throw new UnsupportedOperationException("This reader does not implement clone()");
@@ -253,23 +237,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
   public Directory directory() {
     ensureOpen();
     throw new UnsupportedOperationException("This reader does not support this method.");  
-  }
-
-  /**
-   * Version number when this IndexReader was opened. Not
-   * implemented in the IndexReader base class.
-   *
-   * <p>If this reader is based on a Directory (ie, was
-   * created by calling {@code #open}, or {@code #openIfChanged} on
-   * a reader based on a Directory), then this method
-   * returns the version recorded in the commit that the
-   * reader opened.  This version is advanced every time
-   * {@code IndexWriter#commit} is called.</p>
-   *
-   * @throws UnsupportedOperationException unless overridden in subclass
-   */
-  public long getVersion() {
-    throw new UnsupportedOperationException("This reader does not support this method.");
   }
 
 

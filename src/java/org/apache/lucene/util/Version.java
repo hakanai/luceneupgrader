@@ -32,68 +32,9 @@ package org.apache.lucene.util;
 @SuppressWarnings("dep-ann")
 public enum Version {
 
-  /** Match settings and bugs in Lucene's 2.0 release. 
-   * @deprecated (3.1) Use latest 
-   */
-  @Deprecated
-  LUCENE_20,
-
-  /** Match settings and bugs in Lucene's 2.1 release. 
-   * @deprecated (3.1) Use latest 
-   */
-  @Deprecated
-  LUCENE_21,
-
-  /** Match settings and bugs in Lucene's 2.2 release. 
-   * @deprecated (3.1) Use latest 
-   */
-  @Deprecated
-  LUCENE_22,
-
-  /** Match settings and bugs in Lucene's 2.3 release. 
-   * @deprecated (3.1) Use latest 
-   */
-  @Deprecated
-  LUCENE_23,
-
-  /** Match settings and bugs in Lucene's 2.4 release. 
-   * @deprecated (3.1) Use latest 
-   */
-  @Deprecated
-  LUCENE_24,
-
-  /** Match settings and bugs in Lucene's 2.9 release. 
-   * @deprecated (3.1) Use latest 
-   */
-  @Deprecated
-  LUCENE_29,
-
-  /** Match settings and bugs in Lucene's 3.0 release. */
-  LUCENE_30,
-
-  /** Match settings and bugs in Lucene's 3.1 release. */
-  LUCENE_31,
-  
   /** Match settings and bugs in Lucene's 3.2 release. */
   LUCENE_32,
-  
-  /** Match settings and bugs in Lucene's 3.3 release. */
-  LUCENE_33,
-  
-  /** Match settings and bugs in Lucene's 3.4 release. */
-  LUCENE_34,
 
-  /** Match settings and bugs in Lucene's 3.5 release. */
-  LUCENE_35,
-  
-  /**
-   * Match settings and bugs in Lucene's 3.6 release.
-   * <p>
-   * Use this to get the latest &amp; greatest settings, bug
-   * fixes, etc, for Lucene.
-   */
-  LUCENE_36,
-  
   /* Add new constants for later versions **here** to respect order! */
 
   /**

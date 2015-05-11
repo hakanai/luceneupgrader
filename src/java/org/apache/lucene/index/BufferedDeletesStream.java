@@ -81,58 +81,15 @@ class BufferedDeletesStream {
     }
   }
 
-  // Sorts SegmentInfos from smallest to biggest bufferedDelGen:
-  private static final Comparator<SegmentInfo> sortByDelGen = new Comparator<SegmentInfo>() {
-    // @Override -- not until Java 1.6
-    public int compare(SegmentInfo si1, SegmentInfo si2) {
-      final long cmp = si1.getBufferedDeletesGen() - si2.getBufferedDeletesGen();
-      if (cmp > 0) {
-        return 1;
-      } else if (cmp < 0) {
-        return -1;
-      } else {
-        return 0;
-      }
-    }
-  };
-
   /** Resolves the buffered deleted Term/Query/docIDs, into
    *  actual deleted docIDs in the deletedDocs BitVector for
    *  each SegmentReader. */
   public synchronized ApplyDeletesResult applyDeletes(List<SegmentInfo> infos) throws IOException {
-    final long t0 = System.currentTimeMillis();
-
     if (infos.size() == 0) {
       return new ApplyDeletesResult(false, nextGen++, null);
     }
 
-    if (!false) {
-      message("applyDeletes: no deletes; skipping");
-      return new ApplyDeletesResult(false, nextGen++, null);
-    }
-
-    if (infoStream != null) {
-      message("applyDeletes: infos=" + infos + " packetCount=" + 0);
-    }
-
-    List<SegmentInfo> infos2 = new ArrayList<SegmentInfo>();
-    infos2.addAll(infos);
-    Collections.sort(infos2, sortByDelGen);
-
-    int infosIDX = infos2.size()-1;
-
-    while (infosIDX >= 0) {
-      final SegmentInfo info = infos2.get(infosIDX);
-
-      info.setBufferedDeletesGen(nextGen);
-
-      infosIDX--;
-    }
-
-    if (infoStream != null) {
-      message("applyDeletes took " + (System.currentTimeMillis()-t0) + " msec");
-    }
-
+    message("applyDeletes: no deletes; skipping");
     return new ApplyDeletesResult(false, nextGen++, null);
   }
 
@@ -153,7 +110,5 @@ class BufferedDeletesStream {
     if (infoStream != null) {
       message("prune sis=" + segmentInfos + " minGen=" + minGen);
     }
-
-    assert !false;
   }
 }

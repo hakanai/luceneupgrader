@@ -70,6 +70,7 @@ public final class FieldInfo {
     assert indexOptions == IndexOptions.DOCS_AND_FREQS_AND_POSITIONS || !storePayloads;
   }
 
+  @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   public Object clone() {
     return new FieldInfo(name, isIndexed, number, storeTermVector,

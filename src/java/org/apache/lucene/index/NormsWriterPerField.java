@@ -26,7 +26,6 @@ import org.apache.lucene.util.ArrayUtil;
 
 final class NormsWriterPerField extends InvertedDocEndConsumerPerField implements Comparable<NormsWriterPerField> {
 
-  final NormsWriterPerThread perThread;
   final FieldInfo fieldInfo;
   final DocumentsWriter.DocState docState;
 
@@ -35,7 +34,6 @@ final class NormsWriterPerField extends InvertedDocEndConsumerPerField implement
   byte[] norms = new byte[1];
   int upto;
 
-  final FieldInvertState fieldState;
 
   public void reset() {
     // Shrink back if we are overallocated now:
@@ -44,11 +42,9 @@ final class NormsWriterPerField extends InvertedDocEndConsumerPerField implement
     upto = 0;
   }
 
-  public NormsWriterPerField(final DocInverterPerField docInverterPerField, final NormsWriterPerThread perThread, final FieldInfo fieldInfo) {
-    this.perThread = perThread;
+  public NormsWriterPerField(final NormsWriterPerThread perThread, final FieldInfo fieldInfo) {
     this.fieldInfo = fieldInfo;
     docState = perThread.docState;
-    fieldState = docInverterPerField.fieldState;
   }
 
   @Override
