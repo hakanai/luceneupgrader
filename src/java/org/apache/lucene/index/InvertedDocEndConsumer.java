@@ -24,5 +24,4 @@ import java.io.IOException;
 abstract class InvertedDocEndConsumer {
   abstract void flush(Map<InvertedDocEndConsumerPerThread,Collection<InvertedDocEndConsumerPerField>> threadsAndFields, SegmentWriteState state) throws IOException;
 
-  abstract void setFieldInfos(FieldInfos fieldInfos);
 }

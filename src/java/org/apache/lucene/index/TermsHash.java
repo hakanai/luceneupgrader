@@ -52,12 +52,6 @@ final class TermsHash extends InvertedDocConsumer {
   }
 
   @Override
-  void setFieldInfos(FieldInfos fieldInfos) {
-    this.fieldInfos = fieldInfos;
-    consumer.setFieldInfos(fieldInfos);
-  }
-
-  @Override
   public void abort() {
     try {
       consumer.abort();

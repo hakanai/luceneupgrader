@@ -36,11 +36,6 @@ final class NormsWriter extends InvertedDocEndConsumer {
   private final byte defaultNorm = Similarity.getDefault().encodeNormValue(1.0f);
   private FieldInfos fieldInfos;
 
-  @Override
-  void setFieldInfos(FieldInfos fieldInfos) {
-    this.fieldInfos = fieldInfos;
-  }
-
   /** Produce _X.nrm if any document had a field with norms
    *  not disabled */
   @Override

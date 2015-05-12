@@ -79,20 +79,6 @@ final class StoredFieldsWriter {
     }
   }
 
-  synchronized void finishDocument(PerDoc perDoc) throws IOException {
-    assert docWriter.writer.testPoint("StoredFieldsWriter.finishDocument start");
-    initFieldsWriter();
-
-    fill(perDoc.docID);
-
-    // Append stored fields to the real FieldsWriter:
-    fieldsWriter.flushDocument(perDoc.numStoredFields, perDoc.fdt);
-    lastDocID++;
-    perDoc.reset();
-    free(perDoc);
-    assert docWriter.writer.testPoint("StoredFieldsWriter.finishDocument end");
-  }
-
   synchronized void free(PerDoc perDoc) {
     assert freeCount < docFreeList.length;
     assert 0 == perDoc.numStoredFields;

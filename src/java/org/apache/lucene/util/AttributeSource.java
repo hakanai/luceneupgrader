@@ -17,9 +17,6 @@ package org.apache.lucene.util;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.tokenattributes.CharTermAttributeImpl;
-import org.apache.lucene.analysis.tokenattributes.TermAttribute;
-
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -44,55 +41,7 @@ public class AttributeSource {
      * returns an {@code AttributeImpl} for the supplied {@code Attribute} interface class.
      */
     public abstract AttributeImpl createAttributeInstance(Class<? extends Attribute> attClass);
-    
-    /**
-     * This is the default factory that creates {@code AttributeImpl}s using the
-     * class name of the supplied {@code Attribute} interface class by appending <code>Impl</code> to it.
-     */
-    public static final AttributeFactory DEFAULT_ATTRIBUTE_FACTORY = new DefaultAttributeFactory();
-    
-    private static final class DefaultAttributeFactory extends AttributeFactory {
-      private static final WeakIdentityMap<Class<? extends Attribute>, WeakReference<Class<? extends AttributeImpl>>> attClassImplMap =
-        WeakIdentityMap.newConcurrentHashMap();
-      
-      private DefaultAttributeFactory() {}
-    
-      @Override
-      public AttributeImpl createAttributeInstance(Class<? extends Attribute> attClass) {
-        try {
-          return getClassForInterface(attClass).newInstance();
-        } catch (InstantiationException e) {
-          throw new IllegalArgumentException("Could not instantiate implementing class for " + attClass.getName());
-        } catch (IllegalAccessException e) {
-          throw new IllegalArgumentException("Could not instantiate implementing class for " + attClass.getName());
-        }
-      }
-      
-      private static Class<? extends AttributeImpl> getClassForInterface(Class<? extends Attribute> attClass) {
-        final WeakReference<Class<? extends AttributeImpl>> ref = attClassImplMap.get(attClass);
-        Class<? extends AttributeImpl> clazz = (ref == null) ? null : ref.get();
-        if (clazz == null) {
-          // we have the slight chance that another thread may do the same, but who cares?
-          try {
-            // TODO: Remove when TermAttribute is removed!
-            // This is a "sophisticated backwards compatibility hack"
-            // (enforce new impl for this deprecated att):
-            if (TermAttribute.class.equals(attClass)) {
-              clazz = CharTermAttributeImpl.class;
-            } else {
-              clazz = Class.forName(attClass.getName() + "Impl", true, attClass.getClassLoader())
-                .asSubclass(AttributeImpl.class);
-            }
-            attClassImplMap.put(attClass,
-              new WeakReference<Class<? extends AttributeImpl>>(clazz)
-            );
-          } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Could not find implementing class for " + attClass.getName());
-          }
-        }
-        return clazz;
-      }
-    }
+
   }
       
   /**

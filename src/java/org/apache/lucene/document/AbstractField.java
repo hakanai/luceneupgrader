@@ -77,10 +77,6 @@ public abstract class AbstractField implements Fieldable {
     Reader-valued. */
   public final boolean  isStored()  { return isStored; }
 
-  /** True iff the value of the field is to be indexed, so that it may be
-    searched on. */
-  public final boolean  isIndexed()   { return isIndexed; }
-
   /** True iff the value of the field should be tokenized as text prior to
     indexing.  Un-tokenized fields are indexed as a single word and may not be
     Reader-valued. */

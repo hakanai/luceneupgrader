@@ -30,8 +30,6 @@ import org.apache.lucene.util.Constants;
 
 public class PackedInts {
 
-  private final static int VERSION_START = 0;
-
   /**
    * A read-only random access array of positive integers.
    * @lucene.internal

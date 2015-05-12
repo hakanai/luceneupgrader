@@ -5,58 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="736e230f-2817-43f3-8f39-4bcb3954f125" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/NumericTokenStream.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/TokenStream.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/NormsWriterPerThread.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/StoredFieldsWriterPerThread.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/SingleInstanceLockFactory.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/document/AbstractField.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/document/AbstractField.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/AttributeSource.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/AttributeSource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/ByteBlockPool.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/ByteBlockPool.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/BytesRef.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/BytesRef.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/CharTermAttribute.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/CharTermAttribute.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/CharTermAttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/CharTermAttributeImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/DefaultSimilarity.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/DefaultSimilarity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DirectoryReader.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DirectoryReader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldConsumer.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldConsumer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessor.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessorPerThread.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessorPerThread.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocInverter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocInverter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocumentsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocumentsWriter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldInfo.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FormatPostingsPositionsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FormatPostingsPositionsWriter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FormatPostingsTermsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FormatPostingsTermsWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldInvertState.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldInvertState.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/document/Fieldable.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/document/Fieldable.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldsWriter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FreqProxTermsWriterPerField.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FreqProxTermsWriterPerField.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FreqProxTermsWriterPerThread.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/FreqProxTermsWriterPerThread.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexFileDeleter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexFileDeleter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexWriter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexWriter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocConsumer.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocConsumer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocConsumerPerField.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocConsumerPerField.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocEndConsumer.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocEndConsumer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocEndConsumerPerField.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocEndConsumerPerField.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocEndConsumerPerThread.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocEndConsumerPerThread.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/NormsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/NormsWriter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/NormsWriterPerField.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/NormsWriterPerField.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/document/NumericField.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/document/NumericField.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/NumericUtils.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/NumericUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/OffsetAttribute.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/OffsetAttribute.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/OffsetAttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/OffsetAttributeImpl.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/PackedInts.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/PackedInts.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/ParallelPostingsArray.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/ParallelPostingsArray.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/PriorityQueue.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/PriorityQueue.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/PayloadAttribute.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/PayloadAttribute.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/PayloadAttributeImpl.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/PayloadAttributeImpl.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMDirectory.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMDirectory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/RamUsageEstimator.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/RamUsageEstimator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/ReadOnlyDirectoryReader.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/ReadOnlyDirectoryReader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentCoreReaders.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentCoreReaders.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentInfo.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentInfos.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentInfos.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentReader.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentReader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentWriteState.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentWriteState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Similarity.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/search/Similarity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMFile.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMFile.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/StoredFieldsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/StoredFieldsWriter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermInfosReader.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermInfosReader.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriter.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriterPerField.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriterPerField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriterPerThread.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriterPerThread.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermsHash.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermsHash.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermsHashConsumerPerField.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermsHashConsumerPerField.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermsHashPerField.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermsHashPerField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/org/apache/lucene/util/TwoPhaseCommit.java" afterPath="$PROJECT_DIR$/src/java/org/apache/lucene/util/TwoPhaseCommit.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="lucene3.iws" />
@@ -82,51 +58,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="DocFieldConsumer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldConsumer.java">
+      <file leaf-file-name="RAMFile.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMFile.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="32" column="1" selection-start-line="32" selection-start-column="1" selection-end-line="32" selection-end-column="1" />
+              <caret line="80" column="0" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DocConsumerPerThread.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocConsumerPerThread.java">
+      <file leaf-file-name="SegmentCoreReaders.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentCoreReaders.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="19" column="15" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DocConsumer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocConsumer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="22" column="15" selection-start-line="22" selection-start-column="15" selection-end-line="22" selection-end-column="15" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DocumentsWriter.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocumentsWriter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="132" column="4" selection-start-line="132" selection-start-column="4" selection-end-line="132" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FreqProxTermsWriterPerField.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/FreqProxTermsWriterPerField.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="98" column="4" selection-start-line="98" selection-start-column="4" selection-end-line="98" selection-end-column="4" />
+              <caret line="51" column="12" selection-start-line="51" selection-start-column="12" selection-end-line="51" selection-end-column="12" />
               <folding />
             </state>
           </provider>
@@ -136,37 +82,57 @@
         <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriterPerField.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="192" column="4" selection-start-line="192" selection-start-column="4" selection-end-line="192" selection-end-column="4" />
+              <caret line="164" column="0" selection-start-line="164" selection-start-column="0" selection-end-line="164" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DocInverter.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocInverter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.45697328">
-              <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DocFieldConsumerPerField.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldConsumerPerField.java">
+      <file leaf-file-name="TermVectorsTermsWriterPerThread.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriterPerThread.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="19" column="15" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
+              <caret line="57" column="7" selection-start-line="57" selection-start-column="7" selection-end-line="57" selection-end-column="7" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DocFieldProcessorPerThread.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessorPerThread.java">
+      <file leaf-file-name="TwoPhaseCommit.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/util/TwoPhaseCommit.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.93333334">
+              <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="StoredFieldsWriter.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/StoredFieldsWriter.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="105" column="4" selection-start-line="105" selection-start-column="4" selection-end-line="105" selection-end-column="4" />
+              <caret line="81" column="2" selection-start-line="81" selection-start-column="2" selection-end-line="81" selection-end-column="2" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TermsHashPerField.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/TermsHashPerField.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="265" column="7" selection-start-line="265" selection-start-column="7" selection-end-line="265" selection-end-column="7" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TermsHashPerThread.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/TermsHashPerThread.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="31" column="9" selection-start-line="31" selection-start-column="9" selection-end-line="31" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -176,7 +142,17 @@
         <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriter.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="224" column="11" selection-start-line="224" selection-start-column="11" selection-end-line="224" selection-end-column="11" />
+              <caret line="100" column="2" selection-start-line="100" selection-start-column="2" selection-end-line="100" selection-end-column="2" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TermVectorMapper.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorMapper.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="30" column="18" selection-start-line="30" selection-start-column="18" selection-end-line="30" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -202,16 +178,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldInvertState.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/WeakIdentityMap.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/VirtualMethod.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/Version.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/TypeAttribute.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/TwoPhaseCommit.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/TokenStream.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorMapper.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermsHashConsumerPerThread.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexUpgrader.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermInfosReader.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/TermAttribute.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/Term.java" />
@@ -219,22 +185,16 @@
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/CharTermAttribute.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessorPerThread.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/StoredFieldsWriterPerThread.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermsHashPerField.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermsHashConsumerPerField.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FormatPostingsPositionsWriter.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FormatPostingsTermsWriter.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FreqProxTermsWriterPerThread.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexFileDeleter.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocConsumer.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocEndConsumer.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocEndConsumerPerField.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocEndConsumerPerThread.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/NormsWriterPerField.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/NumericUtils.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/PackedInts.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/ParallelPostingsArray.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/PriorityQueue.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMDirectory.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/RamUsageEstimator.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/ReadOnlyDirectoryReader.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentCoreReaders.java" />
@@ -242,17 +202,33 @@
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentReader.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentWriteState.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/search/Similarity.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/StoredFieldsWriter.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexWriter.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/document/NumericField.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/AttributeSource.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/DirectoryReader.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldConsumer.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessor.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocumentsWriter.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FreqProxTermsWriterPerField.java" />
-        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriterPerField.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/AttributeSource.java" />
         <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocInverter.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/DocumentsWriter.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/document/Fieldable.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldInvertState.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldsWriter.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/FreqProxTermsWriterPerField.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexWriter.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocConsumer.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocEndConsumer.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/NormsWriterPerField.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/OffsetAttribute.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/PackedInts.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/PayloadAttribute.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/SingleInstanceLockFactory.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMDirectory.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMFile.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/StoredFieldsWriter.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermsHashPerField.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriter.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriterPerField.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriterPerThread.java" />
+        <option value="$PROJECT_DIR$/src/java/org/apache/lucene/util/TwoPhaseCommit.java" />
       </list>
     </option>
   </component>
@@ -267,8 +243,8 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="21" />
-    <option name="y" value="48" />
+    <option name="x" value="72" />
+    <option name="y" value="56" />
     <option name="width" value="1695" />
     <option name="height" value="1194" />
   </component>
@@ -323,9 +299,8 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -529,6 +504,7 @@
         </subPane>
         <option name="show-excluded-files" value="false" />
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -794,31 +770,40 @@
     <option name="localTasksCounter" value="11" />
     <servers />
   </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
-    <frame x="21" y="48" width="1695" height="1194" extended-state="0" />
+    <frame x="72" y="56" width="1695" height="1194" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32806692" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32899627" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899627" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32806692" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32806692" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32992566" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26860255" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3986989" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -856,146 +841,10 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/FormatPostingsPositionsWriter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/FormatPostingsTermsWriter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="35" column="20" selection-start-line="35" selection-start-column="20" selection-end-line="35" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/FormatPostingsDocsWriter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="64" column="7" selection-start-line="64" selection-start-column="7" selection-end-line="64" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/FreqProxTermsWriterPerThread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexCommit.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="66" column="26" selection-start-line="66" selection-start-column="26" selection-end-line="66" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexFileDeleter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="613" column="0" selection-start-line="613" selection-start-column="0" selection-end-line="613" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocConsumer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="2" selection-start-line="25" selection-start-column="2" selection-end-line="25" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocEndConsumer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="24" column="2" selection-start-line="24" selection-start-column="2" selection-end-line="24" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/NormsWriter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="33" column="12" selection-start-line="33" selection-start-column="12" selection-end-line="33" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocEndConsumerPerField.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocEndConsumerPerThread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="2" selection-start-line="22" selection-start-column="2" selection-end-line="22" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/LogMergePolicy.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="396" column="0" selection-start-line="396" selection-start-column="0" selection-end-line="396" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/NormsWriterPerField.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="18" selection-start-line="28" selection-start-column="18" selection-end-line="28" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/util/NumericUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/PackedInts.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="32" column="45" selection-start-line="32" selection-start-column="45" selection-end-line="32" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/util/PagedBytes.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="39" column="18" selection-start-line="39" selection-start-column="18" selection-end-line="39" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/ParallelPostingsArray.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="40" column="2" selection-start-line="40" selection-start-column="2" selection-end-line="40" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/Payload.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="43" column="16" selection-start-line="43" selection-start-column="16" selection-end-line="43" selection-end-column="16" />
           <folding />
         </state>
       </provider>
@@ -1016,21 +865,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMDirectory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.84">
-          <caret line="59" column="13" selection-start-line="59" selection-start-column="13" selection-end-line="59" selection-end-column="13" />
-          <folding>
-            <element signature="e#2060#2087#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/util/RamUsageEstimator.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="101" column="0" selection-start-line="101" selection-start-column="0" selection-end-line="101" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1046,14 +884,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="24" column="55" selection-start-line="24" selection-start-column="55" selection-end-line="24" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentCoreReaders.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="202" column="36" selection-start-line="202" selection-start-column="36" selection-end-line="202" selection-end-column="36" />
           <folding />
         </state>
       </provider>
@@ -1074,27 +904,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/StoredFieldsWriter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="63" column="2" selection-start-line="63" selection-start-column="2" selection-end-line="63" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/SingleInstanceLockFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="33" column="13" selection-start-line="33" selection-start-column="13" selection-end-line="33" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentWriteState.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="32" column="26" selection-start-line="32" selection-start-column="26" selection-end-line="32" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1102,7 +915,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="32" column="25" selection-start-line="32" selection-start-column="25" selection-end-line="32" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1111,17 +923,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="132" column="19" selection-start-line="132" selection-start-column="19" selection-end-line="132" selection-end-column="19" />
           <folding>
-            <element signature="e#5034#5047#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexWriter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1949" column="20" selection-start-line="1949" selection-start-column="20" selection-end-line="1949" selection-end-column="20" />
-          <folding>
-            <element signature="e#10168#10190#0" expanded="true" />
+            <element signature="e#5034#5047#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1138,23 +940,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="234" column="0" selection-start-line="234" selection-start-column="0" selection-end-line="234" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/util/AttributeSource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="128" column="2" selection-start-line="128" selection-start-column="2" selection-end-line="128" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/DeleteMe.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1162,6 +947,30 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="59" column="2" selection-start-line="59" selection-start-column="2" selection-end-line="59" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocConsumerPerThread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="19" column="15" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocConsumer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="22" column="15" selection-start-line="22" selection-start-column="15" selection-end-line="22" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessorPerThread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="105" column="4" selection-start-line="105" selection-start-column="4" selection-end-line="105" selection-end-column="4" />
           <folding />
         </state>
       </provider>
@@ -1206,34 +1015,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocConsumerPerThread.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/DeleteMe.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="19" column="15" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
+          <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocConsumer.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/util/AttributeSource.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="15" selection-start-line="22" selection-start-column="15" selection-end-line="22" selection-end-column="15" />
+          <caret line="44" column="2" selection-start-line="44" selection-start-column="2" selection-end-line="44" selection-end-column="2" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocFieldProcessorPerThread.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/util/Bits.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="105" column="4" selection-start-line="105" selection-start-column="4" selection-end-line="105" selection-end-column="4" />
+          <caret line="25" column="10" selection-start-line="25" selection-start-column="10" selection-end-line="25" selection-end-column="10" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriter.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocInverter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="224" column="11" selection-start-line="224" selection-start-column="11" selection-end-line="224" selection-end-column="11" />
+          <caret line="41" column="2" selection-start-line="41" selection-start-column="2" selection-end-line="41" selection-end-column="2" />
           <folding />
         </state>
       </provider>
@@ -1241,7 +1050,33 @@
     <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocumentsWriter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="132" column="4" selection-start-line="132" selection-start-column="4" selection-end-line="132" selection-end-column="4" />
+          <caret line="114" column="30" selection-start-line="114" selection-start-column="30" selection-end-line="114" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/document/Fieldable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="67" column="7" selection-start-line="67" selection-start-column="7" selection-end-line="67" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldInvertState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="28" column="18" selection-start-line="28" selection-start-column="18" selection-end-line="28" selection-end-column="18" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/FieldsWriter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="96" column="2" selection-start-line="96" selection-start-column="2" selection-end-line="96" selection-end-column="2" />
           <folding />
         </state>
       </provider>
@@ -1249,7 +1084,143 @@
     <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/FreqProxTermsWriterPerField.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="98" column="4" selection-start-line="98" selection-start-column="4" selection-end-line="98" selection-end-column="4" />
+          <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexCommit.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="66" column="26" selection-start-line="66" selection-start-column="26" selection-end-line="66" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/IndexWriter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2610" column="20" selection-start-line="2610" selection-start-column="20" selection-end-line="2610" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocConsumer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/InvertedDocEndConsumer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/NormsWriterPerField.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="28" column="2" selection-start-line="28" selection-start-column="2" selection-end-line="28" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/OffsetAttribute.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/util/packed/PackedInts.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="32" column="2" selection-start-line="32" selection-start-column="2" selection-end-line="32" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/analysis/tokenattributes/PayloadAttribute.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="24" column="53" selection-start-line="24" selection-start-column="53" selection-end-line="24" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/Payload.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="43" column="16" selection-start-line="43" selection-start-column="16" selection-end-line="43" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMDirectory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="89" column="2" selection-start-line="89" selection-start-column="2" selection-end-line="89" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/store/RAMFile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="80" column="0" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/SegmentCoreReaders.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="51" column="12" selection-start-line="51" selection-start-column="12" selection-end-line="51" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/StoredFieldsWriter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="81" column="2" selection-start-line="81" selection-start-column="2" selection-end-line="81" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/TermsHashPerField.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="265" column="7" selection-start-line="265" selection-start-column="7" selection-end-line="265" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/TermsHashPerThread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="31" column="9" selection-start-line="31" selection-start-column="9" selection-end-line="31" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorMapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="30" column="18" selection-start-line="30" selection-start-column="18" selection-end-line="30" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="100" column="2" selection-start-line="100" selection-start-column="2" selection-end-line="100" selection-end-column="2" />
           <folding />
         </state>
       </provider>
@@ -1257,15 +1228,23 @@
     <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriterPerField.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="192" column="4" selection-start-line="192" selection-start-column="4" selection-end-line="192" selection-end-column="4" />
+          <caret line="164" column="0" selection-start-line="164" selection-start-column="0" selection-end-line="164" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/DocInverter.java">
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/index/TermVectorsTermsWriterPerThread.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.45697328">
-          <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="57" column="7" selection-start-line="57" selection-start-column="7" selection-end-line="57" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/apache/lucene/util/TwoPhaseCommit.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.93333334">
+          <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
           <folding />
         </state>
       </provider>

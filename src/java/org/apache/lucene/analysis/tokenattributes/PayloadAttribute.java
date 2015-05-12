@@ -17,16 +17,11 @@ package org.apache.lucene.analysis.tokenattributes;
  * limitations under the License.
  */
 
-import org.apache.lucene.index.Payload;
 import org.apache.lucene.util.Attribute;
 
 /**
  * The payload of a Token. See also {@code Payload}.
  */
 public interface PayloadAttribute extends Attribute {
-  /**
-   * Returns this Token's payload.
-   */
-  Payload getPayload();
 
 }

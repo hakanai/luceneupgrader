@@ -26,10 +26,6 @@ import org.apache.lucene.util.AttributeSource;
  * @lucene.experimental
  */
 public final class FieldInvertState {
-  int position;
-  int offset;
-  int maxTermFrequency;
-  int uniqueTermCount;
   AttributeSource attributeSource;
 
 }

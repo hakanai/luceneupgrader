@@ -250,9 +250,6 @@ final class TermsHashPerField extends InvertedDocConsumerPerField {
     return postingsHash;
   }
 
-  private boolean doCall;
-  private boolean doNextCall;
-
   @Override
   void start(Fieldable f) {
     termAtt = fieldState.attributeSource.addAttribute(CharTermAttribute.class);
@@ -264,37 +261,6 @@ final class TermsHashPerField extends InvertedDocConsumerPerField {
 
   int[] intUptos;
   int intUptoStart;
-
-  void writeByte(int stream, byte b) {
-    int upto = intUptos[intUptoStart+stream];
-    byte[] bytes = bytePool.buffers[upto >> DocumentsWriter.BYTE_BLOCK_SHIFT];
-    assert bytes != null;
-    int offset = upto & DocumentsWriter.BYTE_BLOCK_MASK;
-    if (bytes[offset] != 0) {
-      // End of slice; allocate a new one
-      offset = bytePool.allocSlice(bytes, offset);
-      bytes = bytePool.buffer;
-      intUptos[intUptoStart+stream] = offset + bytePool.byteOffset;
-    }
-    bytes[offset] = b;
-    (intUptos[intUptoStart+stream])++;
-  }
-
-  public void writeBytes(int stream, byte[] b, int offset, int len) {
-    // TODO: optimize
-    final int end = offset + len;
-    for(int i=offset;i<end;i++)
-      writeByte(stream, b[i]);
-  }
-
-  void writeVInt(int stream, int i) {
-    assert stream < streamCount;
-    while ((i & ~0x7F) != 0) {
-      writeByte(stream, (byte)((i & 0x7f) | 0x80));
-      i >>>= 7;
-    }
-    writeByte(stream, (byte) i);
-  }
 
   @Override
   void finish() throws IOException {

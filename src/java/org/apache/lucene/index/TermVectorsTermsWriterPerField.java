@@ -17,7 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.store.IndexOutput;
 import org.apache.lucene.util.RamUsageEstimator;
@@ -29,7 +28,6 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
 
   final TermVectorsTermsWriterPerThread perThread;
   final TermsHashPerField termsHashPerField;
-  final TermVectorsTermsWriter termsWriter;
   final FieldInfo fieldInfo;
   final DocumentsWriter.DocState docState;
   final FieldInvertState fieldState;
@@ -39,12 +37,10 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
   boolean doVectorOffsets;
 
   int maxNumPostings;
-  OffsetAttribute offsetAttribute = null;
-  
+
   public TermVectorsTermsWriterPerField(TermsHashPerField termsHashPerField, TermVectorsTermsWriterPerThread perThread, FieldInfo fieldInfo) {
     this.termsHashPerField = termsHashPerField;
     this.perThread = perThread;
-    this.termsWriter = perThread.termsWriter;
     this.fieldInfo = fieldInfo;
     docState = termsHashPerField.docState;
     fieldState = termsHashPerField.fieldState;
@@ -62,7 +58,7 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
   @Override
   void finish() throws IOException {
 
-    assert docState.testPoint("TermVectorsTermsWriterPerField.finish start");
+    assert docState.testPoint();
 
     final int numPostings = termsHashPerField.numPostings;
 
@@ -166,11 +162,6 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
   
   @Override
   void start(Fieldable f) {
-    if (doVectorOffsets) {
-      offsetAttribute = fieldState.attributeSource.addAttribute(OffsetAttribute.class);
-    } else {
-      offsetAttribute = null;
-    }
   }
 
   @Override

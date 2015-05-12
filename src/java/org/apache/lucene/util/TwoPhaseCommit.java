@@ -41,13 +41,4 @@ public interface TwoPhaseCommit {
    */
   void prepareCommit(Map<String, String> commitData) throws IOException;
 
-  /**
-   * Like {@code #commit()}, but takes an additional commit data to be included
-   * w/ the commit.
-   * 
-   *
-   *
-   */
-  void commit(Map<String, String> commitData) throws IOException;
-
 }

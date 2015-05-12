@@ -94,18 +94,6 @@ final class FieldsWriter {
     }
   }
 
-  FieldsWriter(IndexOutput fdx, IndexOutput fdt, FieldInfos fn) {
-    directory = null;
-    segment = null;
-    fieldInfos = fn;
-    fieldsStream = fdt;
-    indexStream = fdx;
-  }
-
-  void setFieldsStream(IndexOutput stream) {
-    this.fieldsStream = stream;
-  }
-
   // Writes the contents of buffer into the fields stream
   // and adds a new entry for this document into the index
   // stream.  This assumes the buffer was already written

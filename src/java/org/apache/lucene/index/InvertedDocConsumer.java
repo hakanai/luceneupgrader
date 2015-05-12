@@ -31,7 +31,4 @@ abstract class InvertedDocConsumer {
 
   FieldInfos fieldInfos;
 
-  void setFieldInfos(FieldInfos fieldInfos) {
-    this.fieldInfos = fieldInfos;
-  }
 }

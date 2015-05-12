@@ -163,14 +163,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    */
   public static final String WRITE_LOCK_NAME = "write.lock";
 
-  /**
-   * Default value is 10,000. Change using {@code #setMaxFieldLength(int)}.
-   * 
-   * @deprecated see {@code IndexWriterConfig}
-   */
-  @Deprecated
-  public final static int DEFAULT_MAX_FIELD_LENGTH = MaxFieldLength.UNLIMITED.getLimit();
-
   // The normal read buffer size defaults to 1024, but
   // increasing this during merging seems to yield
   // performance gains.  However we don't want to increase
@@ -1252,7 +1244,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
         docWriter.abort();
 
-        assert testPoint("rollback before checkpoint");
+        assert testPoint();
 
         // Ask deleter to locate unreferenced files & remove
         // them:
@@ -1480,22 +1472,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   // Used only by commit, below; lock order is commitLock -> IW
   private final Object commitLock = new Object();
 
-  /** Commits all changes to the index, specifying a
-   *  commitUserData Map (String -> String).  This just
-   *  calls {@code #prepareCommit(Map)} (if you didn't
-   *  already call it) and then {@code #finishCommit}.
-   *
-   * <p><b>NOTE</b>: if this method hits an OutOfMemoryError
-   * you should immediately close the writer.  See <a
-   * href="#OOME">above</a> for details.</p>
-   */
-  public final void commit(Map<String,String> commitUserData) throws IOException {
-
-    ensureOpen();
-
-    commitInternal(commitUserData);
-  }
-
   private void commitInternal(Map<String,String> commitUserData) throws IOException {
 
     if (infoStream != null) {
@@ -1587,7 +1563,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
     doBeforeFlush();
 
-    assert testPoint("startDoFlush");
+    assert testPoint();
 
     // We may be flushing because it was triggered by doc
     // count, del count, ram usage (in which case flush
@@ -1703,7 +1679,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *  flushed, no new deletes file is saved. */
   synchronized private void commitMergedDeletes(MergePolicy.OneMerge merge, SegmentReader mergedReader) throws IOException {
 
-    assert testPoint("startCommitMergeDeletes");
+    assert testPoint();
 
     final List<SegmentInfo> sourceSegments = merge.segments;
 
@@ -1784,7 +1760,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   synchronized private boolean commitMerge(MergePolicy.OneMerge merge, SegmentReader mergedReader) throws IOException {
 
-    assert testPoint("startCommitMerge");
+    assert testPoint();
 
     if (hitOOM) {
       throw new IllegalStateException("this writer hit an OutOfMemoryError; cannot complete merge");
@@ -2026,7 +2002,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   synchronized private void _mergeInit(MergePolicy.OneMerge merge) throws IOException {
 
-    assert testPoint("startMergeInit");
+    assert testPoint();
 
     assert merge.registerDone;
     assert merge.maxNumSegments == -1 || merge.maxNumSegments > 0;
@@ -2485,7 +2461,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *  it. */
   private void startCommit(SegmentInfos toSync, Map<String,String> commitUserData) throws IOException {
 
-    assert testPoint("startStartCommit");
+    assert testPoint();
     assert pendingCommit == null;
 
     if (hitOOM) {
@@ -2525,7 +2501,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
         }
       }
 
-      assert testPoint("midStartCommit");
+      assert testPoint();
 
       boolean pendingCommitSet = false;
 
@@ -2534,7 +2510,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
         // or more.  We do it without sync:
         directory.sync(toSync.files(directory, false));
 
-        assert testPoint("midStartCommit2");
+        assert testPoint();
 
         synchronized(this) {
 
@@ -2554,7 +2530,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
           message("done all syncs");
         }
 
-        assert testPoint("midStartCommitSuccess");
+        assert testPoint();
 
       } finally {
         synchronized(this) {
@@ -2578,47 +2554,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     } catch (OutOfMemoryError oom) {
       handleOOM(oom, "startCommit");
     }
-    assert testPoint("finishStartCommit");
-  }
-
-  /**
-   * Specifies maximum field length (in number of tokens/terms) in
-   * {@code IndexWriter} constructors. {@code #setMaxFieldLength(int)} overrides
-   * the value set by the constructor.
-   * 
-   * @deprecated use {@code LimitTokenCountAnalyzer} instead.
-   */
-  @Deprecated
-  public static final class MaxFieldLength {
-
-    private int limit;
-    private String name;
-
-    /**
-     * Private type-safe-enum-pattern constructor.
-     * 
-     * @param name instance name
-     * @param limit maximum field length
-     */
-    private MaxFieldLength(String name, int limit) {
-      this.name = name;
-      this.limit = limit;
-    }
-
-    public int getLimit() {
-      return limit;
-    }
-    
-    @Override
-    public String toString()
-    {
-      return name + ":" + limit;
-    }
-
-    /** Sets the maximum field length to {@code Integer#MAX_VALUE}. */
-    public static final MaxFieldLength UNLIMITED
-        = new MaxFieldLength("UNLIMITED", Integer.MAX_VALUE);
-
+    assert testPoint();
   }
 
   /** If {@code #getReader} has been called (ie, this writer
@@ -2656,7 +2592,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   //   startCommitMergeDeletes
   //   startMergeInit
   //   DocumentsWriter.ThreadState.init start
-  boolean testPoint(String name) {
+  boolean testPoint() {
     return true;
   }
 

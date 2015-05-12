@@ -113,11 +113,10 @@ final class DocumentsWriter {
 
   static class DocState {
     DocumentsWriter docWriter;
-    int docID;
 
     // Only called by asserts
-    public boolean testPoint(String name) {
-      return docWriter.writer.testPoint(name);
+    public boolean testPoint() {
+      return docWriter.writer.testPoint();
     }
 
     public void clear() {

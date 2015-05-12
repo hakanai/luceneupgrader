@@ -52,35 +52,10 @@ public interface Fieldable extends Serializable {
     with search hits. */
   boolean  isStored();
 
-  /** True if the value of the field is to be indexed, so that it may be
-    searched on. */
-  boolean  isIndexed();
-
   /** True if the value of the field should be tokenized as text prior to
     indexing.  Un-tokenized fields are indexed as a single word and may not be
     Reader-valued. */
   boolean  isTokenized();
-
-  /** True if the term or terms used to index this field are stored as a term
-   *  vector, available from {@code org.apache.lucene.index.IndexReader#getTermFreqVector(int,String)}.
-   *  These methods do not provide access to the original content of the field,
-   *  only to terms used to index it. If the original content must be
-   *  preserved, use the <code>stored</code> attribute instead.
-   *
-   *
-   */
-  boolean isTermVectorStored();
-
-  /**
-   * True if terms are stored as term vector together with their offsets 
-   * (start and end positon in source text).
-   */
-  boolean isStoreOffsetWithTermVector();
-
-  /**
-   * True if terms are stored as term vector together with their token positions.
-   */
-  boolean isStorePositionWithTermVector();
 
   /** True if the value of the field is stored as binary */
   boolean  isBinary();

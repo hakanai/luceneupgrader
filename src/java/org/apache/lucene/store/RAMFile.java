@@ -78,8 +78,4 @@ public class RAMFile implements Serializable {
     return new byte[size];
   }
 
-  public synchronized long getSizeInBytes() {
-    return sizeInBytes;
-  }
-  
 }

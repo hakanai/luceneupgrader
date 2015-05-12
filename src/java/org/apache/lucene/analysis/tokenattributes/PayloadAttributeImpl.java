@@ -40,13 +40,6 @@ public class PayloadAttributeImpl extends AttributeImpl implements PayloadAttrib
   public PayloadAttributeImpl(Payload payload) {
     this.payload = payload;
   }
-  
-  /**
-   * Returns this Token's payload.
-   */ 
-  public Payload getPayload() {
-    return this.payload;
-  }
 
   @Override
   public Object clone()  {

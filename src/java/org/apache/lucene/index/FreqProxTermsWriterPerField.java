@@ -17,7 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.tokenattributes.PayloadAttribute;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.util.RamUsageEstimator;
@@ -33,7 +32,6 @@ final class FreqProxTermsWriterPerField extends TermsHashConsumerPerField implem
   final DocumentsWriter.DocState docState;
   final FieldInvertState fieldState;
   IndexOptions indexOptions;
-  PayloadAttribute payloadAttribute;
 
   public FreqProxTermsWriterPerField(TermsHashPerField termsHashPerField, FreqProxTermsWriterPerThread perThread, FieldInfo fieldInfo) {
     this.termsHashPerField = termsHashPerField;
@@ -65,16 +63,10 @@ final class FreqProxTermsWriterPerField extends TermsHashConsumerPerField implem
     // Record, up front, whether our in-RAM format will be
     // with or without term freqs:
     indexOptions = fieldInfo.indexOptions;
-    payloadAttribute = null;
   }
 
   @Override
   void start(Fieldable f) {
-    if (fieldState.attributeSource.hasAttribute(PayloadAttribute.class)) {
-      payloadAttribute = fieldState.attributeSource.getAttribute(PayloadAttribute.class);
-    } else {
-      payloadAttribute = null;
-    }
   }
 
   @Override

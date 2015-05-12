@@ -39,11 +39,6 @@ final class DocInverter extends DocFieldConsumer {
     this.endConsumer = endConsumer;
   }
 
-  void setFieldInfos(FieldInfos fieldInfos) {
-    consumer.setFieldInfos(fieldInfos);
-    endConsumer.setFieldInfos(fieldInfos);
-  }
-
   @Override
   void flush(Map<DocFieldConsumerPerThread, Collection<DocFieldConsumerPerField>> threadsAndFields, SegmentWriteState state) throws IOException {
 

@@ -56,15 +56,6 @@ public class RAMDirectory extends Directory implements Serializable {
   // Lock acquisition sequence:  RAMDirectory, then RAMFile
   // *****
 
-  /** Constructs an empty {@code Directory}. */
-  public RAMDirectory() {
-    try {
-      setLockFactory(new SingleInstanceLockFactory());
-    } catch (IOException e) {
-      // Cannot happen
-    }
-  }
-
   @Override
   public final String[] listAll() {
     ensureOpen();
@@ -95,16 +86,7 @@ public class RAMDirectory extends Directory implements Serializable {
     }
     return file.getLength();
   }
-  
-  /**
-   * Return total size in bytes of all files in this directory. This is
-   * currently quantized to RAMOutputStream.BUFFER_SIZE.
-   */
-  public final long sizeInBytes() {
-    ensureOpen();
-    return sizeInBytes.get();
-  }
-  
+
   /** Removes an existing file in the directory.
    * @throws IOException if the file does not exist
    */

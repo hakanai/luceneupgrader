@@ -23,14 +23,12 @@ final class TermVectorsTermsWriterPerThread extends TermsHashConsumerPerThread {
 
   final TermVectorsTermsWriter termsWriter;
   final TermsHashPerThread termsHashPerThread;
-  final DocumentsWriter.DocState docState;
 
   TermVectorsTermsWriter.PerDoc doc;
 
   public TermVectorsTermsWriterPerThread(TermsHashPerThread termsHashPerThread, TermVectorsTermsWriter termsWriter) {
     this.termsWriter = termsWriter;
     this.termsHashPerThread = termsHashPerThread;
-    docState = termsHashPerThread.docState;
   }
   
   // Used by perField when serializing the term vectors
@@ -56,6 +54,7 @@ final class TermVectorsTermsWriterPerThread extends TermsHashConsumerPerThread {
   String lastVectorFieldName;
   final boolean vectorFieldsInOrder(FieldInfo fi) {
     try {
+      //noinspection SimplifiableIfStatement
       if (lastVectorFieldName != null)
         return lastVectorFieldName.compareTo(fi.name) < 0;
       else
