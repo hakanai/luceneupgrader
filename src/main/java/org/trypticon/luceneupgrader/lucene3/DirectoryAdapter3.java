@@ -36,18 +36,6 @@ class DirectoryAdapter3 extends Directory {
         return delegate.fileLength(name);
     }
 
-    @Deprecated
-    @Override
-    public long fileModified(String name) throws IOException {
-        return delegate.fileModified(name);
-    }
-
-    @Deprecated
-    @Override
-    public void touchFile(String name) throws IOException {
-        delegate.touchFile(name);
-    }
-
     @Override
     public IndexOutput createOutput(String name) throws IOException {
         return new IndexOutputAdapter3(delegate.createOutput(name));
@@ -80,11 +68,6 @@ class DirectoryAdapter3 extends Directory {
     }
 
     @Override
-    public void clearLock(String name) throws IOException {
-        delegate.clearLock(name);
-    }
-
-    @Override
     public void close() throws IOException {
         delegate.close();
     }
@@ -107,15 +90,5 @@ class DirectoryAdapter3 extends Directory {
     @Override
     public String toString() {
         return delegate.toString();
-    }
-
-    @Override
-    public void copy(Directory to, String src, String dest) throws IOException {
-        delegate.copy(to, src, dest);
-    }
-
-    @Deprecated
-    public static void copy(Directory src, Directory dest, boolean closeDirSrc) throws IOException {
-        Directory.copy(src, dest, closeDirSrc);
     }
 }

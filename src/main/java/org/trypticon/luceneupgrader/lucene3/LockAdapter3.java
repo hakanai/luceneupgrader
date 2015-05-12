@@ -25,11 +25,6 @@ class LockAdapter3 extends Lock {
     }
 
     @Override
-    public boolean isLocked() throws IOException {
-        return delegate.isLocked();
-    }
-
-    @Override
     public void release() throws IOException {
         delegate.release();
     }

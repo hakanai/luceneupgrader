@@ -67,11 +67,6 @@ class IndexOutputAdapter3 extends IndexOutput {
     }
 
     @Override
-    public void writeShort(short i) throws IOException {
-        delegate.writeShort(i);
-    }
-
-    @Override
     public void writeLong(long i) throws IOException {
         delegate.writeLong(i);
     }
@@ -84,18 +79,6 @@ class IndexOutputAdapter3 extends IndexOutput {
     @Override
     public void copyBytes(DataInput input, long numBytes) throws IOException {
         delegate.copyBytes(input, numBytes);
-    }
-
-    @Override
-    @Deprecated
-    public void writeChars(String s, int start, int length) throws IOException {
-        delegate.writeChars(s, start, length);
-    }
-
-    @Override
-    @Deprecated
-    public void writeChars(char[] s, int start, int length) throws IOException {
-        delegate.writeChars(s, start, length);
     }
 
     @Override

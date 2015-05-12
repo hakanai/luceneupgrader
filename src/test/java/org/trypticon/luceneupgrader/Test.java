@@ -1,8 +1,10 @@
 package org.trypticon.luceneupgrader;
 
 import org.trypticon.luceneupgrader.lucene3.IndexUpgrader3;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.*;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.FSDirectory;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,10 +27,7 @@ public class Test {
 
             new IndexUpgrader3(directory).upgrade();
 
-            try (IndexReader reader = IndexReader.open(directory)) {
-                System.out.println("doc count after: " + reader.numDocs());
-            }
-
+            // Sanity check
             try (Directory expectedDirectory = FSDirectory.open(new File("/Data/Lucene/TextIndexReferenceResult"))) {
                 for (String name : expectedDirectory.listAll()) {
                     try (IndexInput input = directory.openInput(name);

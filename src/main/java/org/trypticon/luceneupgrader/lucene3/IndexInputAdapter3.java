@@ -69,11 +69,6 @@ class IndexInputAdapter3 extends IndexInput {
     }
 
     @Override
-    public short readShort() throws IOException {
-        return delegate.readShort();
-    }
-
-    @Override
     public int readInt() throws IOException {
         return delegate.readInt();
     }
