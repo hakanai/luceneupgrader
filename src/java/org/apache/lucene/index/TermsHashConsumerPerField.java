@@ -27,12 +27,10 @@ import org.apache.lucene.document.Fieldable;
 import java.io.IOException;
 
 abstract class TermsHashConsumerPerField {
-  abstract boolean start(Fieldable[] fields, int count) throws IOException;
   abstract void finish() throws IOException;
 
   abstract void start(Fieldable field);
-  abstract void newTerm(int termID) throws IOException;
-  abstract void addTerm(int termID) throws IOException;
+
   abstract int getStreamCount();
 
   abstract ParallelPostingsArray createPostingsArray(int size);

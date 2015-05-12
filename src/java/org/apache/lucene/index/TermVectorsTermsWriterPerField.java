@@ -55,47 +55,6 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
     return 2;
   }
 
-  @Override
-  boolean start(Fieldable[] fields, int count) {
-    doVectors = false;
-    doVectorPositions = false;
-    doVectorOffsets = false;
-
-    for(int i=0;i<count;i++) {
-      Fieldable field = fields[i];
-      if (field.isIndexed() && field.isTermVectorStored()) {
-        doVectors = true;
-        doVectorPositions |= field.isStorePositionWithTermVector();
-        doVectorOffsets |= field.isStoreOffsetWithTermVector();
-      }
-    }
-
-    if (doVectors) {
-      if (perThread.doc == null) {
-        perThread.doc = termsWriter.getPerDoc();
-        perThread.doc.docID = docState.docID;
-        assert perThread.doc.numVectorFields == 0;
-        assert 0 == perThread.doc.perDocTvf.length();
-        assert 0 == perThread.doc.perDocTvf.getFilePointer();
-      }
-
-      assert perThread.doc.docID == docState.docID;
-
-      if (termsHashPerField.numPostings != 0) {
-        // Only necessary if previous doc hit a
-        // non-aborting exception while writing vectors in
-        // this field:
-        termsHashPerField.reset();
-        perThread.termsHashPerThread.reset(false);
-      }
-    }
-
-    // TODO: only if needed for performance
-    //perThread.postingsCount = 0;
-
-    return doVectors;
-  }
-
   /** Called once per field per document if term vectors
    *  are enabled, to write the vectors to
    *  RAMOutputStream, which is then quickly flushed to
@@ -215,54 +174,6 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
   }
 
   @Override
-  void newTerm(final int termID) {
-
-    assert docState.testPoint("TermVectorsTermsWriterPerField.newTerm start");
-
-    TermVectorsPostingsArray postings = (TermVectorsPostingsArray) termsHashPerField.postingsArray;
-
-    postings.freqs[termID] = 1;
-
-    if (doVectorOffsets) {
-      int startOffset = fieldState.offset + offsetAttribute.startOffset();
-      int endOffset = fieldState.offset + offsetAttribute.endOffset();
-      
-      termsHashPerField.writeVInt(1, startOffset);
-      termsHashPerField.writeVInt(1, endOffset - startOffset);
-      postings.lastOffsets[termID] = endOffset;
-    }
-
-    if (doVectorPositions) {
-      termsHashPerField.writeVInt(0, fieldState.position);
-      postings.lastPositions[termID] = fieldState.position;
-    }
-  }
-
-  @Override
-  void addTerm(final int termID) {
-
-    assert docState.testPoint("TermVectorsTermsWriterPerField.addTerm start");
-
-    TermVectorsPostingsArray postings = (TermVectorsPostingsArray) termsHashPerField.postingsArray;
-    
-    postings.freqs[termID]++;
-
-    if (doVectorOffsets) {
-      int startOffset = fieldState.offset + offsetAttribute.startOffset();
-      int endOffset = fieldState.offset + offsetAttribute.endOffset();
-      
-      termsHashPerField.writeVInt(1, startOffset - postings.lastOffsets[termID]);
-      termsHashPerField.writeVInt(1, endOffset - startOffset);
-      postings.lastOffsets[termID] = endOffset;
-    }
-
-    if (doVectorPositions) {
-      termsHashPerField.writeVInt(0, fieldState.position - postings.lastPositions[termID]);
-      postings.lastPositions[termID] = fieldState.position;
-    }
-  }
-
-  @Override
   ParallelPostingsArray createPostingsArray(int size) {
     return new TermVectorsPostingsArray(size);
   }
@@ -278,11 +189,6 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
     int[] freqs;                                       // How many times this term occurred in the current doc
     int[] lastOffsets;                                 // Last offset we saw
     int[] lastPositions;                               // Last position where this term occurred
-    
-    @Override
-    ParallelPostingsArray newInstance(int size) {
-      return new TermVectorsPostingsArray(size);
-    }
 
     @Override
     void copyTo(ParallelPostingsArray toArray, int numToCopy) {

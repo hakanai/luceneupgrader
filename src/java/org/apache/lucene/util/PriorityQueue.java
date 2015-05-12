@@ -158,14 +158,6 @@ public abstract class PriorityQueue<T> {
     return size;
   }
 
-  /** Removes all entries from the PriorityQueue. */
-  public final void clear() {
-    for (int i = 0; i <= size; i++) {
-      heap[i] = null;
-    }
-    size = 0;
-  }
-
   private void upHeap() {
     int i = size;
     T node = heap[i];			  // save bottom node

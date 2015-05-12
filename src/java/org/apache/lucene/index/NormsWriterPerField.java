@@ -27,7 +27,6 @@ import org.apache.lucene.util.ArrayUtil;
 final class NormsWriterPerField extends InvertedDocEndConsumerPerField implements Comparable<NormsWriterPerField> {
 
   final FieldInfo fieldInfo;
-  final DocumentsWriter.DocState docState;
 
   // Holds all docID/norm pairs we've seen
   int[] docIDs = new int[1];
@@ -42,14 +41,8 @@ final class NormsWriterPerField extends InvertedDocEndConsumerPerField implement
     upto = 0;
   }
 
-  public NormsWriterPerField(final NormsWriterPerThread perThread, final FieldInfo fieldInfo) {
+  public NormsWriterPerField(final FieldInfo fieldInfo) {
     this.fieldInfo = fieldInfo;
-    docState = perThread.docState;
-  }
-
-  @Override
-  void abort() {
-    upto = 0;
   }
 
   public int compareTo(NormsWriterPerField other) {

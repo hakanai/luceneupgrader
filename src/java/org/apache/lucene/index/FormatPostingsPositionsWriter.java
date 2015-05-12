@@ -27,7 +27,6 @@ import java.io.IOException;
 
 final class FormatPostingsPositionsWriter extends FormatPostingsPositionsConsumer implements Closeable {
 
-  final FormatPostingsDocsWriter parent;
   final IndexOutput out;
 
   boolean omitTermFreqAndPositions;
@@ -35,7 +34,6 @@ final class FormatPostingsPositionsWriter extends FormatPostingsPositionsConsume
   int lastPayloadLength = -1;
 
   FormatPostingsPositionsWriter(FormatPostingsDocsWriter parent) throws IOException {
-    this.parent = parent;
     omitTermFreqAndPositions = parent.omitTermFreqAndPositions;
     if (parent.parent.parent.fieldInfos.hasProx()) {
       // At least one field does not omit TF, so create the

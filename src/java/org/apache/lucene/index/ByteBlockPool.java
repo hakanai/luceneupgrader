@@ -33,10 +33,12 @@ package org.apache.lucene.index;
  * its length and instead allocate a new slice once they
  * hit a non-zero byte. */
 
+import org.apache.lucene.util.ArrayUtil;
+
 import java.util.Arrays;
 import java.util.List;
+
 import static org.apache.lucene.util.RamUsageEstimator.NUM_BYTES_OBJECT_REF;
-import org.apache.lucene.util.ArrayUtil;
 
 
 final class ByteBlockPool {
@@ -96,15 +98,6 @@ final class ByteBlockPool {
 
     byteUpto = 0;
     byteOffset += DocumentsWriter.BYTE_BLOCK_SIZE;
-  }
-
-  public int newSlice(final int size) {
-    if (byteUpto > DocumentsWriter.BYTE_BLOCK_SIZE-size)
-      nextBuffer();
-    final int upto = byteUpto;
-    byteUpto += size;
-    buffer[byteUpto-1] = 16;
-    return upto;
   }
 
   // Size of each slice.  These arrays should be at most 16

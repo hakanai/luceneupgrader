@@ -39,9 +39,7 @@ final class DocInverter extends DocFieldConsumer {
     this.endConsumer = endConsumer;
   }
 
-  @Override
   void setFieldInfos(FieldInfos fieldInfos) {
-    super.setFieldInfos(fieldInfos);
     consumer.setFieldInfos(fieldInfos);
     endConsumer.setFieldInfos(fieldInfos);
   }

@@ -46,6 +46,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class RAMDirectory extends Directory implements Serializable {
 
+  @SuppressWarnings("unused")
   private static final long serialVersionUID = 1l;
 
   protected final Map<String,RAMFile> fileMap = new ConcurrentHashMap<String,RAMFile>();

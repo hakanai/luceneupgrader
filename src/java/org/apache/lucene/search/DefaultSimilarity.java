@@ -20,10 +20,4 @@ package org.apache.lucene.search;
 /** Expert: Default scoring implementation. */
 public class DefaultSimilarity extends Similarity {
 
-  /** Implemented as <code>1/sqrt(sumOfSquaredWeights)</code>. */
-  @Override
-  public float queryNorm(float sumOfSquaredWeights) {
-    return (float)(1.0 / Math.sqrt(sumOfSquaredWeights));
-  }
-
 }

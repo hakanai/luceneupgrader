@@ -125,13 +125,6 @@ public class AttributeSource {
   private final State[] currentState;
 
   private final AttributeFactory factory;
-  
-  /**
-   * An AttributeSource using the default attribute factory {@code AttributeSource.AttributeFactory#DEFAULT_ATTRIBUTE_FACTORY}.
-   */
-  public AttributeSource() {
-    this(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
-  }
 
   /**
    * An AttributeSource using the supplied {@code AttributeFactory} for creating new {@code Attribute} instances.

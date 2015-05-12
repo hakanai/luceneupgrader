@@ -23,12 +23,6 @@ import java.io.IOException;
 
 abstract class InvertedDocConsumerPerField {
 
-  // Called once per field, and is given all Fieldable
-  // occurrences for this field in the document.  Return
-  // true if you wish to see inverted tokens for these
-  // fields:
-  abstract boolean start(Fieldable[] fields, int count) throws IOException;
-
   // Called before a field instance is being processed
   abstract void start(Fieldable field);
 

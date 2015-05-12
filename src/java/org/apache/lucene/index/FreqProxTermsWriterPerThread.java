@@ -19,10 +19,8 @@ package org.apache.lucene.index;
 
 final class FreqProxTermsWriterPerThread extends TermsHashConsumerPerThread {
   final TermsHashPerThread termsHashPerThread;
-  final DocumentsWriter.DocState docState;
 
   public FreqProxTermsWriterPerThread(TermsHashPerThread perThread) {
-    docState = perThread.docState;
     termsHashPerThread = perThread;
   }
   

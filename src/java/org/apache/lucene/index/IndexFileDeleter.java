@@ -607,12 +607,10 @@ final class IndexFileDeleter {
     Collection<CommitPoint> commitsToDelete;
     long version;
     long generation;
-    final Map<String,String> userData;
 
     public CommitPoint(Collection<CommitPoint> commitsToDelete, Directory directory, SegmentInfos segmentInfos) throws IOException {
       this.directory = directory;
       this.commitsToDelete = commitsToDelete;
-      userData = segmentInfos.getUserData();
       segmentsFileName = segmentInfos.getSegmentsFileName();
       version = segmentInfos.getVersion();
       generation = segmentInfos.getGeneration();

@@ -99,11 +99,8 @@ public final class RamUsageEstimator {
    * enabled. Don't ever use this method, as intern checking is deprecated,
    * because it is not free of side-effects and strains the garbage collector
    * additionally.
-   * @deprecated Don't create instances of this class, instead use the static
-   * {@code #sizeOf(Object)} method that has no intern checking, too.
    */
-  @Deprecated
-  public RamUsageEstimator() {
+  private RamUsageEstimator() {
   }
 
 }

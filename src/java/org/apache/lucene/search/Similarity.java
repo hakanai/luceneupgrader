@@ -528,17 +528,7 @@ public abstract class Similarity implements Serializable {
    **/
   private static Similarity defaultImpl = new DefaultSimilarity();
 
-    /** Set the default Similarity implementation used by indexing and search
-   * code.
-   *
-   *
-   *
-   */
-  public static void setDefault(Similarity similarity) {
-    Similarity.defaultImpl = similarity;
-  }
-
-  /** Return the default Similarity implementation used by indexing and search
+    /** Return the default Similarity implementation used by indexing and search
    * code.
    *
    * <p>This is initially an instance of {@code DefaultSimilarity}.
@@ -558,22 +548,7 @@ public abstract class Similarity implements Serializable {
       NORM_TABLE[i] = SmallFloat.byte315ToFloat((byte)i);
   }
 
-    /** Computes the normalization value for a query given the sum of the squared
-   * weights of each of the query terms.  This value is multiplied into the
-   * weight of each query term. While the classic query normalization factor is
-   * computed as 1/sqrt(sumOfSquaredWeights), other implementations might
-   * completely ignore sumOfSquaredWeights (ie return 1).
-   *
-   * <p>This does not affect ranking, but the default implementation does make scores
-   * from different queries more comparable than they would be by eliminating the
-   * magnitude of the Query vector as a factor in the score.
-   *
-   * @param sumOfSquaredWeights the sum of the squares of query term weights
-   * @return a normalization factor for query weights
-   */
-  public abstract float queryNorm(float sumOfSquaredWeights);
-
-  /** Encodes a normalization factor for storage in an index.
+    /** Encodes a normalization factor for storage in an index.
    *
    * <p>The encoding uses a three-bit mantissa, a five-bit exponent, and
    * the zero-exponent point at 15, thus

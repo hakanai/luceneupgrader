@@ -23,7 +23,6 @@ import org.apache.lucene.search.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.Lock;
 import org.apache.lucene.store.LockObtainFailedException;
-import org.apache.lucene.util.IOUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -57,37 +56,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
   // > our current segmentInfos version in case we were
   // opened on a past IndexCommit:
   private long maxIndexVersion;
-
-  /** Construct reading the named set of readers. */
-  DirectoryReader(Directory directory, SegmentInfos sis, IndexDeletionPolicy deletionPolicy, boolean readOnly, int termInfosIndexDivisor) throws IOException {
-    this.directory = directory;
-    this.readOnly = readOnly;
-    this.segmentInfos = sis;
-    this.deletionPolicy = deletionPolicy;
-    this.termInfosIndexDivisor = termInfosIndexDivisor;
-
-    // To reduce the chance of hitting FileNotFound
-    // (and having to retry), we open segments in
-    // reverse because IndexWriter merges & deletes
-    // the newest segments first.
-
-    SegmentReader[] readers = new SegmentReader[sis.size()];
-    for (int i = sis.size()-1; i >= 0; i--) {
-      IOException prior = null;
-      boolean success = false;
-      try {
-        readers[i] = SegmentReader.get(readOnly, sis.info(i), termInfosIndexDivisor);
-        success = true;
-      } catch(IOException ex) {
-        prior = ex;
-      } finally {
-        if (!success)
-          IOUtils.closeWhileHandlingException(prior, readers);
-      }
-    }
-
-    initialize(readers);
-  }
 
   /** This constructor is only used for {@code #doOpenIfChanged()} */
   DirectoryReader(Directory directory, SegmentInfos infos, SegmentReader[] oldReaders, int[] oldStarts,

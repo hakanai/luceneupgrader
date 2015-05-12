@@ -17,7 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import org.apache.lucene.util.ArrayUtil;
 import org.apache.lucene.util.RamUsageEstimator;
 
 class ParallelPostingsArray {
@@ -37,17 +36,6 @@ class ParallelPostingsArray {
 
   int bytesPerPosting() {
     return BYTES_PER_POSTING;
-  }
-
-  ParallelPostingsArray newInstance(int size) {
-    return new ParallelPostingsArray(size);
-  }
-
-  final ParallelPostingsArray grow() {
-    int newSize = ArrayUtil.oversize(size + 1, bytesPerPosting());
-    ParallelPostingsArray newArray = newInstance(newSize);
-    copyTo(newArray, size);
-    return newArray;
   }
 
   void copyTo(ParallelPostingsArray toArray, int numToCopy) {

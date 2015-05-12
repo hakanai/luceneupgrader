@@ -25,7 +25,6 @@ final class FormatPostingsTermsWriter extends FormatPostingsTermsConsumer implem
   final FormatPostingsFieldsWriter parent;
   final FormatPostingsDocsWriter docsWriter;
   final TermInfosWriter termsOut;
-  FieldInfo fieldInfo;
 
   FormatPostingsTermsWriter(FormatPostingsFieldsWriter parent) throws IOException {
     this.parent = parent;
@@ -34,7 +33,6 @@ final class FormatPostingsTermsWriter extends FormatPostingsTermsConsumer implem
   }
 
   void setField(FieldInfo fieldInfo) {
-    this.fieldInfo = fieldInfo;
     docsWriter.setField(fieldInfo);
   }
 

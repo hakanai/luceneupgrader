@@ -128,11 +128,9 @@ final class DocumentsWriter {
    *  state that must be flushed synchronized "in docID
    *  order".  We gather these and flush them in order. */
   abstract static class DocWriter {
-    DocWriter next;
     int docID;
-    abstract void finish() throws IOException;
+
     abstract void abort();
-    abstract long sizeInBytes();
 
   }
 

@@ -17,7 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -37,8 +36,6 @@ final class DocFieldProcessorPerThread extends DocConsumerPerThread {
   // Hash table for all fields ever seen
   DocFieldProcessorPerField[] fieldHash = new DocFieldProcessorPerField[2];
   int totalFieldCount;
-
-  final DocumentsWriter.DocState docState = null;
 
   public Collection<DocFieldConsumerPerField> fields() {
     Collection<DocFieldConsumerPerField> fields = new HashSet<DocFieldConsumerPerField>();
@@ -105,24 +102,6 @@ final class DocFieldProcessorPerThread extends DocConsumerPerThread {
 
     DocumentsWriter.DocWriter one;
     DocumentsWriter.DocWriter two;
-
-    @Override
-    public long sizeInBytes() {
-      return one.sizeInBytes() + two.sizeInBytes();
-    }
-
-    @Override
-    public void finish() throws IOException {
-      try {
-        try {
-          one.finish();
-        } finally {
-          two.finish();
-        }
-      } finally {
-        freePerDoc(this);
-      }
-    }
 
     @Override
     public void abort() {

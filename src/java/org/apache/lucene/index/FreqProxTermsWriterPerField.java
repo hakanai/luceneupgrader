@@ -69,14 +69,6 @@ final class FreqProxTermsWriterPerField extends TermsHashConsumerPerField implem
   }
 
   @Override
-  boolean start(Fieldable[] fields, int count) {
-    for(int i=0;i<count;i++)
-      if (fields[i].isIndexed())
-        return true;
-    return false;
-  }     
-  
-  @Override
   void start(Fieldable f) {
     if (fieldState.attributeSource.hasAttribute(PayloadAttribute.class)) {
       payloadAttribute = fieldState.attributeSource.getAttribute(PayloadAttribute.class);
@@ -85,96 +77,6 @@ final class FreqProxTermsWriterPerField extends TermsHashConsumerPerField implem
     }
   }
 
-  void writeProx(final int termID, int proxCode) {
-    final Payload payload;
-    if (payloadAttribute == null) {
-      payload = null;
-    } else {
-      payload = payloadAttribute.getPayload();
-    }
-    
-    if (payload != null && payload.length > 0) {
-      termsHashPerField.writeVInt(1, (proxCode<<1)|1);
-      termsHashPerField.writeVInt(1, payload.length);
-      termsHashPerField.writeBytes(1, payload.data, payload.offset, payload.length);
-      hasPayloads = true;      
-    } else
-      termsHashPerField.writeVInt(1, proxCode<<1);
-    
-    FreqProxPostingsArray postings = (FreqProxPostingsArray) termsHashPerField.postingsArray;
-    postings.lastPositions[termID] = fieldState.position;
-    
-  }
-
-  @Override
-  void newTerm(final int termID) {
-    // First time we're seeing this term since the last
-    // flush
-    assert docState.testPoint("FreqProxTermsWriterPerField.newTerm start");
-    
-    FreqProxPostingsArray postings = (FreqProxPostingsArray) termsHashPerField.postingsArray;
-    postings.lastDocIDs[termID] = docState.docID;
-    if (indexOptions == IndexOptions.DOCS_ONLY) {
-      postings.lastDocCodes[termID] = docState.docID;
-    } else {
-      postings.lastDocCodes[termID] = docState.docID << 1;
-      postings.docFreqs[termID] = 1;
-      if (indexOptions == IndexOptions.DOCS_AND_FREQS_AND_POSITIONS) {
-        writeProx(termID, fieldState.position);
-      }
-    }
-    fieldState.maxTermFrequency = Math.max(1, fieldState.maxTermFrequency);
-    fieldState.uniqueTermCount++;
-  }
-
-  @Override
-  void addTerm(final int termID) {
-
-    assert docState.testPoint("FreqProxTermsWriterPerField.addTerm start");
-    
-    FreqProxPostingsArray postings = (FreqProxPostingsArray) termsHashPerField.postingsArray;
-    
-    assert indexOptions == IndexOptions.DOCS_ONLY || postings.docFreqs[termID] > 0;
-
-    if (indexOptions == IndexOptions.DOCS_ONLY) {
-      if (docState.docID != postings.lastDocIDs[termID]) {
-        assert docState.docID > postings.lastDocIDs[termID];
-        termsHashPerField.writeVInt(0, postings.lastDocCodes[termID]);
-        postings.lastDocCodes[termID] = docState.docID - postings.lastDocIDs[termID];
-        postings.lastDocIDs[termID] = docState.docID;
-        fieldState.uniqueTermCount++;
-      }
-    } else {
-      if (docState.docID != postings.lastDocIDs[termID]) {
-        assert docState.docID > postings.lastDocIDs[termID];
-        // Term not yet seen in the current doc but previously
-        // seen in other doc(s) since the last flush
-
-        // Now that we know doc freq for previous doc,
-        // write it & lastDocCode
-        if (1 == postings.docFreqs[termID])
-          termsHashPerField.writeVInt(0, postings.lastDocCodes[termID]|1);
-        else {
-          termsHashPerField.writeVInt(0, postings.lastDocCodes[termID]);
-          termsHashPerField.writeVInt(0, postings.docFreqs[termID]);
-        }
-        postings.docFreqs[termID] = 1;
-        fieldState.maxTermFrequency = Math.max(1, fieldState.maxTermFrequency);
-        postings.lastDocCodes[termID] = (docState.docID - postings.lastDocIDs[termID]) << 1;
-        postings.lastDocIDs[termID] = docState.docID;
-        if (indexOptions == IndexOptions.DOCS_AND_FREQS_AND_POSITIONS) {
-          writeProx(termID, fieldState.position);
-        }
-        fieldState.uniqueTermCount++;
-      } else {
-        fieldState.maxTermFrequency = Math.max(fieldState.maxTermFrequency, ++postings.docFreqs[termID]);
-        if (indexOptions == IndexOptions.DOCS_AND_FREQS_AND_POSITIONS) {
-          writeProx(termID, fieldState.position-postings.lastPositions[termID]);
-        }
-      }
-    }
-  }
-  
   @Override
   ParallelPostingsArray createPostingsArray(int size) {
     return new FreqProxPostingsArray(size);
@@ -193,11 +95,6 @@ final class FreqProxTermsWriterPerField extends TermsHashConsumerPerField implem
     int lastDocIDs[];                                  // Last docID where this term occurred
     int lastDocCodes[];                                // Code for prior doc
     int lastPositions[];                               // Last position where this term occurred
-
-    @Override
-    ParallelPostingsArray newInstance(int size) {
-      return new FreqProxPostingsArray(size);
-    }
 
     @Override
     void copyTo(ParallelPostingsArray toArray, int numToCopy) {

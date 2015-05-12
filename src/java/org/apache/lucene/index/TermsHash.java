@@ -47,11 +47,6 @@ final class TermsHash extends InvertedDocConsumer {
     this.trackAllocations = trackAllocations;
   }
 
-  @Override
-  InvertedDocConsumerPerThread addThread(DocInverterPerThread docInverterPerThread) {
-    return new TermsHashPerThread(docInverterPerThread, this, nextTermsHash, null);
-  }
-
   TermsHashPerThread addThread(DocInverterPerThread docInverterPerThread, TermsHashPerThread primaryPerThread) {
     return new TermsHashPerThread(docInverterPerThread, this, nextTermsHash, primaryPerThread);
   }

@@ -19,6 +19,6 @@ package org.apache.lucene.index;
 
 abstract class InvertedDocEndConsumerPerThread {
   abstract InvertedDocEndConsumerPerField addField(DocInverterPerField docInverterPerField, FieldInfo fieldInfo);
-  abstract void finishDocument();
+
   abstract void abort();
 }

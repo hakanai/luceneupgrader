@@ -248,14 +248,5 @@ final class TermVectorsTermsWriter extends TermsHashConsumer {
       numVectorFields++;
     }
 
-    @Override
-    public long sizeInBytes() {
-      return buffer.getSizeInBytes();
-    }
-
-    @Override
-    public void finish() throws IOException {
-      finishDocument(this);
-    }
   }
 }

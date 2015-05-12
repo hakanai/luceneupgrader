@@ -17,7 +17,6 @@ package org.apache.lucene.document;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.NumericTokenStream;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.util.NumericUtils;
 
@@ -130,9 +129,7 @@ public final class NumericField extends AbstractField {
    */
   public enum DataType { INT, LONG, FLOAT, DOUBLE }
 
-  private transient NumericTokenStream numericTS;
   private DataType type;
-  private final int precisionStep;
 
   /**
    * Creates a field for numeric values using the default <code>precisionStep</code>
@@ -163,7 +160,6 @@ public final class NumericField extends AbstractField {
     super(name, store, index ? Field.Index.ANALYZED_NO_NORMS : Field.Index.NO, Field.TermVector.NO);
     if (precisionStep < 1)
       throw new IllegalArgumentException("precisionStep must be >=1");
-    this.precisionStep = precisionStep;
     setIndexOptions(IndexOptions.DOCS_ONLY);
   }
 
@@ -200,7 +196,6 @@ public final class NumericField extends AbstractField {
    * <code>document.add(new NumericField(name, precisionStep).setLongValue(value))</code>
    */
   public NumericField setLongValue(final long value) {
-    if (numericTS != null) numericTS.setLongValue(value);
     fieldsData = value;
     type = DataType.LONG;
     return this;
@@ -213,7 +208,6 @@ public final class NumericField extends AbstractField {
    * <code>document.add(new NumericField(name, precisionStep).setIntValue(value))</code>
    */
   public NumericField setIntValue(final int value) {
-    if (numericTS != null) numericTS.setIntValue(value);
     fieldsData = value;
     type = DataType.INT;
     return this;
@@ -226,7 +220,6 @@ public final class NumericField extends AbstractField {
    * <code>document.add(new NumericField(name, precisionStep).setDoubleValue(value))</code>
    */
   public NumericField setDoubleValue(final double value) {
-    if (numericTS != null) numericTS.setDoubleValue(value);
     fieldsData = value;
     type = DataType.DOUBLE;
     return this;
@@ -239,7 +232,6 @@ public final class NumericField extends AbstractField {
    * <code>document.add(new NumericField(name, precisionStep).setFloatValue(value))</code>
    */
   public NumericField setFloatValue(final float value) {
-    if (numericTS != null) numericTS.setFloatValue(value);
     fieldsData = value;
     type = DataType.FLOAT;
     return this;

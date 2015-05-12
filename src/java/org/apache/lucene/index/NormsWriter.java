@@ -35,10 +35,6 @@ final class NormsWriter extends InvertedDocEndConsumer {
 
   private final byte defaultNorm = Similarity.getDefault().encodeNormValue(1.0f);
   private FieldInfos fieldInfos;
-  @Override
-  public InvertedDocEndConsumerPerThread addThread(DocInverterPerThread docInverterPerThread) {
-    return new NormsWriterPerThread(docInverterPerThread, this);
-  }
 
   @Override
   void setFieldInfos(FieldInfos fieldInfos) {

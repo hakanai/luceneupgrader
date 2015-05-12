@@ -65,34 +65,4 @@ public final class NumericUtils {
    */
   public static final int PRECISION_STEP_DEFAULT = 4;
 
-  /**
-   * Converts a <code>double</code> value to a sortable signed <code>long</code>.
-   * The value is converted by getting their IEEE 754 floating-point &quot;double format&quot;
-   * bit layout and then some bits are swapped, to be able to compare the result as long.
-   * By this the precision is not reduced, but the value can easily used as a long.
-   * The sort order (including {@code Double#NaN}) is defined by
-   * {@code Double#compareTo}; {@code NaN} is greater than positive infinity.
-   *
-   */
-  public static long doubleToSortableLong(double val) {
-    long f = Double.doubleToLongBits(val);
-    if (f<0) f ^= 0x7fffffffffffffffL;
-    return f;
-  }
-
-  /**
-   * Converts a <code>float</code> value to a sortable signed <code>int</code>.
-   * The value is converted by getting their IEEE 754 floating-point &quot;float format&quot;
-   * bit layout and then some bits are swapped, to be able to compare the result as int.
-   * By this the precision is not reduced, but the value can easily used as an int.
-   * The sort order (including {@code Float#NaN}) is defined by
-   * {@code Float#compareTo}; {@code NaN} is greater than positive infinity.
-   *
-   */
-  public static int floatToSortableInt(float val) {
-    int f = Float.floatToIntBits(val);
-    if (f<0) f ^= 0x7fffffff;
-    return f;
-  }
-
 }

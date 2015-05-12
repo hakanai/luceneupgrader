@@ -23,15 +23,7 @@ import org.apache.lucene.util.Attribute;
  * The term text of a Token.
  */
 public interface CharTermAttribute extends Attribute, CharSequence, Appendable {
-  
-  /** Copies the contents of buffer, starting at offset for
-   *  length characters, into the termBuffer array.
-   *  @param buffer the buffer to copy
-   *  @param offset the index in the buffer of the first character to copy
-   *  @param length the number of characters to copy
-   */
-  void copyBuffer(char[] buffer, int offset, int length);
-  
+
   /** Returns the internal termBuffer character array which
    *  you can then directly alter.  If the array is too
    *  small for your token, use {@code

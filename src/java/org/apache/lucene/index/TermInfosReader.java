@@ -257,11 +257,8 @@ final class TermInfosReader implements Closeable {
       return false;
     }
     // skipOffset is only valid when docFreq >= skipInterval:
-    if (ti1.docFreq >= enumerator.skipInterval &&
-        ti1.skipOffset != ti2.skipOffset) {
-      return false;
-    }
-    return true;
+    return !(ti1.docFreq >= enumerator.skipInterval &&
+            ti1.skipOffset != ti2.skipOffset);
   }
 
   private void ensureIndexIsRead() {

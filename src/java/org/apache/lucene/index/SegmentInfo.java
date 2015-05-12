@@ -213,7 +213,7 @@ public final class SegmentInfo implements Cloneable {
       if (format <= SegmentInfos.FORMAT_DIAGNOSTICS) {
         diagnostics = input.readStringStringMap();
       } else {
-        diagnostics = Collections.<String,String>emptyMap();
+        diagnostics = Collections.emptyMap();
       }
 
       if (format <= SegmentInfos.FORMAT_HAS_VECTORS) {
@@ -256,7 +256,7 @@ public final class SegmentInfo implements Cloneable {
       docStoreSegment = null;
       delCount = -1;
       hasProx = true;
-      diagnostics = Collections.<String,String>emptyMap();
+      diagnostics = Collections.emptyMap();
     }
   }
   
@@ -408,11 +408,7 @@ public final class SegmentInfo implements Cloneable {
       // Must fallback to directory file exists check:
       String fileName = name + ".s" + fieldNumber;
       return dir.fileExists(fileName);
-    } else if (normGen == null || normGen[fieldNumber] == NO) {
-      return false;
-    } else {
-      return true;
-    }
+    } else return !(normGen == null || normGen[fieldNumber] == NO);
   }
 
   /**

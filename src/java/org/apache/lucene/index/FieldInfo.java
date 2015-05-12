@@ -49,7 +49,7 @@ public final class FieldInfo {
     DOCS_AND_FREQS,
     /** full postings: documents, frequencies, and positions */
     DOCS_AND_FREQS_AND_POSITIONS 
-  };
+  }
 
   FieldInfo(String na, boolean tk, int nu, boolean storeTermVector, 
             boolean omitNorms, boolean storePayloads, IndexOptions indexOptions) {

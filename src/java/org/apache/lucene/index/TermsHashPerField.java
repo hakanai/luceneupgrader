@@ -261,18 +261,6 @@ final class TermsHashPerField extends InvertedDocConsumerPerField {
       nextPerField.start(f);
     }
   }
-  
-  @Override
-  boolean start(Fieldable[] fields, int count) throws IOException {
-    doCall = consumer.start(fields, count);
-    if (postingsArray == null) {
-      initPostingsArray();
-    }
-
-    if (nextPerField != null)
-      doNextCall = nextPerField.start(fields, count);
-    return doCall || doNextCall;
-  }
 
   int[] intUptos;
   int intUptoStart;

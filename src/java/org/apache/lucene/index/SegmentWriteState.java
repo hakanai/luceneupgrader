@@ -44,13 +44,6 @@ public class SegmentWriteState {
    * tweaking this is rarely useful.*/
   public final int termIndexInterval;
 
-  /** Expert: The fraction of TermDocs entries stored in skip tables,
-   * used to accelerate {@code TermDocs#skipTo(int)}.  Larger values result in
-   * smaller indexes, greater acceleration, but fewer accelerable cases, while
-   * smaller values result in bigger indexes, less acceleration and more
-   * accelerable cases. More detailed experiments would be useful here. */
-  public final int skipInterval = 16;
-
   public SegmentWriteState(PrintStream infoStream, Directory directory, String segmentName, FieldInfos fieldInfos,
                            int numDocs, int termIndexInterval) {
     this.infoStream = infoStream;

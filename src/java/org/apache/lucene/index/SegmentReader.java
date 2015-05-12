@@ -431,10 +431,6 @@ public class SegmentReader extends IndexReader implements Cloneable {
     }
   }
 
-  List<String> files() throws IOException {
-    return new ArrayList<String>(si.files());
-  }
-
   @Override
   public TermEnum terms() {
     ensureOpen();
@@ -449,11 +445,6 @@ public class SegmentReader extends IndexReader implements Cloneable {
 
   @Override
   public FieldInfos getFieldInfos() {
-    return core.fieldInfos;
-  }
-
-  // TODO: remove in 4.0
-  FieldInfos fieldInfos() {
     return core.fieldInfos;
   }
 
@@ -798,12 +789,6 @@ public class SegmentReader extends IndexReader implements Cloneable {
    */
   public interface CoreClosedListener {
     void onClose(SegmentReader owner);
-  }
-  
-  /** Expert: adds a CoreClosedListener to this reader's shared core */
-  public void addCoreClosedListener(CoreClosedListener listener) {
-    ensureOpen();
-    core.addCoreClosedListener(listener);
   }
 
 }

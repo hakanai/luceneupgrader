@@ -18,8 +18,6 @@ package org.apache.lucene.index;
  */
 
 import org.apache.lucene.store.RAMOutputStream;
-import org.apache.lucene.util.ArrayUtil;
-import org.apache.lucene.util.RamUsageEstimator;
 
 import java.io.IOException;
 
@@ -60,24 +58,6 @@ final class StoredFieldsWriter {
     if (fieldsWriter == null) {
       fieldsWriter = new FieldsWriter(docWriter.directory, docWriter.getSegment(), fieldInfos);
       lastDocID = 0;
-    }
-  }
-
-  int allocCount;
-
-  synchronized PerDoc getPerDoc() {
-    if (freeCount == 0) {
-      allocCount++;
-      if (allocCount > docFreeList.length) {
-        // Grow our free list up front to make sure we have
-        // enough space to recycle all outstanding PerDoc
-        // instances
-        assert allocCount == 1+docFreeList.length;
-        docFreeList = new PerDoc[ArrayUtil.oversize(allocCount, RamUsageEstimator.NUM_BYTES_OBJECT_REF)];
-      }
-      return new PerDoc();
-    } else {
-      return docFreeList[--freeCount];
     }
   }
 
@@ -138,14 +118,5 @@ final class StoredFieldsWriter {
       free(this);
     }
 
-    @Override
-    public long sizeInBytes() {
-      return buffer.getSizeInBytes();
-    }
-
-    @Override
-    public void finish() throws IOException {
-      finishDocument(this);
-    }
   }
 }

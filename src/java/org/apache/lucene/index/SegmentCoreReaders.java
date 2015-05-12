@@ -17,16 +17,16 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
+import org.apache.lucene.index.SegmentReader.CoreClosedListener;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.IndexInput;
+import org.apache.lucene.util.IOUtils;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.lucene.index.SegmentReader.CoreClosedListener;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.IndexInput;
-import org.apache.lucene.util.IOUtils;
 
 /** Holds core readers that are shared (unchanged) when
  * SegmentReader is cloned or reopened */
@@ -186,10 +186,6 @@ final class SegmentCoreReaders {
 
   void addCoreClosedListener(CoreClosedListener listener) {
     coreClosedListeners.add(listener);
-  }
-  
-  void removeCoreClosedListener(CoreClosedListener listener) {
-    coreClosedListeners.remove(listener);
   }
 
   synchronized void openDocStores(SegmentInfo si) throws IOException {

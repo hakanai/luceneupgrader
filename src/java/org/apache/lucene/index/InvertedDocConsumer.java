@@ -23,9 +23,6 @@ import java.io.IOException;
 
 abstract class InvertedDocConsumer {
 
-  /** Add a new thread */
-  abstract InvertedDocConsumerPerThread addThread(DocInverterPerThread docInverterPerThread);
-
   /** Abort (called after hitting AbortException) */
   abstract void abort();
 

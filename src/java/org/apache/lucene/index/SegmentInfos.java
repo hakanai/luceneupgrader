@@ -123,17 +123,12 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
   private List<SegmentInfo> segments = new ArrayList<SegmentInfo>();
   private Set<SegmentInfo> segmentSet = new HashSet<SegmentInfo>();
   private transient List<SegmentInfo> cachedUnmodifiableList;
-  private transient Set<SegmentInfo> cachedUnmodifiableSet;  
-  
+
   /**
    * If non-null, information about loading segments_N files
    * will be printed here.
    */
   private static PrintStream infoStream = null;
-
-  public void setFormat(int format) {
-    this.format = format;
-  }
 
   public int getFormat() {
     return format;
@@ -397,7 +392,6 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
       sis.segments = new ArrayList<SegmentInfo>(size());
       sis.segmentSet = new HashSet<SegmentInfo>(size());
       sis.cachedUnmodifiableList = null;
-      sis.cachedUnmodifiableSet = null;
       for(final SegmentInfo info : this) {
         // dont directly access segments, use add method!!!
         sis.add((SegmentInfo) info.clone());
@@ -687,21 +681,6 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
     protected abstract Object doBody(String segmentFileName) throws IOException;
   }
 
-  /**
-   * Returns a new SegmentInfos containing the SegmentInfo
-   * instances in the specified range first (inclusive) to
-   * last (exclusive), so total number of segments returned
-   * is last-first.
-   * @deprecated use {@code asList().subList(first, last)}
-   * instead.
-   */
-  @Deprecated
-  public SegmentInfos range(int first, int last) {
-    SegmentInfos infos = new SegmentInfos();
-    infos.addAll(segments.subList(first, last));
-    return infos;
-  }
-
   // Carry over generation numbers from another SegmentInfos
   void updateGeneration(SegmentInfos other) {
     lastGeneration = other.lastGeneration;
@@ -853,20 +832,6 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
   final void commit(Directory dir) throws IOException {
     prepareCommit(dir);
     finishCommit(dir);
-  }
-
-  public String toString(Directory directory) {
-    StringBuilder buffer = new StringBuilder();
-    buffer.append(getSegmentsFileName()).append(": ");
-    final int count = size();
-    for(int i = 0; i < count; i++) {
-      if (i > 0) {
-        buffer.append(' ');
-      }
-      final SegmentInfo info = info(i);
-      buffer.append(info.toString(directory, 0));
-    }
-    return buffer.toString();
   }
 
   public Map<String,String> getUserData() {

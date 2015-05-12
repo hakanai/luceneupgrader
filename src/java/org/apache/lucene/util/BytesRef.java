@@ -194,7 +194,7 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
 
   private static class UTF8SortedAsUnicodeComparator implements Comparator<BytesRef> {
     // Only singleton
-    private UTF8SortedAsUnicodeComparator() {};
+    private UTF8SortedAsUnicodeComparator() {}
 
     public int compare(BytesRef a, BytesRef b) {
       final byte[] aBytes = a.bytes;
@@ -226,7 +226,7 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
 
   private static class UTF8SortedAsUTF16Comparator implements Comparator<BytesRef> {
     // Only singleton
-    private UTF8SortedAsUTF16Comparator() {};
+    private UTF8SortedAsUTF16Comparator() {}
 
     public int compare(BytesRef a, BytesRef b) {
 

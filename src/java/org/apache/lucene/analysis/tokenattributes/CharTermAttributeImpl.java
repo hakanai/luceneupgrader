@@ -35,12 +35,6 @@ public class CharTermAttributeImpl extends AttributeImpl implements CharTermAttr
   private char[] termBuffer = new char[ArrayUtil.oversize(MIN_BUFFER_SIZE, RamUsageEstimator.NUM_BYTES_CHAR)];
   private int termLength = 0;
 
-  public final void copyBuffer(char[] buffer, int offset, int length) {
-    growTermBuffer(length);
-    System.arraycopy(buffer, offset, termBuffer, 0, length);
-    termLength = length;
-  }
-
   public final char[] buffer() {
     return termBuffer;
   }

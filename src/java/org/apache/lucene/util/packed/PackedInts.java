@@ -17,11 +17,7 @@ package org.apache.lucene.util.packed;
  * limitations under the License.
  */
 
-import org.apache.lucene.store.DataOutput;
-import org.apache.lucene.util.CodecUtil;
 import org.apache.lucene.util.Constants;
-
-import java.io.IOException;
 
 /**
  * Simplistic compression for array of unsigned long values.
@@ -34,9 +30,7 @@ import java.io.IOException;
 
 public class PackedInts {
 
-  private final static String CODEC_NAME = "PackedInts";
   private final static int VERSION_START = 0;
-  private final static int VERSION_CURRENT = VERSION_START;
 
   /**
    * A read-only random access array of positive integers.
@@ -130,30 +124,6 @@ public class PackedInts {
     public boolean hasArray() {
       return false;
     }
-  }
-
-  /** A write-once Writer.
-   * @lucene.internal
-   */
-  public static abstract class Writer {
-    protected final DataOutput out;
-    protected final int bitsPerValue;
-    protected final int valueCount;
-
-    protected Writer(DataOutput out, int valueCount, int bitsPerValue)
-      throws IOException {
-      assert bitsPerValue <= 64;
-
-      this.out = out;
-      this.valueCount = valueCount;
-      this.bitsPerValue = bitsPerValue;
-      CodecUtil.writeHeader(out, CODEC_NAME, VERSION_CURRENT);
-      out.writeVInt(bitsPerValue);
-      out.writeVInt(valueCount);
-    }
-
-    public abstract void add(long v) throws IOException;
-    public abstract void finish() throws IOException;
   }
 
   /**
