@@ -8,9 +8,9 @@ import java.io.IOException;
  * Lock adapter to Lucene 3.
  */
 class LockAdapter3 extends Lock {
-    private final org.apache.lucene.store.Lock delegate;
+    private final Lock delegate;
 
-    LockAdapter3(org.apache.lucene.store.Lock delegate) {
+    LockAdapter3(Lock delegate) {
         this.delegate = delegate;
     }
 
@@ -22,6 +22,11 @@ class LockAdapter3 extends Lock {
     @Override
     public boolean obtain(long lockWaitTimeout) throws IOException {
         return delegate.obtain(lockWaitTimeout);
+    }
+
+    @Override
+    public boolean isLocked() throws IOException {
+        return delegate.isLocked();
     }
 
     @Override

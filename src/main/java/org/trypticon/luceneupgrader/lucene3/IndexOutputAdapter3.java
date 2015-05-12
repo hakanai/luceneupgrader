@@ -1,16 +1,18 @@
 package org.trypticon.luceneupgrader.lucene3;
 
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Index output adapter to Lucene 3.
  */
 class IndexOutputAdapter3 extends IndexOutput {
-    private final org.apache.lucene.store.IndexOutput delegate;
+    private final IndexOutput delegate;
 
-    IndexOutputAdapter3(org.apache.lucene.store.IndexOutput delegate) {
+    IndexOutputAdapter3(IndexOutput delegate) {
         this.delegate = delegate;
     }
 
@@ -40,12 +42,64 @@ class IndexOutputAdapter3 extends IndexOutput {
     }
 
     @Override
+    public void setLength(long length) throws IOException {
+        delegate.setLength(length);
+    }
+
+    @Override
     public void writeByte(byte b) throws IOException {
         delegate.writeByte(b);
     }
 
     @Override
+    public void writeBytes(byte[] b, int length) throws IOException {
+        delegate.writeBytes(b, length);
+    }
+
+    @Override
     public void writeBytes(byte[] b, int offset, int length) throws IOException {
         delegate.writeBytes(b, offset, length);
+    }
+
+    @Override
+    public void writeInt(int i) throws IOException {
+        delegate.writeInt(i);
+    }
+
+    @Override
+    public void writeShort(short i) throws IOException {
+        delegate.writeShort(i);
+    }
+
+    @Override
+    public void writeLong(long i) throws IOException {
+        delegate.writeLong(i);
+    }
+
+    @Override
+    public void writeString(String s) throws IOException {
+        delegate.writeString(s);
+    }
+
+    @Override
+    public void copyBytes(DataInput input, long numBytes) throws IOException {
+        delegate.copyBytes(input, numBytes);
+    }
+
+    @Override
+    @Deprecated
+    public void writeChars(String s, int start, int length) throws IOException {
+        delegate.writeChars(s, start, length);
+    }
+
+    @Override
+    @Deprecated
+    public void writeChars(char[] s, int start, int length) throws IOException {
+        delegate.writeChars(s, start, length);
+    }
+
+    @Override
+    public void writeStringStringMap(Map<String, String> map) throws IOException {
+        delegate.writeStringStringMap(map);
     }
 }
