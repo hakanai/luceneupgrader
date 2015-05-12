@@ -19,5 +19,4 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 abstract class TermsHashConsumerPerThread {
   abstract public TermsHashConsumerPerField addField(TermsHashPerField termsHashPerField, FieldInfo fieldInfo);
-  abstract public void abort();
 }

@@ -49,7 +49,6 @@ final class SegmentCoreReaders {
   final Directory dir;
   final Directory cfsDir;
   final int readBufferSize;
-  final int termsIndexDivisor;
 
   private final SegmentReader owner;
 
@@ -79,7 +78,6 @@ final class SegmentCoreReaders {
 
       fieldInfos = new FieldInfos(cfsDir, IndexFileNames.segmentFileName(segment, IndexFileNames.FIELD_INFOS_EXTENSION));
 
-      this.termsIndexDivisor = termsIndexDivisor;
       TermInfosReader reader = new TermInfosReader(cfsDir, segment, fieldInfos, readBufferSize, termsIndexDivisor);
       if (termsIndexDivisor == -1) {
         tisNoIndex = reader;

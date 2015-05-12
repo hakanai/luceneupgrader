@@ -22,10 +22,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  *  table and provides an API for writing bytes into
  *  multiple streams for each unique Token. */
 
-import java.io.IOException;
-
 abstract class TermsHashConsumerPerField {
-  abstract void finish() throws IOException;
 
   abstract int getStreamCount();
 

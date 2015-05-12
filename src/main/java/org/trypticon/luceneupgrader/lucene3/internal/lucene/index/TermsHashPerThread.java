@@ -26,7 +26,6 @@ final class TermsHashPerThread extends InvertedDocConsumerPerThread {
   final CharBlockPool charPool;
   final IntBlockPool intPool;
   final ByteBlockPool bytePool;
-  final boolean primary;
 
   public TermsHashPerThread(DocInverterPerThread docInverterPerThread, final TermsHash termsHash, final TermsHash nextTermsHash, final TermsHashPerThread primaryPerThread) {
     this.termsHash = termsHash;
@@ -35,10 +34,8 @@ final class TermsHashPerThread extends InvertedDocConsumerPerThread {
     if (nextTermsHash != null) {
       // We are primary
       charPool = new CharBlockPool();
-      primary = true;
     } else {
       charPool = primaryPerThread.charPool;
-      primary = false;
     }
 
     intPool = new IntBlockPool(termsHash.docWriter);

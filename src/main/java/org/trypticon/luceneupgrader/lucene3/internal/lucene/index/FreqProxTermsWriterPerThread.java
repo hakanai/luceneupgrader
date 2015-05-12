@@ -29,6 +29,4 @@ final class FreqProxTermsWriterPerThread extends TermsHashConsumerPerThread {
     return new FreqProxTermsWriterPerField(termsHashPerField, this, fieldInfo);
   }
 
-  @Override
-  public void abort() {}
 }

@@ -19,7 +19,6 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.DocumentsWriter.IndexingChain;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexWriter.IndexReaderWarmer;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Version;
 
 /**
  * Holds all the configuration of {@code IndexWriter}.  You
@@ -106,8 +105,6 @@ public final class IndexWriterConfig implements Cloneable {
   private volatile boolean readerPooling;
   private volatile int readerTermsIndexDivisor;
   
-  private Version matchVersion;
-
   /**
    * Creates a new config that with defaults that match the specified
    * {@code Version} as well as the default {@code
@@ -120,8 +117,7 @@ public final class IndexWriterConfig implements Cloneable {
    * should switch to {@code LogByteSizeMergePolicy} or
    * {@code LogDocMergePolicy}.
    */
-  public IndexWriterConfig(Version matchVersion) {
-    this.matchVersion = matchVersion;
+  public IndexWriterConfig() {
     delPolicy = new KeepOnlyLastCommitDeletionPolicy();
     commit = null;
     openMode = OpenMode.CREATE_OR_APPEND;
@@ -133,11 +129,7 @@ public final class IndexWriterConfig implements Cloneable {
     maxBufferedDocs = DEFAULT_MAX_BUFFERED_DOCS;
     indexingChain = DocumentsWriter.defaultIndexingChain;
     mergedSegmentWarmer = null;
-    if (matchVersion.onOrAfter(Version.LUCENE_32)) {
-      mergePolicy = new TieredMergePolicy();
-    } else {
-      mergePolicy = new LogByteSizeMergePolicy();
-    }
+    mergePolicy = new TieredMergePolicy();
     maxThreadStates = DEFAULT_MAX_THREAD_STATES;
     readerPooling = DEFAULT_READER_POOLING;
     readerTermsIndexDivisor = DEFAULT_READER_TERMS_INDEX_DIVISOR;
@@ -275,7 +267,6 @@ public final class IndexWriterConfig implements Cloneable {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("matchVersion=").append(matchVersion).append("\n");
     sb.append("delPolicy=").append(delPolicy.getClass().getName()).append("\n");
     sb.append("commit=").append(commit == null ? "null" : commit).append("\n");
     sb.append("openMode=").append(openMode).append("\n");

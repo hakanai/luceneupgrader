@@ -45,9 +45,6 @@ final class FreqProxTermsWriterPerField extends TermsHashConsumerPerField implem
       return 2;
   }
 
-  @Override
-  void finish() {}
-
   boolean hasPayloads;
 
   public int compareTo(FreqProxTermsWriterPerField other) {
@@ -72,13 +69,11 @@ final class FreqProxTermsWriterPerField extends TermsHashConsumerPerField implem
       docFreqs = new int[size];
       lastDocIDs = new int[size];
       lastDocCodes = new int[size];
-      lastPositions = new int[size];
     }
 
     int docFreqs[];                                    // # times this term occurs in the current doc
     int lastDocIDs[];                                  // Last docID where this term occurred
     int lastDocCodes[];                                // Code for prior doc
-    int lastPositions[];                               // Last position where this term occurred
 
     @Override
     int bytesPerPosting() {

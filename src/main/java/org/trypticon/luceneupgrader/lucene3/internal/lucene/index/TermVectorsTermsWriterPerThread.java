@@ -40,11 +40,4 @@ final class TermVectorsTermsWriterPerThread extends TermsHashConsumerPerThread {
     return new TermVectorsTermsWriterPerField(termsHashPerField, this, fieldInfo);
   }
 
-  @Override
-  public void abort() {
-    if (doc != null) {
-      doc.abort();
-      doc = null;
-    }
-  }
 }

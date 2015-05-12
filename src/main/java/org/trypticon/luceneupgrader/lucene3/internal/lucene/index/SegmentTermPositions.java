@@ -109,17 +109,6 @@ extends SegmentTermDocs implements TermPositions {
   }
 
 
-  /** Called by super.skipTo(). */
-  @Override
-  protected void skipProx(long proxPointer, int payloadLength) {
-    // we save the pointer, we might have to skip there lazily
-    lazySkipPointer = proxPointer;
-    lazySkipProxCount = 0;
-    proxCount = 0;
-    this.payloadLength = payloadLength;
-    needToLoadPayload = false;
-  }
-
   private void skipPositions(int n) throws IOException {
     assert indexOptions == IndexOptions.DOCS_AND_FREQS_AND_POSITIONS;
     for (int f = n; f > 0; f--) {        // skip unread positions

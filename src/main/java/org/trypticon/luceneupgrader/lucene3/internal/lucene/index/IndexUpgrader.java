@@ -18,9 +18,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  */
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.FSDirectory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Constants;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Version;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -48,62 +46,6 @@ import java.util.Collection;
   * documents.
   */
 public final class IndexUpgrader {
-
-  private static void printUsage() {
-    System.err.println("Upgrades an index so all segments created with a previous Lucene version are rewritten.");
-    System.err.println("Usage:");
-    System.err.println("  java " + IndexUpgrader.class.getName() + " [-delete-prior-commits] [-verbose] [-dir-impl X] indexDir");
-    System.err.println("This tool keeps only the last commit in an index; for this");
-    System.err.println("reason, if the incoming index has more than one commit, the tool");
-    System.err.println("refuses to run by default. Specify -delete-prior-commits to override");
-    System.err.println("this, allowing the tool to delete all but the last commit.");
-    System.err.println("Specify a " + FSDirectory.class.getSimpleName() + 
-        " implementation through the -dir-impl option to force its use. If no package is specified the " 
-        + FSDirectory.class.getPackage().getName() + " package will be used.");
-    System.err.println("WARNING: This tool may reorder document IDs!");
-    System.exit(1);
-  }
-
-  @SuppressWarnings("deprecation")
-//  public static void main(String[] args) throws IOException {
-//    String path = null;
-//    boolean deletePriorCommits = false;
-//    PrintStream out = null;
-//    String dirImpl = null;
-//    int i = 0;
-//    while (i<args.length) {
-//      String arg = args[i];
-//      if ("-delete-prior-commits".equals(arg)) {
-//        deletePriorCommits = true;
-//      } else if ("-verbose".equals(arg)) {
-//        out = System.out;
-//      } else if (path == null) {
-//        path = arg;
-//      } else if ("-dir-impl".equals(arg)) {
-//        if (i == args.length - 1) {
-//          System.out.println("ERROR: missing value for -dir-impl option");
-//          System.exit(1);
-//        }
-//        i++;
-//        dirImpl = args[i];
-//      }else {
-//        printUsage();
-//      }
-//      i++;
-//    }
-//    if (path == null) {
-//      printUsage();
-//    }
-//
-//    Directory dir;
-//    if (dirImpl == null) {
-//      dir = FSDirectory.open(new File(path));
-//    } else {
-//      dir = CommandLineUtil.newFSDirectory(dirImpl, new File(path));
-//    }
-//    new IndexUpgrader(dir, Version.LUCENE_CURRENT, out, deletePriorCommits).upgrade();
-//  }
-  
   private final Directory dir;
   private final PrintStream infoStream;
   private final IndexWriterConfig iwc;
@@ -111,17 +53,10 @@ public final class IndexUpgrader {
   
   /** Creates index upgrader on the given directory, using an {@code IndexWriter} using the given
    * {@code matchVersion}. The tool refuses to upgrade indexes with multiple commit points. */
-  public IndexUpgrader(Directory dir, Version matchVersion) {
-    this(dir, new IndexWriterConfig(matchVersion), null, false);
+  public IndexUpgrader(Directory dir) {
+    this(dir, new IndexWriterConfig(), null, false);
   }
-  
-  /** Creates index upgrader on the given directory, using an {@code IndexWriter} using the given
-   * {@code matchVersion}. You have the possibility to upgrade indexes with multiple commit points by removing
-   * all older ones. If {@code infoStream} is not {@code null}, all logging output will be sent to this stream. */
-  public IndexUpgrader(Directory dir, Version matchVersion, PrintStream infoStream, boolean deletePriorCommits) {
-    this(dir, new IndexWriterConfig(matchVersion), infoStream, deletePriorCommits);
-  }
-  
+
   /** Creates index upgrader on the given directory, using an {@code IndexWriter} using the given
    * config. You have the possibility to upgrade indexes with multiple commit points by removing
    * all older ones. If {@code infoStream} is not {@code null}, all logging output will be sent to this stream. */
@@ -148,14 +83,11 @@ public final class IndexUpgrader {
     c.setMergePolicy(new UpgradeIndexMergePolicy(c.getMergePolicy()));
     c.setIndexDeletionPolicy(new KeepOnlyLastCommitDeletionPolicy());
 
-    final IndexWriter w = new IndexWriter(dir, c);
-    try {
+    try (IndexWriter w = new IndexWriter(dir, c)) {
       w.setInfoStream(infoStream);
       w.message("Upgrading all pre-" + Constants.LUCENE_MAIN_VERSION + " segments of index directory '" + dir + "' to version " + Constants.LUCENE_MAIN_VERSION + "...");
       w.forceMerge(1);
       w.message("All segments upgraded to version " + Constants.LUCENE_MAIN_VERSION);
-    } finally {
-      w.close();
     }
   }
 

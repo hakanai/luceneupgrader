@@ -32,16 +32,8 @@ class SegmentTermDocs implements TermDocs {
   int doc = 0;
   int freq;
 
-  private int skipInterval;
-  private int maxSkipLevels;
-  private DefaultSkipListReader skipListReader;
-  
   private long freqBasePointer;
-  private long proxBasePointer;
 
-  private long skipPointer;
-  private boolean haveSkipped;
-  
   protected boolean currentFieldStoresPayloads;
   protected IndexOptions indexOptions;
   
@@ -55,8 +47,6 @@ class SegmentTermDocs implements TermDocs {
     } else {
       this.deletedDocs = null;
     }
-    this.skipInterval = parent.core.getTermsReader().getSkipInterval();
-    this.maxSkipLevels = parent.core.getTermsReader().getMaxSkipLevels();
   }
 
   protected SegmentTermDocs(SegmentReader parent) {
@@ -89,6 +79,7 @@ class SegmentTermDocs implements TermDocs {
     count = 0;
     FieldInfo fi = parent.core.fieldInfos.fieldInfo(term.field);
     indexOptions = (fi != null) ? fi.indexOptions : IndexOptions.DOCS_AND_FREQS_AND_POSITIONS;
+    //noinspection SimplifiableConditionalExpression
     currentFieldStoresPayloads = (fi != null) ? fi.storePayloads : false;
     if (ti == null) {
       df = 0;
@@ -96,17 +87,12 @@ class SegmentTermDocs implements TermDocs {
       df = ti.docFreq;
       doc = 0;
       freqBasePointer = ti.freqPointer;
-      proxBasePointer = ti.proxPointer;
-      skipPointer = freqBasePointer + ti.skipOffset;
       freqStream.seek(freqBasePointer);
-      haveSkipped = false;
     }
   }
 
   public void close() throws IOException {
     freqStream.close();
-    if (skipListReader != null)
-      skipListReader.close();
   }
 
   public final int doc() { return doc; }
@@ -140,27 +126,4 @@ class SegmentTermDocs implements TermDocs {
     }
     return true;
   }
-
-  private int readNoTf(final int[] docs, final int[] freqs, final int length) throws IOException {
-    int i = 0;
-    while (i < length && count < df) {
-      // manually inlined call to next() for speed
-      doc += freqStream.readVInt();       
-      count++;
-
-      if (deletedDocs == null || !deletedDocs.get(doc)) {
-        docs[i] = doc;
-        // Hardware freq to 1 when term freqs were not
-        // stored in the index
-        freqs[i] = 1;
-        ++i;
-      }
-    }
-    return i;
-  }
- 
-  
-  /** Overridden by SegmentTermPositions to skip in prox stream. */
-  protected void skipProx(long proxPointer, int payloadLength) {}
-
 }
