@@ -317,7 +317,7 @@ public final class SegmentInfo implements Cloneable {
     }
   }
 
-  public boolean getHasVectors() throws IOException {
+  public boolean getHasVectors() {
     return hasVectors;
   }
 

@@ -465,8 +465,8 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
       this.directory = directory;
     }
 
-    public Object run() throws IOException {
-      return run(null);
+    public void run() throws IOException {
+      run(null);
     }
     
     public Object run(IndexCommit commit) throws IOException {
@@ -687,7 +687,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentInfo> {
     generation = other.generation;
   }
 
-  final void rollbackCommit(Directory dir) throws IOException {
+  final void rollbackCommit(Directory dir) {
     if (pendingSegnOutput != null) {
       try {
         pendingSegnOutput.close();

@@ -75,7 +75,7 @@ public final class PagedBytes {
   }
 
   /** Commits final byte[], trimming it if necessary and if trim=true */
-  public Reader freeze(boolean trim) {
+  public void freeze(boolean trim) {
     if (frozen) {
       throw new IllegalStateException("already frozen");
     }
@@ -94,7 +94,6 @@ public final class PagedBytes {
     blockEnd.add(upto); 
     frozen = true;
     currentBlock = null;
-    return new Reader(this);
   }
 
   public final class PagedBytesDataInput extends DataInput {

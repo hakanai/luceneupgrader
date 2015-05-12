@@ -116,7 +116,7 @@ public final class IOUtils {
    * @param objects
    *          objects to call <tt>close()</tt> on
    */
-  public static void closeWhileHandlingException(Closeable... objects) throws IOException {
+  public static void closeWhileHandlingException(Closeable... objects) {
     for (Closeable object : objects) {
       try {
         if (object != null) {

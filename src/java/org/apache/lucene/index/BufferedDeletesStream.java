@@ -84,7 +84,7 @@ class BufferedDeletesStream {
   /** Resolves the buffered deleted Term/Query/docIDs, into
    *  actual deleted docIDs in the deletedDocs BitVector for
    *  each SegmentReader. */
-  public synchronized ApplyDeletesResult applyDeletes(List<SegmentInfo> infos) throws IOException {
+  public synchronized ApplyDeletesResult applyDeletes(List<SegmentInfo> infos) {
     if (infos.size() == 0) {
       return new ApplyDeletesResult(false, nextGen++, null);
     }

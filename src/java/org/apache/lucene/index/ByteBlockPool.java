@@ -33,12 +33,8 @@ package org.apache.lucene.index;
  * its length and instead allocate a new slice once they
  * hit a non-zero byte. */
 
-import org.apache.lucene.util.ArrayUtil;
-
 import java.util.Arrays;
 import java.util.List;
-
-import static org.apache.lucene.util.RamUsageEstimator.NUM_BYTES_OBJECT_REF;
 
 
 final class ByteBlockPool {
@@ -53,9 +49,6 @@ final class ByteBlockPool {
 
   int bufferUpto = -1;                        // Which buffer we are upto
   public int byteUpto = DocumentsWriter.BYTE_BLOCK_SIZE;             // Where we are in head buffer
-
-  public byte[] buffer;                              // Current head buffer
-  public int byteOffset = -DocumentsWriter.BYTE_BLOCK_SIZE;          // Current head offset
 
   private final Allocator allocator;
 
@@ -81,23 +74,7 @@ final class ByteBlockPool {
       // Re-use the first buffer
       bufferUpto = 0;
       byteUpto = 0;
-      byteOffset = 0;
-      buffer = buffers[0];
     }
-  }
-
-  public void nextBuffer() {
-    if (1+bufferUpto == buffers.length) {
-      byte[][] newBuffers = new byte[ArrayUtil.oversize(buffers.length+1,
-                                                        NUM_BYTES_OBJECT_REF)][];
-      System.arraycopy(buffers, 0, newBuffers, 0, buffers.length);
-      buffers = newBuffers;
-    }
-    buffer = buffers[1+bufferUpto] = allocator.getByteBlock();
-    bufferUpto++;
-
-    byteUpto = 0;
-    byteOffset += DocumentsWriter.BYTE_BLOCK_SIZE;
   }
 
   // Size of each slice.  These arrays should be at most 16
@@ -109,36 +86,5 @@ final class ByteBlockPool {
   final static int[] levelSizeArray = {5, 14, 20, 30, 40, 40, 80, 80, 120, 200};
   final static int FIRST_LEVEL_SIZE = levelSizeArray[0];
 
-  public int allocSlice(final byte[] slice, final int upto) {
-
-    final int level = slice[upto] & 15;
-    final int newLevel = nextLevelArray[level];
-    final int newSize = levelSizeArray[newLevel];
-
-    // Maybe allocate another block
-    if (byteUpto > DocumentsWriter.BYTE_BLOCK_SIZE-newSize)
-      nextBuffer();
-
-    final int newUpto = byteUpto;
-    final int offset = newUpto + byteOffset;
-    byteUpto += newSize;
-
-    // Copy forward the past 3 bytes (which we are about
-    // to overwrite with the forwarding address):
-    buffer[newUpto] = slice[upto-3];
-    buffer[newUpto+1] = slice[upto-2];
-    buffer[newUpto+2] = slice[upto-1];
-
-    // Write forwarding address at end of last slice:
-    slice[upto-3] = (byte) (offset >>> 24);
-    slice[upto-2] = (byte) (offset >>> 16);
-    slice[upto-1] = (byte) (offset >>> 8);
-    slice[upto] = (byte) offset;
-        
-    // Write new level:
-    buffer[byteUpto-1] = (byte) (16|newLevel);
-
-    return newUpto+3;
-  }
 }
 

@@ -29,16 +29,12 @@ final class FreqProxTermsWriterPerField extends TermsHashConsumerPerField implem
   final FreqProxTermsWriterPerThread perThread;
   final TermsHashPerField termsHashPerField;
   final FieldInfo fieldInfo;
-  final DocumentsWriter.DocState docState;
-  final FieldInvertState fieldState;
   IndexOptions indexOptions;
 
   public FreqProxTermsWriterPerField(TermsHashPerField termsHashPerField, FreqProxTermsWriterPerThread perThread, FieldInfo fieldInfo) {
     this.termsHashPerField = termsHashPerField;
     this.perThread = perThread;
     this.fieldInfo = fieldInfo;
-    docState = termsHashPerField.docState;
-    fieldState = termsHashPerField.fieldState;
     indexOptions = fieldInfo.indexOptions;
   }
 
@@ -65,9 +61,6 @@ final class FreqProxTermsWriterPerField extends TermsHashConsumerPerField implem
     indexOptions = fieldInfo.indexOptions;
   }
 
-  @Override
-  void start(Fieldable f) {
-  }
 
   @Override
   ParallelPostingsArray createPostingsArray(int size) {

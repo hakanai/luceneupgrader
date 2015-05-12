@@ -19,12 +19,14 @@ package org.apache.lucene.index;
 
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMFile;
-import org.apache.lucene.util.RamUsageEstimator;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 
@@ -105,29 +107,14 @@ final class DocumentsWriter {
   private int nextDocID;                  // Next docID to be added
   private int numDocs;                    // # of docs added, but not yet flushed
 
-  private final HashMap<Thread,DocumentsWriterThreadState> threadBindings = new HashMap<Thread,DocumentsWriterThreadState>();
-
   private boolean aborting;               // True if an abort is pending
 
   PrintStream infoStream;
-
-  static class DocState {
-    DocumentsWriter docWriter;
-
-    // Only called by asserts
-    public boolean testPoint() {
-      return docWriter.writer.testPoint();
-    }
-
-    public void clear() {
-    }
-  }
 
   /** Consumer returns this on each doc.  This holds any
    *  state that must be flushed synchronized "in docID
    *  order".  We gather these and flush them in order. */
   abstract static class DocWriter {
-    int docID;
 
     abstract void abort();
 
@@ -224,7 +211,7 @@ final class DocumentsWriter {
 
   private final BufferedDeletesStream bufferedDeletesStream;
 
-  DocumentsWriter(IndexWriterConfig config, Directory directory, IndexWriter writer, FieldInfos fieldInfos, BufferedDeletesStream bufferedDeletesStream) throws IOException {
+  DocumentsWriter(IndexWriterConfig config, Directory directory, IndexWriter writer, FieldInfos fieldInfos, BufferedDeletesStream bufferedDeletesStream) {
     this.directory = directory;
     this.writer = writer;
     this.fieldInfos = fieldInfos;
@@ -276,7 +263,6 @@ final class DocumentsWriter {
       // Wait for all other threads to finish with
       // DocumentsWriter:
       try {
-        waitIdle();
       } finally {
         if (infoStream != null) {
           message("docWriter: abort waitIdle done");
@@ -305,10 +291,9 @@ final class DocumentsWriter {
   }
 
   /** Reset after a flush */
-  private void doAfterFlush() throws IOException {
+  private void doAfterFlush() {
     // All ThreadStates should be idle when we are called
     assert allThreadsIdle();
-    threadBindings.clear();
     waitQueue.reset();
     segment = null;
     numDocs = 0;
@@ -335,8 +320,6 @@ final class DocumentsWriter {
 
     // We change writer's segmentInfos:
     assert Thread.holdsLock(writer);
-
-    waitIdle();
 
     if (numDocs == 0) {
       // nothing to do!
@@ -369,8 +352,8 @@ final class DocumentsWriter {
         message("flush postings as segment " + segment + " numDocs=" + numDocs);
       }
 
-      final SegmentWriteState flushState = new SegmentWriteState(infoStream, directory, segment, fieldInfos,
-                                                                 numDocs, writer.getConfig().getTermIndexInterval()
+      final SegmentWriteState flushState = new SegmentWriteState(infoStream, directory, segment,
+              numDocs, writer.getConfig().getTermIndexInterval()
       );
 
       newSegment = new SegmentInfo(segment, numDocs, directory, false, true, fieldInfos.hasProx(), false);
@@ -476,9 +459,6 @@ final class DocumentsWriter {
     notifyAll();
   }
 
-  public synchronized void waitIdle() {
-  }
-
   NumberFormat nf = NumberFormat.getInstance();
 
   /* Initial chunks size of the shared byte[] blocks used to
@@ -541,35 +521,12 @@ final class DocumentsWriter {
   final static int INT_BLOCK_SIZE = 1 << INT_BLOCK_SHIFT;
   final static int INT_BLOCK_MASK = INT_BLOCK_SIZE - 1;
 
-  private List<int[]> freeIntBlocks = new ArrayList<int[]>();
-
-  /* Allocate another int[] from the shared pool */
-  synchronized int[] getIntBlock() {
-    final int size = freeIntBlocks.size();
-    final int[] b;
-    if (0 == size) {
-      b = new int[INT_BLOCK_SIZE];
-      bytesUsed.addAndGet(INT_BLOCK_SIZE*RamUsageEstimator.NUM_BYTES_INT);
-    } else {
-      b = freeIntBlocks.remove(size-1);
-    }
-    return b;
-  }
-
   synchronized void bytesUsed(long numBytes) {
     bytesUsed.addAndGet(numBytes);
   }
 
   long bytesUsed() {
     return bytesUsed.get();
-  }
-
-  /* Return int[]s to the pool */
-  synchronized void recycleIntBlocks(int[][] blocks, int start, int end) {
-    for(int i=start;i<end;i++) {
-      freeIntBlocks.add(blocks[i]);
-      blocks[i] = null;
-    }
   }
 
   ByteBlockAllocator byteBlockAllocator = new ByteBlockAllocator(BYTE_BLOCK_SIZE);
@@ -585,21 +542,10 @@ final class DocumentsWriter {
   final static int CHAR_BLOCK_SIZE = 1 << CHAR_BLOCK_SHIFT;
   final static int CHAR_BLOCK_MASK = CHAR_BLOCK_SIZE - 1;
 
-  private ArrayList<char[]> freeCharBlocks = new ArrayList<char[]>();
-
-  /* Return char[]s to the pool */
-  synchronized void recycleCharBlocks(char[][] blocks, int numBlocks) {
-    for(int i=0;i<numBlocks;i++) {
-      freeCharBlocks.add(blocks[i]);
-      blocks[i] = null;
-    }
-  }
-
   final WaitQueue waitQueue = new WaitQueue();
 
   private class WaitQueue {
     DocWriter[] waiting;
-    int nextWriteDocID;
     int numWaiting;
     long waitingBytes;
 
@@ -611,7 +557,6 @@ final class DocumentsWriter {
       // NOTE: nextWriteLoc doesn't need to be reset
       assert numWaiting == 0;
       assert waitingBytes == 0;
-      nextWriteDocID = 0;
     }
 
     synchronized void abort() {

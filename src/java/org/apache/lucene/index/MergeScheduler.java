@@ -34,5 +34,5 @@ public abstract class MergeScheduler {
 
   /** Close this MergeScheduler. */
   public abstract void close()
-    throws IOException;
+  ;
 }

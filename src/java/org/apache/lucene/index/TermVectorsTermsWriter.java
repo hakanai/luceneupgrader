@@ -43,7 +43,7 @@ final class TermVectorsTermsWriter extends TermsHashConsumer {
 
   @Override
   public TermsHashConsumerPerThread addThread(TermsHashPerThread termsHashPerThread) {
-    return new TermVectorsTermsWriterPerThread(termsHashPerThread, this);
+    return new TermVectorsTermsWriterPerThread(termsHashPerThread);
   }
 
   @Override
@@ -80,7 +80,7 @@ final class TermVectorsTermsWriter extends TermsHashConsumer {
       }
 
       TermVectorsTermsWriterPerThread perThread = (TermVectorsTermsWriterPerThread) entry.getKey();
-      perThread.termsHashPerThread.reset(true);
+      perThread.termsHashPerThread.reset();
     }
   }
 
@@ -101,13 +101,8 @@ final class TermVectorsTermsWriter extends TermsHashConsumer {
   @Override
   public void abort() {
     hasVectors = false;
-    try {
-      IOUtils.closeWhileHandlingException(tvx, tvd, tvf);
-    } catch (IOException e) {
-      // cannot happen since we suppress exceptions
-      throw new RuntimeException(e);
-    }
-    
+    IOUtils.closeWhileHandlingException(tvx, tvd, tvf);
+
     try {
       docWriter.directory.deleteFile(IndexFileNames.segmentFileName(docWriter.getSegment(), IndexFileNames.VECTORS_INDEX_EXTENSION));
     } catch (IOException ignored) {

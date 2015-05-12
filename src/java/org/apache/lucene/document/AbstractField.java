@@ -82,31 +82,6 @@ public abstract class AbstractField implements Fieldable {
     Reader-valued. */
   public final boolean  isTokenized()   { return isTokenized; }
 
-  /** True iff the term or terms used to index this field are stored as a term
-   *  vector, available from {@code org.apache.lucene.index.IndexReader#getTermFreqVector(int,String)}.
-   *  These methods do not provide access to the original content of the field,
-   *  only to terms used to index it. If the original content must be
-   *  preserved, use the <code>stored</code> attribute instead.
-   *
-   *
-   */
-  public final boolean isTermVectorStored() { return storeTermVector; }
-
-  /**
-   * True iff terms are stored as term vector together with their offsets 
-   * (start and end position in source text).
-   */
-  public boolean isStoreOffsetWithTermVector(){
-    return storeOffsetWithTermVector;
-  }
-
-  /**
-   * True iff terms are stored as term vector together with their token positions.
-   */
-  public boolean isStorePositionWithTermVector(){
-    return storePositionWithTermVector;
-  }
-
   /** True iff the value of the filed is stored as binary */
   public final boolean  isBinary() {
     return isBinary;

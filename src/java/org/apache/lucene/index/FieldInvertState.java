@@ -16,8 +16,6 @@
  */
 package org.apache.lucene.index;
 
-import org.apache.lucene.util.AttributeSource;
-
 /**
  * This class tracks the number and position / offset parameters of terms
  * being added to the index. The information collected in this class is
@@ -26,6 +24,5 @@ import org.apache.lucene.util.AttributeSource;
  * @lucene.experimental
  */
 public final class FieldInvertState {
-  AttributeSource attributeSource;
 
 }

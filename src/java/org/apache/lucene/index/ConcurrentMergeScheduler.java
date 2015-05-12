@@ -337,7 +337,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     MergePolicy.OneMerge runningMerge;
     private volatile boolean done;
 
-    public MergeThread(IndexWriter writer, MergePolicy.OneMerge startMerge) throws IOException {
+    public MergeThread(IndexWriter writer, MergePolicy.OneMerge startMerge) {
       this.tWriter = writer;
       this.startMerge = startMerge;
     }
@@ -432,6 +432,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     } catch (InterruptedException ie) {
       throw new ThreadInterruptedException(ie);
     }
-    throw new MergePolicy.MergeException(exc, dir);
+    throw new MergePolicy.MergeException(exc);
   }
 }

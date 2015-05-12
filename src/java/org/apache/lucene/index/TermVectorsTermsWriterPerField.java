@@ -17,7 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.store.IndexOutput;
 import org.apache.lucene.util.RamUsageEstimator;
 import org.apache.lucene.util.UnicodeUtil;
@@ -29,8 +28,6 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
   final TermVectorsTermsWriterPerThread perThread;
   final TermsHashPerField termsHashPerField;
   final FieldInfo fieldInfo;
-  final DocumentsWriter.DocState docState;
-  final FieldInvertState fieldState;
 
   boolean doVectors;
   boolean doVectorPositions;
@@ -42,8 +39,6 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
     this.termsHashPerField = termsHashPerField;
     this.perThread = perThread;
     this.fieldInfo = fieldInfo;
-    docState = termsHashPerField.docState;
-    fieldState = termsHashPerField.fieldState;
   }
 
   @Override
@@ -57,8 +52,6 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
    *  the real term vectors files in the Directory. */
   @Override
   void finish() throws IOException {
-
-    assert docState.testPoint();
 
     final int numPostings = termsHashPerField.numPostings;
 
@@ -77,7 +70,6 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
     // our hash into the DocWriter.
 
     assert fieldInfo.storeTermVector;
-    assert perThread.vectorFieldsInOrder(fieldInfo);
 
     perThread.doc.addField(termsHashPerField.fieldInfo.number);
     TermVectorsPostingsArray postings = (TermVectorsPostingsArray) termsHashPerField.postingsArray;
@@ -152,17 +144,14 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
     // field; this saves RAM (eg if large doc has two large
     // fields w/ term vectors on) because we recycle/reuse
     // all RAM after each field:
-    perThread.termsHashPerThread.reset(false);
+    perThread.termsHashPerThread.reset();
   }
 
   void shrinkHash() {
-    termsHashPerField.shrinkHash(maxNumPostings);
+    termsHashPerField.shrinkHash();
     maxNumPostings = 0;
   }
   
-  @Override
-  void start(Fieldable f) {
-  }
 
   @Override
   ParallelPostingsArray createPostingsArray(int size) {

@@ -42,7 +42,7 @@ final class NormsWriterPerField extends InvertedDocEndConsumerPerField implement
   }
 
   public int compareTo(NormsWriterPerField other) {
-    return fieldInfo.name.compareTo(other.fieldInfo.name);
+    return 0;
   }
 
 }

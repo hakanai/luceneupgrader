@@ -57,7 +57,7 @@ public abstract class Directory implements Closeable {
 
   /** Returns true iff a file with the given name exists. */
   public abstract boolean fileExists(String name)
-       throws IOException;
+  ;
 
   /** Removes an existing file in the directory. */
   public abstract void deleteFile(String name)

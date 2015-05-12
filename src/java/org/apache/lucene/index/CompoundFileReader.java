@@ -240,7 +240,7 @@ class CompoundFileReader extends Directory {
      *
      */
     @Override
-    protected void seekInternal(long pos) {}
+    protected void seekInternal() {}
     
     /** Closes the stream to further operations. */
     @Override

@@ -127,7 +127,7 @@ public class RAMOutputStream extends IndexOutput {
     }
   }
 
-  private void switchCurrentBuffer() throws IOException {
+  private void switchCurrentBuffer() {
     if (currentBufferIndex == file.numBuffers()) {
       currentBuffer = file.addBuffer(BUFFER_SIZE);
     } else {

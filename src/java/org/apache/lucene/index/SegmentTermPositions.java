@@ -89,7 +89,7 @@ extends SegmentTermDocs implements TermPositions {
   }
   
   @Override
-  protected final void skippingDoc() throws IOException {
+  protected final void skippingDoc() {
     // we remember to skip a document lazily
     lazySkipProxCount += freq;
   }
@@ -116,7 +116,7 @@ extends SegmentTermDocs implements TermPositions {
 
   /** Called by super.skipTo(). */
   @Override
-  protected void skipProx(long proxPointer, int payloadLength) throws IOException {
+  protected void skipProx(long proxPointer, int payloadLength) {
     // we save the pointer, we might have to skip there lazily
     lazySkipPointer = proxPointer;
     lazySkipProxCount = 0;

@@ -32,8 +32,7 @@ final class SegmentMergeInfo {
   private int[] docMap;  // use getDocMap()
   ReaderPayloadProcessor readerPayloadProcessor;
   
-  SegmentMergeInfo(int b, TermEnum te, IndexReader r)
-    throws IOException {
+  SegmentMergeInfo(int b, TermEnum te, IndexReader r) {
     base = b;
     reader = r;
     termEnum = te;

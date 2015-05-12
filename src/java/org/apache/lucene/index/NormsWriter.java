@@ -56,11 +56,9 @@ final class NormsWriter extends InvertedDocEndConsumer {
 
         if (perField.upto > 0) {
           // It has some norms
-          List<NormsWriterPerField> l = byField.get(perField.fieldInfo);
-          if (l == null) {
-            l = new ArrayList<NormsWriterPerField>();
-            byField.put(perField.fieldInfo, l);
-          }
+          List<NormsWriterPerField> l;
+          l = new ArrayList<NormsWriterPerField>();
+          byField.put(perField.fieldInfo, l);
           l.add(perField);
         } else
           // Remove this field since we haven't seen it

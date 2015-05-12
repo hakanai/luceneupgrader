@@ -22,14 +22,10 @@ package org.apache.lucene.index;
  *  table and provides an API for writing bytes into
  *  multiple streams for each unique Token. */
 
-import org.apache.lucene.document.Fieldable;
-
 import java.io.IOException;
 
 abstract class TermsHashConsumerPerField {
   abstract void finish() throws IOException;
-
-  abstract void start(Fieldable field);
 
   abstract int getStreamCount();
 

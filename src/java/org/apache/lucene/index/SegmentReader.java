@@ -302,7 +302,7 @@ public class SegmentReader extends IndexReader implements Cloneable {
       startCommit();
       boolean success = false;
       try {
-        commitChanges(commitUserData);
+        commitChanges();
         success = true;
       } finally {
         if (!success) {
@@ -312,7 +312,7 @@ public class SegmentReader extends IndexReader implements Cloneable {
     }
   }
 
-  private synchronized void commitChanges(Map<String,String> commitUserData) throws IOException {
+  private synchronized void commitChanges() throws IOException {
     if (deletedDocsDirty) {               // re-write deleted
       si.advanceDelGen();
 

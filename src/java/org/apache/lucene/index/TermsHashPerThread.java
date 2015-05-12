@@ -27,11 +27,8 @@ final class TermsHashPerThread extends InvertedDocConsumerPerThread {
   final IntBlockPool intPool;
   final ByteBlockPool bytePool;
   final boolean primary;
-  final DocumentsWriter.DocState docState;
 
   public TermsHashPerThread(DocInverterPerThread docInverterPerThread, final TermsHash termsHash, final TermsHash nextTermsHash, final TermsHashPerThread primaryPerThread) {
-    docState = docInverterPerThread.docState;
-
     this.termsHash = termsHash;
     this.consumer = termsHash.consumer.addThread(this);
 
@@ -60,7 +57,7 @@ final class TermsHashPerThread extends InvertedDocConsumerPerThread {
 
   @Override
   synchronized public void abort() {
-    reset(true);
+    reset();
     try {
       consumer.abort();
     } finally {
@@ -71,7 +68,7 @@ final class TermsHashPerThread extends InvertedDocConsumerPerThread {
   }
 
   // Clear all state
-  void reset(boolean recyclePostings) {
+  void reset() {
     intPool.reset();
     bytePool.reset();
 

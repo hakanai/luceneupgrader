@@ -177,9 +177,8 @@ public final class IndexWriterConfig implements Cloneable {
    *
    * <p>Only takes effect when IndexWriter is first created. 
    */
-  public IndexWriterConfig setIndexDeletionPolicy(IndexDeletionPolicy delPolicy) {
+  public void setIndexDeletionPolicy(IndexDeletionPolicy delPolicy) {
     this.delPolicy = delPolicy == null ? new KeepOnlyLastCommitDeletionPolicy() : delPolicy;
-    return this;
   }
 
   /**
@@ -244,9 +243,8 @@ public final class IndexWriterConfig implements Cloneable {
    * {@code LogByteSizeMergePolicy}.
    *
    * <p>Only takes effect when IndexWriter is first created. */
-  public IndexWriterConfig setMergePolicy(MergePolicy mergePolicy) {
+  public void setMergePolicy(MergePolicy mergePolicy) {
     this.mergePolicy = mergePolicy == null ? new LogByteSizeMergePolicy() : mergePolicy;
-    return this;
   }
   
   /**

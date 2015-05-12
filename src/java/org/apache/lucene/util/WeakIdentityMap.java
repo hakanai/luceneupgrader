@@ -69,9 +69,9 @@ public final class WeakIdentityMap<K,V> {
     return backingStore.get(new IdentityWeakReference(key, null));
   }
 
-  public V put(K key, V value) {
+  public void put(K key, V value) {
     reap();
-    return backingStore.put(new IdentityWeakReference(key, queue), value);
+    backingStore.put(new IdentityWeakReference(key, queue), value);
   }
 
   /** Returns an iterator over all weak keys of this map.

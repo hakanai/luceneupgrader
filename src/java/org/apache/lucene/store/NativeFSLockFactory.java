@@ -73,7 +73,7 @@ public class NativeFSLockFactory extends FSLockFactory {
    * 
    * @param lockDir where lock files are created.
    */
-  public NativeFSLockFactory(File lockDir) throws IOException {
+  public NativeFSLockFactory(File lockDir) {
     setLockDir(lockDir);
   }
 

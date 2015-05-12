@@ -460,7 +460,7 @@ final class IndexFileDeleter {
     }
   }
 
-  void incRef(String fileName) throws IOException {
+  void incRef(String fileName) {
     assert locked();
     RefCount rc = getRefCount(fileName);
     if (infoStream != null && VERBOSE_REF_COUNTS) {
@@ -576,13 +576,13 @@ final class IndexFileDeleter {
 
     int count;
 
-    public int IncRef() {
+    public void IncRef() {
       if (!initDone) {
         initDone = true;
       } else {
         assert count > 0: Thread.currentThread().getName() + ": RefCount is 0 pre-increment for file \"" + fileName + "\"";
       }
-      return ++count;
+      ++count;
     }
 
     public int DecRef() {

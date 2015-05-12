@@ -49,7 +49,7 @@ final class FormatPostingsPositionsWriter extends FormatPostingsPositionsConsume
 
   /** Add a new position & payload */
   @Override
-  void addPosition(int position, byte[] payload, int payloadOffset, int payloadLength) throws IOException {
+  void addPosition(int position, byte[] payload, int payloadLength) throws IOException {
     assert !omitTermFreqAndPositions: "omitTermFreqAndPositions is true";
     assert out != null;
 

@@ -188,16 +188,12 @@ public abstract class MergePolicy implements java.io.Closeable {
   /** Exception thrown if there are any problems while
    *  executing a merge. */
   public static class MergeException extends RuntimeException {
-    private Directory dir;
-
-    public MergeException(String message, Directory dir) {
+    public MergeException(String message) {
       super(message);
-      this.dir = dir;
     }
 
-    public MergeException(Throwable exc, Directory dir) {
+    public MergeException(Throwable exc) {
       super(exc);
-      this.dir = dir;
     }
   }
 

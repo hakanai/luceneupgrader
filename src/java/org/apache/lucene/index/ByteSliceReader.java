@@ -75,7 +75,7 @@ final class ByteSliceReader extends IndexInput {
     return buffer[upto++];
   }
 
-  public long writeTo(IndexOutput out) throws IOException {
+  public void writeTo(IndexOutput out) throws IOException {
     long size = 0;
     while(true) {
       if (limit + bufferOffset == endIndex) {
@@ -89,8 +89,6 @@ final class ByteSliceReader extends IndexInput {
         nextSlice();
       }
     }
-
-    return size;
   }
 
   public void nextSlice() {

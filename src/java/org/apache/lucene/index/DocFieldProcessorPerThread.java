@@ -75,8 +75,6 @@ final class DocFieldProcessorPerThread extends DocConsumerPerThread {
           if (state.infoStream != null)
             state.infoStream.println("  purge field=" + perField.fieldInfo.name);
 
-          perField.consumer.close();
-
           totalFieldCount--;
 
         } else {
@@ -99,21 +97,9 @@ final class DocFieldProcessorPerThread extends DocConsumerPerThread {
   }
 
   class PerDoc extends DocumentsWriter.DocWriter {
-
-    DocumentsWriter.DocWriter one;
-    DocumentsWriter.DocWriter two;
-
     @Override
     public void abort() {
-      try {
-        try {
-          one.abort();
-        } finally {
-          two.abort();
-        }
-      } finally {
-        freePerDoc(this);
-      }
+      freePerDoc(this);
     }
   }
 }

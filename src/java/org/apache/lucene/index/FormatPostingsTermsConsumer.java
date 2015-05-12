@@ -17,10 +17,10 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.apache.lucene.util.ArrayUtil;
 import org.apache.lucene.util.RamUsageEstimator;
+
+import java.io.IOException;
 
 /**
  * @lucene.experimental
@@ -30,7 +30,7 @@ abstract class FormatPostingsTermsConsumer {
 
   /** Adds a new term in this field; term ends with U+FFFF
    *  char */
-  abstract FormatPostingsDocsConsumer addTerm(char[] text, int start) throws IOException;
+  abstract FormatPostingsDocsConsumer addTerm(char[] text, int start);
 
   char[] termBuffer;
   FormatPostingsDocsConsumer addTerm(String text) throws IOException {
@@ -42,6 +42,4 @@ abstract class FormatPostingsTermsConsumer {
     return addTerm(termBuffer, 0);
   }
 
-  /** Called when we are done adding terms to this field */
-  abstract void finish() throws IOException;
 }

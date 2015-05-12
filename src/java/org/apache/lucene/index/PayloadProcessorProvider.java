@@ -52,7 +52,7 @@ public abstract class PayloadProcessorProvider {
   public static abstract class ReaderPayloadProcessor {
 
     /** Returns a {@code PayloadProcessor} for the given term. */
-    public abstract PayloadProcessor getProcessor(Term term) throws IOException;
+    public abstract PayloadProcessor getProcessor(Term term);
     
   }
 
@@ -65,7 +65,7 @@ public abstract class PayloadProcessorProvider {
   public static abstract class PayloadProcessor {
 
     /** Returns the length of the payload that was returned by {@code #processPayload}. */
-    public abstract int payloadLength() throws IOException;
+    public abstract int payloadLength();
 
     /**
      * Process the incoming payload and returns the resulting byte[]. Note that
@@ -73,7 +73,7 @@ public abstract class PayloadProcessorProvider {
      * length of the new payload data can be obtained via
      * {@code #payloadLength()}.
      */
-    public abstract byte[] processPayload(byte[] payload, int start, int length) throws IOException;
+    public abstract byte[] processPayload(byte[] payload, int start, int length);
 
   }
 

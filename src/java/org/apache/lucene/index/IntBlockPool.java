@@ -22,10 +22,6 @@ final class IntBlockPool {
   public int[][] buffers = new int[10][];
 
   int bufferUpto = -1;                        // Which buffer we are upto
-  public int intUpto = DocumentsWriter.INT_BLOCK_SIZE;             // Where we are in head buffer
-
-  public int[] buffer;                              // Current head buffer
-  public int intOffset = -DocumentsWriter.INT_BLOCK_SIZE;          // Current head offset
 
   final private DocumentsWriter docWriter;
 
@@ -37,27 +33,13 @@ final class IntBlockPool {
     if (bufferUpto != -1) {
       if (bufferUpto > 0)
         // Recycle all but the first buffer
-        docWriter.recycleIntBlocks(buffers, 1, 1+bufferUpto);
+          synchronized (docWriter) {
+          }
 
       // Reuse first buffer
       bufferUpto = 0;
-      intUpto = 0;
-      intOffset = 0;
-      buffer = buffers[0];
     }
   }
 
-  public void nextBuffer() {
-    if (1+bufferUpto == buffers.length) {
-      int[][] newBuffers = new int[(int) (buffers.length*1.5)][];
-      System.arraycopy(buffers, 0, newBuffers, 0, buffers.length);
-      buffers = newBuffers;
-    }
-    buffer = buffers[1+bufferUpto] = docWriter.getIntBlock();
-    bufferUpto++;
-
-    intUpto = 0;
-    intOffset += DocumentsWriter.INT_BLOCK_SIZE;
-  }
 }
 

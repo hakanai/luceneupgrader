@@ -30,10 +30,6 @@ final class DocInverterPerField extends DocFieldConsumerPerField {
 
   final InvertedDocConsumerPerField consumer = null;
   final InvertedDocEndConsumerPerField endConsumer = null;
-  final FieldInvertState fieldState = null;
 
-  @Override
-  public void close() {
-  }
 
 }

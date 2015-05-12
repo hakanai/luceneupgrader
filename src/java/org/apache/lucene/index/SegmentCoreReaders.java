@@ -184,10 +184,6 @@ final class SegmentCoreReaders {
     }
   }
 
-  void addCoreClosedListener(CoreClosedListener listener) {
-    coreClosedListeners.add(listener);
-  }
-
   synchronized void openDocStores(SegmentInfo si) throws IOException {
 
     assert si.name.equals(segment);

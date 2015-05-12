@@ -122,7 +122,7 @@ final class FreqProxTermsWriter extends TermsHashConsumer {
           TermsHashPerField perField = field.termsHashPerField;
           int numPostings = perField.numPostings;
           perField.reset();
-          perField.shrinkHash(numPostings);
+          perField.shrinkHash();
           field.reset();
         }
         
@@ -131,7 +131,7 @@ final class FreqProxTermsWriter extends TermsHashConsumer {
       
       for (Map.Entry<TermsHashConsumerPerThread,Collection<TermsHashConsumerPerField>> entry : threadsAndFields.entrySet()) {
         FreqProxTermsWriterPerThread perThread = (FreqProxTermsWriterPerThread) entry.getKey();
-        perThread.termsHashPerThread.reset(true);
+        perThread.termsHashPerThread.reset();
       }
     } finally {
       consumer.finish();
@@ -274,7 +274,7 @@ final class FreqProxTermsWriter extends TermsHashConsumer {
                 } else
                   payloadLength = 0;
                 
-                posConsumer.addPosition(position, payloadBuffer, 0, payloadLength);
+                posConsumer.addPosition(position, payloadBuffer, payloadLength);
                 } //End for
               } finally {
                 posConsumer.finish();
@@ -310,7 +310,6 @@ final class FreqProxTermsWriter extends TermsHashConsumer {
         }
       }
     } finally {
-      termsConsumer.finish();
     }
   }
 }

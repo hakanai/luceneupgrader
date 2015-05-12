@@ -30,7 +30,6 @@ public class SegmentWriteState {
   public final PrintStream infoStream;
   public final Directory directory;
   public final String segmentName;
-  public final FieldInfos fieldInfos;
   public final int numDocs;
   public boolean hasVectors;
 
@@ -44,12 +43,11 @@ public class SegmentWriteState {
    * tweaking this is rarely useful.*/
   public final int termIndexInterval;
 
-  public SegmentWriteState(PrintStream infoStream, Directory directory, String segmentName, FieldInfos fieldInfos,
+  public SegmentWriteState(PrintStream infoStream, Directory directory, String segmentName,
                            int numDocs, int termIndexInterval) {
     this.infoStream = infoStream;
     this.directory = directory;
     this.segmentName = segmentName;
-    this.fieldInfos = fieldInfos;
     this.numDocs = numDocs;
     this.termIndexInterval = termIndexInterval;
   }

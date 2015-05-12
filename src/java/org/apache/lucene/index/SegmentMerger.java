@@ -117,7 +117,7 @@ final class SegmentMerger {
    * deletion files, this SegmentInfo must not reference such files when this
    * method is called, because they are not allowed within a compound file.
    */
-  final Collection<String> createCompoundFile(String fileName, final SegmentInfo info)
+  final void createCompoundFile(String fileName, final SegmentInfo info)
           throws IOException {
     // Now merge all added files
     Collection<String> files = info.files();
@@ -132,8 +132,6 @@ final class SegmentMerger {
     
     // Perform the merge
     cfsWriter.close();
-   
-    return files;
   }
 
   private SegmentReader[] matchingSegmentReaders;
@@ -229,7 +227,7 @@ final class SegmentMerger {
       fieldsWriter.close();
     }
 
-    segmentWriteState = new SegmentWriteState(null, directory, segment, fieldInfos, docCount, termIndexInterval);
+    segmentWriteState = new SegmentWriteState(null, directory, segment, docCount, termIndexInterval);
     return docCount;
   }
 
@@ -480,8 +478,8 @@ final class SegmentMerger {
 
       if (currentField != term.field) {
         currentField = term.field;
-        if (termsConsumer != null)
-          termsConsumer.finish();
+        if (termsConsumer != null) {
+        }
         final FieldInfo fieldInfo = fieldInfos.fieldInfo(currentField);
         termsConsumer = consumer.addField(fieldInfo);
         indexOptions = fieldInfo.indexOptions;
@@ -554,7 +552,7 @@ final class SegmentMerger {
                 payloadLength = payloadProcessor.payloadLength();
               }
             }
-            posConsumer.addPosition(position, payloadBuffer, 0, payloadLength);
+            posConsumer.addPosition(position, payloadBuffer, payloadLength);
           }
           posConsumer.finish();
         }

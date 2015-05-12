@@ -301,7 +301,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * @return <code>true</code> if an index exists; <code>false</code> otherwise
    * @throws IOException if there is a problem with accessing the index
    */
-  public static boolean indexExists(Directory directory) throws IOException {
+  public static boolean indexExists(Directory directory) {
     try {
       new SegmentInfos().read(directory);
       return true;

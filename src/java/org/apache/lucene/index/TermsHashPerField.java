@@ -17,7 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.util.RamUsageEstimator;
 import org.apache.lucene.util.SorterTemplate;
@@ -31,25 +30,19 @@ final class TermsHashPerField extends InvertedDocConsumerPerField {
 
   final TermsHashPerField nextPerField;
   final TermsHashPerThread perThread;
-  final DocumentsWriter.DocState docState;
-  final FieldInvertState fieldState;
-  CharTermAttribute termAtt;
-  
+
   // Copied from our perThread
   final CharBlockPool charPool;
   final IntBlockPool intPool;
   final ByteBlockPool bytePool;
 
   final int streamCount;
-  final int numPostingInt;
 
   final FieldInfo fieldInfo;
 
   boolean postingsCompacted;
   int numPostings;
   private int postingsHashSize = 4;
-  private int postingsHashHalfSize = postingsHashSize/2;
-  private int postingsHashMask = postingsHashSize-1;
   private int[] postingsHash;
  
   ParallelPostingsArray postingsArray;
@@ -59,18 +52,15 @@ final class TermsHashPerField extends InvertedDocConsumerPerField {
     intPool = perThread.intPool;
     charPool = perThread.charPool;
     bytePool = perThread.bytePool;
-    docState = perThread.docState;
 
     postingsHash = new int[postingsHashSize];
     Arrays.fill(postingsHash, -1);
     bytesUsed(postingsHashSize * RamUsageEstimator.NUM_BYTES_INT);
 
-    fieldState = docInverterPerField.fieldState;
     this.consumer = perThread.consumer.addField(this, fieldInfo);
     initPostingsArray();
 
     streamCount = consumer.getStreamCount();
-    numPostingInt = 2*streamCount;
     this.fieldInfo = fieldInfo;
     if (nextPerThread != null)
       nextPerField = (TermsHashPerField) nextPerThread.addField(docInverterPerField, fieldInfo);
@@ -110,7 +100,7 @@ final class TermsHashPerField extends InvertedDocConsumerPerField {
     }
   }
   
-  void shrinkHash(int targetSize) {
+  void shrinkHash() {
     assert postingsCompacted || numPostings == 0;
 
     final int newSize = 4;
@@ -120,8 +110,6 @@ final class TermsHashPerField extends InvertedDocConsumerPerField {
       bytesUsed((newSize-previousSize)*RamUsageEstimator.NUM_BYTES_INT);
       Arrays.fill(postingsHash, -1);
       postingsHashSize = newSize;
-      postingsHashHalfSize = newSize/2;
-      postingsHashMask = newSize-1;
     }
 
     // Fully free the postings array on each flush:
@@ -252,15 +240,10 @@ final class TermsHashPerField extends InvertedDocConsumerPerField {
 
   @Override
   void start(Fieldable f) {
-    termAtt = fieldState.attributeSource.addAttribute(CharTermAttribute.class);
-    consumer.start(f);
     if (nextPerField != null) {
       nextPerField.start(f);
     }
   }
-
-  int[] intUptos;
-  int intUptoStart;
 
   @Override
   void finish() throws IOException {

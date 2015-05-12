@@ -29,6 +29,4 @@ abstract class InvertedDocConsumer {
   /** Flush a new segment */
   abstract void flush(Map<InvertedDocConsumerPerThread,Collection<InvertedDocConsumerPerField>> threadsAndFields, SegmentWriteState state) throws IOException;
 
-  FieldInfos fieldInfos;
-
 }

@@ -136,7 +136,7 @@ public class SimpleFSDirectory extends FSDirectory {
     }
   
     @Override
-    protected void seekInternal(long position) {
+    protected void seekInternal() {
     }
   
     @Override

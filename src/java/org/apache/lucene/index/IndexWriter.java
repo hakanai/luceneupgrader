@@ -250,7 +250,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     private final Map<SegmentInfo,SegmentReader> readerMap = new HashMap<SegmentInfo,SegmentReader>();
 
     /** Forcefully clear changes for the specified segments.  This is called on successful merge. */
-    synchronized void clear(List<SegmentInfo> infos) throws IOException {
+    synchronized void clear(List<SegmentInfo> infos) {
       if (infos == null) {
         for (Map.Entry<SegmentInfo,SegmentReader> ent: readerMap.entrySet()) {
           ent.getValue().hasChanges = false;
@@ -453,7 +453,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     }
 
     // Returns a ref
-    public synchronized SegmentReader getIfExists(SegmentInfo info) throws IOException {
+    public synchronized SegmentReader getIfExists(SegmentInfo info) {
       SegmentReader sr = readerMap.get(info);
       if (sr != null) {
         sr.incRef();
@@ -1362,19 +1362,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     mergeGen++;
   }
 
-  /**
-   * A hook for extending classes to execute operations after pending added and
-   * deleted documents have been flushed to the Directory but before the change
-   * is committed (new segments_N file written).
-   */
-  protected void doAfterFlush() throws IOException {}
-
-  /**
-   * A hook for extending classes to execute operations before pending added and
-   * deleted documents are flushed to the Directory.
-   */
-  protected void doBeforeFlush() throws IOException {}
-
   /** <p>Expert: prepare for commit, specifying
    *  commitUserData Map (String -> String).  This does the
    *  first phase of 2-phase commit. This method does all
@@ -1445,7 +1432,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
         if (!success && infoStream != null) {
           message("hit exception during prepareCommit");
         }
-        doAfterFlush();
       }
     } catch (OutOfMemoryError oom) {
       handleOOM(oom, "prepareCommit");
@@ -1561,8 +1547,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
       throw new IllegalStateException("this writer hit an OutOfMemoryError; cannot flush");
     }
 
-    doBeforeFlush();
-
     assert testPoint();
 
     // We may be flushing because it was triggered by doc
@@ -1636,13 +1620,13 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
         bufferedDeletesStream.prune(segmentInfos);
 
         assert true;
-        flushControl.clearDeletes();
+        synchronized (flushControl) {
+        }
       } else if (infoStream != null) {
         message("don't apply deletes now delTermCount=" + 0 + " bytesUsed=" + (long) 0);
       }
-      
 
-      doAfterFlush();
+
       flushCount.incrementAndGet();
 
       success = true;
@@ -1663,7 +1647,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   private void ensureValidMerge(MergePolicy.OneMerge merge) throws IOException {
     for(SegmentInfo info : merge.segments) {
       if (!segmentInfos.contains(info)) {
-        throw new MergePolicy.MergeException("MergePolicy selected a segment (" + info.name + ") that is not in the current index " + segString(), directory);
+        throw new MergePolicy.MergeException("MergePolicy selected a segment (" + info.name + ") that is not in the current index " + segString());
       }
     }
   }
@@ -1677,7 +1661,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    *  saves the resulting deletes file (incrementing the
    *  delete generation for merge.info).  If no deletes were
    *  flushed, no new deletes file is saved. */
-  synchronized private void commitMergedDeletes(MergePolicy.OneMerge merge, SegmentReader mergedReader) throws IOException {
+  synchronized private void commitMergedDeletes(MergePolicy.OneMerge merge, SegmentReader mergedReader) {
 
     assert testPoint();
 
@@ -1889,7 +1873,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
             message("now merge\n  merge=" + merge.segString(directory) + "\n  index=" + segString());
 
           mergeMiddle(merge);
-          mergeSuccess();
           success = true;
         } catch (Throwable t) {
           handleMergeException(t, merge);
@@ -1922,20 +1905,16 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     //System.out.println(Thread.currentThread().getName() + ": merge end");
   }
 
-  /** Hook that's called when the specified merge is complete. */
-  void mergeSuccess() {
-  }
-  
   /** Checks whether this merge involves any segments
    *  already participating in a merge.  If not, this merge
    *  is "registered", meaning we record that its segments
    *  are now participating in a merge, and true is
    *  returned.  Else (the merge conflicts) false is
    *  returned. */
-  final synchronized boolean registerMerge(MergePolicy.OneMerge merge) throws IOException {
+  final synchronized void registerMerge(MergePolicy.OneMerge merge) throws IOException {
 
     if (merge.registerDone)
-      return true;
+      return;
 
     if (stopMerges) {
       merge.abort();
@@ -1945,10 +1924,10 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     boolean isExternal = false;
     for(SegmentInfo info : merge.segments) {
       if (mergingSegments.contains(info)) {
-        return false;
+        return;
       }
       if (!segmentInfos.contains(info)) {
-        return false;
+        return;
       }
       if (info.dir != directory) {
         isExternal = true;
@@ -1980,7 +1959,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
     // Merge is now registered
     merge.registerDone = true;
-    return true;
   }
 
   /** Does initial setup for a merge, which is fast but holds
@@ -2113,7 +2091,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   /** Does fininishing for a merge, which is fast but holds
    *  the synchronized lock on IndexWriter instance. */
-  final synchronized void mergeFinish(MergePolicy.OneMerge merge) throws IOException {
+  final synchronized void mergeFinish(MergePolicy.OneMerge merge) {
     
     // forceMerge, addIndexes or finishMerges may be waiting
     // on merges to finish.
@@ -2184,7 +2162,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
   /** Does the actual (time-consuming) work of the merge,
    *  but without holding synchronized lock on IndexWriter
    *  instance */
-  private int mergeMiddle(MergePolicy.OneMerge merge)
+  private void mergeMiddle(MergePolicy.OneMerge merge)
     throws IOException {
     
     merge.checkAborted(directory);
@@ -2316,7 +2294,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
               message("abort merge after building CFS");
             }
             deleter.deleteFile(compoundFileName);
-            return 0;
+            return;
           }
         }
 
@@ -2355,7 +2333,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
         if (!commitMerge(merge, mergedReader)) {
           // commitMerge will return false if this merge was aborted
-          return 0;
+          return;
         }
       } finally {
         synchronized(this) {
@@ -2377,8 +2355,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
         closeMergeReaders(merge, true);
       }
     }
-
-    return mergedDocCount;
   }
 
   synchronized void addMergeException(MergePolicy.OneMerge merge) {
@@ -2570,7 +2546,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
    * <p><b>NOTE</b>: warm is called before any deletes have
    * been carried over to the merged segment. */
   public static abstract class IndexReaderWarmer {
-    public abstract void warm(IndexReader reader) throws IOException;
+    public abstract void warm(IndexReader reader);
   }
 
   private void handleOOM(OutOfMemoryError oom, String location) {
@@ -2607,7 +2583,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     private boolean flushPending;
     private boolean flushDeletes;
 
-    private synchronized boolean setFlushPending(String reason, boolean doWait) {
+    private synchronized void setFlushPending(String reason, boolean doWait) {
       if (flushPending) {
         if (doWait) {
           while(flushPending) {
@@ -2618,13 +2594,13 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
             }
           }
         }
-        return false;
+        return;
       } else {
         if (infoStream != null) {
           message("now trigger flush reason=" + reason);
         }
         flushPending = true;
-        return true;
+        return;
       }
     }
 
@@ -2644,10 +2620,6 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
       flushDeletes = false;
       notifyAll();
     }
-
-    public synchronized void clearDeletes() {
-    }
-
   }
 
   final FlushControl flushControl = new FlushControl();

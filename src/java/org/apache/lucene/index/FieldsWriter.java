@@ -22,7 +22,6 @@ import org.apache.lucene.document.NumericField;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.store.IndexOutput;
-import org.apache.lucene.store.RAMOutputStream;
 import org.apache.lucene.util.IOUtils;
 
 import java.io.IOException;
@@ -92,16 +91,6 @@ final class FieldsWriter {
         abort();
       }
     }
-  }
-
-  // Writes the contents of buffer into the fields stream
-  // and adds a new entry for this document into the index
-  // stream.  This assumes the buffer was already written
-  // in the correct fields format.
-  void flushDocument(int numStoredFields, RAMOutputStream buffer) throws IOException {
-    indexStream.writeLong(fieldsStream.getFilePointer());
-    fieldsStream.writeVInt(numStoredFields);
-    buffer.writeTo(fieldsStream);
   }
 
   void skipDocument() throws IOException {

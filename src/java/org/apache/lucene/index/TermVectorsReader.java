@@ -67,13 +67,13 @@ class TermVectorsReader implements Cloneable, Closeable {
     try {
       String idxName = IndexFileNames.segmentFileName(segment, IndexFileNames.VECTORS_INDEX_EXTENSION);
       tvx = d.openInput(idxName, readBufferSize);
-      format = checkValidFormat(idxName, tvx);
+      format = checkValidFormat(tvx);
       String fn = IndexFileNames.segmentFileName(segment, IndexFileNames.VECTORS_DOCUMENTS_EXTENSION);
       tvd = d.openInput(fn, readBufferSize);
-      final int tvdFormat = checkValidFormat(fn, tvd);
+      final int tvdFormat = checkValidFormat(tvd);
       fn = IndexFileNames.segmentFileName(segment, IndexFileNames.VECTORS_FIELDS_EXTENSION);
       tvf = d.openInput(fn, readBufferSize);
-      final int tvfFormat = checkValidFormat(fn, tvf);
+      final int tvfFormat = checkValidFormat(tvf);
 
       assert format == tvdFormat;
       assert format == tvfFormat;
@@ -180,7 +180,7 @@ class TermVectorsReader implements Cloneable, Closeable {
     }
   }
 
-  private int checkValidFormat(String fn, IndexInput in) throws IOException
+  private int checkValidFormat(IndexInput in) throws IOException
   {
     int format = in.readInt();
     if (format > FORMAT_CURRENT) {
@@ -234,7 +234,6 @@ class TermVectorsReader implements Cloneable, Closeable {
         for (int i = 1; i <= found; i++)
           position += tvd.readVLong();
 
-        mapper.setDocumentNumber(docNum);
         readTermVector(field, position, mapper);
       }
     }
@@ -338,7 +337,6 @@ class TermVectorsReader implements Cloneable, Closeable {
       if (fieldCount != 0) {
         final String[] fields = readFields(fieldCount);
         final long[] tvfPointers = readTvfPointers(fieldCount);
-        mapper.setDocumentNumber(docNumber);
         readTermVectors(fields, tvfPointers, mapper);
       }
     }
@@ -350,7 +348,6 @@ class TermVectorsReader implements Cloneable, Closeable {
     SegmentTermVector res[] = new SegmentTermVector[fields.length];
     for (int i = 0; i < fields.length; i++) {
       ParallelArrayTermVectorMapper mapper = new ParallelArrayTermVectorMapper();
-      mapper.setDocumentNumber(docNum);
       readTermVector(fields[i], tvfPointers[i], mapper);
       res[i] = (SegmentTermVector) mapper.materializeVector();
     }

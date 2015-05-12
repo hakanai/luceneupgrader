@@ -111,7 +111,7 @@ class SegmentTermDocs implements TermDocs {
   public final int doc() { return doc; }
   public final int freq() { return freq; }
 
-  protected void skippingDoc() throws IOException {
+  protected void skippingDoc() {
   }
 
   public boolean next() throws IOException {
@@ -188,7 +188,7 @@ class SegmentTermDocs implements TermDocs {
  
   
   /** Overridden by SegmentTermPositions to skip in prox stream. */
-  protected void skipProx(long proxPointer, int payloadLength) throws IOException {}
+  protected void skipProx(long proxPointer, int payloadLength) {}
 
   /** Optimized implementation. */
   public boolean skipTo(int target) throws IOException {

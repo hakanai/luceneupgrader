@@ -21,13 +21,11 @@ import org.apache.lucene.util.UnicodeUtil;
 
 final class TermVectorsTermsWriterPerThread extends TermsHashConsumerPerThread {
 
-  final TermVectorsTermsWriter termsWriter;
   final TermsHashPerThread termsHashPerThread;
 
   TermVectorsTermsWriter.PerDoc doc;
 
-  public TermVectorsTermsWriterPerThread(TermsHashPerThread termsHashPerThread, TermVectorsTermsWriter termsWriter) {
-    this.termsWriter = termsWriter;
+  public TermVectorsTermsWriterPerThread(TermsHashPerThread termsHashPerThread) {
     this.termsHashPerThread = termsHashPerThread;
   }
   
@@ -47,20 +45,6 @@ final class TermVectorsTermsWriterPerThread extends TermsHashConsumerPerThread {
     if (doc != null) {
       doc.abort();
       doc = null;
-    }
-  }
-
-  // Called only by assert
-  String lastVectorFieldName;
-  final boolean vectorFieldsInOrder(FieldInfo fi) {
-    try {
-      //noinspection SimplifiableIfStatement
-      if (lastVectorFieldName != null)
-        return lastVectorFieldName.compareTo(fi.name) < 0;
-      else
-        return true;
-    } finally {
-      lastVectorFieldName = fi.name;
     }
   }
 }

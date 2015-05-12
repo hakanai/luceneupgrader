@@ -727,7 +727,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
     long generation;
     long version;
 
-    ReaderCommit(SegmentInfos infos, Directory dir) throws IOException {
+    ReaderCommit(SegmentInfos infos, Directory dir) {
       segmentsFileName = infos.getSegmentsFileName();
       this.dir = dir;
       version = infos.getVersion();

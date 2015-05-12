@@ -124,11 +124,10 @@ public abstract class PriorityQueue<T> {
    * 
    * @return the new 'top' element in the queue.
    */
-  public final T add(T element) {
+  public final void add(T element) {
     size++;
     heap[size] = element;
     upHeap();
-    return heap[1];
   }
 
   /** Returns the least element of the PriorityQueue in constant time. */

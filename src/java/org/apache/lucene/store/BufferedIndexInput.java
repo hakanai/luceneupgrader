@@ -241,7 +241,7 @@ public abstract class BufferedIndexInput extends IndexInput {
 
     if (buffer == null) {
       newBuffer(new byte[bufferSize]);  // allocate buffer lazily
-      seekInternal(bufferStart);
+      seekInternal();
     }
     readInternal(buffer, 0, newLength);
     bufferLength = newLength;
@@ -269,7 +269,7 @@ public abstract class BufferedIndexInput extends IndexInput {
       bufferStart = pos;
       bufferPosition = 0;
       bufferLength = 0;				  // trigger refill() on read()
-      seekInternal(pos);
+      seekInternal();
     }
   }
 
@@ -277,7 +277,7 @@ public abstract class BufferedIndexInput extends IndexInput {
    * next {@code #readInternal(byte[],int,int)} will occur.
    *
    */
-  protected abstract void seekInternal(long pos) throws IOException;
+  protected abstract void seekInternal() throws IOException;
 
   @Override
   public Object clone() {

@@ -60,11 +60,6 @@ final class FormatPostingsTermsWriter extends FormatPostingsTermsConsumer implem
     return docsWriter;
   }
 
-  /** Called when we are done adding terms to this field */
-  @Override
-  void finish() {
-  }
-
   public void close() throws IOException {
     docsWriter.close();
   }

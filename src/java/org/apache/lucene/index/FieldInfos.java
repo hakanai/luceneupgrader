@@ -156,10 +156,10 @@ public final class FieldInfos implements Iterable<FieldInfo> {
     return fi;
   }
 
-  synchronized public FieldInfo add(FieldInfo fi) {
-    return add(fi.name, fi.isIndexed, fi.storeTermVector,
-               fi.omitNorms, fi.storePayloads,
-               fi.indexOptions);
+  synchronized public void add(FieldInfo fi) {
+    add(fi.name, fi.isIndexed, fi.storeTermVector,
+        fi.omitNorms, fi.storePayloads,
+        fi.indexOptions);
   }
 
   private FieldInfo addInternal(String name, boolean isIndexed,

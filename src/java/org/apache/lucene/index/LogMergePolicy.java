@@ -179,7 +179,7 @@ public abstract class LogMergePolicy extends MergePolicy {
    * maxNumSegments} will remain, but &lt;= that number.
    */
   private MergeSpecification findForcedMergesSizeLimit(
-      SegmentInfos infos, int maxNumSegments, int last) throws IOException {
+          SegmentInfos infos, int last) throws IOException {
     MergeSpecification spec = new MergeSpecification();
     final List<SegmentInfo> segments = infos.asList();
 
@@ -335,7 +335,7 @@ public abstract class LogMergePolicy extends MergePolicy {
     }
 
     if (anyTooLarge) {
-      return findForcedMergesSizeLimit(infos, maxNumSegments, last);
+      return findForcedMergesSizeLimit(infos, last);
     } else {
       return findForcedMergesMaxNumSegments(infos, maxNumSegments, last);
     }
@@ -398,12 +398,10 @@ public abstract class LogMergePolicy extends MergePolicy {
   private static class SegmentInfoAndLevel implements Comparable<SegmentInfoAndLevel> {
     SegmentInfo info;
     float level;
-    int index;
-    
-    public SegmentInfoAndLevel(SegmentInfo info, float level, int index) {
+
+    public SegmentInfoAndLevel(SegmentInfo info, float level) {
       this.info = info;
       this.level = level;
-      this.index = index;
     }
 
     // Sorts largest to smallest
@@ -447,7 +445,7 @@ public abstract class LogMergePolicy extends MergePolicy {
         size = 1;
       }
 
-      final SegmentInfoAndLevel infoLevel = new SegmentInfoAndLevel(info, (float) Math.log(size)/norm, i);
+      final SegmentInfoAndLevel infoLevel = new SegmentInfoAndLevel(info, (float) Math.log(size)/norm);
       levels.add(infoLevel);
 
       if (verbose()) {
@@ -527,6 +525,7 @@ public abstract class LogMergePolicy extends MergePolicy {
           }
         }
 
+        //noinspection StatementWithEmptyBody
         if (anyMerging) {
           // skip
         } else if (!anyTooLarge) {
@@ -557,17 +556,15 @@ public abstract class LogMergePolicy extends MergePolicy {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("[" + getClass().getSimpleName() + ": ");
-    sb.append("minMergeSize=").append(minMergeSize).append(", ");
-    sb.append("mergeFactor=").append(mergeFactor).append(", ");
-    sb.append("maxMergeSize=").append(maxMergeSize).append(", ");
-    sb.append("maxMergeSizeForForcedMerge=").append(maxMergeSizeForForcedMerge).append(", ");
-    sb.append("calibrateSizeByDeletes=").append(calibrateSizeByDeletes).append(", ");
-    sb.append("maxMergeDocs=").append(maxMergeDocs).append(", ");
-    sb.append("useCompoundFile=").append(useCompoundFile).append(", ");
-    sb.append("noCFSRatio=").append(noCFSRatio);
-    sb.append("]");
-    return sb.toString();
+    return "[" + getClass().getSimpleName() + ": " +
+            "minMergeSize=" + minMergeSize + ", " +
+            "mergeFactor=" + mergeFactor + ", " +
+            "maxMergeSize=" + maxMergeSize + ", " +
+            "maxMergeSizeForForcedMerge=" + maxMergeSizeForForcedMerge + ", " +
+            "calibrateSizeByDeletes=" + calibrateSizeByDeletes + ", " +
+            "maxMergeDocs=" + maxMergeDocs + ", " +
+            "useCompoundFile=" + useCompoundFile + ", " +
+            "noCFSRatio=" + noCFSRatio + "]";
   }
   
 }

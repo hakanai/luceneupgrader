@@ -30,7 +30,9 @@ final class CharBlockPool {
   }
 
   public void reset() {
-    docWriter.recycleCharBlocks(buffers, 1+bufferUpto);
+
+    synchronized (docWriter) {
+    }
     bufferUpto = -1;
   }
 

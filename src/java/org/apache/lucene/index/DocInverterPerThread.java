@@ -24,5 +24,4 @@ package org.apache.lucene.index;
 final class DocInverterPerThread extends DocFieldConsumerPerThread {
   final InvertedDocConsumerPerThread consumer = null;
   final InvertedDocEndConsumerPerThread endConsumer = null;
-  final DocumentsWriter.DocState docState = null;
 }
