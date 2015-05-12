@@ -38,9 +38,4 @@ class ParallelPostingsArray {
     return BYTES_PER_POSTING;
   }
 
-  void copyTo(ParallelPostingsArray toArray, int numToCopy) {
-    System.arraycopy(textStarts, 0, toArray.textStarts, 0, numToCopy);
-    System.arraycopy(intStarts, 0, toArray.intStarts, 0, numToCopy);
-    System.arraycopy(byteStarts, 0, toArray.byteStarts, 0, numToCopy);
-  }
 }

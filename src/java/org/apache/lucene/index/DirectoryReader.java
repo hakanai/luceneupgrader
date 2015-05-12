@@ -925,59 +925,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
         }
       }
     }
-  
-    /** Optimized implementation. */
-    public int read(final int[] docs, final int[] freqs) throws IOException {
-      while (true) {
-        while (current == null) {
-          if (pointer < readers.length) {      // try next segment
-            if (tenum != null) {
-              smi = tenum.matchingSegments[matchingSegmentPos++];
-              if (smi==null) {
-                pointer = readers.length;
-                return 0;
-              }
-              pointer = smi.ord;
-            }
-            base = starts[pointer];
-            current = termDocs(pointer++);
-          } else {
-            return 0;
-          }
-        }
-        int end = current.read(docs, freqs);
-        if (end == 0) {          // none left in segment
-          current = null;
-        } else {            // got some
-          final int b = base;        // adjust doc numbers
-          for (int i = 0; i < end; i++)
-           docs[i] += b;
-          return end;
-        }
-      }
-    }
-  
-   /* A Possible future optimization could skip entire segments */ 
-    public boolean skipTo(int target) throws IOException {
-      for(;;) {
-        if (current != null && current.skipTo(target-base)) {
-          return true;
-        } else if (pointer < readers.length) {
-          if (tenum != null) {
-            SegmentMergeInfo smi = tenum.matchingSegments[matchingSegmentPos++];
-            if (smi==null) {
-              pointer = readers.length;
-              return false;
-            }
-            pointer = smi.ord;
-          }
-          base = starts[pointer];
-          current = termDocs(pointer++);
-        } else
-          return false;
-      }
-    }
-  
+
     private TermDocs termDocs(int i) throws IOException {
       TermDocs result = readerTermDocs[i];
       if (result == null)
@@ -1026,11 +974,7 @@ class DirectoryReader extends IndexReader implements Cloneable {
     public byte[] getPayload(byte[] data, int offset) throws IOException {
       return ((TermPositions)current).getPayload(data, offset);
     }
-  
-  
-    // TODO: Remove warning after API has been finalized
-    public boolean isPayloadAvailable() {
-      return ((TermPositions) current).isPayloadAvailable();
-    }
+
+
   }
 }

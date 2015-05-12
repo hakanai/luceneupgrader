@@ -17,8 +17,6 @@ package org.apache.lucene.util.packed;
  * limitations under the License.
  */
 
-import java.util.Arrays;
-
 /**
  * Direct wrapping of 16 bit values to a backing array of shorts.
  * @lucene.internal
@@ -43,17 +41,4 @@ class Direct16 extends PackedInts.ReaderImpl
     values[index] = (short) (value & 0xFFFF);
   }
 
-  public void clear() {
-    Arrays.fill(values, (short)0);
-  }
-
-  @Override
-  public Object getArray() {
-    return values;
-  }
-
-  @Override
-  public boolean hasArray() {
-    return true;
-  }
 }

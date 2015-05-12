@@ -171,18 +171,6 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
     int[] lastPositions;                               // Last position where this term occurred
 
     @Override
-    void copyTo(ParallelPostingsArray toArray, int numToCopy) {
-      assert toArray instanceof TermVectorsPostingsArray;
-      TermVectorsPostingsArray to = (TermVectorsPostingsArray) toArray;
-
-      super.copyTo(toArray, numToCopy);
-
-      System.arraycopy(freqs, 0, to.freqs, 0, size);
-      System.arraycopy(lastOffsets, 0, to.lastOffsets, 0, size);
-      System.arraycopy(lastPositions, 0, to.lastPositions, 0, size);
-    }
-
-    @Override
     int bytesPerPosting() {
       return super.bytesPerPosting() + 3 * RamUsageEstimator.NUM_BYTES_INT;
     }

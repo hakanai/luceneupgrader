@@ -263,16 +263,6 @@ public abstract class MergePolicy implements java.io.Closeable {
       throws IOException;
 
   /**
-   * Determine what set of merge operations is necessary in order to expunge all
-   * deletes from the index.
-   * 
-   * @param segmentInfos
-   *          the total set of segments in the index
-   */
-  public abstract MergeSpecification findForcedDeletesMerges(
-      SegmentInfos segmentInfos) throws IOException;
-
-  /**
    * Release all resources for the policy.
    */
   public abstract void close();

@@ -17,10 +17,11 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import org.apache.lucene.util.BitVector;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.store.IndexInput;
+import org.apache.lucene.util.BitVector;
+
+import java.io.IOException;
 
 class SegmentTermDocs implements TermDocs {
   protected SegmentReader parent;
@@ -140,34 +141,6 @@ class SegmentTermDocs implements TermDocs {
     return true;
   }
 
-  /** Optimized implementation. */
-  public int read(final int[] docs, final int[] freqs)
-          throws IOException {
-    final int length = docs.length;
-    if (indexOptions == IndexOptions.DOCS_ONLY) {
-      return readNoTf(docs, freqs, length);
-    } else {
-      int i = 0;
-      while (i < length && count < df) {
-        // manually inlined call to next() for speed
-        final int docCode = freqStream.readVInt();
-        doc += docCode >>> 1;       // shift off low bit
-        if ((docCode & 1) != 0)       // if low bit is set
-          freq = 1;         // freq is one
-        else
-          freq = freqStream.readVInt();     // else read freq
-        count++;
-
-        if (deletedDocs == null || !deletedDocs.get(doc)) {
-          docs[i] = doc;
-          freqs[i] = freq;
-          ++i;
-        }
-      }
-      return i;
-    }
-  }
-
   private int readNoTf(final int[] docs, final int[] freqs, final int length) throws IOException {
     int i = 0;
     while (i < length && count < df) {
@@ -190,32 +163,4 @@ class SegmentTermDocs implements TermDocs {
   /** Overridden by SegmentTermPositions to skip in prox stream. */
   protected void skipProx(long proxPointer, int payloadLength) {}
 
-  /** Optimized implementation. */
-  public boolean skipTo(int target) throws IOException {
-    if ((target - skipInterval) >= doc && df >= skipInterval) {                      // optimized case
-      if (skipListReader == null)
-        skipListReader = new DefaultSkipListReader((IndexInput) freqStream.clone(), maxSkipLevels, skipInterval); // lazily clone
-
-      if (!haveSkipped) {                          // lazily initialize skip stream
-        skipListReader.init(skipPointer, freqBasePointer, proxBasePointer, df, currentFieldStoresPayloads);
-        haveSkipped = true;
-      }
-
-      int newCount = skipListReader.skipTo(target); 
-      if (newCount > count) {
-        freqStream.seek(skipListReader.getFreqPointer());
-        skipProx(skipListReader.getProxPointer(), skipListReader.getPayloadLength());
-
-        doc = skipListReader.getDoc();
-        count = newCount;
-      }      
-    }
-
-    // done skipping, now just scan
-    do {
-      if (!next())
-        return false;
-    } while (target > doc);
-    return true;
-  }
 }

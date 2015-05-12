@@ -341,60 +341,6 @@ public abstract class LogMergePolicy extends MergePolicy {
     }
   }
 
-  /**
-   * Finds merges necessary to force-merge all deletes from the
-   * index.  We simply merge adjacent segments that have
-   * deletes, up to mergeFactor at a time.
-   */ 
-  @Override
-  public MergeSpecification findForcedDeletesMerges(SegmentInfos segmentInfos)
-      throws IOException {
-    final List<SegmentInfo> segments = segmentInfos.asList();
-    final int numSegments = segments.size();
-
-    if (verbose())
-      message("findForcedDeleteMerges: " + numSegments + " segments");
-
-    MergeSpecification spec = new MergeSpecification();
-    int firstSegmentWithDeletions = -1;
-    IndexWriter w = writer.get();
-    assert w != null;
-    for(int i=0;i<numSegments;i++) {
-      final SegmentInfo info = segmentInfos.info(i);
-      int delCount = w.numDeletedDocs(info);
-      if (delCount > 0) {
-        if (verbose())
-          message("  segment " + info.name + " has deletions");
-        if (firstSegmentWithDeletions == -1)
-          firstSegmentWithDeletions = i;
-        else if (i - firstSegmentWithDeletions == mergeFactor) {
-          // We've seen mergeFactor segments in a row with
-          // deletions, so force a merge now:
-          if (verbose())
-            message("  add merge " + firstSegmentWithDeletions + " to " + (i-1) + " inclusive");
-          spec.add(new OneMerge(segments.subList(firstSegmentWithDeletions, i)));
-          firstSegmentWithDeletions = i;
-        }
-      } else if (firstSegmentWithDeletions != -1) {
-        // End of a sequence of segments with deletions, so,
-        // merge those past segments even if it's fewer than
-        // mergeFactor segments
-        if (verbose())
-          message("  add merge " + firstSegmentWithDeletions + " to " + (i-1) + " inclusive");
-        spec.add(new OneMerge(segments.subList(firstSegmentWithDeletions, i)));
-        firstSegmentWithDeletions = -1;
-      }
-    }
-
-    if (firstSegmentWithDeletions != -1) {
-      if (verbose())
-        message("  add merge " + firstSegmentWithDeletions + " to " + (numSegments-1) + " inclusive");
-      spec.add(new OneMerge(segments.subList(firstSegmentWithDeletions, numSegments)));
-    }
-
-    return spec;
-  }
-
   private static class SegmentInfoAndLevel implements Comparable<SegmentInfoAndLevel> {
     SegmentInfo info;
     float level;

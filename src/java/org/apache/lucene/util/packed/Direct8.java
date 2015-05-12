@@ -17,8 +17,6 @@ package org.apache.lucene.util.packed;
  * limitations under the License.
  */
 
-import java.util.Arrays;
-
 /**
  * Direct wrapping of 8 bit values to a backing array of bytes.
  * @lucene.internal
@@ -43,17 +41,4 @@ class Direct8 extends PackedInts.ReaderImpl
     values[index] = (byte)(value & 0xFF);
   }
 
-  public void clear() {
-    Arrays.fill(values, (byte)0);
-  }
-
-  @Override
-  public Object getArray() {
-    return values;
-  }
-
-  @Override
-  public boolean hasArray() {
-    return true;
-  }
 }

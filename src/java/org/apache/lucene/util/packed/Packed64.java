@@ -17,8 +17,6 @@ package org.apache.lucene.util.packed;
  * limitations under the License.
  */
 
-import java.util.Arrays;
-
 /**
  * Space optimized random access capable array of values with a fixed number of
  * bits. For 32 bits/value and less, performance on 32 bit machines is not
@@ -178,7 +176,4 @@ class Packed64 extends PackedInts.ReaderImpl implements PackedInts.Mutable {
             + ", elements.length=" + blocks.length + ")";
   }
 
-    public void clear() {
-    Arrays.fill(blocks, 0L);
-  }
 }

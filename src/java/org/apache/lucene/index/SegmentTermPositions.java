@@ -108,11 +108,6 @@ extends SegmentTermDocs implements TermPositions {
     return false;
   }
 
-  @Override
-  public final int read(final int[] docs, final int[] freqs) {
-    throw new UnsupportedOperationException("TermPositions does not support processing multiple documents in one call. Use TermDocs instead.");
-  }
-
 
   /** Called by super.skipTo(). */
   @Override
@@ -195,10 +190,6 @@ extends SegmentTermDocs implements TermPositions {
     proxStream.readBytes(retArray, retOffset, payloadLength);
     needToLoadPayload = false;
     return retArray;
-  }
-
-  public boolean isPayloadAvailable() {
-    return needToLoadPayload && payloadLength > 0;
   }
 
 }

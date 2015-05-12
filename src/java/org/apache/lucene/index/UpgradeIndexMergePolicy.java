@@ -124,12 +124,7 @@ public class UpgradeIndexMergePolicy extends MergePolicy {
 
     return spec;
   }
-  
-  @Override
-  public MergeSpecification findForcedDeletesMerges(SegmentInfos segmentInfos) throws IOException {
-    return base.findForcedDeletesMerges(segmentInfos);
-  }
-  
+
   @Override
   public boolean useCompoundFile(SegmentInfos segments, SegmentInfo newSegment) throws IOException {
     return base.useCompoundFile(segments, newSegment);

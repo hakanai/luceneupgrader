@@ -64,11 +64,6 @@ public final class WeakIdentityMap<K,V> {
     reap();
   }
 
-  public V get(Object key) {
-    reap();
-    return backingStore.get(new IdentityWeakReference(key, null));
-  }
-
   public void put(K key, V value) {
     reap();
     backingStore.put(new IdentityWeakReference(key, queue), value);

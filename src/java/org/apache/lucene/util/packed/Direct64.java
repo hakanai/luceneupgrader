@@ -17,8 +17,6 @@ package org.apache.lucene.util.packed;
  * limitations under the License.
  */
 
-import java.util.Arrays;
-
 /**
  * Direct wrapping of 32 bit values to a backing array of ints.
  * @lucene.internal
@@ -43,17 +41,4 @@ class Direct64 extends PackedInts.ReaderImpl
     values[index] = value;
   }
 
-  public void clear() {
-    Arrays.fill(values, 0L);
-  }
-
-  @Override
-  public long[] getArray() {
-    return values;
-  }
-
-  @Override
-  public boolean hasArray() {
-    return true;
-  }
 }

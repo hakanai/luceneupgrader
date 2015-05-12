@@ -397,54 +397,6 @@ public class TieredMergePolicy extends MergePolicy {
   }
 
   @Override
-  public MergeSpecification findForcedDeletesMerges(SegmentInfos infos)
-      throws IOException {
-    if (verbose()) {
-      message("findForcedDeletesMerges infos=" + writer.get().segString(infos) + " forceMergeDeletesPctAllowed=" + forceMergeDeletesPctAllowed);
-    }
-    final List<SegmentInfo> eligible = new ArrayList<SegmentInfo>();
-    final Collection<SegmentInfo> merging = writer.get().getMergingSegments();
-    for(SegmentInfo info : infos) {
-      double pctDeletes = 100.*((double) writer.get().numDeletedDocs(info))/info.docCount;
-      if (pctDeletes > forceMergeDeletesPctAllowed && !merging.contains(info)) {
-        eligible.add(info);
-      }
-    }
-
-    if (eligible.size() == 0) {
-      return null;
-    }
-
-    Collections.sort(eligible, segmentByteSizeDescending);
-
-    if (verbose()) {
-      message("eligible=" + eligible);
-    }
-
-    int start = 0;
-    MergeSpecification spec = null;
-
-    while(start < eligible.size()) {
-      // Don't enforce max merged size here: app is explicitly
-      // calling forceMergeDeletes, and knows this may take a
-      // long time / produce big segments (like forceMerge):
-      final int end = Math.min(start + maxMergeAtOnceExplicit, eligible.size());
-      if (spec == null) {
-        spec = new MergeSpecification();
-      }
-
-      final OneMerge merge = new OneMerge(eligible.subList(start, end));
-      if (verbose()) {
-        message("add merge=" + writer.get().segString(merge.segments));
-      }
-      spec.add(merge);
-      start = end;
-    }
-
-    return spec;
-  }
-
-  @Override
   public boolean useCompoundFile(SegmentInfos infos, SegmentInfo mergedInfo) throws IOException {
     final boolean doCFS;
 

@@ -17,8 +17,6 @@ package org.apache.lucene.util.packed;
  * limitations under the License.
  */
 
-import java.util.Arrays;
-
 /**
  * Space optimized random access capable array of values with a fixed number of
  * bits. The maximum number of bits/value is 31. Use {@code Packed64} for higher
@@ -176,10 +174,6 @@ class Packed32 extends PackedInts.ReaderImpl implements PackedInts.Mutable {
     blocks[elementPos+1] = (blocks[elementPos+1] & writeMasks[base+1])
             | ((intValue << shifts[base + 2])
             & writeMasks[base+2]);
-  }
-
-  public void clear() {
-    Arrays.fill(blocks, 0);
   }
 
   @Override

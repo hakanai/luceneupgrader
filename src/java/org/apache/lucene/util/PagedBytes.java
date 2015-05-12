@@ -33,7 +33,6 @@ import java.util.List;
  **/
 public final class PagedBytes {
   private final List<byte[]> blocks = new ArrayList<byte[]>();
-  private final List<Integer> blockEnd = new ArrayList<Integer>();
   private final int blockSize;
   private final int blockBits;
   private final int blockMask;
@@ -43,27 +42,6 @@ public final class PagedBytes {
   private byte[] currentBlock;
 
   private static final byte[] EMPTY_BYTES = new byte[0];
-
-  /** Provides methods to read BytesRefs from a frozen
-   *  PagedBytes.
-   *
-   * */
-  public final static class Reader {
-    private final byte[][] blocks;
-    private final int[] blockEnds;
-
-    public Reader(PagedBytes pagedBytes) {
-      blocks = new byte[pagedBytes.blocks.size()][];
-      for(int i=0;i<blocks.length;i++) {
-        blocks[i] = pagedBytes.blocks.get(i);
-      }
-      blockEnds = new int[blocks.length];
-      for(int i=0;i< blockEnds.length;i++) {
-        blockEnds[i] = pagedBytes.blockEnd.get(i);
-      }
-    }
-
-  }
 
   /** 1<<blockBits must be bigger than biggest single
    *  BytesRef slice that will be pulled */
@@ -91,7 +69,6 @@ public final class PagedBytes {
       currentBlock = EMPTY_BYTES;
     }
     blocks.add(currentBlock);
-    blockEnd.add(upto); 
     frozen = true;
     currentBlock = null;
   }
@@ -171,7 +148,6 @@ public final class PagedBytes {
       if (upto == blockSize) {
         if (currentBlock != null) {
           blocks.add(currentBlock);
-          blockEnd.add(upto);
         }
         currentBlock = new byte[blockSize];
         upto = 0;
@@ -189,7 +165,6 @@ public final class PagedBytes {
       if (upto == blockSize) {
         if (currentBlock != null) {
           blocks.add(currentBlock);
-          blockEnd.add(upto);
         }
         currentBlock = new byte[blockSize];
         upto = 0;
@@ -202,7 +177,6 @@ public final class PagedBytes {
         if (blockLeft < left) {
           System.arraycopy(b, offset, currentBlock, upto, blockLeft);
           blocks.add(currentBlock);
-          blockEnd.add(blockSize);
           currentBlock = new byte[blockSize];
           upto = 0;
           offset += blockLeft;

@@ -17,9 +17,6 @@ package org.apache.lucene.util;
  * limitations under the License.
  */
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 /**
  * Estimates the size (memory representation) of Java objects.
  * 
@@ -42,45 +39,9 @@ import java.util.Map;
  * @lucene.internal
  */
 public final class RamUsageEstimator {
-  public final static int NUM_BYTES_BOOLEAN = 1;
-  public final static int NUM_BYTES_BYTE = 1;
   public final static int NUM_BYTES_CHAR = 2;
-  public final static int NUM_BYTES_SHORT = 2;
   public final static int NUM_BYTES_INT = 4;
-  public final static int NUM_BYTES_FLOAT = 4;
   public final static int NUM_BYTES_LONG = 8;
-  public final static int NUM_BYTES_DOUBLE = 8;
-
-  /** 
-   * Number of bytes this jvm uses to represent an object reference. 
-   */
-  public final static int NUM_BYTES_OBJECT_REF;
-
-  /**
-   * Sizes of primitive classes.
-   */
-  private static final Map<Class<?>,Integer> primitiveSizes;
-  static {
-    primitiveSizes = new IdentityHashMap<Class<?>,Integer>();
-    primitiveSizes.put(boolean.class, NUM_BYTES_BOOLEAN);
-    primitiveSizes.put(byte.class, NUM_BYTES_BYTE);
-    primitiveSizes.put(char.class, NUM_BYTES_CHAR);
-    primitiveSizes.put(short.class, NUM_BYTES_SHORT);
-    primitiveSizes.put(int.class, NUM_BYTES_INT);
-    primitiveSizes.put(float.class, NUM_BYTES_FLOAT);
-    primitiveSizes.put(double.class, NUM_BYTES_DOUBLE);
-    primitiveSizes.put(long.class, NUM_BYTES_LONG);
-  }
-
-
-  /**
-   * Initialize constants and try to collect information about the JVM internals. 
-   */
-  static {
-    // Initialize empirically measured defaults. We'll modify them to the current
-    // JVM settings later on if possible.
-    NUM_BYTES_OBJECT_REF = Constants.JRE_IS_64BIT ? 8 : 4;
-  }
 
   // Object with just one field to determine the object header size by getting the offset of the dummy field:
   @SuppressWarnings("unused")

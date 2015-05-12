@@ -17,7 +17,6 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.util.RamUsageEstimator;
 
@@ -80,19 +79,6 @@ final class FreqProxTermsWriterPerField extends TermsHashConsumerPerField implem
     int lastDocIDs[];                                  // Last docID where this term occurred
     int lastDocCodes[];                                // Code for prior doc
     int lastPositions[];                               // Last position where this term occurred
-
-    @Override
-    void copyTo(ParallelPostingsArray toArray, int numToCopy) {
-      assert toArray instanceof FreqProxPostingsArray;
-      FreqProxPostingsArray to = (FreqProxPostingsArray) toArray;
-
-      super.copyTo(toArray, numToCopy);
-
-      System.arraycopy(docFreqs, 0, to.docFreqs, 0, numToCopy);
-      System.arraycopy(lastDocIDs, 0, to.lastDocIDs, 0, numToCopy);
-      System.arraycopy(lastDocCodes, 0, to.lastDocCodes, 0, numToCopy);
-      System.arraycopy(lastPositions, 0, to.lastPositions, 0, numToCopy);
-    }
 
     @Override
     int bytesPerPosting() {

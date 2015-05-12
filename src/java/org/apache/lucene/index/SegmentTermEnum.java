@@ -96,10 +96,10 @@ final class SegmentTermEnum extends TermEnum implements Cloneable {
 
   @Override
   protected Object clone() {
-    SegmentTermEnum clone = null;
+    SegmentTermEnum clone;
     try {
       clone = (SegmentTermEnum) super.clone();
-    } catch (CloneNotSupportedException e) {}
+    } catch (CloneNotSupportedException e) { throw new IllegalStateException(e); }
 
     clone.input = (IndexInput) input.clone();
     clone.termInfo = new TermInfo(termInfo);
