@@ -194,14 +194,4 @@ public final class ArrayUtil {
       return array;
   }
 
-  /**
-   * Returns hash of bytes in range start (inclusive) to
-   * end (inclusive)
-   */
-  public static int hashCode(byte[] array, int start, int end) {
-    int code = 0;
-    for (int i = end - 1; i >= start; i--)
-      code = code * 31 + array[i];
-    return code;
-  }
 }

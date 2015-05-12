@@ -34,7 +34,7 @@ final class TermsHashPerThread extends InvertedDocConsumerPerThread {
 
     if (nextTermsHash != null) {
       // We are primary
-      charPool = new CharBlockPool(termsHash.docWriter);
+      charPool = new CharBlockPool();
       primary = true;
     } else {
       charPool = primaryPerThread.charPool;
@@ -72,7 +72,7 @@ final class TermsHashPerThread extends InvertedDocConsumerPerThread {
     intPool.reset();
     bytePool.reset();
 
-    if (primary)
-      charPool.reset();
+    if (primary) {
+    }
   }
 }

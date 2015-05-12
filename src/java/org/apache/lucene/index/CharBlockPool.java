@@ -21,19 +21,7 @@ final class CharBlockPool {
 
   public char[][] buffers = new char[10][];
 
-  int bufferUpto = -1;                        // Which buffer we are upto
-
-  final private DocumentsWriter docWriter;
-
-  public CharBlockPool(DocumentsWriter docWriter) {
-    this.docWriter = docWriter;
-  }
-
-  public void reset() {
-
-    synchronized (docWriter) {
-    }
-    bufferUpto = -1;
+  public CharBlockPool() {
   }
 
 }

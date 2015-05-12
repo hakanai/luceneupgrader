@@ -18,7 +18,6 @@ package org.apache.lucene.index;
  */
 
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.search.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.Lock;
@@ -327,10 +326,10 @@ class DirectoryReader extends IndexReader implements Cloneable {
 
   // inherit javadoc
   @Override
-  public Document document(int n, FieldSelector fieldSelector) throws IOException {
+  public Document document(int n) throws IOException {
     ensureOpen();
     int i = readerIndex(n);                          // find segment num
-    return subReaders[i].document(n - starts[i], fieldSelector);    // dispatch to segment reader
+    return subReaders[i].document(n - starts[i]);    // dispatch to segment reader
   }
 
   @Override

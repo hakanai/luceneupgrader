@@ -209,7 +209,7 @@ final class FieldsReader implements Cloneable, Closeable {
     return format >= FieldsWriter.FORMAT_LUCENE_3_0_NO_COMPRESSED_FIELDS;
   }
 
-  final Document doc(int n, FieldSelector fieldSelector) throws IOException {
+  final Document doc(int n) throws IOException {
     seekIndex(n);
     long position = indexStream.readLong();
     fieldsStream.seek(position);
@@ -219,7 +219,7 @@ final class FieldsReader implements Cloneable, Closeable {
     out: for (int i = 0; i < numFields; i++) {
       int fieldNumber = fieldsStream.readVInt();
       FieldInfo fi = fieldInfos.fieldInfo(fieldNumber);
-      FieldSelectorResult acceptField = fieldSelector == null ? FieldSelectorResult.LOAD : fieldSelector.accept(fi.name);
+      FieldSelectorResult acceptField = FieldSelectorResult.LOAD;
       
       int bits = fieldsStream.readByte() & 0xFF;
       assert bits <= (FieldsWriter.FIELD_IS_NUMERIC_MASK | FieldsWriter.FIELD_IS_COMPRESSED | FieldsWriter.FIELD_IS_TOKENIZED | FieldsWriter.FIELD_IS_BINARY): "bits=" + Integer.toHexString(bits);

@@ -18,7 +18,6 @@ package org.apache.lucene.index;
  */
 
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.search.Similarity;
 import org.apache.lucene.store.BufferedIndexInput;
 import org.apache.lucene.store.Directory;
@@ -28,7 +27,9 @@ import org.apache.lucene.util.CloseableThreadLocal;
 import org.apache.lucene.util.StringHelper;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -449,12 +450,12 @@ public class SegmentReader extends IndexReader implements Cloneable {
   }
 
   @Override
-  public Document document(int n, FieldSelector fieldSelector) throws IOException {
+  public Document document(int n) throws IOException {
     ensureOpen();
     if (n < 0 || n >= maxDoc()) {       
       throw new IllegalArgumentException("docID must be >= 0 and < maxDoc=" + maxDoc() + " (got docID=" + n + ")");
     }
-    return getFieldsReader().doc(n, fieldSelector);
+    return getFieldsReader().doc(n);
   }
 
   @Override

@@ -18,7 +18,6 @@ package org.apache.lucene.index;
  */
 
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.LockObtainFailedException;
@@ -325,27 +324,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
   }
 
   /**
-   * Returns the stored fields of the <code>n</code><sup>th</sup>
-   * <code>Document</code> in this index.
-   * <p>
-   * <b>NOTE:</b> for performance reasons, this method does not check if the
-   * requested document is deleted, and therefore asking for a deleted document
-   * may yield unspecified results. Usually this is not required, however you
-   * can call {@code #isDeleted(int)} with the requested document ID to verify
-   * the document is not deleted.
-   * 
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
-  public final Document document(int n) throws IOException {
-    ensureOpen();
-    if (n < 0 || n >= maxDoc()) {
-      throw new IllegalArgumentException("docID must be >= 0 and < maxDoc=" + maxDoc() + " (got docID=" + n + ")");
-    }
-    return document(n, null);
-  }
-
-  /**
    * Get the {@code org.apache.lucene.document.Document} at the <code>n</code>
    * <sup>th</sup> position. The {@code FieldSelector} may be used to determine
    * what {@code org.apache.lucene.document.Field}s to load and how they should
@@ -363,9 +341,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
    * the document is not deleted.
    * 
    * @param n Get the document at the <code>n</code><sup>th</sup> position
-   * @param fieldSelector The {@code FieldSelector} to use to determine what
-   *        Fields should be loaded on the Document. May be null, in which case
-   *        all Fields will be loaded.
    * @return The stored fields of the
    *         {@code org.apache.lucene.document.Document} at the nth position
    * @throws CorruptIndexException if the index is corrupt
@@ -376,7 +351,7 @@ public abstract class IndexReader implements Cloneable,Closeable {
    *
    */
   // TODO (1.5): When we convert to JDK 1.5 make this Set<String>
-  public abstract Document document(int n, FieldSelector fieldSelector) throws IOException;
+  public abstract Document document(int n) throws IOException;
   
   /** Returns true if document <i>n</i> has been deleted */
   public abstract boolean isDeleted(int n);
