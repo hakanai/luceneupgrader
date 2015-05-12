@@ -25,10 +25,6 @@ final class TermVectorsTermsWriterPerField extends TermsHashConsumerPerField {
   final TermsHashPerField termsHashPerField;
   final FieldInfo fieldInfo;
 
-  boolean doVectors;
-  boolean doVectorPositions;
-  boolean doVectorOffsets;
-
   int maxNumPostings;
 
   public TermVectorsTermsWriterPerField(TermsHashPerField termsHashPerField, TermVectorsTermsWriterPerThread perThread, FieldInfo fieldInfo) {

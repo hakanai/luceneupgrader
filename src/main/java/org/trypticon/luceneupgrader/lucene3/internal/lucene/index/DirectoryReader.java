@@ -218,9 +218,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
       final SegmentReader reader = subReaders[i];
       starts[i] = maxDoc;
       maxDoc += reader.maxDoc();      // compute maxDocs
-      if (reader.hasDeletions()) {
-        hasDeletions = true;
-      }
     }
     starts[subReaders.length] = maxDoc;
 
@@ -330,37 +327,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     ensureOpen();
     int i = readerIndex(n);                          // find segment num
     return subReaders[i].document(n - starts[i]);    // dispatch to segment reader
-  }
-
-  @Override
-  public boolean isDeleted(int n) {
-    // Don't call ensureOpen() here (it could affect performance)
-    final int i = readerIndex(n);                           // find segment num
-    return subReaders[i].isDeleted(n - starts[i]);    // dispatch to segment reader
-  }
-
-  @Override
-  public boolean hasDeletions() {
-    ensureOpen();
-    return hasDeletions;
-  }
-
-  /** {@inheritDoc} */
-  @Override @Deprecated
-  protected void doDelete(int n) throws IOException {
-    numDocs = -1;                             // invalidate cache
-    int i = readerIndex(n);                   // find segment num
-    subReaders[i].deleteDocument(n - starts[i]);      // dispatch to segment reader
-    hasDeletions = true;
-  }
-
-  /** {@inheritDoc} */
-  @Override @Deprecated
-  protected void doUndeleteAll() throws IOException {
-    for (SegmentReader subReader : subReaders) subReader.undeleteAll();
-
-    hasDeletions = false;
-    numDocs = -1;                                 // invalidate cache
   }
 
   private int readerIndex(int n) {    // find reader for doc n:

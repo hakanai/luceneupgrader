@@ -3,6 +3,7 @@ package org.trypticon.luceneupgrader.lucene3;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Lock;
 
 import java.io.IOException;
 
@@ -10,10 +11,10 @@ import java.io.IOException;
  * Directory adapter to Lucene 3.
  * Won't make a lot of sense at the moment because I have only done up to 3.
  */
-public class DirectoryAdapter3 extends Directory {
+class DirectoryAdapter3 extends Directory {
     private final org.apache.lucene.store.Directory delegate;
 
-    public DirectoryAdapter3(org.apache.lucene.store.Directory delegate) {
+    DirectoryAdapter3(org.apache.lucene.store.Directory delegate) {
         this.delegate = delegate;
     }
 
@@ -45,6 +46,11 @@ public class DirectoryAdapter3 extends Directory {
     @Override
     public IndexInput openInput(String name) throws IOException {
         return new IndexInputAdapter3(delegate.openInput(name));
+    }
+
+    @Override
+    public Lock makeLock(String name) {
+        return new LockAdapter3(delegate.makeLock(name));
     }
 
     @Override

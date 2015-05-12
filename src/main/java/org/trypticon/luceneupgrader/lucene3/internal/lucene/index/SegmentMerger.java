@@ -45,7 +45,7 @@ final class SegmentMerger {
   private String segment;
   private int termIndexInterval = IndexWriterConfig.DEFAULT_TERM_INDEX_INTERVAL;
 
-  private List<IndexReader> readers = new ArrayList<IndexReader>();
+  private List<IndexReader> readers = new ArrayList<>();
   private final FieldInfos fieldInfos;
   
   private int mergedDocs;
@@ -81,7 +81,7 @@ final class SegmentMerger {
 
   /**
    * Add an IndexReader to the collection of readers that are to be merged
-   * @param reader
+   * @param reader ...
    */
   final void add(IndexReader reader) {
     ReaderUtil.gatherSubReaders(readers, reader);
@@ -214,13 +214,8 @@ final class SegmentMerger {
             matchingFieldsReader = fieldsReader;
           }
         }
-        if (reader.hasDeletions()) {
-          docCount += copyFieldsWithDeletions(fieldsWriter,
-                                              reader, matchingFieldsReader);
-        } else {
-          docCount += copyFieldsNoDeletions(fieldsWriter,
-                                            reader, matchingFieldsReader);
-        }
+        docCount += copyFieldsNoDeletions(fieldsWriter,
+                                          reader, matchingFieldsReader);
       }
       fieldsWriter.finish(docCount);
     } finally {
@@ -228,54 +223,6 @@ final class SegmentMerger {
     }
 
     segmentWriteState = new SegmentWriteState(null, directory, segment, docCount, termIndexInterval);
-    return docCount;
-  }
-
-  private int copyFieldsWithDeletions(final FieldsWriter fieldsWriter, final IndexReader reader,
-                                      final FieldsReader matchingFieldsReader)
-    throws IOException {
-    int docCount = 0;
-    final int maxDoc = reader.maxDoc();
-    if (matchingFieldsReader != null) {
-      // We can bulk-copy because the fieldInfos are "congruent"
-      for (int j = 0; j < maxDoc;) {
-        if (reader.isDeleted(j)) {
-          // skip deleted docs
-          ++j;
-          continue;
-        }
-        // We can optimize this case (doing a bulk byte copy) since the field 
-        // numbers are identical
-        int start = j, numDocs = 0;
-        do {
-          j++;
-          numDocs++;
-          if (j >= maxDoc) break;
-          if (reader.isDeleted(j)) {
-            j++;
-            break;
-          }
-        } while(numDocs < MAX_RAW_MERGE_DOCS);
-        
-        IndexInput stream = matchingFieldsReader.rawDocs(rawDocLengths, start, numDocs);
-        fieldsWriter.addRawDocuments(stream, rawDocLengths, numDocs);
-        docCount += numDocs;
-        checkAbort.work(300 * numDocs);
-      }
-    } else {
-      for (int j = 0; j < maxDoc; j++) {
-        if (reader.isDeleted(j)) {
-          // skip deleted docs
-          continue;
-        }
-        // NOTE: it's very important to first assign to doc then pass it to
-        // termVectorsWriter.addAllDocVectors; see LUCENE-1282
-        Document doc = reader.document(j);
-        fieldsWriter.addDocument(doc);
-        docCount++;
-        checkAbort.work(300);
-      }
-    }
     return docCount;
   }
 
@@ -326,12 +273,8 @@ final class SegmentMerger {
             matchingVectorsReader = vectorsReader;
           }
         }
-        if (reader.hasDeletions()) {
-          copyVectorsWithDeletions(termVectorsWriter, matchingVectorsReader, reader);
-        } else {
-          copyVectorsNoDeletions(termVectorsWriter, matchingVectorsReader, reader);
-          
-        }
+        copyVectorsNoDeletions(termVectorsWriter, matchingVectorsReader, reader);
+
       }
       termVectorsWriter.finish(mergedDocs);
     } finally {
@@ -339,52 +282,6 @@ final class SegmentMerger {
     }
   }
 
-  private void copyVectorsWithDeletions(final TermVectorsWriter termVectorsWriter,
-                                        final TermVectorsReader matchingVectorsReader,
-                                        final IndexReader reader)
-    throws IOException {
-    final int maxDoc = reader.maxDoc();
-    if (matchingVectorsReader != null) {
-      // We can bulk-copy because the fieldInfos are "congruent"
-      for (int docNum = 0; docNum < maxDoc;) {
-        if (reader.isDeleted(docNum)) {
-          // skip deleted docs
-          ++docNum;
-          continue;
-        }
-        // We can optimize this case (doing a bulk byte copy) since the field 
-        // numbers are identical
-        int start = docNum, numDocs = 0;
-        do {
-          docNum++;
-          numDocs++;
-          if (docNum >= maxDoc) break;
-          if (reader.isDeleted(docNum)) {
-            docNum++;
-            break;
-          }
-        } while(numDocs < MAX_RAW_MERGE_DOCS);
-        
-        matchingVectorsReader.rawDocs(rawDocLengths, rawDocLengths2, start, numDocs);
-        termVectorsWriter.addRawDocuments(matchingVectorsReader, rawDocLengths, rawDocLengths2, numDocs);
-        checkAbort.work(300 * numDocs);
-      }
-    } else {
-      for (int docNum = 0; docNum < maxDoc; docNum++) {
-        if (reader.isDeleted(docNum)) {
-          // skip deleted docs
-          continue;
-        }
-        
-        // NOTE: it's very important to first assign to vectors then pass it to
-        // termVectorsWriter.addAllDocVectors; see LUCENE-1282
-        TermFreqVector[] vectors = reader.getTermFreqVectors(docNum);
-        termVectorsWriter.addAllDocVectors(vectors);
-        checkAbort.work(300);
-      }
-    }
-  }
-  
   private void copyVectorsNoDeletions(final TermVectorsWriter termVectorsWriter,
                                       final TermVectorsReader matchingVectorsReader,
                                       final IndexReader reader)
@@ -478,8 +375,6 @@ final class SegmentMerger {
 
       if (currentField != term.field) {
         currentField = term.field;
-        if (termsConsumer != null) {
-        }
         final FieldInfo fieldInfo = fieldInfos.fieldInfo(currentField);
         termsConsumer = consumer.addField(fieldInfo);
         indexOptions = fieldInfo.indexOptions;
@@ -593,18 +488,8 @@ final class SegmentMerger {
           for (IndexReader reader : readers) {
             final int maxDoc = reader.maxDoc();
             reader.norms(fi.name, normBuffer, 0);
-            if (!reader.hasDeletions()) {
-              //optimized case for segments without deleted docs
-              output.writeBytes(normBuffer, maxDoc);
-            } else {
-              // this segment has deleted docs, so we have to
-              // check for every doc if it is deleted or not
-              for (int k = 0; k < maxDoc; k++) {
-                if (!reader.isDeleted(k)) {
-                  output.writeByte(normBuffer[k]);
-                }
-              }
-            }
+            //optimized case for segments without deleted docs
+            output.writeBytes(normBuffer, maxDoc);
             checkAbort.work(maxDoc);
           }
         }

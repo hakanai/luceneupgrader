@@ -174,18 +174,6 @@ public class SegmentReader extends IndexReader implements Cloneable {
     System.arraycopy(bytes, 0, cloneBytes, 0, bytes.length);
     return cloneBytes;
   }
-  
-  /**
-   * Clones the deleteDocs BitVector.  May be overridden by subclasses. New and experimental.
-   * @param bv BitVector to clone
-   * @return New BitVector
-   * @deprecated
-   */
-  @Deprecated
-  protected BitVector cloneDeletedDocs(BitVector bv) {
-    ensureOpen();
-    return (BitVector)bv.clone();
-  }
 
   @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
@@ -387,52 +375,6 @@ public class SegmentReader extends IndexReader implements Cloneable {
   }
 
   @Override
-  public boolean hasDeletions() {
-    // Don't call ensureOpen() here (it could affect performance)
-    return deletedDocs != null;
-  }
-
-  /** {@inheritDoc} */
-  @Override @Deprecated
-  protected void doDelete(int docNum) {
-    if (deletedDocs == null) {
-      deletedDocs = new BitVector(maxDoc());
-      deletedDocsRef = new AtomicInteger(1);
-    }
-    // there is more than 1 SegmentReader with a reference to this
-    // deletedDocs BitVector so decRef the current deletedDocsRef,
-    // clone the BitVector, create a new deletedDocsRef
-    if (deletedDocsRef.get() > 1) {
-      AtomicInteger oldRef = deletedDocsRef;
-      deletedDocs = cloneDeletedDocs(deletedDocs);
-      deletedDocsRef = new AtomicInteger(1);
-      oldRef.decrementAndGet();
-    }
-    deletedDocsDirty = true;
-    if (!deletedDocs.getAndSet(docNum)) {
-      pendingDeleteCount++;
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override @Deprecated
-  protected void doUndeleteAll() {
-    deletedDocsDirty = false;
-    if (deletedDocs != null) {
-      assert deletedDocsRef != null;
-      deletedDocsRef.decrementAndGet();
-      deletedDocs = null;
-      deletedDocsRef = null;
-      pendingDeleteCount = 0;
-      si.clearDelGen();
-      si.setDelCount(0);
-    } else {
-      assert deletedDocsRef == null;
-      assert pendingDeleteCount == 0;
-    }
-  }
-
-  @Override
   public TermEnum terms() {
     ensureOpen();
     return core.getTermsReader().terms();
@@ -456,11 +398,6 @@ public class SegmentReader extends IndexReader implements Cloneable {
       throw new IllegalArgumentException("docID must be >= 0 and < maxDoc=" + maxDoc() + " (got docID=" + n + ")");
     }
     return getFieldsReader().doc(n);
-  }
-
-  @Override
-  public synchronized boolean isDeleted(int n) {
-    return (deletedDocs != null && deletedDocs.get(n));
   }
 
   @Override

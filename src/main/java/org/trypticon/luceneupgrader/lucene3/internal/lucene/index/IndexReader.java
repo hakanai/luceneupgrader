@@ -318,11 +318,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
    */
   public abstract int maxDoc();
 
-  /** Returns the number of deleted documents. */
-  public final int numDeletedDocs() {
-    return maxDoc() - numDocs();
-  }
-
   /**
    * Get the {@code org.apache.lucene.document.Document} at the <code>n</code>
    * <sup>th</sup> position. The {@code FieldSelector} may be used to determine
@@ -352,12 +347,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
    */
   // TODO (1.5): When we convert to JDK 1.5 make this Set<String>
   public abstract Document document(int n) throws IOException;
-  
-  /** Returns true if document <i>n</i> has been deleted */
-  public abstract boolean isDeleted(int n);
-
-  /** Returns true if any documents have been deleted */
-  public abstract boolean hasDeletions();
 
   /** Returns true if there are norms stored for this field. */
   public boolean hasNorms(String field) throws IOException {
@@ -481,78 +470,6 @@ public abstract class IndexReader implements Cloneable,Closeable {
    */
   public abstract TermPositions termPositions() throws IOException;
 
-
-
-  /** Deletes the document numbered <code>docNum</code>.  Once a document is
-   * deleted it will not appear in TermDocs or TermPostitions enumerations.
-   * Attempts to read its field with the {@code #document}
-   * method will result in an error.  The presence of this document may still be
-   * reflected in the {@code #docFreq} statistic, though
-   * this will be corrected eventually as the index is further modified.
-   *
-   * @throws StaleReaderException if the index has changed
-   * since this reader was opened
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws LockObtainFailedException if another writer
-   *  has this index open (<code>write.lock</code> could not
-   *  be obtained)
-   * @throws IOException if there is a low-level IO error
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@code IndexWriter#deleteDocuments(Term)} instead
-   */
-  @Deprecated
-  public final synchronized void deleteDocument(int docNum) throws IOException {
-    ensureOpen();
-    acquireWriteLock();
-    hasChanges = true;
-    doDelete(docNum);
-  }
-
-
-  /** Implements deletion of the document numbered <code>docNum</code>.
-   * Applications should call {@code #deleteDocument(int)} or {@code #deleteDocuments(Term)}.
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@code IndexWriter#deleteDocuments(Term)} instead
-   */
-  @Deprecated
-  protected abstract void doDelete(int docNum) throws IOException;
-
-
-  /** Undeletes all documents currently marked as deleted in
-   * this index.
-   *
-   * <p>NOTE: this method can only recover documents marked
-   * for deletion but not yet removed from the index; when
-   * and how Lucene removes deleted documents is an
-   * implementation detail, subject to change from release
-   * to release.  However, you can use {@code
-   * #numDeletedDocs} on the current IndexReader instance to
-   * see how many documents will be un-deleted.
-   *
-   * @throws StaleReaderException if the index has changed
-   *  since this reader was opened
-   * @throws LockObtainFailedException if another writer
-   *  has this index open (<code>write.lock</code> could not
-   *  be obtained)
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * There will be no replacement for this method.
-   */
-  @Deprecated
-  public final synchronized void undeleteAll() throws IOException {
-    ensureOpen();
-    acquireWriteLock();
-    hasChanges = true;
-    doUndeleteAll();
-  }
-
-  /** Implements actual undeleteAll() in subclass.
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * There will be no replacement for this method.
-   */
-  @Deprecated
-  protected abstract void doUndeleteAll() throws IOException;
 
   /** Does nothing by default. Subclasses that require a write lock for
    *  index modifications must implement this method.

@@ -1,10 +1,11 @@
 package org.trypticon.luceneupgrader;
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexUpgrader;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.FSDirectory;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.IndexInput;
+import org.apache.lucene.store.IndexOutput;
+import org.trypticon.luceneupgrader.lucene3.IndexUpgrader3;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +26,11 @@ public class Test {
                 }
             }
 
-            IndexUpgrader upgrader = new IndexUpgrader(directory);
-            upgrader.upgrade();
+            new IndexUpgrader3(directory).upgrade();
+
+            try (IndexReader reader = IndexReader.open(directory)) {
+                System.out.println(reader.numDocs());
+            }
         }
     }
 }

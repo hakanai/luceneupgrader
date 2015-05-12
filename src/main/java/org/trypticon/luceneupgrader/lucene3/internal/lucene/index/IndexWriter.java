@@ -474,7 +474,7 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
     SegmentReader reader = readerPool.getIfExists(info);
     try {
       if (reader != null) {
-        return reader.numDeletedDocs();
+        return 0;
       } else {
         return info.getDelCount();
       }
@@ -1672,72 +1672,11 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
     // Carefully merge deletes that occurred after we
     // started merging:
-    int docUpto = 0;
-    int delCount = 0;
     long minGen = Long.MAX_VALUE;
 
-    for(int i=0; i < sourceSegments.size(); i++) {
-      SegmentInfo info = sourceSegments.get(i);
+    for (SegmentInfo info : sourceSegments) {
       minGen = Math.min(info.getBufferedDeletesGen(), minGen);
-      int docCount = info.docCount;
-      final SegmentReader previousReader = merge.readerClones.get(i);
-      if (previousReader == null) {
-        // Reader was skipped because it was 100% deletions
-        continue;
-      }
-      final SegmentReader currentReader = merge.readers.get(i);
-      if (previousReader.hasDeletions()) {
-
-        // There were deletes on this segment when the merge
-        // started.  The merge has collapsed away those
-        // deletes, but, if new deletes were flushed since
-        // the merge started, we must now carefully keep any
-        // newly flushed deletes but mapping them to the new
-        // docIDs.
-
-        if (currentReader.numDeletedDocs() > previousReader.numDeletedDocs()) {
-          // This means this segment has had new deletes
-          // committed since we started the merge, so we
-          // must merge them:
-          for(int j=0;j<docCount;j++) {
-            if (previousReader.isDeleted(j))
-              assert currentReader.isDeleted(j);
-            else {
-              if (currentReader.isDeleted(j)) {
-                mergedReader.doDelete(docUpto);
-                delCount++;
-              }
-              docUpto++;
-            }
-          }
-        } else {
-          docUpto += docCount - previousReader.numDeletedDocs();
-        }
-      } else if (currentReader.hasDeletions()) {
-        // This segment had no deletes before but now it
-        // does:
-        for(int j=0; j<docCount; j++) {
-          if (currentReader.isDeleted(j)) {
-            mergedReader.doDelete(docUpto);
-            delCount++;
-          }
-          docUpto++;
-        }
-      } else
-        // No deletes before or after
-        docUpto += info.docCount;
     }
-
-    assert mergedReader.numDeletedDocs() == delCount;
-
-    mergedReader.hasChanges = delCount > 0;
-
-    // If new deletes were applied while we were merging
-    // (which happens if eg commit() or getReader() is
-    // called during our merge), then it better be the case
-    // that the delGen has increased for all our merged
-    // segments:
-    assert !mergedReader.hasChanges || minGen > mergedReader.getSegmentInfo().getBufferedDeletesGen();
 
     mergedReader.getSegmentInfo().setBufferedDeletesGen(minGen);
   }
