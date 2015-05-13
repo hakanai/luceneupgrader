@@ -4,7 +4,7 @@ VERSION_NUMBER = '0.1'
 repositories.remote << 'https://oss.sonatype.org/content/repositories/releases'
 repositories.remote << 'http://mirrors.ibiblio.org/pub/mirrors/maven2/'
 
-LUCENE = artifact('org.apache.lucene:lucene-core:jar:3.6.2')
+LUCENE = artifact('org.apache.lucene:lucene-core:jar:4.10.4')
 
 desc 'Lucene Index Upgrader'
 define 'luceneupgrader' do

@@ -1,13 +1,51 @@
 package org.trypticon.luceneupgrader;
 
+import org.trypticon.luceneupgrader.lucene3.VersionUpgrader3;
+
+import java.nio.file.Path;
+
 /**
  * Enumeration of versions of Lucene.
  */
 public enum LuceneVersion {
 
-    //TODO: Support version 1 some day?
+    VERSION_1 {
+        @Override
+        protected VersionUpgrader createUpgrader(Path directory) {
+            throw new UnsupportedOperationException("Upgrade from what?");
+        }
+    },
 
-    VERSION_2,
+    VERSION_2 {
+        @Override
+        protected VersionUpgrader createUpgrader(Path directory) {
+            throw new UnsupportedOperationException("TODO");
+        }
+    },
 
-    VERSION_3
+    VERSION_3 {
+        @Override
+        protected VersionUpgrader createUpgrader(Path directory) {
+            return new VersionUpgrader3(directory);
+        }
+    },
+
+    VERSION_4 {
+        @Override
+        protected VersionUpgrader createUpgrader(Path directory) {
+            throw new UnsupportedOperationException("TODO");
+        }
+    },
+    VERSION_5 {
+        @Override
+        protected VersionUpgrader createUpgrader(Path directory) {
+            throw new UnsupportedOperationException("TODO");
+        }
+    };
+
+    public boolean isOlderThan(LuceneVersion version) {
+        return compareTo(version) < 0; // because we order them in the enum
+    }
+
+    protected abstract VersionUpgrader createUpgrader(Path directory);
 }
