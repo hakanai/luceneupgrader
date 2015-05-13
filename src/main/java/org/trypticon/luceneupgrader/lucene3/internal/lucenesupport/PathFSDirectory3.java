@@ -12,6 +12,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileTime;
 import java.util.*;
 
 import static java.util.Collections.synchronizedSet;
@@ -19,7 +20,7 @@ import static java.util.Collections.synchronizedSet;
 /**
  * Clone of {@link FSDirectory} accepting {@link Path} instead of {@link File}.
  */
-public class PathFSDirectory3 extends Directory {
+public abstract class PathFSDirectory3 extends Directory {
     /**
      * Default read chunk size.  This is a conditional default: on 32bit JVMs, it defaults to 100 MB.  On 64bit JVMs, it's
      * <code>Integer.MAX_VALUE</code>.
@@ -153,6 +154,39 @@ public class PathFSDirectory3 extends Directory {
         ensureOpen();
         Path file = directory.resolve(name);
         return Files.exists(file);
+    }
+
+    /** Returns the time the named file was last modified. */
+    @Override
+    public long fileModified(String name) {
+        ensureOpen();
+        Path file = directory.resolve(name);
+        try {
+            return Files.getLastModifiedTime(file).toMillis();
+        } catch (IOException e) {
+            return 0L; // emulating broken behaviour of File.lastModified
+        }
+    }
+
+    /** Returns the time the named file was last modified. */
+    public static long fileModified(File directory, String name) {
+        File file = new File(directory, name);
+        return file.lastModified();
+    }
+
+    /** Set the modified time of an existing file to now.
+     *  @deprecated Lucene never uses this API; it will be
+     *  removed in 4.0. */
+    @Override
+    @Deprecated
+    public void touchFile(String name) {
+        ensureOpen();
+        Path file = directory.resolve(name);
+        try {
+            Files.setLastModifiedTime(file, FileTime.fromMillis(System.currentTimeMillis()));
+        } catch (IOException e) {
+            // ignore it, comment says it isn't used anyway.
+        }
     }
 
     /** Returns the length in bytes of a file in the directory. */

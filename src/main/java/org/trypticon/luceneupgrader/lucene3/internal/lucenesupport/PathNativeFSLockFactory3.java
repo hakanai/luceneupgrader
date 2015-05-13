@@ -49,6 +49,33 @@ public class PathNativeFSLockFactory3 extends PathFSLockFactory3 {
         return new NativeFSLock(lockDir, lockName);
     }
 
+    @Override
+    public void clearLock(String lockName) throws IOException {
+        // Note that this isn't strictly required anymore
+        // because the existence of these files does not mean
+        // they are locked, but, still do this in case people
+        // really want to see the files go away:
+        if (Files.exists(lockDir)) {
+
+            // Try to release the lock first - if it's held by another process, this
+            // method should not silently fail.
+            // NOTE: makeLock fixes the lock name by prefixing it w/ lockPrefix.
+            // Therefore it should be called before the code block next which prefixes
+            // the given name.
+            makeLock(lockName).release();
+
+            if (lockPrefix != null) {
+                lockName = lockPrefix + "-" + lockName;
+            }
+
+            try {
+                Files.delete(lockDir.resolve(lockName));
+            } catch (IOException e) {
+                // As mentioned above, we don't care if the deletion of the file failed.
+            }
+        }
+    }
+
     static class NativeFSLock extends Lock {
 
         private FileChannel channel;
@@ -61,6 +88,10 @@ public class PathNativeFSLockFactory3 extends PathFSLockFactory3 {
         public NativeFSLock(Path lockDir, String lockFileName) {
             this.lockDir = lockDir;
             path = lockDir.resolve(lockFileName);
+        }
+
+        private synchronized boolean lockExists() {
+            return lock != null;
         }
 
 
@@ -146,6 +177,26 @@ public class PathNativeFSLockFactory3 extends PathFSLockFactory3 {
             path = path.toRealPath();
             boolean remove = LOCK_HELD.remove(path.toString());
             assert remove : "Lock was cleared but never marked as held";
+        }
+
+        @Override
+        public synchronized boolean isLocked() {
+            // The test for is isLocked is not directly possible with native file locks:
+
+            // First a shortcut, if a lock reference in this instance is available
+            if (lockExists()) return true;
+
+            // Look if lock file is present; if not, there can definitely be no lock!
+            if (!Files.exists(path)) return false;
+
+            // Try to obtain and release (if was locked) the lock
+            try {
+                boolean obtained = obtain();
+                if (obtained) release();
+                return !obtained;
+            } catch (IOException ioe) {
+                return false;
+            }
         }
 
         @Override

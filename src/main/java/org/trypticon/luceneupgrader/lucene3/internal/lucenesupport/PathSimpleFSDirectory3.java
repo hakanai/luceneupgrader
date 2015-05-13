@@ -122,7 +122,7 @@ public class PathSimpleFSDirectory3 extends PathFSDirectory3 {
         }
 
         @Override
-        protected void seekInternal() {
+        protected void seekInternal(long pos) throws IOException {
         }
 
         @Override
