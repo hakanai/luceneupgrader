@@ -17,6 +17,12 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
  * limitations under the License.
  */
 
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataInput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
+
+import java.io.IOException;
+import java.util.Arrays;
+
 /**
  * Direct wrapping of 8 bit values to a backing array of bytes.
  * @lucene.internal
@@ -32,6 +38,37 @@ class Direct8 extends PackedInts.ReaderImpl
     values = new byte[valueCount];
   }
 
+  public Direct8(DataInput in, int valueCount)
+          throws IOException {
+    super(valueCount, BITS_PER_VALUE);
+    byte[] values = new byte[valueCount];
+    for(int i=0;i<valueCount;i++) {
+      values[i] = in.readByte();
+    }
+    final int mod = valueCount % 8;
+    if (mod != 0) {
+      final int pad = 8-mod;
+      // round out long
+      for(int i=0;i<pad;i++) {
+        in.readByte();
+      }
+    }
+
+    this.values = values;
+  }
+
+  /**
+   * Creates an array backed by the given values.
+   * </p><p>
+   * Note: The values are used directly, so changes to the given values will
+   * affect the structure.
+   * @param values used as the internal backing array.
+   */
+  public Direct8(byte[] values) {
+    super(values.length, BITS_PER_VALUE);
+    this.values = values;
+  }
+
   public long get(final int index) {
     assert index >= 0 && index < size();
     return 0xFFL & values[index];
@@ -41,4 +78,21 @@ class Direct8 extends PackedInts.ReaderImpl
     values[index] = (byte)(value & 0xFF);
   }
 
+  public long ramBytesUsed() {
+    return RamUsageEstimator.sizeOf(values);
+  }
+
+  public void clear() {
+    Arrays.fill(values, (byte)0);
+  }
+
+  @Override
+  public Object getArray() {
+    return values;
+  }
+
+  @Override
+  public boolean hasArray() {
+    return true;
+  }
 }

@@ -26,19 +26,19 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-/** A {@code MergeScheduler} that runs each merge using a
+/** A {@link MergeScheduler} that runs each merge using a
  *  separate thread.
  *
  *  <p>Specify the max number of threads that may run at
- *  once with {@code #setMaxThreadCount}.</p>
+ *  once with {@link #setMaxThreadCount}.</p>
  *
  *  <p>Separately specify the maximum number of simultaneous
- *  merges with {@code #setMaxMergeCount}.  If the number of
+ *  merges with {@link #setMaxMergeCount}.  If the number of
  *  merges exceeds the max number of threads then the
  *  largest merges are paused until one of the smaller
  *  merges completes.</p>
  *
- *  <p>If more than {@code #getMaxMergeCount} merges are
+ *  <p>If more than {@link #getMaxMergeCount} merges are
  *  requested then this class will forcefully throttle the
  *  incoming threads by pausing until one more more merges
  *  complete.</p>
@@ -65,10 +65,76 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
 
   protected Directory dir;
 
+  private volatile boolean closed;
   protected IndexWriter writer;
   protected int mergeThreadCount;
 
   public ConcurrentMergeScheduler() {
+    if (allInstances != null) {
+      // Only for testing
+      addMyself();
+    }
+  }
+
+  /** Sets the max # simultaneous merge threads that should
+   *  be running at once.  This must be <= {@link
+   *  #setMaxMergeCount}. */
+  public void setMaxThreadCount(int count) {
+    if (count < 1) {
+      throw new IllegalArgumentException("count should be at least 1");
+    }
+    if (count > maxMergeCount) {
+      throw new IllegalArgumentException("count should be <= maxMergeCount (= " + maxMergeCount + ")");
+    }
+    maxThreadCount = count;
+  }
+
+  /** @see #setMaxThreadCount(int) */
+  public int getMaxThreadCount() {
+    return maxThreadCount;
+  }
+
+  /** Sets the max # simultaneous merges that are allowed.
+   *  If a merge is necessary yet we already have this many
+   *  threads running, the incoming thread (that is calling
+   *  add/updateDocument) will block until a merge thread
+   *  has completed.  Note that we will only run the
+   *  smallest {@link #setMaxThreadCount} merges at a time. */
+  public void setMaxMergeCount(int count) {
+    if (count < 1) {
+      throw new IllegalArgumentException("count should be at least 1");
+    }
+    if (count < maxThreadCount) {
+      throw new IllegalArgumentException("count should be >= maxThreadCount (= " + maxThreadCount + ")");
+    }
+    maxMergeCount = count;
+  }
+
+  /** See {@link #setMaxMergeCount}. */
+  public int getMaxMergeCount() {
+    return maxMergeCount;
+  }
+
+  /** Return the priority that merge threads run at.  By
+   *  default the priority is 1 plus the priority of (ie,
+   *  slightly higher priority than) the first thread that
+   *  calls merge. */
+  public synchronized int getMergeThreadPriority() {
+    initMergeThreadPriority();
+    return mergeThreadPriority;
+  }
+
+  /** Set the base priority that merge threads run at.
+   *  Note that CMS may increase priority of some merge
+   *  threads beyond this base priority.  It's best not to
+   *  set this any higher than
+   *  Thread.MAX_PRIORITY-maxThreadCount, so that CMS has
+   *  room to set relative priority among threads.  */
+  public synchronized void setMergeThreadPriority(int pri) {
+    if (pri > Thread.MAX_PRIORITY || pri < Thread.MIN_PRIORITY)
+      throw new IllegalArgumentException("priority must be in range " + Thread.MIN_PRIORITY + " .. " + Thread.MAX_PRIORITY + " inclusive");
+    mergeThreadPriority = pri;
+    updateMergeThreads();
   }
 
   // Larger merges come first
@@ -150,7 +216,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
 
   /**
    * Returns true if verbosing is enabled. This method is usually used in
-   * conjunction with {@code #message(String)}, like that:
+   * conjunction with {@link #message(String)}, like that:
    * 
    * <pre>
    * if (verbose()) {
@@ -163,7 +229,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
   }
   
   /**
-   * Outputs the given message - this method assumes {@code #verbose()} was
+   * Outputs the given message - this method assumes {@link #verbose()} was
    * called and returned true.
    */
   protected void message(String message) {
@@ -182,6 +248,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
 
   @Override
   public void close() {
+    closed = true;
     sync();
   }
 
@@ -211,7 +278,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
 
   /**
    * Returns the number of merge threads that are alive. Note that this number
-   * is &le; {@code #mergeThreads} size.
+   * is &le; {@link #mergeThreads} size.
    */
   protected synchronized int mergeThreadCount() {
     int count = 0;
@@ -316,7 +383,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /** Does the actual merge, by calling {@code IndexWriter#merge} */
+  /** Does the actual merge, by calling {@link IndexWriter#merge} */
   protected void doMerge(MergePolicy.OneMerge merge) throws IOException {
     writer.merge(merge);
   }
@@ -337,13 +404,17 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     MergePolicy.OneMerge runningMerge;
     private volatile boolean done;
 
-    public MergeThread(IndexWriter writer, MergePolicy.OneMerge startMerge) {
+    public MergeThread(IndexWriter writer, MergePolicy.OneMerge startMerge) throws IOException {
       this.tWriter = writer;
       this.startMerge = startMerge;
     }
 
     public synchronized void setRunningMerge(MergePolicy.OneMerge merge) {
       runningMerge = merge;
+    }
+
+    public synchronized MergePolicy.OneMerge getRunningMerge() {
+      return runningMerge;
     }
 
     public synchronized MergePolicy.OneMerge getCurrentMerge() {
@@ -404,9 +475,12 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
 
         // Ignore the exception if it was due to abort:
         if (!(exc instanceof MergePolicy.MergeAbortedException)) {
-          // suppressExceptions is normally only set during
-          // testing.
-          handleMergeException(exc);
+          if (!suppressExceptions) {
+            // suppressExceptions is normally only set during
+            // testing.
+            anyExceptions = true;
+            handleMergeException(exc);
+          }
         }
       } finally {
         done = true;
@@ -432,6 +506,69 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     } catch (InterruptedException ie) {
       throw new ThreadInterruptedException(ie);
     }
-    throw new MergePolicy.MergeException(exc);
+    throw new MergePolicy.MergeException(exc, dir);
+  }
+
+  static boolean anyExceptions = false;
+
+  /** Used for testing */
+  public static boolean anyUnhandledExceptions() {
+    if (allInstances == null) {
+      throw new RuntimeException("setTestMode() was not called; often this is because your test case's setUp method fails to call super.setUp in LuceneTestCase");
+    }
+    synchronized(allInstances) {
+      final int count = allInstances.size();
+      // Make sure all outstanding threads are done so we see
+      // any exceptions they may produce:
+      for(int i=0;i<count;i++)
+        allInstances.get(i).sync();
+      boolean v = anyExceptions;
+      anyExceptions = false;
+      return v;
+    }
+  }
+
+  public static void clearUnhandledExceptions() {
+    synchronized(allInstances) {
+      anyExceptions = false;
+    }
+  }
+
+  /** Used for testing */
+  private void addMyself() {
+    synchronized(allInstances) {
+      final int size = allInstances.size();
+      int upto = 0;
+      for(int i=0;i<size;i++) {
+        final ConcurrentMergeScheduler other = allInstances.get(i);
+        if (!(other.closed && 0 == other.mergeThreadCount()))
+          // Keep this one for now: it still has threads or
+          // may spawn new threads
+          allInstances.set(upto++, other);
+      }
+      allInstances.subList(upto, allInstances.size()).clear();
+      allInstances.add(this);
+    }
+  }
+
+  private boolean suppressExceptions;
+
+  /** Used for testing */
+  void setSuppressExceptions() {
+    suppressExceptions = true;
+  }
+
+  /** Used for testing */
+  void clearSuppressExceptions() {
+    suppressExceptions = false;
+  }
+
+  /** Used for testing */
+  private static List<ConcurrentMergeScheduler> allInstances;
+  
+  /** @deprecated this test mode code will be removed in a future release */
+  @Deprecated
+  public static void setTestMode() {
+    allInstances = new ArrayList<ConcurrentMergeScheduler>();
   }
 }

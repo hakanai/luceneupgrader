@@ -22,12 +22,13 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * require log(size) time.
  *
  * <p><b>NOTE</b>: This class pre-allocates a full array of
- * length <code>maxSize+1</code>, in {@code #initialize}.
+ * length <code>maxSize+1</code>, in {@link #initialize}.
  * 
  * @lucene.internal
 */
 public abstract class PriorityQueue<T> {
   private int size;
+  private int maxSize;
   private T[] heap;
 
   /** Determines the ordering of objects in this priority queue.  Subclasses
@@ -38,12 +39,12 @@ public abstract class PriorityQueue<T> {
 
   /**
    * This method can be overridden by extending classes to return a sentinel
-   * object which will be used by {@code #initialize(int)} to fill the queue, so
+   * object which will be used by {@link #initialize(int)} to fill the queue, so
    * that the code which uses that queue can always assume it's full and only
    * change the top without attempting to insert any new object.<br>
    * 
    * Those sentinel values should always compare worse than any non-sentinel
-   * value (i.e., {@code #lessThan} should always favor the
+   * value (i.e., {@link #lessThan} should always favor the
    * non-sentinel values).<br>
    * 
    * By default, this method returns false, which means the queue will not be
@@ -66,7 +67,7 @@ public abstract class PriorityQueue<T> {
    * </pre>
    * 
    * <b>NOTE:</b> if this method returns a non-null value, it will be called by
-   * {@code #initialize(int)} {@code #size()} times, relying on a new object to
+   * {@link #initialize(int)} {@link #size()} times, relying on a new object to
    * be returned and will not check if it's null again. Therefore you should
    * ensure any call to this method creates a new instance and behaves
    * consistently, e.g., it cannot return null if it previously returned
@@ -105,7 +106,8 @@ public abstract class PriorityQueue<T> {
       }
     }
     heap = (T[]) new Object[heapSize]; // T is unbounded type, so this unchecked cast works always
-
+    this.maxSize = maxSize;
+    
     // If sentinel objects are supported, populate the queue with them
     T sentinel = getSentinelObject();
     if (sentinel != null) {
@@ -120,14 +122,39 @@ public abstract class PriorityQueue<T> {
   /**
    * Adds an Object to a PriorityQueue in log(size) time. If one tries to add
    * more objects than maxSize from initialize an
-   * {@code ArrayIndexOutOfBoundsException} is thrown.
+   * {@link ArrayIndexOutOfBoundsException} is thrown.
    * 
    * @return the new 'top' element in the queue.
    */
-  public final void add(T element) {
+  public final T add(T element) {
     size++;
     heap[size] = element;
     upHeap();
+    return heap[1];
+  }
+
+  /**
+   * Adds an Object to a PriorityQueue in log(size) time.
+   * It returns the object (if any) that was
+   * dropped off the heap because it was full. This can be
+   * the given parameter (in case it is smaller than the
+   * full heap's minimum, and couldn't be added), or another
+   * object that was previously the smallest value in the
+   * heap and now has been replaced by a larger one, or null
+   * if the queue wasn't yet full with maxSize elements.
+   */
+  public T insertWithOverflow(T element) {
+    if (size < maxSize) {
+      add(element);
+      return null;
+    } else if (size > 0 && !lessThan(element, heap[1])) {
+      T ret = heap[1];
+      heap[1] = element;
+      updateTop();
+      return ret;
+    } else {
+      return element;
+    }
   }
 
   /** Returns the least element of the PriorityQueue in constant time. */
@@ -151,13 +178,45 @@ public abstract class PriorityQueue<T> {
     } else
       return null;
   }
+  
+  /**
+   * Should be called when the Object at top changes values. Still log(n) worst
+   * case, but it's at least twice as fast to
+   * 
+   * <pre>
+   * pq.top().change();
+   * pq.updateTop();
+   * </pre>
+   * 
+   * instead of
+   * 
+   * <pre>
+   * o = pq.pop();
+   * o.change();
+   * pq.push(o);
+   * </pre>
+   * 
+   * @return the new 'top' element.
+   */
+  public final T updateTop() {
+    downHeap();
+    return heap[1];
+  }
 
   /** Returns the number of elements currently stored in the PriorityQueue. */
   public final int size() {
     return size;
   }
 
-  private void upHeap() {
+  /** Removes all entries from the PriorityQueue. */
+  public final void clear() {
+    for (int i = 0; i <= size; i++) {
+      heap[i] = null;
+    }
+    size = 0;
+  }
+
+  private final void upHeap() {
     int i = size;
     T node = heap[i];			  // save bottom node
     int j = i >>> 1;
@@ -169,7 +228,7 @@ public abstract class PriorityQueue<T> {
     heap[i] = node;				  // install saved node
   }
 
-  private void downHeap() {
+  private final void downHeap() {
     int i = 1;
     T node = heap[i];			  // save top node
     int j = i << 1;				  // find smaller child
@@ -188,5 +247,11 @@ public abstract class PriorityQueue<T> {
     }
     heap[i] = node;				  // install saved node
   }
-
+  
+  /** This method returns the internal heap array as Object[].
+   * @lucene.internal
+   */
+  protected final Object[] getHeapArray() {
+    return (Object[]) heap;
+  }
 }

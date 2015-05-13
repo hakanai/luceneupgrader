@@ -12,25 +12,29 @@ public class Test {
         Path directory = Paths.get("/Data/Lucene/TextIndexCopy");
         copySampleIndex(directory);
 
-        new IndexUpgrader(directory).upgradeTo(LuceneVersion.VERSION_3);
+        new IndexUpgrader(directory).upgradeTo(LuceneVersion.VERSION_4);
 
 //        sanityCheck(directory);
     }
 
     private static void copySampleIndex(Path destination) throws IOException {
-        Files.walkFileTree(destination, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Files.delete(file);
-                return FileVisitResult.CONTINUE;
-            }
+        if (Files.exists(destination)) {
+            Files.walkFileTree(destination, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.delete(file);
+                    return FileVisitResult.CONTINUE;
+                }
 
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                Files.delete(dir);
-                return FileVisitResult.CONTINUE;
-            }
-        });
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    Files.delete(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        }
+
+        Files.createDirectory(destination);
 
         Path original = Paths.get("/Data/Lucene/TextIndex");
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(original)) {

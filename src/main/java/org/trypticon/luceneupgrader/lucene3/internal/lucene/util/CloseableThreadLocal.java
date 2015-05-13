@@ -40,14 +40,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  *  This class works around that, by only enrolling
  *  WeakReference values into the ThreadLocal, and
  *  separately holding a hard reference to each stored
- *  value.  When you call {@code #close}, these hard
+ *  value.  When you call {@link #close}, these hard
  *  references are cleared and then GC is freely able to
  *  reclaim space by objects stored in it.
  *
- *  We can not rely on {@code ThreadLocal#remove()} as it
+ *  We can not rely on {@link ThreadLocal#remove()} as it
  *  only removes the value for the caller thread, whereas
- *  {@code #close} takes care of all
- *  threads.  You should not call {@code #close} until all
+ *  {@link #close} takes care of all
+ *  threads.  You should not call {@link #close} until all
  *  threads are done using the instance.
  *
  * @lucene.internal

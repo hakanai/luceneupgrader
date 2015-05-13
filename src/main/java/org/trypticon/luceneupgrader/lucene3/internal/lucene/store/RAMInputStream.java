@@ -20,7 +20,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 import java.io.IOException;
 import java.io.EOFException;
 
-/** A memory-resident {@code IndexInput} implementation.
+/** A memory-resident {@link IndexInput} implementation. 
  *  
  *  @lucene.internal */
 public class RAMInputStream extends IndexInput implements Cloneable {
@@ -35,6 +35,12 @@ public class RAMInputStream extends IndexInput implements Cloneable {
   private int bufferPosition;
   private long bufferStart;
   private int bufferLength;
+
+  /** Please pass String name */
+  @Deprecated
+  public RAMInputStream(RAMFile f) throws IOException {
+    this("anonymous", f);
+  }
 
   public RAMInputStream(String name, RAMFile f) throws IOException {
     super("RAMInputStream(name=" + name + ")");
@@ -86,7 +92,7 @@ public class RAMInputStream extends IndexInput implements Cloneable {
     }
   }
 
-  private void switchCurrentBuffer(boolean enforceEOF) throws IOException {
+  private final void switchCurrentBuffer(boolean enforceEOF) throws IOException {
     bufferStart = (long) BUFFER_SIZE * (long) currentBufferIndex;
     if (currentBufferIndex >= file.numBuffers()) {
       // end of file reached, no more buffers left

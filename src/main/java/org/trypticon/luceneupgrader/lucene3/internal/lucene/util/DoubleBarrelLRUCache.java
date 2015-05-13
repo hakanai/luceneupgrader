@@ -26,7 +26,7 @@ import java.util.Map;
  * approach where two ConcurrentHashMaps record entries.
  *
  * <p>At any given time, one hash is primary and the other
- * is secondary.  {@code #get} first checks primary, and if
+ * is secondary.  {@link #get} first checks primary, and if
  * that's a miss, checks secondary.  If secondary has the
  * entry, it's promoted to primary (<b>NOTE</b>: the key is
  * cloned at this point).  Once primary is full, the

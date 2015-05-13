@@ -18,14 +18,15 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  */
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInfo.IndexOptions;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BitVector;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.CollectionUtil;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.UnicodeUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BitVector;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.CollectionUtil;
 
 final class FreqProxTermsWriter extends TermsHashConsumer {
 
@@ -117,13 +118,13 @@ final class FreqProxTermsWriter extends TermsHashConsumer {
         // If this field has postings then add them to the
         // segment
         appendPostings(fieldName, state, fields, consumer);
-
-        for (FreqProxTermsWriterPerField field : fields) {
-          TermsHashPerField perField = field.termsHashPerField;
+        
+        for(int i=0;i<fields.length;i++) {
+          TermsHashPerField perField = fields[i].termsHashPerField;
           int numPostings = perField.numPostings;
           perField.reset();
-          perField.shrinkHash();
-          field.reset();
+          perField.shrinkHash(numPostings);
+          fields[i].reset();
         }
         
         start = end;
@@ -131,7 +132,7 @@ final class FreqProxTermsWriter extends TermsHashConsumer {
       
       for (Map.Entry<TermsHashConsumerPerThread,Collection<TermsHashConsumerPerField>> entry : threadsAndFields.entrySet()) {
         FreqProxTermsWriterPerThread perThread = (FreqProxTermsWriterPerThread) entry.getKey();
-        perThread.termsHashPerThread.reset();
+        perThread.termsHashPerThread.reset(true);
       }
     } finally {
       consumer.finish();
@@ -146,7 +147,7 @@ final class FreqProxTermsWriter extends TermsHashConsumer {
   void appendPostings(String fieldName, SegmentWriteState state,
                       FreqProxTermsWriterPerField[] fields,
                       FormatPostingsFieldsConsumer consumer)
-    throws IOException {
+    throws CorruptIndexException, IOException {
 
     int numFields = fields.length;
 
@@ -169,7 +170,12 @@ final class FreqProxTermsWriter extends TermsHashConsumer {
 
     final IndexOptions currentFieldIndexOptions = fields[0].fieldInfo.indexOptions;
 
-    final Map<Term,Integer> segDeletes = null;
+    final Map<Term,Integer> segDeletes;
+    if (state.segDeletes != null && state.segDeletes.terms.size() > 0) {
+      segDeletes = state.segDeletes.terms;
+    } else {
+      segDeletes = null;
+    }
 
     try {
       // TODO: really TermsHashPerField should take over most
@@ -274,7 +280,7 @@ final class FreqProxTermsWriter extends TermsHashConsumer {
                 } else
                   payloadLength = 0;
                 
-                posConsumer.addPosition(position, payloadBuffer, payloadLength);
+                posConsumer.addPosition(position, payloadBuffer, 0, payloadLength);
                 } //End for
               } finally {
                 posConsumer.finish();
@@ -310,6 +316,9 @@ final class FreqProxTermsWriter extends TermsHashConsumer {
         }
       }
     } finally {
+      termsConsumer.finish();
     }
   }
+
+  final UnicodeUtil.UTF8Result termsUTF8 = new UnicodeUtil.UTF8Result();
 }

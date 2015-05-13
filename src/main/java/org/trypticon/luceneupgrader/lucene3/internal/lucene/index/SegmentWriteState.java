@@ -17,10 +17,10 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
+import java.io.PrintStream;
+
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BitVector;
-
-import java.io.PrintStream;
 
 /**
  * Holder class for common parameters used during write.
@@ -30,8 +30,16 @@ public class SegmentWriteState {
   public final PrintStream infoStream;
   public final Directory directory;
   public final String segmentName;
+  public final FieldInfos fieldInfos;
   public final int numDocs;
   public boolean hasVectors;
+
+  // Deletes to apply while we are flushing the segment.  A
+  // Term is enrolled in here if it was deleted at one
+  // point, and it's mapped to the docIDUpto, meaning any
+  // docID < docIDUpto containing this term should be
+  // deleted.
+  public final BufferedDeletes segDeletes;
 
   // Lazily created:
   public BitVector deletedDocs;
@@ -43,11 +51,25 @@ public class SegmentWriteState {
    * tweaking this is rarely useful.*/
   public final int termIndexInterval;
 
-  public SegmentWriteState(PrintStream infoStream, Directory directory, String segmentName,
-                           int numDocs, int termIndexInterval) {
+  /** Expert: The fraction of TermDocs entries stored in skip tables,
+   * used to accelerate {@link TermDocs#skipTo(int)}.  Larger values result in
+   * smaller indexes, greater acceleration, but fewer accelerable cases, while
+   * smaller values result in bigger indexes, less acceleration and more
+   * accelerable cases. More detailed experiments would be useful here. */
+  public final int skipInterval = 16;
+  
+  /** Expert: The maximum number of skip levels. Smaller values result in 
+   * slightly smaller indexes, but slower skipping in big posting lists.
+   */
+  public final int maxSkipLevels = 10;
+
+  public SegmentWriteState(PrintStream infoStream, Directory directory, String segmentName, FieldInfos fieldInfos,
+                           int numDocs, int termIndexInterval, BufferedDeletes segDeletes) {
     this.infoStream = infoStream;
+    this.segDeletes = segDeletes;
     this.directory = directory;
     this.segmentName = segmentName;
+    this.fieldInfos = fieldInfos;
     this.numDocs = numDocs;
     this.termIndexInterval = termIndexInterval;
   }

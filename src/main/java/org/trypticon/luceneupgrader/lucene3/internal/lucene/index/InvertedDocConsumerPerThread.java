@@ -17,7 +17,11 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
-abstract class InvertedDocConsumerPerThread {
-  abstract InvertedDocConsumerPerField addField(DocInverterPerField docInverterPerField, FieldInfo fieldInfo);
+import java.io.IOException;
 
+abstract class InvertedDocConsumerPerThread {
+  abstract void startDocument() throws IOException;
+  abstract InvertedDocConsumerPerField addField(DocInverterPerField docInverterPerField, FieldInfo fieldInfo);
+  abstract DocumentsWriter.DocWriter finishDocument() throws IOException;
+  abstract void abort();
 }

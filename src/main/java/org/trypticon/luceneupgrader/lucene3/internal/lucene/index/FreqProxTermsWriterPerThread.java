@@ -19,8 +19,10 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 final class FreqProxTermsWriterPerThread extends TermsHashConsumerPerThread {
   final TermsHashPerThread termsHashPerThread;
+  final DocumentsWriter.DocState docState;
 
   public FreqProxTermsWriterPerThread(TermsHashPerThread perThread) {
+    docState = perThread.docState;
     termsHashPerThread = perThread;
   }
   
@@ -29,4 +31,15 @@ final class FreqProxTermsWriterPerThread extends TermsHashConsumerPerThread {
     return new FreqProxTermsWriterPerField(termsHashPerField, this, fieldInfo);
   }
 
+  @Override
+  void startDocument() {
+  }
+
+  @Override
+  DocumentsWriter.DocWriter finishDocument() {
+    return null;
+  }
+
+  @Override
+  public void abort() {}
 }

@@ -17,7 +17,12 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
  * limitations under the License.
  */
 
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataInput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataOutput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.CodecUtil;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Constants;
+
+import java.io.IOException;
 
 /**
  * Simplistic compression for array of unsigned long values.
@@ -30,11 +35,15 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Constants;
 
 public class PackedInts {
 
+  private final static String CODEC_NAME = "PackedInts";
+  private final static int VERSION_START = 0;
+  private final static int VERSION_CURRENT = VERSION_START;
+
   /**
    * A read-only random access array of positive integers.
    * @lucene.internal
    */
-  public interface Reader {
+  public static interface Reader {
     /**
      * @param index the position of the wanted value.
      * @return the value at the stated index.
@@ -54,13 +63,31 @@ public class PackedInts {
      */
     int size();
 
+    /**
+     * Expert: if the bit-width of this reader matches one of
+     * java's native types, returns the underlying array
+     * (ie, byte[], short[], int[], long[]); else, returns
+     * null.  Note that when accessing the array you must
+     * upgrade the type (bitwise AND with all ones), to
+     * interpret the full value as unsigned.  Ie,
+     * bytes[idx]&0xFF, shorts[idx]&0xFFFF, etc.
+     */
+    Object getArray();
+
+    /**
+     * Returns true if this implementation is backed by a
+     * native java array.
+     *
+     * @see #getArray
+     */
+    boolean hasArray();
   }
   
   /**
    * A packed integer array that can be modified.
    * @lucene.internal
    */
-  public interface Mutable extends Reader {
+  public static interface Mutable extends Reader {
     /**
      * Set the value at the given index in the array.
      * @param index where the value should be positioned.
@@ -68,6 +95,11 @@ public class PackedInts {
      */
     void set(int index, long value);
 
+    /**
+     * Sets all values to 0.
+     */
+    
+    void clear();
   }
 
   /**
@@ -92,6 +124,73 @@ public class PackedInts {
       return valueCount;
     }
 
+    public long getMaxValue() { // Convenience method
+      return maxValue(bitsPerValue);
+    }
+
+    public Object getArray() {
+      return null;
+    }
+
+    public boolean hasArray() {
+      return false;
+    }
+  }
+
+  /** A write-once Writer.
+   * @lucene.internal
+   */
+  public static abstract class Writer {
+    protected final DataOutput out;
+    protected final int bitsPerValue;
+    protected final int valueCount;
+
+    protected Writer(DataOutput out, int valueCount, int bitsPerValue)
+      throws IOException {
+      assert bitsPerValue <= 64;
+
+      this.out = out;
+      this.valueCount = valueCount;
+      this.bitsPerValue = bitsPerValue;
+      CodecUtil.writeHeader(out, CODEC_NAME, VERSION_CURRENT);
+      out.writeVInt(bitsPerValue);
+      out.writeVInt(valueCount);
+    }
+
+    public abstract void add(long v) throws IOException;
+    public abstract void finish() throws IOException;
+  }
+
+  /**
+   * Retrieve PackedInt data from the DataInput and return a packed int
+   * structure based on it.
+   * @param in positioned at the beginning of a stored packed int structure.
+   * @return a read only random access capable array of positive integers.
+   * @throws IOException if the structure could not be retrieved.
+   * @lucene.internal
+   */
+  public static Reader getReader(DataInput in) throws IOException {
+    CodecUtil.checkHeader(in, CODEC_NAME, VERSION_START, VERSION_START);
+    final int bitsPerValue = in.readVInt();
+    assert bitsPerValue > 0 && bitsPerValue <= 64: "bitsPerValue=" + bitsPerValue;
+    final int valueCount = in.readVInt();
+
+    switch (bitsPerValue) {
+    case 8:
+      return new Direct8(in, valueCount);
+    case 16:
+      return new Direct16(in, valueCount);
+    case 32:
+      return new Direct32(in, valueCount);
+    case 64:
+      return new Direct64(in, valueCount);
+    default:
+      if (Constants.JRE_IS_64BIT || bitsPerValue >= 32) {
+        return new Packed64(in, valueCount, bitsPerValue);
+      } else {
+        return new Packed32(in, valueCount, bitsPerValue);
+      }
+    }
   }
 
   /**
@@ -101,6 +200,9 @@ public class PackedInts {
    * @param valueCount   the number of elements.
    * @param bitsPerValue the number of bits available for any given value.
    * @return a mutable packed integer array.
+   * @throws java.io.IOException if the Mutable could not be created. With the
+   *         current implementations, this never happens, but the method
+   *         signature allows for future persistence-backed Mutables.
    * @lucene.internal
    */
   public static Mutable getMutable(
@@ -124,6 +226,39 @@ public class PackedInts {
   }
 
   /**
+   * Create a packed integer array writer for the given number of values at the
+   * given bits/value. Writers append to the given IndexOutput and has very
+   * low memory overhead.
+   * @param out          the destination for the produced bits.
+   * @param valueCount   the number of elements.
+   * @param bitsPerValue the number of bits available for any given value.
+   * @return a Writer ready for receiving values.
+   * @throws IOException if bits could not be written to out.
+   * @lucene.internal
+   */
+  public static Writer getWriter(DataOutput out, int valueCount, int bitsPerValue)
+    throws IOException {
+    return new PackedWriter(out, valueCount, bitsPerValue);
+  }
+
+  /** Returns how many bits are required to hold values up
+   *  to and including maxValue
+   * @param maxValue the maximum value that should be representable.
+   * @return the amount of bits needed to represent values from 0 to maxValue.
+   * @lucene.internal
+   */
+  public static int bitsRequired(long maxValue) {
+    // Very high long values does not translate well to double, so we do an
+    // explicit check for the edge cases
+    if (maxValue > 0x3FFFFFFFFFFFFFFFL) {
+      return 63;
+    } if (maxValue > 0x1FFFFFFFFFFFFFFFL) {
+      return 62;
+    }
+    return Math.max(1, (int) Math.ceil(Math.log(1+maxValue)/Math.log(2.0)));
+  }
+
+  /**
    * Calculates the maximum unsigned long that can be expressed with the given
    * number of bits.
    * @param bitsPerValue the number of bits available for any given value.
@@ -144,6 +279,15 @@ public class PackedInts {
       return 32;
     } else {
       return 64;
+    }
+  }
+
+  /** Possibly wastes some storage in exchange for faster lookups */
+  public static int getRoundedFixedSize(int bitsPerValue) {
+    if (bitsPerValue > 58 || (bitsPerValue < 32 && bitsPerValue > 29)) { // 10% space-waste is ok
+      return getNextFixedSize(bitsPerValue);
+    } else {
+      return bitsPerValue;
     }
   }
 }

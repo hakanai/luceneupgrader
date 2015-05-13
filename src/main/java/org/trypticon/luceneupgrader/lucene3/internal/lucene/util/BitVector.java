@@ -17,11 +17,11 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * limitations under the License.
  */
 
+import java.io.IOException;
+
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
-
-import java.io.IOException;
 
 /** Optimized implementation of a vector of bits.  This is more-or-less like
  *  java.util.BitSet, but also includes the following:
@@ -61,7 +61,6 @@ public final class BitVector implements Cloneable, Bits {
     return bytesLength;
   }
   
-  @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   public Object clone() {
     byte[] copyBits = new byte[bits.length];
@@ -99,6 +98,15 @@ public final class BitVector implements Cloneable, Bits {
     }
   }
 
+  /** Sets the value of <code>bit</code> to zero. */
+  public final void clear(int bit) {
+    if (bit >= size) {
+      throw new ArrayIndexOutOfBoundsException(bit);
+    }
+    bits[bit >> 3] &= ~(1 << (bit & 7));
+    count = -1;
+  }
+
   /** Returns <code>true</code> if <code>bit</code> is one and
     <code>false</code> if it is zero. */
   public final boolean get(int bit) {
@@ -112,6 +120,12 @@ public final class BitVector implements Cloneable, Bits {
     return size;
   }
 
+  /** Returns the number of bits in this vector.  This is also one greater than
+    the number of the largest valid bit number. */
+  public final int length() {
+    return size;
+  }
+
   /** Returns the total number of one bits in this vector.  This is efficiently
     computed and cached, so that, if the vector is not changed, no
     recomputation is done for repeated calls. */
@@ -119,9 +133,9 @@ public final class BitVector implements Cloneable, Bits {
     // if the vector has been modified
     if (count == -1) {
       int c = 0;
-      for (byte bit : bits) {
-        c += BYTE_COUNTS[bit & 0xFF];      // sum bits per byte
-      }
+      int end = bits.length;
+      for (int i = 0; i < end; i++)
+        c += BYTE_COUNTS[bits[i] & 0xFF];	  // sum bits per byte
       count = c;
     }
     return count;
@@ -130,7 +144,9 @@ public final class BitVector implements Cloneable, Bits {
   /** For testing */
   public final int getRecomputedCount() {
     int c = 0;
-    for (byte bit : bits) c += BYTE_COUNTS[bit & 0xFF];      // sum bits per byte
+    int end = bits.length;
+    for (int i = 0; i < end; i++)
+      c += BYTE_COUNTS[bits[i] & 0xFF];	  // sum bits per byte
     return c;
   }
 
@@ -155,6 +171,9 @@ public final class BitVector implements Cloneable, Bits {
 
   private static String CODEC = "BitVector";
 
+  // Version before version tracking was added:
+  private final static int VERSION_PRE = -1;
+
   // First version:
   private final static int VERSION_START = 0;
 
@@ -162,7 +181,7 @@ public final class BitVector implements Cloneable, Bits {
   private final static int VERSION_CURRENT = VERSION_START;
 
   /** Writes this vector to the file <code>name</code> in Directory
-    <code>d</code>, in a format that can be read by the constructor {@code
+    <code>d</code>, in a format that can be read by the constructor {@link
     #BitVector(Directory, String)}.  */
   public final void write(Directory d, String name) throws IOException {
     IndexOutput output = d.createOutput(name);
@@ -241,18 +260,20 @@ public final class BitVector implements Cloneable, Bits {
   }
 
   /** Constructs a bit vector from the file <code>name</code> in Directory
-    <code>d</code>, as written by the {@code #write} method.
+    <code>d</code>, as written by the {@link #write} method.
     */
   public BitVector(Directory d, String name) throws IOException {
     IndexInput input = d.openInput(name);
 
     try {
       final int firstInt = input.readInt();
+      final int version;
       if (firstInt == -2) {
         // New format, with full header & version:
-        CodecUtil.checkHeader(input, CODEC, VERSION_START, VERSION_START);
+        version = CodecUtil.checkHeader(input, CODEC, VERSION_START, VERSION_START);
         size = input.readInt();
       } else {
+        version = VERSION_PRE;
         size = firstInt;
       }
       if (size == -1) {

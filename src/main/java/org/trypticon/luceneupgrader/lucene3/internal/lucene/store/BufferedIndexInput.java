@@ -20,7 +20,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 import java.io.EOFException;
 import java.io.IOException;
 
-/** Base implementation class for buffered {@code IndexInput}. */
+/** Base implementation class for buffered {@link IndexInput}. */
 public abstract class BufferedIndexInput extends IndexInput {
 
   /** Default buffer size */
@@ -41,6 +41,16 @@ public abstract class BufferedIndexInput extends IndexInput {
     return buffer[bufferPosition++];
   }
 
+  /** @deprecated please pass resourceDesc */
+  @Deprecated
+  public BufferedIndexInput() {
+    this("anonymous BuffereIndexInput");
+  }
+
+  public BufferedIndexInput(String resourceDesc) {
+    this(resourceDesc, BUFFER_SIZE);
+  }
+
   /** Inits BufferedIndexInput with a specific bufferSize
    *  @deprecated please pass resourceDesc */
   @Deprecated
@@ -55,9 +65,40 @@ public abstract class BufferedIndexInput extends IndexInput {
     this.bufferSize = bufferSize;
   }
 
+  /** Change the buffer size used by this IndexInput */
+  public final void setBufferSize(int newSize) {
+    assert buffer == null || bufferSize == buffer.length: "buffer=" + buffer + " bufferSize=" + bufferSize + " buffer.length=" + (buffer != null ? buffer.length : 0);
+    if (newSize != bufferSize) {
+      checkBufferSize(newSize);
+      bufferSize = newSize;
+      if (buffer != null) {
+        // Resize the existing buffer and carefully save as
+        // many bytes as possible starting from the current
+        // bufferPosition
+        byte[] newBuffer = new byte[newSize];
+        final int leftInBuffer = bufferLength-bufferPosition;
+        final int numToCopy;
+        if (leftInBuffer > newSize)
+          numToCopy = newSize;
+        else
+          numToCopy = leftInBuffer;
+        System.arraycopy(buffer, bufferPosition, newBuffer, 0, numToCopy);
+        bufferStart += bufferPosition;
+        bufferPosition = 0;
+        bufferLength = numToCopy;
+        newBuffer(newBuffer);
+      }
+    }
+  }
+
   protected void newBuffer(byte[] newBuffer) {
     // Subclasses can do something here
     buffer = newBuffer;
+  }
+
+  /** Returns buffer size.  @see #setBufferSize */
+  public final int getBufferSize() {
+    return bufferSize;
   }
 
   private void checkBufferSize(int bufferSize) {
@@ -120,6 +161,15 @@ public abstract class BufferedIndexInput extends IndexInput {
     }
   }
 
+  @Override
+  public final short readShort() throws IOException {
+    if (2 <= (bufferLength-bufferPosition)) {
+      return (short) (((buffer[bufferPosition++] & 0xFF) <<  8) |  (buffer[bufferPosition++] & 0xFF));
+    } else {
+      return super.readShort();
+    }
+  }
+  
   @Override
   public final int readInt() throws IOException {
     if (4 <= (bufferLength-bufferPosition)) {
@@ -215,7 +265,7 @@ public abstract class BufferedIndexInput extends IndexInput {
 
     if (buffer == null) {
       newBuffer(new byte[bufferSize]);  // allocate buffer lazily
-      seekInternal();
+      seekInternal(bufferStart);
     }
     readInternal(buffer, 0, newLength);
     bufferLength = newLength;
@@ -243,15 +293,15 @@ public abstract class BufferedIndexInput extends IndexInput {
       bufferStart = pos;
       bufferPosition = 0;
       bufferLength = 0;				  // trigger refill() on read()
-      seekInternal();
+      seekInternal(pos);
     }
   }
 
   /** Expert: implements seek.  Sets current position in this file, where the
-   * next {@code #readInternal(byte[],int,int)} will occur.
-   *
+   * next {@link #readInternal(byte[],int,int)} will occur.
+   * @see #readInternal(byte[],int,int)
    */
-  protected abstract void seekInternal() throws IOException;
+  protected abstract void seekInternal(long pos) throws IOException;
 
   @Override
   public Object clone() {

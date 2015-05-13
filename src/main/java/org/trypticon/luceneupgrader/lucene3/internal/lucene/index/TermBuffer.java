@@ -38,7 +38,7 @@ final class TermBuffer implements Cloneable {
       return field.compareTo(other.field);
   }
 
-  private static int compareChars(char[] chars1, int len1,
+  private static final int compareChars(char[] chars1, int len1,
                                         char[] chars2, int len2) {
     final int end = len1 < len2 ? len1:len2;
     for (int k = 0; k < end; k++) {
@@ -51,7 +51,7 @@ final class TermBuffer implements Cloneable {
     return len1 - len2;
   }
 
-  /** Call this if the IndexInput passed to {@code #read}
+  /** Call this if the IndexInput passed to {@link #read}
    *  stores terms in the "modified UTF8" (pre LUCENE-510)
    *  format. */
   void setPreUTF8Strings() {

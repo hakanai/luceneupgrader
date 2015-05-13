@@ -20,17 +20,17 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 import java.io.IOException;
 import java.io.Closeable;
 
-/** Abstract base class for input from a file in a {@code Directory}.  A
+/** Abstract base class for input from a file in a {@link Directory}.  A
  * random-access input stream.  Used for all Lucene index input operations.
- *
+ * @see Directory
  */
 public abstract class IndexInput extends DataInput implements Cloneable,Closeable {
 
   /**
    * Expert
    * 
-   * Similar to {@code #readChars(char[], int, int)} but does not do any conversion operations on the bytes it is reading in.  It still
-   * has to invoke {@code #readByte()} just as {@code #readChars(char[], int, int)} does, but it does not need a buffer to store anything
+   * Similar to {@link #readChars(char[], int, int)} but does not do any conversion operations on the bytes it is reading in.  It still
+   * has to invoke {@link #readByte()} just as {@link #readChars(char[], int, int)} does, but it does not need a buffer to store anything
    * and it does not have to do any of the bitwise operations, since we don't actually care what is in the byte except to determine
    * how many more bytes to read
    * @param length The number of chars to read
@@ -41,7 +41,6 @@ public abstract class IndexInput extends DataInput implements Cloneable,Closeabl
   public void skipChars(int length) throws IOException{
     for (int i = 0; i < length; i++) {
       byte b = readByte();
-      //noinspection StatementWithEmptyBody
       if ((b & 0x80) == 0){
         //do nothing, we only need one byte
       } else if ((b & 0xE0) != 0xE0) {
@@ -64,7 +63,7 @@ public abstract class IndexInput extends DataInput implements Cloneable,Closeabl
 
   /** resourceDescription should be a non-null, opaque string
    *  describing this resource; it's returned from
-   *  {@code #toString}. */
+   *  {@link #toString}. */
   protected IndexInput(String resourceDescription) {
     if (resourceDescription == null) {
       throw new IllegalArgumentException("resourceDescription must not be null");
@@ -77,12 +76,12 @@ public abstract class IndexInput extends DataInput implements Cloneable,Closeabl
 
   /** Returns the current position in this file, where the next read will
    * occur.
-   *
+   * @see #seek(long)
    */
   public abstract long getFilePointer();
 
   /** Sets current position in this file, where the next read will occur.
-   *
+   * @see #getFilePointer()
    */
   public abstract void seek(long pos) throws IOException;
 
@@ -90,7 +89,7 @@ public abstract class IndexInput extends DataInput implements Cloneable,Closeabl
   public abstract long length();
 
   /**
-   * Copies <code>numBytes</code> bytes to the given {@code IndexOutput}.
+   * Copies <code>numBytes</code> bytes to the given {@link IndexOutput}.
    * <p>
    * <b>NOTE:</b> this method uses an intermediate buffer to copy the bytes.
    * Consider overriding it in your implementation, if you can make a better,

@@ -38,7 +38,7 @@ public abstract class DataInput implements Cloneable {
   }
 
   /** Reads and returns a single byte.
-   *
+   * @see DataOutput#writeByte(byte)
    */
   public abstract byte readByte() throws IOException;
 
@@ -46,7 +46,7 @@ public abstract class DataInput implements Cloneable {
    * @param b the array to read bytes into
    * @param offset the offset in the array to start storing bytes
    * @param len the number of bytes to read
-   *
+   * @see DataOutput#writeBytes(byte[],int)
    */
   public abstract void readBytes(byte[] b, int offset, int len)
     throws IOException;
@@ -55,13 +55,13 @@ public abstract class DataInput implements Cloneable {
    * specified offset with control over whether the read
    * should be buffered (callers who have their own buffer
    * should pass in "false" for useBuffer).  Currently only
-   * {@code BufferedIndexInput} respects this parameter.
+   * {@link BufferedIndexInput} respects this parameter.
    * @param b the array to read bytes into
    * @param offset the offset in the array to start storing bytes
    * @param len the number of bytes to read
    * @param useBuffer set to false if the caller will handle
    * buffering.
-   *
+   * @see DataOutput#writeBytes(byte[],int)
    */
   public void readBytes(byte[] b, int offset, int len, boolean useBuffer)
     throws IOException
@@ -70,8 +70,15 @@ public abstract class DataInput implements Cloneable {
     readBytes(b, offset, len);
   }
 
+  /** Reads two bytes and returns a short.
+   * @see DataOutput#writeByte(byte)
+   */
+  public short readShort() throws IOException {
+    return (short) (((readByte() & 0xFF) <<  8) |  (readByte() & 0xFF));
+  }
+
   /** Reads four bytes and returns an int.
-   *
+   * @see DataOutput#writeInt(int)
    */
   public int readInt() throws IOException {
     return ((readByte() & 0xFF) << 24) | ((readByte() & 0xFF) << 16)
@@ -81,7 +88,7 @@ public abstract class DataInput implements Cloneable {
   /** Reads an int stored in variable-length format.  Reads between one and
    * five bytes.  Smaller values take fewer bytes.  Negative numbers are not
    * supported.
-   *
+   * @see DataOutput#writeVInt(int)
    */
   public int readVInt() throws IOException {
     /* This is the original code of this method,
@@ -115,7 +122,7 @@ public abstract class DataInput implements Cloneable {
   }
 
   /** Reads eight bytes and returns a long.
-   *
+   * @see DataOutput#writeLong(long)
    */
   public long readLong() throws IOException {
     return (((long)readInt()) << 32) | (readInt() & 0xFFFFFFFFL);
@@ -167,7 +174,7 @@ public abstract class DataInput implements Cloneable {
   }
 
   /** Reads a string.
-   *
+   * @see DataOutput#writeString(String)
    */
   public String readString() throws IOException {
     if (preUTF8Strings)
@@ -190,7 +197,7 @@ public abstract class DataInput implements Cloneable {
    * @param buffer the array to read characters into
    * @param start the offset in the array to start storing characters
    * @param length the number of characters to read
-   *
+   * @see DataOutput#writeChars(String,int,int)
    * @deprecated -- please use readString or readBytes
    *                instead, and construct the string
    *                from those utf8 bytes
@@ -228,8 +235,7 @@ public abstract class DataInput implements Cloneable {
     DataInput clone = null;
     try {
       clone = (DataInput)super.clone();
-    } catch (CloneNotSupportedException ignored) {
-    }
+    } catch (CloneNotSupportedException e) {}
 
     return clone;
   }

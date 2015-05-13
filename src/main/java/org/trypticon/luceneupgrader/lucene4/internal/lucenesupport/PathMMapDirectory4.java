@@ -1,7 +1,7 @@
 package org.trypticon.luceneupgrader.lucene4.internal.lucenesupport;
 
-import org.apache.lucene.store.*;
-import org.apache.lucene.util.Constants;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.*;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Constants;
 
 import java.io.File;
 import java.io.IOException;

@@ -17,6 +17,12 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
  * limitations under the License.
  */
 
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataInput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
+
+import java.io.IOException;
+import java.util.Arrays;
+
 /**
  * Direct wrapping of 16 bit values to a backing array of shorts.
  * @lucene.internal
@@ -32,13 +38,60 @@ class Direct16 extends PackedInts.ReaderImpl
     values = new short[valueCount];
   }
 
+  public Direct16(DataInput in, int valueCount) throws IOException {
+    super(valueCount, BITS_PER_VALUE);
+    short[] values = new short[valueCount];
+    for(int i=0;i<valueCount;i++) {
+      values[i] = in.readShort();
+    }
+    final int mod = valueCount % 4;
+    if (mod != 0) {
+      final int pad = 4-mod;
+      // round out long
+      for(int i=0;i<pad;i++) {
+        in.readShort();
+      }
+    }
+
+    this.values = values;
+  }
+
+  /**
+   * Creates an array backed by the given values.
+   * </p><p>
+   * Note: The values are used directly, so changes to the values will
+   * affect the structure.
+   * @param values   used as the internal backing array.
+   */
+  public Direct16(short[] values) {
+    super(values.length, BITS_PER_VALUE);
+    this.values = values;
+  }
+
   public long get(final int index) {
     assert index >= 0 && index < size();
     return 0xFFFFL & values[index];
   }
 
   public void set(final int index, final long value) {
-    values[index] = (short) (value & 0xFFFF);
+    values[index] = (short)(value & 0xFFFF);
   }
 
+  public long ramBytesUsed() {
+    return RamUsageEstimator.sizeOf(values);
+  }
+
+  public void clear() {
+    Arrays.fill(values, (short)0);
+  }
+
+  @Override
+  public Object getArray() {
+    return values;
+  }
+
+  @Override
+  public boolean hasArray() {
+    return true;
+  }
 }

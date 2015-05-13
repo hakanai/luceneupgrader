@@ -1,8 +1,8 @@
 package org.trypticon.luceneupgrader.lucene4.internal.lucenesupport;
 
-import org.apache.lucene.util.Constants;
-import org.apache.lucene.util.IOUtils;
-import org.apache.lucene.util.ThreadInterruptedException;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Constants;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ThreadInterruptedException;
 
 import java.io.File;
 import java.io.IOException;

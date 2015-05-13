@@ -43,7 +43,7 @@ public final class Term implements Comparable<Term>, java.io.Serializable {
    * This serves two purposes: 1) reuse of a Term with the same field.
    * 2) pattern for a query.
    * 
-   * @param fld ...
+   * @param fld
    */
   public Term(String fld) {
     this(fld, "", true);
@@ -117,10 +117,15 @@ public final class Term implements Comparable<Term>, java.io.Serializable {
       return field.compareTo(other.field);
   }
 
+  /** Resets the field and text of a Term. */
+  final void set(String fld, String txt) {
+    field = fld;
+    text = txt;
+  }
+
   @Override
   public final String toString() { return field + ":" + text; }
 
-  @SuppressWarnings("unused")
   private void readObject(java.io.ObjectInputStream in)
     throws java.io.IOException, ClassNotFoundException
   {

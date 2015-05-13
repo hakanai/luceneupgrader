@@ -17,12 +17,16 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.*;
-
 import java.io.EOFException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.BufferedIndexInput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Lock;
 
 /**
  * Class for accessing a compound stream.
@@ -37,7 +41,9 @@ class CompoundFileReader extends Directory {
     long offset;
     long length;
   }
-
+    
+  // Base info
+  private Directory directory;
   private String fileName;
   
   private IndexInput stream;
@@ -49,6 +55,7 @@ class CompoundFileReader extends Directory {
   
   public CompoundFileReader(Directory dir, String name, int readBufferSize) throws IOException {
     assert !(dir instanceof CompoundFileReader) : "compound file inside of compound file: " + name;
+    directory = dir;
     fileName = name;
     this.readBufferSize = readBufferSize;
     
@@ -109,11 +116,19 @@ class CompoundFileReader extends Directory {
       if (!success && (stream != null)) {
         try {
           stream.close();
-        } catch (IOException ignored) { }
+        } catch (IOException e) { }
       }
     }
   }
-
+  
+  public Directory getDirectory() {
+    return directory;
+  }
+  
+  public String getName() {
+    return fileName;
+  }
+  
   @Override
   public synchronized void close() throws IOException {
     if (stream == null) {
@@ -162,14 +177,35 @@ class CompoundFileReader extends Directory {
   public boolean fileExists(String name) {
     return entries.containsKey(IndexFileNames.stripSegmentName(name));
   }
-
+  
+  /** Returns the time the compound file was last modified. */
+  @Override
+  public long fileModified(String name) throws IOException {
+    return directory.fileModified(fileName);
+  }
+  
+  /** Set the modified time of the compound file to now.
+   *  @deprecated Lucene never uses this API; it will be
+   *  removed in 4.0. */
+  @Override
+  @Deprecated
+  public void touchFile(String name) throws IOException {
+    directory.touchFile(fileName);
+  }
+  
   /** Not implemented
    * @throws UnsupportedOperationException */
   @Override
   public void deleteFile(String name) {
     throw new UnsupportedOperationException();
   }
-
+  
+  /** Not implemented
+   * @throws UnsupportedOperationException */
+  public void renameFile(String from, String to) {
+    throw new UnsupportedOperationException();
+  }
+  
   /** Returns the length of a file in the directory.
    * @throws IOException if the file does not exist */
   @Override
@@ -203,7 +239,11 @@ class CompoundFileReader extends Directory {
     IndexInput base;
     long fileOffset;
     long length;
-
+    
+    CSIndexInput(final IndexInput base, final long fileOffset, final long length) {
+      this(base, fileOffset, length, BufferedIndexInput.BUFFER_SIZE);
+    }
+    
     CSIndexInput(final IndexInput base, final long fileOffset, final long length, int readBufferSize) {
       super(readBufferSize);
       this.base = (IndexInput)base.clone();
@@ -236,11 +276,11 @@ class CompoundFileReader extends Directory {
     }
     
     /** Expert: implements seek.  Sets current position in this file, where
-     *  the next {@code #readInternal(byte[],int,int)} will occur.
-     *
+     *  the next {@link #readInternal(byte[],int,int)} will occur.
+     * @see #readInternal(byte[],int,int)
      */
     @Override
-    protected void seekInternal() {}
+    protected void seekInternal(long pos) {}
     
     /** Closes the stream to further operations. */
     @Override

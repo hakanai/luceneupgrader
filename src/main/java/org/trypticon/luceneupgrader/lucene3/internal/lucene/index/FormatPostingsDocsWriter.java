@@ -20,13 +20,13 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 /** Consumes doc & freq, writing them using the current
  *  index file format */
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInfo.IndexOptions;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.UnicodeUtil;
-
 import java.io.Closeable;
 import java.io.IOException;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.UnicodeUtil;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInfo.IndexOptions;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
 
 final class FormatPostingsDocsWriter extends FormatPostingsDocsConsumer implements Closeable {
 
@@ -39,9 +39,10 @@ final class FormatPostingsDocsWriter extends FormatPostingsDocsConsumer implemen
 
   boolean omitTermFreqAndPositions;
   boolean storePayloads;
+  long freqStart;
   FieldInfo fieldInfo;
 
-  FormatPostingsDocsWriter(FormatPostingsTermsWriter parent) throws IOException {
+  FormatPostingsDocsWriter(SegmentWriteState state, FormatPostingsTermsWriter parent) throws IOException {
     this.parent = parent;
     out = parent.parent.dir.createOutput(IndexFileNames.segmentFileName(parent.parent.segment, IndexFileNames.FREQ_EXTENSION));
     boolean success = false;
@@ -53,7 +54,7 @@ final class FormatPostingsDocsWriter extends FormatPostingsDocsConsumer implemen
       skipListWriter = parent.parent.skipListWriter;
       skipListWriter.setFreqOutput(out);
       
-      posWriter = new FormatPostingsPositionsWriter(this);
+      posWriter = new FormatPostingsPositionsWriter(state, this);
       success = true;
     } finally {
       if (!success) {

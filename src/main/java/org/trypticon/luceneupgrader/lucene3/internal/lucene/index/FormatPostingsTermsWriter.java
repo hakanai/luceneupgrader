@@ -25,14 +25,16 @@ final class FormatPostingsTermsWriter extends FormatPostingsTermsConsumer implem
   final FormatPostingsFieldsWriter parent;
   final FormatPostingsDocsWriter docsWriter;
   final TermInfosWriter termsOut;
+  FieldInfo fieldInfo;
 
-  FormatPostingsTermsWriter(FormatPostingsFieldsWriter parent) throws IOException {
+  FormatPostingsTermsWriter(SegmentWriteState state, FormatPostingsFieldsWriter parent) throws IOException {
     this.parent = parent;
     termsOut = parent.termsOut;
-    docsWriter = new FormatPostingsDocsWriter(this);
+    docsWriter = new FormatPostingsDocsWriter(state, this);
   }
 
   void setField(FieldInfo fieldInfo) {
+    this.fieldInfo = fieldInfo;
     docsWriter.setField(fieldInfo);
   }
 
@@ -58,6 +60,11 @@ final class FormatPostingsTermsWriter extends FormatPostingsTermsConsumer implem
     parent.skipListWriter.resetSkip();
 
     return docsWriter;
+  }
+
+  /** Called when we are done adding terms to this field */
+  @Override
+  void finish() {
   }
 
   public void close() throws IOException {

@@ -17,9 +17,10 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.RAMOutputStream;
-
 import java.io.IOException;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.RAMOutputStream;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
 
 /** This is a DocFieldConsumer that writes stored fields. */
 final class StoredFieldsWriter {
@@ -35,6 +36,10 @@ final class StoredFieldsWriter {
   public StoredFieldsWriter(DocumentsWriter docWriter, FieldInfos fieldInfos) {
     this.docWriter = docWriter;
     this.fieldInfos = fieldInfos;
+  }
+
+  public StoredFieldsWriterPerThread addThread(DocumentsWriter.DocState docState) throws IOException {
+    return new StoredFieldsWriterPerThread(docState, this);
   }
 
   synchronized public void flush(SegmentWriteState state) throws IOException {
@@ -61,6 +66,24 @@ final class StoredFieldsWriter {
     }
   }
 
+  int allocCount;
+
+  synchronized PerDoc getPerDoc() {
+    if (freeCount == 0) {
+      allocCount++;
+      if (allocCount > docFreeList.length) {
+        // Grow our free list up front to make sure we have
+        // enough space to recycle all outstanding PerDoc
+        // instances
+        assert allocCount == 1+docFreeList.length;
+        docFreeList = new PerDoc[ArrayUtil.oversize(allocCount, RamUsageEstimator.NUM_BYTES_OBJECT_REF)];
+      }
+      return new PerDoc();
+    } else {
+      return docFreeList[--freeCount];
+    }
+  }
+
   synchronized void abort() {
     if (fieldsWriter != null) {
       fieldsWriter.abort();
@@ -77,6 +100,20 @@ final class StoredFieldsWriter {
       fieldsWriter.skipDocument();
       lastDocID++;
     }
+  }
+
+  synchronized void finishDocument(PerDoc perDoc) throws IOException {
+    assert docWriter.writer.testPoint("StoredFieldsWriter.finishDocument start");
+    initFieldsWriter();
+
+    fill(perDoc.docID);
+
+    // Append stored fields to the real FieldsWriter:
+    fieldsWriter.flushDocument(perDoc.numStoredFields, perDoc.fdt);
+    lastDocID++;
+    perDoc.reset();
+    free(perDoc);
+    assert docWriter.writer.testPoint("StoredFieldsWriter.finishDocument end");
   }
 
   synchronized void free(PerDoc perDoc) {
@@ -104,5 +141,14 @@ final class StoredFieldsWriter {
       free(this);
     }
 
+    @Override
+    public long sizeInBytes() {
+      return buffer.getSizeInBytes();
+    }
+
+    @Override
+    public void finish() throws IOException {
+      finishDocument(this);
+    }
   }
 }

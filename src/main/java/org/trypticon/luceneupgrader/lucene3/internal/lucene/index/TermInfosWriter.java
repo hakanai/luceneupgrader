@@ -18,14 +18,13 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  */
 
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.UnicodeUtil;
-
 import java.io.Closeable;
 import java.io.IOException;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.UnicodeUtil;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 
 
 /** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
@@ -61,8 +60,8 @@ final class TermInfosWriter implements Closeable {
    * tweaking this is rarely useful.*/
   int indexInterval = 128;
 
-  /** Expert: The fraction of {@code TermDocs} entries stored in skip tables,
-   * used to accelerate {@code TermDocs#skipTo(int)}.  Larger values result in
+  /** Expert: The fraction of {@link TermDocs} entries stored in skip tables,
+   * used to accelerate {@link TermDocs#skipTo(int)}.  Larger values result in
    * smaller indexes, greater acceleration, but fewer accelerable cases, while
    * smaller values result in bigger indexes, less acceleration and more
    * accelerable cases. More detailed experiments would be useful here. */
@@ -80,6 +79,7 @@ final class TermInfosWriter implements Closeable {
   private int lastFieldNumber = -1;
 
   private TermInfosWriter other;
+  private UnicodeUtil.UTF8Result utf8Result = new UnicodeUtil.UTF8Result();
 
   TermInfosWriter(Directory directory, String segment, FieldInfos fis,
                   int interval)
@@ -122,6 +122,11 @@ final class TermInfosWriter implements Closeable {
         IOUtils.closeWhileHandlingException(output);
       }
     }
+  }
+
+  void add(Term term, TermInfo ti) throws IOException {
+    UnicodeUtil.UTF16toUTF8(term.text, 0, term.text.length(), utf8Result);
+    add(fieldInfos.fieldNumber(term.field), utf8Result.result, utf8Result.length, ti);
   }
 
   // Currently used only by assert statements

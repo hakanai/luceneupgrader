@@ -17,6 +17,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
 
 class ParallelPostingsArray {
@@ -38,4 +39,20 @@ class ParallelPostingsArray {
     return BYTES_PER_POSTING;
   }
 
+  ParallelPostingsArray newInstance(int size) {
+    return new ParallelPostingsArray(size);
+  }
+
+  final ParallelPostingsArray grow() {
+    int newSize = ArrayUtil.oversize(size + 1, bytesPerPosting());
+    ParallelPostingsArray newArray = newInstance(newSize);
+    copyTo(newArray, size);
+    return newArray;
+  }
+
+  void copyTo(ParallelPostingsArray toArray, int numToCopy) {
+    System.arraycopy(textStarts, 0, toArray.textStarts, 0, numToCopy);
+    System.arraycopy(intStarts, 0, toArray.intStarts, 0, numToCopy);
+    System.arraycopy(byteStarts, 0, toArray.byteStarts, 0, numToCopy);
+  }
 }

@@ -24,11 +24,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
-/** This class implements {@code InvertedDocConsumer}, which
+/** This class implements {@link InvertedDocConsumer}, which
  *  is passed each token produced by the analyzer on each
  *  field.  It stores these tokens in a hash table, and
  *  allocates separate byte streams per token.  Consumers of
- *  this class, eg {@code FreqProxTermsWriter} and {@code
+ *  this class, eg {@link FreqProxTermsWriter} and {@link
  *  TermVectorsTermsWriter}, write their own byte streams
  *  under each term.
  */
@@ -47,8 +47,19 @@ final class TermsHash extends InvertedDocConsumer {
     this.trackAllocations = trackAllocations;
   }
 
+  @Override
+  InvertedDocConsumerPerThread addThread(DocInverterPerThread docInverterPerThread) {
+    return new TermsHashPerThread(docInverterPerThread, this, nextTermsHash, null);
+  }
+
   TermsHashPerThread addThread(DocInverterPerThread docInverterPerThread, TermsHashPerThread primaryPerThread) {
     return new TermsHashPerThread(docInverterPerThread, this, nextTermsHash, primaryPerThread);
+  }
+
+  @Override
+  void setFieldInfos(FieldInfos fieldInfos) {
+    this.fieldInfos = fieldInfos;
+    consumer.setFieldInfos(fieldInfos);
   }
 
   @Override
@@ -105,4 +116,8 @@ final class TermsHash extends InvertedDocConsumer {
       nextTermsHash.flush(nextThreadsAndFields, state);
   }
 
+  @Override
+  synchronized public boolean freeRAM() {
+    return false;
+  }
 }

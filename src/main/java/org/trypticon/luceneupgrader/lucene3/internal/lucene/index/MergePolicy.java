@@ -19,6 +19,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.SetOnce;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.SetOnce.AlreadySetException;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,25 +31,25 @@ import java.util.Map;
  * primitive merge operations.</p>
  * 
  * <p>Whenever the segments in an index have been altered by
- * {@code IndexWriter}, either the addition of a newly
+ * {@link IndexWriter}, either the addition of a newly
  * flushed segment, addition of many segments from
  * addIndexes* calls, or a previous merge that may now need
- * to cascade, {@code IndexWriter} invokes {@code
+ * to cascade, {@link IndexWriter} invokes {@link
  * #findMerges} to give the MergePolicy a chance to pick
  * merges that are now required.  This method returns a
- * {@code MergeSpecification} instance describing the set of
+ * {@link MergeSpecification} instance describing the set of
  * merges that should be done, or null if no merges are
  * necessary.  When IndexWriter.forceMerge is called, it calls
- * {@code #findForcedMerges(SegmentInfos,int,Map)} and the MergePolicy should
+ * {@link #findForcedMerges(SegmentInfos,int,Map)} and the MergePolicy should
  * then return the necessary merges.</p>
  *
  * <p>Note that the policy can return more than one merge at
- * a time.  In this case, if the writer is using {@code
+ * a time.  In this case, if the writer is using {@link
  * SerialMergeScheduler}, the merges will be run
- * sequentially but if it is using {@code
+ * sequentially but if it is using {@link
  * ConcurrentMergeScheduler} they will be run concurrently.</p>
  * 
- * <p>The default MergePolicy is {@code
+ * <p>The default MergePolicy is {@link
  * TieredMergePolicy}.</p>
  *
  * @lucene.experimental
@@ -96,7 +97,7 @@ public abstract class MergePolicy implements java.io.Closeable {
       this.error = error;
     }
 
-    /** Retrieve previous exception set by {@code
+    /** Retrieve previous exception set by {@link
      *  #setException}. */
     synchronized Throwable getException() {
       return error;
@@ -162,13 +163,36 @@ public abstract class MergePolicy implements java.io.Closeable {
       }
       return b.toString();
     }
+    
+    /**
+     * Returns the total size in bytes of this merge. Note that this does not
+     * indicate the size of the merged segment, but the input total size.
+     * */
+    public long totalBytesSize() throws IOException {
+      long total = 0;
+      for (SegmentInfo info : segments) {
+        total += info.sizeInBytes(true);
+      }
+      return total;
+    }
 
+    /**
+     * Returns the total number of documents that are included with this merge.
+     * Note that this does not indicate the number of documents after the merge.
+     * */
+    public int totalNumDocs() throws IOException {
+      int total = 0;
+      for (SegmentInfo info : segments) {
+        total += info.docCount;
+      }
+      return total;
+    }
   }
 
   /**
    * A MergeSpecification instance provides the information
    * necessary to perform multiple merges.  It simply
-   * contains a list of {@code OneMerge} instances.
+   * contains a list of {@link OneMerge} instances.
    */
 
   public static class MergeSpecification {
@@ -183,21 +207,41 @@ public abstract class MergePolicy implements java.io.Closeable {
       merges.add(merge);
     }
 
+    public String segString(Directory dir) {
+      StringBuilder b = new StringBuilder();
+      b.append("MergeSpec:\n");
+      final int count = merges.size();
+      for(int i=0;i<count;i++)
+        b.append("  ").append(1 + i).append(": ").append(merges.get(i).segString(dir));
+      return b.toString();
+    }
   }
 
   /** Exception thrown if there are any problems while
    *  executing a merge. */
   public static class MergeException extends RuntimeException {
-    public MergeException(String message) {
+    private Directory dir;
+
+    public MergeException(String message, Directory dir) {
       super(message);
+      this.dir = dir;
     }
 
-    public MergeException(Throwable exc) {
+    public MergeException(Throwable exc, Directory dir) {
       super(exc);
+      this.dir = dir;
+    }
+    /** Returns the {@link Directory} of the index that hit
+     *  the exception. */
+    public Directory getDirectory() {
+      return dir;
     }
   }
 
   public static class MergeAbortedException extends IOException {
+    public MergeAbortedException() {
+      super("merge is aborted");
+    }
     public MergeAbortedException(String message) {
       super(message);
     }
@@ -207,19 +251,19 @@ public abstract class MergePolicy implements java.io.Closeable {
 
   /**
    * Creates a new merge policy instance. Note that if you intend to use it
-   * without passing it to {@code IndexWriter}, you should call
-   * {@code #setIndexWriter(IndexWriter)}.
+   * without passing it to {@link IndexWriter}, you should call
+   * {@link #setIndexWriter(IndexWriter)}.
    */
   public MergePolicy() {
     writer = new SetOnce<IndexWriter>();
   }
 
   /**
-   * Sets the {@code IndexWriter} to use by this merge policy. This method is
+   * Sets the {@link IndexWriter} to use by this merge policy. This method is
    * allowed to be called only once, and is usually set by IndexWriter. If it is
-   * called more than once, {@code AlreadySetException} is thrown.
+   * called more than once, {@link AlreadySetException} is thrown.
    * 
-   *
+   * @see SetOnce
    */
   public void setIndexWriter(IndexWriter writer) {
     this.writer.set(writer);
@@ -227,21 +271,21 @@ public abstract class MergePolicy implements java.io.Closeable {
   
   /**
    * Determine what set of merge operations are now necessary on the index.
-   * {@code IndexWriter} calls this whenever there is a change to the segments.
-   * This call is always synchronized on the {@code IndexWriter} instance so
+   * {@link IndexWriter} calls this whenever there is a change to the segments.
+   * This call is always synchronized on the {@link IndexWriter} instance so
    * only one thread at a time will call this method.
    * 
    * @param segmentInfos
    *          the total set of segments in the index
    */
   public abstract MergeSpecification findMerges(SegmentInfos segmentInfos)
-      throws IOException;
+      throws CorruptIndexException, IOException;
 
   /**
    * Determine what set of merge operations is necessary in
-   * order to merge to <= the specified segment count. {@code IndexWriter} calls this when its
-   * {@code IndexWriter#forceMerge} method is called. This call is always
-   * synchronized on the {@code IndexWriter} instance so only one thread at a
+   * order to merge to <= the specified segment count. {@link IndexWriter} calls this when its
+   * {@link IndexWriter#forceMerge} method is called. This call is always
+   * synchronized on the {@link IndexWriter} instance so only one thread at a
    * time will call this method.
    * 
    * @param segmentInfos
@@ -260,7 +304,17 @@ public abstract class MergePolicy implements java.io.Closeable {
    */
   public abstract MergeSpecification findForcedMerges(
           SegmentInfos segmentInfos, int maxSegmentCount, Map<SegmentInfo,Boolean> segmentsToMerge)
-      throws IOException;
+      throws CorruptIndexException, IOException;
+
+  /**
+   * Determine what set of merge operations is necessary in order to expunge all
+   * deletes from the index.
+   * 
+   * @param segmentInfos
+   *          the total set of segments in the index
+   */
+  public abstract MergeSpecification findForcedDeletesMerges(
+      SegmentInfos segmentInfos) throws CorruptIndexException, IOException;
 
   /**
    * Release all resources for the policy.

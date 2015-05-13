@@ -1,7 +1,7 @@
 package org.trypticon.luceneupgrader.lucene4.internal.lucenesupport;
 
-import org.apache.lucene.store.FSLockFactory;
-import org.apache.lucene.store.LockFactory;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.FSLockFactory;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.LockFactory;
 
 import java.io.File;
 import java.nio.file.Path;

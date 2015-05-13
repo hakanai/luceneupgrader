@@ -17,10 +17,10 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
+import java.io.IOException;
+
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
-
-import java.io.IOException;
 
 /**
  * @lucene.experimental
@@ -30,7 +30,7 @@ abstract class FormatPostingsTermsConsumer {
 
   /** Adds a new term in this field; term ends with U+FFFF
    *  char */
-  abstract FormatPostingsDocsConsumer addTerm(char[] text, int start);
+  abstract FormatPostingsDocsConsumer addTerm(char[] text, int start) throws IOException;
 
   char[] termBuffer;
   FormatPostingsDocsConsumer addTerm(String text) throws IOException {
@@ -42,4 +42,6 @@ abstract class FormatPostingsTermsConsumer {
     return addTerm(termBuffer, 0);
   }
 
+  /** Called when we are done adding terms to this field */
+  abstract void finish() throws IOException;
 }

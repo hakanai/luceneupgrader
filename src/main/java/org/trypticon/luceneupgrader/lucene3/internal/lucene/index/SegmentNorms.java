@@ -17,11 +17,11 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
-
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
 
 /**
  * Byte[] referencing is used because a new norm object needs 
@@ -170,6 +170,11 @@ final class SegmentNorms implements Cloneable {
     }
 
     return bytes;
+  }
+
+  // Only for testing
+  AtomicInteger bytesRef() {
+    return bytesRef;
   }
 
   // Called if we intend to change a norm value.  We make a

@@ -72,7 +72,7 @@ extends SegmentTermDocs implements TermPositions {
     return position += readDeltaPosition();
   }
 
-  private int readDeltaPosition() throws IOException {
+  private final int readDeltaPosition() throws IOException {
     int delta = proxStream.readVInt();
     if (currentFieldStoresPayloads) {
       // if the current field stores payloads then
@@ -89,7 +89,7 @@ extends SegmentTermDocs implements TermPositions {
   }
   
   @Override
-  protected final void skippingDoc() {
+  protected final void skippingDoc() throws IOException {
     // we remember to skip a document lazily
     lazySkipProxCount += freq;
   }
@@ -108,6 +108,22 @@ extends SegmentTermDocs implements TermPositions {
     return false;
   }
 
+  @Override
+  public final int read(final int[] docs, final int[] freqs) {
+    throw new UnsupportedOperationException("TermPositions does not support processing multiple documents in one call. Use TermDocs instead.");
+  }
+
+
+  /** Called by super.skipTo(). */
+  @Override
+  protected void skipProx(long proxPointer, int payloadLength) throws IOException {
+    // we save the pointer, we might have to skip there lazily
+    lazySkipPointer = proxPointer;
+    lazySkipProxCount = 0;
+    proxCount = 0;
+    this.payloadLength = payloadLength;
+    needToLoadPayload = false;
+  }
 
   private void skipPositions(int n) throws IOException {
     assert indexOptions == IndexOptions.DOCS_AND_FREQS_AND_POSITIONS;
@@ -179,6 +195,10 @@ extends SegmentTermDocs implements TermPositions {
     proxStream.readBytes(retArray, retOffset, payloadLength);
     needToLoadPayload = false;
     return retArray;
+  }
+
+  public boolean isPayloadAvailable() {
+    return needToLoadPayload && payloadLength > 0;
   }
 
 }

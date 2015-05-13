@@ -28,4 +28,7 @@ abstract class TermsHashConsumer {
 
   FieldInfos fieldInfos;
 
+  void setFieldInfos(FieldInfos fieldInfos) {
+    this.fieldInfos = fieldInfos;
+  }
 }

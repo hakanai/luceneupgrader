@@ -48,7 +48,7 @@ final class FormatPostingsFieldsWriter extends FormatPostingsFieldsConsumer {
       skipListWriter = new DefaultSkipListWriter(termsOut.skipInterval,
           termsOut.maxSkipLevels, totalNumDocs, null, null);
       
-      termsWriter = new FormatPostingsTermsWriter(this);
+      termsWriter = new FormatPostingsTermsWriter(state, this);
       success = true;
     } finally {
       if (!success) {

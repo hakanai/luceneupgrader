@@ -21,12 +21,16 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.UnicodeUtil;
 
 final class TermVectorsTermsWriterPerThread extends TermsHashConsumerPerThread {
 
+  final TermVectorsTermsWriter termsWriter;
   final TermsHashPerThread termsHashPerThread;
+  final DocumentsWriter.DocState docState;
 
   TermVectorsTermsWriter.PerDoc doc;
 
-  public TermVectorsTermsWriterPerThread(TermsHashPerThread termsHashPerThread) {
+  public TermVectorsTermsWriterPerThread(TermsHashPerThread termsHashPerThread, TermVectorsTermsWriter termsWriter) {
+    this.termsWriter = termsWriter;
     this.termsHashPerThread = termsHashPerThread;
+    docState = termsHashPerThread.docState;
   }
   
   // Used by perField when serializing the term vectors
@@ -36,8 +40,52 @@ final class TermVectorsTermsWriterPerThread extends TermsHashConsumerPerThread {
                                                 new UnicodeUtil.UTF8Result()};
 
   @Override
+  public void startDocument() {
+    assert clearLastVectorFieldName();
+    if (doc != null) {
+      doc.reset();
+      doc.docID = docState.docID;
+    }
+  }
+
+  @Override
+  public DocumentsWriter.DocWriter finishDocument() {
+    try {
+      return doc;
+    } finally {
+      doc = null;
+    }
+  }
+
+  @Override
   public TermsHashConsumerPerField addField(TermsHashPerField termsHashPerField, FieldInfo fieldInfo) {
     return new TermVectorsTermsWriterPerField(termsHashPerField, this, fieldInfo);
   }
 
+  @Override
+  public void abort() {
+    if (doc != null) {
+      doc.abort();
+      doc = null;
+    }
+  }
+
+  // Called only by assert
+  final boolean clearLastVectorFieldName() {
+    lastVectorFieldName = null;
+    return true;
+  }
+
+  // Called only by assert
+  String lastVectorFieldName;
+  final boolean vectorFieldsInOrder(FieldInfo fi) {
+    try {
+      if (lastVectorFieldName != null)
+        return lastVectorFieldName.compareTo(fi.name) < 0;
+      else
+        return true;
+    } finally {
+      lastVectorFieldName = fi.name;
+    }
+  }
 }

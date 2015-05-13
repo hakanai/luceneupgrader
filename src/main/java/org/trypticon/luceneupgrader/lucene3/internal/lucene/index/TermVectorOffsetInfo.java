@@ -20,17 +20,20 @@ import java.io.Serializable;
  */
 
 /**
- * The TermVectorOffsetInfo class holds information pertaining to a Term in a {@code org.apache.lucene.index.TermPositionVector}'s
+ * The TermVectorOffsetInfo class holds information pertaining to a Term in a {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.index.TermPositionVector}'s
  * offset information.  This offset information is the character offset as set during the Analysis phase (and thus may not be the actual offset in the
  * original content).
  */
 public class TermVectorOffsetInfo implements Serializable {
   /**
-   * Convenience declaration when creating a {@code org.apache.lucene.index.TermPositionVector} that stores only position information.
+   * Convenience declaration when creating a {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.index.TermPositionVector} that stores only position information.
    */
   public transient static final TermVectorOffsetInfo[] EMPTY_OFFSET_INFO = new TermVectorOffsetInfo[0];
   private int startOffset;
   private int endOffset;
+
+  public TermVectorOffsetInfo() {
+  }
 
   public TermVectorOffsetInfo(int startOffset, int endOffset) {
     this.endOffset = endOffset;
@@ -45,6 +48,10 @@ public class TermVectorOffsetInfo implements Serializable {
     return endOffset;
   }
 
+  public void setEndOffset(int endOffset) {
+    this.endOffset = endOffset;
+  }
+
   /**
    * The accessor for the starting offset of the term.
    *
@@ -54,10 +61,14 @@ public class TermVectorOffsetInfo implements Serializable {
     return startOffset;
   }
 
+  public void setStartOffset(int startOffset) {
+    this.startOffset = startOffset;
+  }
+
   /**
    * Two TermVectorOffsetInfos are equals if both the start and end offsets are the same
    * @param o The comparison Object
-   * @return true if both {@code #getStartOffset()} and {@code #getEndOffset()} are the same for both objects.
+   * @return true if both {@link #getStartOffset()} and {@link #getEndOffset()} are the same for both objects.
    */
   @Override
   public boolean equals(Object o) {
@@ -67,7 +78,6 @@ public class TermVectorOffsetInfo implements Serializable {
     final TermVectorOffsetInfo termVectorOffsetInfo = (TermVectorOffsetInfo) o;
 
     if (endOffset != termVectorOffsetInfo.endOffset) return false;
-    //noinspection RedundantIfStatement
     if (startOffset != termVectorOffsetInfo.startOffset) return false;
 
     return true;

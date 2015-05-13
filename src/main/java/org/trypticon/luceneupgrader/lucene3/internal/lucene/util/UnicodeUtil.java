@@ -98,7 +98,10 @@ public final class UnicodeUtil {
   private UnicodeUtil() {} // no instance
 
   public static final int UNI_SUR_HIGH_START = 0xD800;
+  public static final int UNI_SUR_HIGH_END = 0xDBFF;
   public static final int UNI_SUR_LOW_START = 0xDC00;
+  public static final int UNI_SUR_LOW_END = 0xDFFF;
+  public static final int UNI_REPLACEMENT_CHAR = 0xFFFD;
 
   private static final long UNI_MAX_BMP = 0x0000FFFF;
 
@@ -148,6 +151,62 @@ public final class UnicodeUtil {
       setLength(other.length);
       System.arraycopy(other.result, 0, result, 0, length);
     }
+  }
+
+  /** Encode characters from a char[] source, starting at
+   *  offset for length chars.  Returns a hash of the resulting bytes.  After encoding, result.offset will always be 0. */
+  // TODO: broken if incoming result.offset != 0
+  public static int UTF16toUTF8WithHash(final char[] source, final int offset, final int length, BytesRef result) {
+    int hash = 0;
+    int upto = 0;
+    int i = offset;
+    final int end = offset + length;
+    byte[] out = result.bytes;
+    // Pre-allocate for worst case 4-for-1
+    final int maxLen = length * 4;
+    if (out.length < maxLen)
+      out = result.bytes = new byte[ArrayUtil.oversize(maxLen, 1)];
+    result.offset = 0;
+
+    while(i < end) {
+      
+      final int code = (int) source[i++];
+
+      if (code < 0x80) {
+        hash = 31*hash + (out[upto++] = (byte) code);
+      } else if (code < 0x800) {
+        hash = 31*hash + (out[upto++] = (byte) (0xC0 | (code >> 6)));
+        hash = 31*hash + (out[upto++] = (byte)(0x80 | (code & 0x3F)));
+      } else if (code < 0xD800 || code > 0xDFFF) {
+        hash = 31*hash + (out[upto++] = (byte)(0xE0 | (code >> 12)));
+        hash = 31*hash + (out[upto++] = (byte)(0x80 | ((code >> 6) & 0x3F)));
+        hash = 31*hash + (out[upto++] = (byte)(0x80 | (code & 0x3F)));
+      } else {
+        // surrogate pair
+        // confirm valid high surrogate
+        if (code < 0xDC00 && i < end) {
+          int utf32 = (int) source[i];
+          // confirm valid low surrogate and write pair
+          if (utf32 >= 0xDC00 && utf32 <= 0xDFFF) { 
+            utf32 = (code << 10) + utf32 + SURROGATE_OFFSET;
+            i++;
+            hash = 31*hash + (out[upto++] = (byte)(0xF0 | (utf32 >> 18)));
+            hash = 31*hash + (out[upto++] = (byte)(0x80 | ((utf32 >> 12) & 0x3F)));
+            hash = 31*hash + (out[upto++] = (byte)(0x80 | ((utf32 >> 6) & 0x3F)));
+            hash = 31*hash + (out[upto++] = (byte)(0x80 | (utf32 & 0x3F)));
+            continue;
+          }
+        }
+        // replace unpaired surrogate or out-of-order low surrogate
+        // with substitution character
+        hash = 31*hash + (out[upto++] = (byte) 0xEF);
+        hash = 31*hash + (out[upto++] = (byte) 0xBF);
+        hash = 31*hash + (out[upto++] = (byte) 0xBD);
+      }
+    }
+    //assert matches(source, offset, length, out, upto);
+    result.length = upto;
+    return hash;
   }
 
   /** Encode characters from a char[] source, starting at
@@ -363,6 +422,62 @@ public final class UnicodeUtil {
     result.length = upto;
   }
 
+  /** Encode characters from a char[] source, starting at
+   *  offset for length chars. After encoding, result.offset will always be 0.
+   */
+  // TODO: broken if incoming result.offset != 0
+  public static void UTF16toUTF8(final char[] source, final int offset, final int length, BytesRef result) {
+
+    int upto = 0;
+    int i = offset;
+    final int end = offset + length;
+    byte[] out = result.bytes;
+    // Pre-allocate for worst case 4-for-1
+    final int maxLen = length * 4;
+    if (out.length < maxLen)
+      out = result.bytes = new byte[maxLen];
+    result.offset = 0;
+
+    while(i < end) {
+      
+      final int code = (int) source[i++];
+
+      if (code < 0x80)
+        out[upto++] = (byte) code;
+      else if (code < 0x800) {
+        out[upto++] = (byte) (0xC0 | (code >> 6));
+        out[upto++] = (byte)(0x80 | (code & 0x3F));
+      } else if (code < 0xD800 || code > 0xDFFF) {
+        out[upto++] = (byte)(0xE0 | (code >> 12));
+        out[upto++] = (byte)(0x80 | ((code >> 6) & 0x3F));
+        out[upto++] = (byte)(0x80 | (code & 0x3F));
+      } else {
+        // surrogate pair
+        // confirm valid high surrogate
+        if (code < 0xDC00 && i < end) {
+          int utf32 = (int) source[i];
+          // confirm valid low surrogate and write pair
+          if (utf32 >= 0xDC00 && utf32 <= 0xDFFF) { 
+            utf32 = (code << 10) + utf32 + SURROGATE_OFFSET;
+            i++;
+            out[upto++] = (byte)(0xF0 | (utf32 >> 18));
+            out[upto++] = (byte)(0x80 | ((utf32 >> 12) & 0x3F));
+            out[upto++] = (byte)(0x80 | ((utf32 >> 6) & 0x3F));
+            out[upto++] = (byte)(0x80 | (utf32 & 0x3F));
+            continue;
+          }
+        }
+        // replace unpaired surrogate or out-of-order low surrogate
+        // with substitution character
+        out[upto++] = (byte) 0xEF;
+        out[upto++] = (byte) 0xBF;
+        out[upto++] = (byte) 0xBD;
+      }
+    }
+    //assert matches(source, offset, length, out, upto);
+    result.length = upto;
+  }
+
   /** Convert UTF8 bytes into UTF16 characters.  If offset
    *  is non-zero, conversion starts at that starting point
    *  in utf8, re-using the results from the previous call
@@ -429,4 +544,233 @@ public final class UnicodeUtil {
     result.length = outUpto;
   }
 
+  // Only called from assert
+  /*
+  private static boolean matches(char[] source, int offset, int length, byte[] result, int upto) {
+    try {
+      String s1 = new String(source, offset, length);
+      String s2 = new String(result, 0, upto, "UTF-8");
+      if (!s1.equals(s2)) {
+        //System.out.println("DIFF: s1 len=" + s1.length());
+        //for(int i=0;i<s1.length();i++)
+        //  System.out.println("    " + i + ": " + (int) s1.charAt(i));
+        //System.out.println("s2 len=" + s2.length());
+        //for(int i=0;i<s2.length();i++)
+        //  System.out.println("    " + i + ": " + (int) s2.charAt(i));
+
+        // If the input string was invalid, then the
+        // difference is OK
+        if (!validUTF16String(s1))
+          return true;
+
+        return false;
+      }
+      return s1.equals(s2);
+    } catch (UnsupportedEncodingException uee) {
+      return false;
+    }
+  }
+
+  // Only called from assert
+  private static boolean matches(String source, int offset, int length, byte[] result, int upto) {
+    try {
+      String s1 = source.substring(offset, offset+length);
+      String s2 = new String(result, 0, upto, "UTF-8");
+      if (!s1.equals(s2)) {
+        // Allow a difference if s1 is not valid UTF-16
+
+        //System.out.println("DIFF: s1 len=" + s1.length());
+        //for(int i=0;i<s1.length();i++)
+        //  System.out.println("    " + i + ": " + (int) s1.charAt(i));
+        //System.out.println("  s2 len=" + s2.length());
+        //for(int i=0;i<s2.length();i++)
+        //  System.out.println("    " + i + ": " + (int) s2.charAt(i));
+
+        // If the input string was invalid, then the
+        // difference is OK
+        if (!validUTF16String(s1))
+          return true;
+
+        return false;
+      }
+      return s1.equals(s2);
+    } catch (UnsupportedEncodingException uee) {
+      return false;
+    }
+  }
+
+  public static final boolean validUTF16String(String s) {
+    final int size = s.length();
+    for(int i=0;i<size;i++) {
+      char ch = s.charAt(i);
+      if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END) {
+        if (i < size-1) {
+          i++;
+          char nextCH = s.charAt(i);
+          if (nextCH >= UNI_SUR_LOW_START && nextCH <= UNI_SUR_LOW_END) {
+            // Valid surrogate pair
+          } else
+            // Unmatched high surrogate
+            return false;
+        } else
+          // Unmatched high surrogate
+          return false;
+      } else if (ch >= UNI_SUR_LOW_START && ch <= UNI_SUR_LOW_END)
+        // Unmatched low surrogate
+        return false;
+    }
+
+    return true;
+  }
+
+  public static final boolean validUTF16String(char[] s, int size) {
+    for(int i=0;i<size;i++) {
+      char ch = s[i];
+      if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END) {
+        if (i < size-1) {
+          i++;
+          char nextCH = s[i];
+          if (nextCH >= UNI_SUR_LOW_START && nextCH <= UNI_SUR_LOW_END) {
+            // Valid surrogate pair
+          } else
+            return false;
+        } else
+          return false;
+      } else if (ch >= UNI_SUR_LOW_START && ch <= UNI_SUR_LOW_END)
+        // Unmatched low surrogate
+        return false;
+    }
+
+    return true;
+  }
+  */
+
+  /** Shift value for lead surrogate to form a supplementary character. */
+  private static final int LEAD_SURROGATE_SHIFT_ = 10;
+  /** Mask to retrieve the significant value from a trail surrogate.*/
+  private static final int TRAIL_SURROGATE_MASK_ = 0x3FF;
+  /** Trail surrogate minimum value */
+  private static final int TRAIL_SURROGATE_MIN_VALUE = 0xDC00;
+  /** Lead surrogate minimum value */
+  private static final int LEAD_SURROGATE_MIN_VALUE = 0xD800;
+  /** The minimum value for Supplementary code points */
+  private static final int SUPPLEMENTARY_MIN_VALUE = 0x10000;
+  /** Value that all lead surrogate starts with */
+  private static final int LEAD_SURROGATE_OFFSET_ = LEAD_SURROGATE_MIN_VALUE
+          - (SUPPLEMENTARY_MIN_VALUE >> LEAD_SURROGATE_SHIFT_);
+
+  /**
+   * Cover JDK 1.5 API. Create a String from an array of codePoints.
+   *
+   * @param codePoints The code array
+   * @param offset The start of the text in the code point array
+   * @param count The number of code points
+   * @return a String representing the code points between offset and count
+   * @throws IllegalArgumentException If an invalid code point is encountered
+   * @throws IndexOutOfBoundsException If the offset or count are out of bounds.
+   */
+  public static String newString(int[] codePoints, int offset, int count) {
+      if (count < 0) {
+          throw new IllegalArgumentException();
+      }
+      char[] chars = new char[count];
+      int w = 0;
+      for (int r = offset, e = offset + count; r < e; ++r) {
+          int cp = codePoints[r];
+          if (cp < 0 || cp > 0x10ffff) {
+              throw new IllegalArgumentException();
+          }
+          while (true) {
+              try {
+                  if (cp < 0x010000) {
+                      chars[w] = (char) cp;
+                      w++;
+                  } else {
+                      chars[w] = (char) (LEAD_SURROGATE_OFFSET_ + (cp >> LEAD_SURROGATE_SHIFT_));
+                      chars[w + 1] = (char) (TRAIL_SURROGATE_MIN_VALUE + (cp & TRAIL_SURROGATE_MASK_));
+                      w += 2;
+                  }
+                  break;
+              } catch (IndexOutOfBoundsException ex) {
+                  int newlen = (int) (Math.ceil((double) codePoints.length * (w + 2)
+                          / (r - offset + 1)));
+                  char[] temp = new char[newlen];
+                  System.arraycopy(chars, 0, temp, 0, w);
+                  chars = temp;
+              }
+          }
+      }
+      return new String(chars, 0, w);
+  }
+  
+  /**
+   * Interprets the given byte array as UTF-8 and converts to UTF-16. The {@link CharsRef} will be extended if 
+   * it doesn't provide enough space to hold the worst case of each byte becoming a UTF-16 codepoint.
+   * <p>
+   * NOTE: Full characters are read, even if this reads past the length passed (and
+   * can result in an ArrayOutOfBoundsException if invalid UTF-8 is passed).
+   * Explicit checks for valid UTF-8 are not performed. 
+   */
+  // TODO: broken if incoming result.offset != 0
+  public static void UTF8toUTF16(byte[] utf8, int offset, int length, CharsRef chars) {
+    int out_offset = chars.offset = 0;
+    final char[] out = chars.chars =  ArrayUtil.grow(chars.chars, length);
+    final int limit = offset + length;
+    while (offset < limit) {
+      int b = utf8[offset++]&0xff;
+      if (b < 0xc0) {
+        assert b < 0x80;
+        out[out_offset++] = (char)b;
+      } else if (b < 0xe0) {
+        out[out_offset++] = (char)(((b&0x1f)<<6) + (utf8[offset++]&0x3f));
+      } else if (b < 0xf0) {
+        out[out_offset++] = (char)(((b&0xf)<<12) + ((utf8[offset]&0x3f)<<6) + (utf8[offset+1]&0x3f));
+        offset += 2;
+      } else {
+        assert b < 0xf8: "b=" + b;
+        int ch = ((b&0x7)<<18) + ((utf8[offset]&0x3f)<<12) + ((utf8[offset+1]&0x3f)<<6) + (utf8[offset+2]&0x3f);
+        offset += 3;
+        if (ch < UNI_MAX_BMP) {
+          out[out_offset++] = (char)ch;
+        } else {
+          int chHalf = ch - 0x0010000;
+          out[out_offset++] = (char) ((chHalf >> 10) + 0xD800);
+          out[out_offset++] = (char) ((chHalf & HALF_MASK) + 0xDC00);          
+        }
+      }
+    }
+    chars.length = out_offset - chars.offset;
+  }
+
+  /**
+   * Utility method for {@link #UTF8toUTF16(byte[], int, int, CharsRef)}
+   * @see #UTF8toUTF16(byte[], int, int, CharsRef)
+   */
+  public static void UTF8toUTF16(BytesRef bytesRef, CharsRef chars) {
+    UTF8toUTF16(bytesRef.bytes, bytesRef.offset, bytesRef.length, chars);
+  }
+  
+  public static boolean validUTF16String(CharSequence s) {
+    final int size = s.length();
+    for(int i=0;i<size;i++) {
+      char ch = s.charAt(i);
+      if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END) {
+        if (i < size-1) {
+          i++;
+          char nextCH = s.charAt(i);
+          if (nextCH >= UNI_SUR_LOW_START && nextCH <= UNI_SUR_LOW_END) {
+            // Valid surrogate pair
+          } else
+            // Unmatched high surrogate
+            return false;
+        } else
+          // Unmatched high surrogate
+          return false;
+      } else if (ch >= UNI_SUR_LOW_START && ch <= UNI_SUR_LOW_END)
+        // Unmatched low surrogate
+        return false;
+    }
+
+    return true;
+  }
 }

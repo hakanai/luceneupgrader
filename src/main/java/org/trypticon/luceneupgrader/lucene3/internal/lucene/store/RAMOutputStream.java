@@ -20,7 +20,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 import java.io.IOException;
 
 /**
- * A memory-resident {@code IndexOutput} implementation.
+ * A memory-resident {@link IndexOutput} implementation.
  *
  * @lucene.internal
  */
@@ -127,7 +127,7 @@ public class RAMOutputStream extends IndexOutput {
     }
   }
 
-  private void switchCurrentBuffer() {
+  private final void switchCurrentBuffer() throws IOException {
     if (currentBufferIndex == file.numBuffers()) {
       currentBuffer = file.addBuffer(BUFFER_SIZE);
     } else {
@@ -147,6 +147,7 @@ public class RAMOutputStream extends IndexOutput {
 
   @Override
   public void flush() throws IOException {
+    file.setLastModified(System.currentTimeMillis());
     setFileLength();
   }
 
@@ -155,6 +156,11 @@ public class RAMOutputStream extends IndexOutput {
     return currentBufferIndex < 0 ? 0 : bufferStart + bufferPosition;
   }
 
+  /** Returns byte usage of all buffers. */
+  public long sizeInBytes() {
+    return (long) file.numBuffers() * (long) BUFFER_SIZE;
+  }
+  
   @Override
   public void copyBytes(DataInput input, long numBytes) throws IOException {
     assert numBytes >= 0: "numBytes=" + numBytes;

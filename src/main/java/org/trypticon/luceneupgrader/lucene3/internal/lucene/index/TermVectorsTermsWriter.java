@@ -21,9 +21,11 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.RAMOutputStream;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
 
 import java.io.IOException;
 import java.util.Collection;
+
 import java.util.Map;
 
 final class TermVectorsTermsWriter extends TermsHashConsumer {
@@ -43,7 +45,7 @@ final class TermVectorsTermsWriter extends TermsHashConsumer {
 
   @Override
   public TermsHashConsumerPerThread addThread(TermsHashPerThread termsHashPerThread) {
-    return new TermVectorsTermsWriterPerThread(termsHashPerThread);
+    return new TermVectorsTermsWriterPerThread(termsHashPerThread, this);
   }
 
   @Override
@@ -80,7 +82,25 @@ final class TermVectorsTermsWriter extends TermsHashConsumer {
       }
 
       TermVectorsTermsWriterPerThread perThread = (TermVectorsTermsWriterPerThread) entry.getKey();
-      perThread.termsHashPerThread.reset();
+      perThread.termsHashPerThread.reset(true);
+    }
+  }
+
+  int allocCount;
+
+  synchronized PerDoc getPerDoc() {
+    if (freeCount == 0) {
+      allocCount++;
+      if (allocCount > docFreeList.length) {
+        // Grow our free list up front to make sure we have
+        // enough space to recycle all outstanding PerDoc
+        // instances
+        assert allocCount == 1+docFreeList.length;
+        docFreeList = new PerDoc[ArrayUtil.oversize(allocCount, RamUsageEstimator.NUM_BYTES_OBJECT_REF)];
+      }
+      return new PerDoc();
+    } else {
+      return docFreeList[--freeCount];
     }
   }
 
@@ -98,11 +118,78 @@ final class TermVectorsTermsWriter extends TermsHashConsumer {
     }
   }
 
+  synchronized void initTermVectorsWriter() throws IOException {        
+    if (tvx == null) {
+      boolean success = false;
+      try {
+        // If we hit an exception while init'ing the term
+        // vector output files, we must abort this segment
+        // because those files will be in an unknown
+        // state:
+        hasVectors = true;
+        tvx = docWriter.directory.createOutput(IndexFileNames.segmentFileName(docWriter.getSegment(), IndexFileNames.VECTORS_INDEX_EXTENSION));
+        tvd = docWriter.directory.createOutput(IndexFileNames.segmentFileName(docWriter.getSegment(), IndexFileNames.VECTORS_DOCUMENTS_EXTENSION));
+        tvf = docWriter.directory.createOutput(IndexFileNames.segmentFileName(docWriter.getSegment(), IndexFileNames.VECTORS_FIELDS_EXTENSION));
+        
+        tvx.writeInt(TermVectorsReader.FORMAT_CURRENT);
+        tvd.writeInt(TermVectorsReader.FORMAT_CURRENT);
+        tvf.writeInt(TermVectorsReader.FORMAT_CURRENT);
+        success = true;
+      } finally {
+        if (!success) {
+          IOUtils.closeWhileHandlingException(tvx, tvd, tvf);
+        }
+      }
+      lastDocID = 0;
+    }
+  }
+
+  synchronized void finishDocument(PerDoc perDoc) throws IOException {
+
+    assert docWriter.writer.testPoint("TermVectorsTermsWriter.finishDocument start");
+
+    initTermVectorsWriter();
+
+    fill(perDoc.docID);
+
+    // Append term vectors to the real outputs:
+    tvx.writeLong(tvd.getFilePointer());
+    tvx.writeLong(tvf.getFilePointer());
+    tvd.writeVInt(perDoc.numVectorFields);
+    if (perDoc.numVectorFields > 0) {
+      for(int i=0;i<perDoc.numVectorFields;i++) {
+        tvd.writeVInt(perDoc.fieldNumbers[i]);
+      }
+      assert 0 == perDoc.fieldPointers[0];
+      long lastPos = perDoc.fieldPointers[0];
+      for(int i=1;i<perDoc.numVectorFields;i++) {
+        long pos = perDoc.fieldPointers[i];
+        tvd.writeVLong(pos-lastPos);
+        lastPos = pos;
+      }
+      perDoc.perDocTvf.writeTo(tvf);
+      perDoc.numVectorFields = 0;
+    }
+
+    assert lastDocID == perDoc.docID: "lastDocID=" + lastDocID + " perDoc.docID=" + perDoc.docID;
+
+    lastDocID++;
+
+    perDoc.reset();
+    free(perDoc);
+    assert docWriter.writer.testPoint("TermVectorsTermsWriter.finishDocument end");
+  }
+
   @Override
   public void abort() {
     hasVectors = false;
-    IOUtils.closeWhileHandlingException(tvx, tvd, tvf);
-
+    try {
+      IOUtils.closeWhileHandlingException(tvx, tvd, tvf);
+    } catch (IOException e) {
+      // cannot happen since we suppress exceptions
+      throw new RuntimeException(e);
+    }
+    
     try {
       docWriter.directory.deleteFile(IndexFileNames.segmentFileName(docWriter.getSegment(), IndexFileNames.VECTORS_INDEX_EXTENSION));
     } catch (IOException ignored) {
@@ -161,5 +248,14 @@ final class TermVectorsTermsWriter extends TermsHashConsumer {
       numVectorFields++;
     }
 
+    @Override
+    public long sizeInBytes() {
+      return buffer.getSizeInBytes();
+    }
+
+    @Override
+    public void finish() throws IOException {
+      finishDocument(this);
+    }
   }
 }

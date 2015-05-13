@@ -1,9 +1,9 @@
 package org.trypticon.luceneupgrader.lucene4.internal.lucenesupport;
 
-import org.apache.lucene.store.AlreadyClosedException;
-import org.apache.lucene.store.IndexInput;
-import org.apache.lucene.store.RandomAccessInput;
-import org.apache.lucene.util.WeakIdentityMap;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.AlreadyClosedException;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.RandomAccessInput;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.WeakIdentityMap;
 
 import java.io.EOFException;
 import java.io.File;

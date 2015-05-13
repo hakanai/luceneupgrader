@@ -1,7 +1,7 @@
 package org.trypticon.luceneupgrader.lucene4.internal.lucenesupport;
 
-import org.apache.lucene.store.*;
-import org.apache.lucene.util.Constants;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.*;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Constants;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,13 +33,13 @@ public abstract class PathFSDirectory4 extends BaseDirectory {
     /** Create a new PathFSDirectory4 for the named location (ctor for subclasses).
      * @param path the path of the directory
      * @param lockFactory the lock factory to use, or null for the default
-     * ({@link NativeFSLockFactory});
+     * ({@link PathNativeFSLockFactory4});
      * @throws IOException if there is a low-level I/O error
      */
     protected PathFSDirectory4(Path path, LockFactory lockFactory) throws IOException {
-        // new ctors use always NativeFSLockFactory as default:
+        // new ctors use always PathNativeFSLockFactory4 as default:
         if (lockFactory == null) {
-            lockFactory = new NativeFSLockFactory();
+            lockFactory = new PathNativeFSLockFactory4();
         }
         directory = path.toRealPath();
 
@@ -52,7 +52,7 @@ public abstract class PathFSDirectory4 extends BaseDirectory {
 
     /** Creates an PathFSDirectory4 instance, trying to pick the
      *  best implementation given the current environment.
-     *  The directory returned uses the {@link NativeFSLockFactory}.
+     *  The directory returned uses the {@link PathNativeFSLockFactory4}.
      *
      *  <p>Currently this returns {@link MMapDirectory} for most Solaris
      *  and Windows 64-bit JREs, {@link NIOFSDirectory} for other

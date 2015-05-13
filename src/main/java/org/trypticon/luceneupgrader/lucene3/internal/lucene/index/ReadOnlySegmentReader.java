@@ -28,4 +28,9 @@ class ReadOnlySegmentReader extends SegmentReader {
     noWrite();
   }
 
+  // Not synchronized
+  @Override
+  public boolean isDeleted(int n) {
+    return deletedDocs != null && deletedDocs.get(n);
+  }
 }

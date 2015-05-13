@@ -42,14 +42,14 @@ public final class FieldInfo {
    * Controls how much information is stored in the postings lists.
    * @lucene.experimental
    */
-  public enum IndexOptions {
+  public static enum IndexOptions { 
     /** only documents are indexed: term frequencies and positions are omitted */
     DOCS_ONLY,
     /** only documents and term frequencies are indexed: positions are omitted */  
     DOCS_AND_FREQS,
     /** full postings: documents, frequencies, and positions */
     DOCS_AND_FREQS_AND_POSITIONS 
-  }
+  };
 
   FieldInfo(String na, boolean tk, int nu, boolean storeTermVector, 
             boolean omitNorms, boolean storePayloads, IndexOptions indexOptions) {
@@ -70,7 +70,6 @@ public final class FieldInfo {
     assert indexOptions == IndexOptions.DOCS_AND_FREQS_AND_POSITIONS || !storePayloads;
   }
 
-  @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   public Object clone() {
     return new FieldInfo(name, isIndexed, number, storeTermVector,

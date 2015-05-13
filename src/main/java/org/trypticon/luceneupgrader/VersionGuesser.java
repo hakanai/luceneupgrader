@@ -1,9 +1,9 @@
 package org.trypticon.luceneupgrader;
 
-import org.apache.lucene.index.SegmentInfos;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.IOContext;
-import org.apache.lucene.store.IndexInput;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentInfos;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucenesupport.PathFSDirectory4;
 
 import java.io.IOException;

@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene4.internal.lucenesupport;
 
-import org.apache.lucene.store.*;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.*;
 
 import java.io.EOFException;
 import java.io.File;

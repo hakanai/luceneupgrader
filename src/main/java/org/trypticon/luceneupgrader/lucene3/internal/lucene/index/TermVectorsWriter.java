@@ -62,7 +62,7 @@ final class TermVectorsWriter {
    * Add a complete document specified by all its term vectors. If document has no
    * term vectors, add value for tvx.
    * 
-   * @param vectors ...
+   * @param vectors
    * @throws IOException
    */
   public final void addAllDocVectors(TermFreqVector[] vectors) throws IOException {
@@ -141,8 +141,9 @@ final class TermVectorsWriter {
 
             // use delta encoding for positions
             int lastPosition = 0;
-            for (final int position : positions) {
-              tvf.writeVInt(position - lastPosition);
+            for(int k=0;k<positions.length;k++) {
+              final int position = positions[k];
+              tvf.writeVInt(position-lastPosition);
               lastPosition = position;
             }
           }
@@ -155,11 +156,11 @@ final class TermVectorsWriter {
 
             // use delta encoding for offsets
             int lastEndOffset = 0;
-            for (TermVectorOffsetInfo offset : offsets) {
-              final int startOffset = offset.getStartOffset();
-              final int endOffset = offset.getEndOffset();
-              tvf.writeVInt(startOffset - lastEndOffset);
-              tvf.writeVInt(endOffset - startOffset);
+            for(int k=0;k<offsets.length;k++) {
+              final int startOffset = offsets[k].getStartOffset();
+              final int endOffset = offsets[k].getEndOffset();
+              tvf.writeVInt(startOffset-lastEndOffset);
+              tvf.writeVInt(endOffset-startOffset);
               lastEndOffset = endOffset;
             }
           }

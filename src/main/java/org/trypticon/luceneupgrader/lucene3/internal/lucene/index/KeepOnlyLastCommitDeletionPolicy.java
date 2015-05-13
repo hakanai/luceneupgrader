@@ -20,7 +20,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 import java.util.List;
 
 /**
- * This {@code IndexDeletionPolicy} implementation that
+ * This {@link IndexDeletionPolicy} implementation that
  * keeps only the most recent commit and immediately removes
  * all prior commits after a new commit is done.  This is
  * the default deletion policy.

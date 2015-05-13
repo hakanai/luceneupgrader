@@ -17,18 +17,20 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
  * limitations under the License.
  */
 
+import java.io.IOException;
+
 /**
- * <p>Base class for Locking implementation.  {@code Directory} uses
+ * <p>Base class for Locking implementation.  {@link Directory} uses
  * instances of this class to implement locking.</p>
  *
  * <p>Note that there are some useful tools to verify that
- * your LockFactory is working correctly: {@code
- * VerifyingLockFactory}, {@code LockStressTest}, {@code
+ * your LockFactory is working correctly: {@link
+ * VerifyingLockFactory}, {@link LockStressTest}, {@link
  * LockVerifyServer}.</p>
  *
- *
- *
- *
+ * @see LockVerifyServer
+ * @see LockStressTest
+ * @see VerifyingLockFactory
  */
 
 public abstract class LockFactory {
@@ -50,9 +52,23 @@ public abstract class LockFactory {
   }
 
   /**
+   * Get the prefix in use for all locks created in this LockFactory.
+   */
+  public String getLockPrefix() {
+    return this.lockPrefix;
+  }
+
+  /**
    * Return a new Lock instance identified by lockName.
    * @param lockName name of the lock to be created.
    */
   public abstract Lock makeLock(String lockName);
 
+  /**
+   * Attempt to clear (forcefully unlock and remove) the
+   * specified lock.  Only call this at a time when you are
+   * certain this lock is no longer in use.
+   * @param lockName name of the lock to be cleared.
+   */
+  abstract public void clearLock(String lockName) throws IOException;
 }

@@ -17,6 +17,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
+import java.io.IOException;
+
 final class TermsHashPerThread extends InvertedDocConsumerPerThread {
 
   final TermsHash termsHash;
@@ -26,16 +28,22 @@ final class TermsHashPerThread extends InvertedDocConsumerPerThread {
   final CharBlockPool charPool;
   final IntBlockPool intPool;
   final ByteBlockPool bytePool;
+  final boolean primary;
+  final DocumentsWriter.DocState docState;
 
   public TermsHashPerThread(DocInverterPerThread docInverterPerThread, final TermsHash termsHash, final TermsHash nextTermsHash, final TermsHashPerThread primaryPerThread) {
+    docState = docInverterPerThread.docState;
+
     this.termsHash = termsHash;
     this.consumer = termsHash.consumer.addThread(this);
 
     if (nextTermsHash != null) {
       // We are primary
-      charPool = new CharBlockPool();
+      charPool = new CharBlockPool(termsHash.docWriter);
+      primary = true;
     } else {
       charPool = primaryPerThread.charPool;
+      primary = false;
     }
 
     intPool = new IntBlockPool(termsHash.docWriter);
@@ -52,9 +60,48 @@ final class TermsHashPerThread extends InvertedDocConsumerPerThread {
     return new TermsHashPerField(docInverterPerField, this, nextPerThread, fieldInfo);
   }
 
+  @Override
+  synchronized public void abort() {
+    reset(true);
+    try {
+      consumer.abort();
+    } finally {
+      if (nextPerThread != null) {
+        nextPerThread.abort();
+      }
+    }
+  }
+
+  @Override
+  public void startDocument() throws IOException {
+    consumer.startDocument();
+    if (nextPerThread != null)
+      nextPerThread.consumer.startDocument();
+  }
+
+  @Override
+  public DocumentsWriter.DocWriter finishDocument() throws IOException {
+    final DocumentsWriter.DocWriter doc = consumer.finishDocument();
+
+    final DocumentsWriter.DocWriter doc2;
+    if (nextPerThread != null)
+      doc2 = nextPerThread.consumer.finishDocument();
+    else
+      doc2 = null;
+    if (doc == null)
+      return doc2;
+    else {
+      doc.setNext(doc2);
+      return doc;
+    }
+  }
+
   // Clear all state
-  void reset() {
+  void reset(boolean recyclePostings) {
     intPool.reset();
     bytePool.reset();
+
+    if (primary)
+      charPool.reset();
   }
 }

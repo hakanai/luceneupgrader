@@ -18,7 +18,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
  */
 
 /**     
- * Implements {@code PackedInts.Mutable}, but grows the
+ * Implements {@link PackedInts.Mutable}, but grows the
  * bit count of the underlying packed ints on-demand.
  *
  * <p>@lucene.internal</p>
@@ -36,7 +36,7 @@ public class GrowableWriter implements PackedInts.Mutable {
     currentMaxValue = PackedInts.maxValue(current.getBitsPerValue());
   }
 
-  private int getSize(int bpv) {
+  private final int getSize(int bpv) {
     if (roundFixedSize) {
       return PackedInts.getNextFixedSize(bpv);
     } else {
@@ -60,6 +60,16 @@ public class GrowableWriter implements PackedInts.Mutable {
     return current;
   }
 
+  // @Override
+  public Object getArray() {
+    return current.getArray();
+  }
+
+  // @Override
+  public boolean hasArray() {
+    return current.hasArray();
+  }
+
   public void set(int index, long value) {
     if (value >= currentMaxValue) {
       int bpv = getBitsPerValue();
@@ -78,4 +88,16 @@ public class GrowableWriter implements PackedInts.Mutable {
     current.set(index, value);
   }
 
+  public void clear() {
+    current.clear();
+  }
+
+  public GrowableWriter resize(int newSize) {
+    GrowableWriter next = new GrowableWriter(getBitsPerValue(), newSize, roundFixedSize);
+    final int limit = Math.min(size(), newSize);
+    for(int i=0;i<limit;i++) {
+      next.set(i, get(i));
+    }
+    return next;
+  }
 }

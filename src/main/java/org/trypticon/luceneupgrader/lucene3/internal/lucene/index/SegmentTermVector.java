@@ -17,6 +17,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
+import java.util.*;
+
 
 class SegmentTermVector implements TermFreqVector {
   private String field;
@@ -57,7 +59,7 @@ class SegmentTermVector implements TermFreqVector {
     return terms == null ? 0 : terms.length;
   }
 
-  public String[] getTerms() {
+  public String [] getTerms() {
     return terms;
   }
 
@@ -65,4 +67,24 @@ class SegmentTermVector implements TermFreqVector {
     return termFreqs;
   }
 
+  public int indexOf(String termText) {
+    if(terms == null)
+      return -1;
+    int res = Arrays.binarySearch(terms, termText);
+    return res >= 0 ? res : -1;
+  }
+
+  public int[] indexesOf(String [] termNumbers, int start, int len) {
+    // TODO: there must be a more efficient way of doing this.
+    //       At least, we could advance the lower bound of the terms array
+    //       as we find valid indexes. Also, it might be possible to leverage
+    //       this even more by starting in the middle of the termNumbers array
+    //       and thus dividing the terms array maybe in half with each found index.
+    int res[] = new int[len];
+
+    for (int i=0; i < len; i++) {
+      res[i] = indexOf(termNumbers[start+ i]);
+    }
+    return res;
+  }
 }

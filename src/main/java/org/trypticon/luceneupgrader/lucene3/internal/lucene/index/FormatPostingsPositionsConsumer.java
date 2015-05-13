@@ -24,8 +24,8 @@ abstract class FormatPostingsPositionsConsumer {
 
   /** Add a new position & payload.  If payloadLength > 0
    *  you must read those bytes from the IndexInput. */
-  abstract void addPosition(int position, byte[] payload, int payloadLength) throws IOException;
+  abstract void addPosition(int position, byte[] payload, int payloadOffset, int payloadLength) throws IOException;
 
   /** Called when we are done adding positions & payloads */
-  abstract void finish();
+  abstract void finish() throws IOException;
 }

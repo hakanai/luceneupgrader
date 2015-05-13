@@ -25,46 +25,56 @@ import java.io.IOException;
 import java.util.HashSet;
 
 /**
- * <p>Implements {@code LockFactory} using native OS file
+ * <p>Implements {@link LockFactory} using native OS file
  * locks.  Note that because this LockFactory relies on
  * java.nio.* APIs for locking, any problems with those APIs
  * will cause locking to fail.  Specifically, on certain NFS
  * environments the java.nio.* locks will fail (the lock can
- * incorrectly be double acquired) whereas {@code
+ * incorrectly be double acquired) whereas {@link
  * SimpleFSLockFactory} worked perfectly in those same
  * environments.  For NFS based access to an index, it's
- * recommended that you try {@code SimpleFSLockFactory}
+ * recommended that you try {@link SimpleFSLockFactory}
  * first and work around the one limitation that a lock file
  * could be left when the JVM exits abnormally.</p>
  *
- * <p>The primary benefit of {@code NativeFSLockFactory} is
+ * <p>The primary benefit of {@link NativeFSLockFactory} is
  * that lock files will be properly removed (by the OS) if
  * the JVM has an abnormal exit.</p>
  * 
- * <p>Note that, unlike {@code SimpleFSLockFactory}, the existence of
+ * <p>Note that, unlike {@link SimpleFSLockFactory}, the existence of
  * leftover lock files in the filesystem on exiting the JVM
  * is fine because the OS will free the locks held against
  * these files even though the files still remain.</p>
  *
  * <p>If you suspect that this or any other LockFactory is
  * not working properly in your environment, you can easily
- * test it by using {@code VerifyingLockFactory}, {@code
- * LockVerifyServer} and {@code LockStressTest}.</p>
+ * test it by using {@link VerifyingLockFactory}, {@link
+ * LockVerifyServer} and {@link LockStressTest}.</p>
  *
- *
+ * @see LockFactory
  */
 
 public class NativeFSLockFactory extends FSLockFactory {
 
   /**
    * Create a NativeFSLockFactory instance, with null (unset)
-   * lock directory. When you pass this factory to a {@code FSDirectory}
+   * lock directory. When you pass this factory to a {@link FSDirectory}
    * subclass, the lock directory is automatically set to the
    * directory itself. Be sure to create one instance for each directory
    * your create!
    */
   public NativeFSLockFactory() throws IOException {
-    this(null);
+    this((File) null);
+  }
+
+  /**
+   * Create a NativeFSLockFactory instance, storing lock
+   * files into the specified lockDirName:
+   *
+   * @param lockDirName where lock files are created.
+   */
+  public NativeFSLockFactory(String lockDirName) throws IOException {
+    this(new File(lockDirName));
   }
 
   /**
@@ -73,7 +83,7 @@ public class NativeFSLockFactory extends FSLockFactory {
    * 
    * @param lockDir where lock files are created.
    */
-  public NativeFSLockFactory(File lockDir) {
+  public NativeFSLockFactory(File lockDir) throws IOException {
     setLockDir(lockDir);
   }
 
@@ -84,6 +94,29 @@ public class NativeFSLockFactory extends FSLockFactory {
     return new NativeFSLock(lockDir, lockName);
   }
 
+  @Override
+  public void clearLock(String lockName) throws IOException {
+    // Note that this isn't strictly required anymore
+    // because the existence of these files does not mean
+    // they are locked, but, still do this in case people
+    // really want to see the files go away:
+    if (lockDir.exists()) {
+      
+      // Try to release the lock first - if it's held by another process, this
+      // method should not silently fail.
+      // NOTE: makeLock fixes the lock name by prefixing it w/ lockPrefix.
+      // Therefore it should be called before the code block next which prefixes
+      // the given name.
+      makeLock(lockName).release();
+
+      if (lockPrefix != null) {
+        lockName = lockPrefix + "-" + lockName;
+      }
+      
+      // As mentioned above, we don't care if the deletion of the file failed.
+      new File(lockDir, lockName).delete();
+    }
+  }
 }
 
 class NativeFSLock extends Lock {
@@ -113,7 +146,7 @@ class NativeFSLock extends Lock {
    * (same FileChannel instance or not), so we may want to 
    * change this when Lucene moves to Java 1.6.
    */
-  private static final HashSet<String> LOCK_HELD = new HashSet<String>();
+  private static HashSet<String> LOCK_HELD = new HashSet<String>();
 
   public NativeFSLock(File lockDir, String lockFileName) {
     this.lockDir = lockDir;
@@ -249,7 +282,6 @@ class NativeFSLock extends Lock {
       // LUCENE-2421: we don't care anymore if the file cannot be deleted
       // because it's held up by another process (e.g. AntiVirus). NativeFSLock
       // does not depend on the existence/absence of the lock file
-      //noinspection ResultOfMethodCallIgnored
       path.delete();
     } else {
       // if we don't hold the lock, and somebody still called release(), for
@@ -270,6 +302,26 @@ class NativeFSLock extends Lock {
         }
       }
     }
+  }
+
+  @Override
+  public synchronized boolean isLocked() {
+    // The test for is isLocked is not directly possible with native file locks:
+    
+    // First a shortcut, if a lock reference in this instance is available
+    if (lockExists()) return true;
+    
+    // Look if lock file is present; if not, there can definitely be no lock!
+    if (!path.exists()) return false;
+    
+    // Try to obtain and release (if was locked) the lock
+    try {
+      boolean obtained = obtain();
+      if (obtained) release();
+      return !obtained;
+    } catch (IOException ioe) {
+      return false;
+    }    
   }
 
   @Override

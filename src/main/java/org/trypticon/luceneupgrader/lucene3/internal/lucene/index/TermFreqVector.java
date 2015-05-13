@@ -19,26 +19,26 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 /** Provides access to stored term vector of 
  *  a document field.  The vector consists of the name of the field, an array of the terms that occur in the field of the
- * {@code org.apache.lucene.document.Document} and a parallel array of frequencies.  Thus, getTermFrequencies()[5] corresponds with the
+ * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Document} and a parallel array of frequencies.  Thus, getTermFrequencies()[5] corresponds with the
  * frequency of getTerms()[5], assuming there are at least 5 terms in the Document.
  */
 public interface TermFreqVector {
   /**
-   * The {@code org.apache.lucene.document.Fieldable} name.
+   * The {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Fieldable} name.
    * @return The name of the field this vector is associated with.
    * 
-   */
-  String getField();
+   */ 
+  public String getField();
   
   /** 
    * @return The number of terms in the term vector.
    */
-  int size();
+  public int size();
 
   /** 
    * @return An Array of term texts in ascending order.
    */
-  String[] getTerms();
+  public String[] getTerms();
 
 
   /** Array of term frequencies. Locations of the array correspond one to one
@@ -46,7 +46,26 @@ public interface TermFreqVector {
    *  method. Each location in the array contains the number of times this
    *  term occurs in the document or the document field.
    */
-  int[] getTermFrequencies();
+  public int[] getTermFrequencies();
+  
 
+  /** Return an index in the term numbers array returned from
+   *  <code>getTerms</code> at which the term with the specified
+   *  <code>term</code> appears. If this term does not appear in the array,
+   *  return -1.
+   */
+  public int indexOf(String term);
+
+
+  /** Just like <code>indexOf(int)</code> but searches for a number of terms
+   *  at the same time. Returns an array that has the same size as the number
+   *  of terms searched for, each slot containing the result of searching for
+   *  that term number.
+   *
+   *  @param terms array containing terms to look for
+   *  @param start index in the array where the list of terms starts
+   *  @param len the number of terms in the list
+   */
+  public int[] indexesOf(String[] terms, int start, int len);
 
 }

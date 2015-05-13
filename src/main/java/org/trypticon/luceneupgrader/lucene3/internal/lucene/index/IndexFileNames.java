@@ -22,11 +22,11 @@ import java.util.regex.Pattern;
 /**
  * This class contains useful constants representing filenames and extensions
  * used by lucene, as well as convenience methods for querying whether a file
- * name matches an extension ({@code #matchesExtension(String, String)
+ * name matches an extension ({@link #matchesExtension(String, String)
  * matchesExtension}), as well as generating file names from a segment name,
  * generation and extension (
- * {@code #fileNameFromGeneration(String, String, long) fileNameFromGeneration},
- * {@code #segmentFileName(String, String) segmentFileName}).
+ * {@link #fileNameFromGeneration(String, String, long) fileNameFromGeneration},
+ * {@link #segmentFileName(String, String) segmentFileName}).
  * 
  * @lucene.internal
  */
@@ -151,6 +151,24 @@ public final class IndexFileNames {
     TERMS_INDEX_EXTENSION,
     NORMS_EXTENSION
   };
+  
+  /** File extensions of old-style index files */
+  public static final String COMPOUND_EXTENSIONS[] = new String[] {
+    FIELD_INFOS_EXTENSION,
+    FREQ_EXTENSION,
+    PROX_EXTENSION,
+    FIELDS_INDEX_EXTENSION,
+    FIELDS_EXTENSION,
+    TERMS_INDEX_EXTENSION,
+    TERMS_EXTENSION
+  };
+  
+  /** File extensions for term vector support */
+  public static final String VECTOR_EXTENSIONS[] = new String[] {
+    VECTORS_INDEX_EXTENSION,
+    VECTORS_DOCUMENTS_EXTENSION,
+    VECTORS_FIELDS_EXTENSION
+  };
 
   /**
    * Computes the full file name from base, extension and generation. If the
@@ -164,7 +182,7 @@ public final class IndexFileNames {
    * @param ext extension of the filename
    * @param gen generation
    */
-  public static String fileNameFromGeneration(String base, String ext, long gen) {
+  public static final String fileNameFromGeneration(String base, String ext, long gen) {
     if (gen == SegmentInfo.NO) {
       return null;
     } else if (gen == SegmentInfo.WITHOUT_GEN) {
@@ -184,9 +202,9 @@ public final class IndexFileNames {
 
   /**
    * Returns true if the provided filename is one of the doc store files (ends
-   * with an extension in {@code #STORE_INDEX_EXTENSIONS}).
+   * with an extension in {@link #STORE_INDEX_EXTENSIONS}).
    */
-  public static boolean isDocStoreFile(String fileName) {
+  public static final boolean isDocStoreFile(String fileName) {
     if (fileName.endsWith(COMPOUND_FILE_STORE_EXTENSION))
       return true;
     for (String ext : STORE_INDEX_EXTENSIONS) {
@@ -204,7 +222,7 @@ public final class IndexFileNames {
    * <b>NOTE:</b> .&lt;ext&gt; is added to the result file name only if
    * <code>ext</code> is not empty.
    */
-  public static String segmentFileName(String segmentName, String ext) {
+  public static final String segmentFileName(String segmentName, String ext) {
     if (ext.length() > 0) {
       return new StringBuilder(segmentName.length() + 1 + ext.length()).append(
           segmentName).append('.').append(ext).toString();
@@ -217,7 +235,7 @@ public final class IndexFileNames {
    * Returns true if the given filename ends with the given extension. One
    * should provide a <i>pure</i> extension, without '.'.
    */
-  public static boolean matchesExtension(String filename, String ext) {
+  public static final boolean matchesExtension(String filename, String ext) {
     // It doesn't make a difference whether we allocate a StringBuilder ourself
     // or not, since there's only 1 '+' operator.
     return filename.endsWith("." + ext);
@@ -225,14 +243,14 @@ public final class IndexFileNames {
 
   /**
    * Strips the segment file name out of the given one. If you used
-   * {@code #segmentFileName} or {@code #fileNameFromGeneration} to create your
+   * {@link #segmentFileName} or {@link #fileNameFromGeneration} to create your
    * files, then this method simply removes whatever comes before the first '.',
    * or the second '_' (excluding both), in case of deleted docs.
    * 
    * @return the filename with the segment name removed, or the given filename
    *         if it does not contain a '.' and '_'.
    */
-  public static String stripSegmentName(String filename) {
+  public static final String stripSegmentName(String filename) {
     // If it is a .del file, there's an '_' after the first character
     int idx = filename.indexOf('_', 1);
     if (idx == -1) {

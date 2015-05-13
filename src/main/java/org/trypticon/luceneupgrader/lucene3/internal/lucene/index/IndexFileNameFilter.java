@@ -19,7 +19,6 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.Collections;
 import java.util.HashSet;
 
 /**
@@ -36,13 +35,17 @@ public class IndexFileNameFilter implements FilenameFilter {
   // Prevent instantiation.
   private IndexFileNameFilter() {
     extensions = new HashSet<String>();
-    Collections.addAll(extensions, IndexFileNames.INDEX_EXTENSIONS);
+    for (String ext : IndexFileNames.INDEX_EXTENSIONS) {
+      extensions.add(ext);
+    }
     extensionsInCFS = new HashSet<String>();
-    Collections.addAll(extensionsInCFS, IndexFileNames.INDEX_EXTENSIONS_IN_COMPOUND_FILE);
+    for (String ext : IndexFileNames.INDEX_EXTENSIONS_IN_COMPOUND_FILE) {
+      extensionsInCFS.add(ext);
+    }
   }
 
   /* (non-Javadoc)
-   *
+   * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)
    */
   public boolean accept(File dir, String name) {
     int i = name.lastIndexOf('.');
@@ -60,6 +63,27 @@ public class IndexFileNameFilter implements FilenameFilter {
     } else {
       if (name.equals(IndexFileNames.DELETABLE)) return true;
       else if (name.startsWith(IndexFileNames.SEGMENTS)) return true;
+    }
+    return false;
+  }
+
+  /**
+   * Returns true if this is a file that would be contained
+   * in a CFS file.  This function should only be called on
+   * files that pass the above "accept" (ie, are already
+   * known to be a Lucene index file).
+   */
+  public boolean isCFSFile(String name) {
+    int i = name.lastIndexOf('.');
+    if (i != -1) {
+      String extension = name.substring(1+i);
+      if (extensionsInCFS.contains(extension)) {
+        return true;
+      }
+      if (extension.startsWith("f") &&
+          extension.matches("f\\d+")) {
+        return true;
+      }
     }
     return false;
   }

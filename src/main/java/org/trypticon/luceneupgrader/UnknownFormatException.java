@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader;
 
-import org.apache.lucene.index.CorruptIndexException;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.CorruptIndexException;
 
 /**
  * Specific exception thrown when the upgrade tool figure the index is too old to migrate.

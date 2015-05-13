@@ -17,5 +17,11 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
+import java.io.IOException;
+
 abstract class DocFieldConsumerPerThread {
+  abstract void startDocument() throws IOException;
+  abstract DocumentsWriter.DocWriter finishDocument() throws IOException;
+  abstract DocFieldConsumerPerField addField(FieldInfo fi);
+  abstract void abort();
 }

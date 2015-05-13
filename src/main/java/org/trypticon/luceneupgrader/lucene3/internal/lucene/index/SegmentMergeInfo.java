@@ -17,9 +17,9 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.PayloadProcessorProvider.ReaderPayloadProcessor;
-
 import java.io.IOException;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.PayloadProcessorProvider.ReaderPayloadProcessor;
 
 final class SegmentMergeInfo {
   Term term;
@@ -32,7 +32,8 @@ final class SegmentMergeInfo {
   private int[] docMap;  // use getDocMap()
   ReaderPayloadProcessor readerPayloadProcessor;
   
-  SegmentMergeInfo(int b, TermEnum te, IndexReader r) {
+  SegmentMergeInfo(int b, TermEnum te, IndexReader r)
+    throws IOException {
     base = b;
     reader = r;
     termEnum = te;
@@ -43,6 +44,19 @@ final class SegmentMergeInfo {
   int[] getDocMap() {
     if (docMap == null) {
       delCount = 0;
+      // build array which maps document numbers around deletions 
+      if (reader.hasDeletions()) {
+        int maxDoc = reader.maxDoc();
+        docMap = new int[maxDoc];
+        int j = 0;
+        for (int i = 0; i < maxDoc; i++) {
+          if (reader.isDeleted(i)) {
+            delCount++;
+            docMap[i] = -1;
+          } else
+            docMap[i] = j++;
+        }
+      }
     }
     return docMap;
   }

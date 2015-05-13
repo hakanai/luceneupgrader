@@ -1,8 +1,8 @@
 package org.trypticon.luceneupgrader.lucene4.internal.lucenesupport;
 
-import org.apache.lucene.store.Lock;
-import org.apache.lucene.store.NativeFSLockFactory;
-import org.apache.lucene.util.IOUtils;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Lock;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.NativeFSLockFactory;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 
 import java.io.File;
 import java.io.IOException;

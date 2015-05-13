@@ -25,14 +25,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-/** This {@code MergePolicy} is used for upgrading all existing segments of
-  * an index when calling {@code IndexWriter#forceMerge(int)}.
+/** This {@link MergePolicy} is used for upgrading all existing segments of
+  * an index when calling {@link IndexWriter#forceMerge(int)}.
   * All other methods delegate to the base {@code MergePolicy} given to the constructor.
   * This allows for an as-cheap-as possible upgrade of an older index by only upgrading segments that
   * are created by previous Lucene versions. forceMerge does no longer really merge;
   * it is just used to &quot;forceMerge&quot; older segment versions away.
-  * <p>In general one would use {@code IndexUpgrader}, but for a fully customizeable upgrade,
-  * you can use this like any other {@code MergePolicy} and call {@code IndexWriter#forceMerge(int)}:
+  * <p>In general one would use {@link IndexUpgrader}, but for a fully customizeable upgrade,
+  * you can use this like any other {@code MergePolicy} and call {@link IndexWriter#forceMerge(int)}:
   * <pre class="prettyprint lang-java">
   *  IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_XX, new KeywordAnalyzer());
   *  iwc.setMergePolicy(new UpgradeIndexMergePolicy(iwc.getMergePolicy()));
@@ -46,13 +46,13 @@ import java.util.HashMap;
   * were added to the index is preserved), do a forceMerge(1) instead. Please note, the
   * delegate {@code MergePolicy} may also reorder documents.
   * @lucene.experimental
-  *
+  * @see IndexUpgrader
   */
 public class UpgradeIndexMergePolicy extends MergePolicy {
 
   protected final MergePolicy base;
 
-  /** Wrap the given {@code MergePolicy} and intercept forceMerge requests to
+  /** Wrap the given {@link MergePolicy} and intercept forceMerge requests to
    * only upgrade segments written with previous Lucene versions. */
   public UpgradeIndexMergePolicy(MergePolicy base) {
     this.base = base;
@@ -74,12 +74,12 @@ public class UpgradeIndexMergePolicy extends MergePolicy {
   }
   
   @Override
-  public MergeSpecification findMerges(SegmentInfos segmentInfos) throws IOException {
+  public MergeSpecification findMerges(SegmentInfos segmentInfos) throws CorruptIndexException, IOException {
     return base.findMerges(segmentInfos);
   }
   
   @Override
-  public MergeSpecification findForcedMerges(SegmentInfos segmentInfos, int maxSegmentCount, Map<SegmentInfo,Boolean> segmentsToMerge) throws IOException {
+  public MergeSpecification findForcedMerges(SegmentInfos segmentInfos, int maxSegmentCount, Map<SegmentInfo,Boolean> segmentsToMerge) throws CorruptIndexException, IOException {
     // first find all old segments
     final Map<SegmentInfo,Boolean> oldSegments = new HashMap<SegmentInfo,Boolean>();
     for (final SegmentInfo si : segmentInfos) {
@@ -124,7 +124,12 @@ public class UpgradeIndexMergePolicy extends MergePolicy {
 
     return spec;
   }
-
+  
+  @Override
+  public MergeSpecification findForcedDeletesMerges(SegmentInfos segmentInfos) throws CorruptIndexException, IOException {
+    return base.findForcedDeletesMerges(segmentInfos);
+  }
+  
   @Override
   public boolean useCompoundFile(SegmentInfos segments, SegmentInfo newSegment) throws IOException {
     return base.useCompoundFile(segments, newSegment);

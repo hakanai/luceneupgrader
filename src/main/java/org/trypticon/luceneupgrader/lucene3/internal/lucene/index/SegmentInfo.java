@@ -153,6 +153,10 @@ public final class SegmentInfo implements Cloneable {
     this.diagnostics = diagnostics;
   }
 
+  public Map<String, String> getDiagnostics() {
+    return diagnostics;
+  }
+
   /**
    * Construct a new SegmentInfo instance by reading a
    * previously saved SegmentInfo from input.
@@ -213,7 +217,7 @@ public final class SegmentInfo implements Cloneable {
       if (format <= SegmentInfos.FORMAT_DIAGNOSTICS) {
         diagnostics = input.readStringStringMap();
       } else {
-        diagnostics = Collections.emptyMap();
+        diagnostics = Collections.<String,String>emptyMap();
       }
 
       if (format <= SegmentInfos.FORMAT_HAS_VECTORS) {
@@ -256,7 +260,7 @@ public final class SegmentInfo implements Cloneable {
       docStoreSegment = null;
       delCount = -1;
       hasProx = true;
-      diagnostics = Collections.emptyMap();
+      diagnostics = Collections.<String,String>emptyMap();
     }
   }
   
@@ -317,7 +321,7 @@ public final class SegmentInfo implements Cloneable {
     }
   }
 
-  public boolean getHasVectors() {
+  public boolean getHasVectors() throws IOException {
     return hasVectors;
   }
 
@@ -366,7 +370,6 @@ public final class SegmentInfo implements Cloneable {
     clearFiles();
   }
 
-  @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   public Object clone() {
     SegmentInfo si = new SegmentInfo(name, docCount, dir, false, hasSingleNormFile,
@@ -408,7 +411,11 @@ public final class SegmentInfo implements Cloneable {
       // Must fallback to directory file exists check:
       String fileName = name + ".s" + fieldNumber;
       return dir.fileExists(fileName);
-    } else return !(normGen == null || normGen[fieldNumber] == NO);
+    } else if (normGen == null || normGen[fieldNumber] == NO) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   /**
@@ -433,9 +440,10 @@ public final class SegmentInfo implements Cloneable {
         String pattern;
         pattern = name + ".s";
         int patternLength = pattern.length();
-        for (String fileName : result) {
+        for(int i = 0; i < result.length; i++){
+          String fileName = result[i];
           if (filter.accept(null, fileName) && fileName.startsWith(pattern) && Character.isDigit(fileName.charAt(patternLength)))
-            return true;
+              return true;
         }
         return false;
       }
@@ -443,8 +451,8 @@ public final class SegmentInfo implements Cloneable {
       // This means this segment was saved with LOCKLESS
       // code so we first check whether any normGen's are >= 1
       // (meaning they definitely have separate norms):
-      for (long aNormGen : normGen) {
-        if (aNormGen >= YES) {
+      for(int i=0;i<normGen.length;i++) {
+        if (normGen[i] >= YES) {
           return true;
         }
       }
@@ -557,11 +565,32 @@ public final class SegmentInfo implements Cloneable {
   public boolean getDocStoreIsCompoundFile() {
     return docStoreIsCompoundFile;
   }
-
+  
+  void setDocStoreIsCompoundFile(boolean v) {
+    docStoreIsCompoundFile = v;
+    clearFiles();
+  }
+  
   public String getDocStoreSegment() {
     return docStoreSegment;
   }
+  
+  public void setDocStoreSegment(String segment) {
+    docStoreSegment = segment;
+  }
+  
+  void setDocStoreOffset(int offset) {
+    docStoreOffset = offset;
+    clearFiles();
+  }
 
+  void setDocStore(int offset, String segment, boolean isCompoundFile) {        
+    docStoreOffset = offset;
+    docStoreSegment = segment;
+    docStoreIsCompoundFile = isCompoundFile;
+    clearFiles();
+  }
+  
   /**
    * Save this segment's info.
    */
@@ -584,8 +613,8 @@ public final class SegmentInfo implements Cloneable {
       output.writeInt(NO);
     } else {
       output.writeInt(normGen.length);
-      for (long aNormGen : normGen) {
-        output.writeLong(aNormGen);
+      for(int j = 0; j < normGen.length; j++) {
+        output.writeLong(normGen[j]);
       }
     }
     output.writeByte(isCompoundFile);
@@ -598,6 +627,10 @@ public final class SegmentInfo implements Cloneable {
   void setHasProx(boolean hasProx) {
     this.hasProx = hasProx;
     clearFiles();
+  }
+
+  public boolean getHasProx() {
+    return hasProx;
   }
 
   private void addIfExists(Set<String> files, String fileName) throws IOException {
@@ -699,7 +732,8 @@ public final class SegmentInfo implements Cloneable {
       int prefixLength = prefix.length();
       String[] allFiles = dir.listAll();
       final IndexFileNameFilter filter = IndexFileNameFilter.getFilter();
-      for (String fileName : allFiles) {
+      for(int i=0;i<allFiles.length;i++) {
+        String fileName = allFiles[i];
         if (filter.accept(null, fileName) && fileName.length() > prefixLength && Character.isDigit(fileName.charAt(prefixLength)) && fileName.startsWith(prefix)) {
           filesSet.add(fileName);
         }

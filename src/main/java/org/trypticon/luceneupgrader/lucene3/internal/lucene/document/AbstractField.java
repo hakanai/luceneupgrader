@@ -15,8 +15,12 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.document;
  * limitations under the License.
  */
 
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.PhraseQuery; // for javadocs
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans.SpanQuery; // for javadocs
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.TokenStream;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInvertState;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper; // for javadocs
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInfo.IndexOptions;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper;
 
 
 /**
@@ -36,8 +40,11 @@ public abstract class AbstractField implements Fieldable {
   protected boolean isBinary = false;
   protected boolean lazy = false;
   protected IndexOptions indexOptions = IndexOptions.DOCS_AND_FREQS_AND_POSITIONS;
+  protected float boost = 1.0f;
   // the data object for all different kind of field values
   protected Object fieldsData = null;
+  // pre-analyzed tokenStream for indexed fields
+  protected TokenStream tokenStream;
   // length/offset for all primitive types
   protected int binaryLength;
   protected int binaryOffset;
@@ -61,6 +68,47 @@ public abstract class AbstractField implements Fieldable {
     setStoreTermVector(termVector);
   }
 
+  /** Sets the boost factor hits on this field.  This value will be
+   * multiplied into the score of all hits on this this field of this
+   * document.
+   *
+   * <p>The boost is multiplied by {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Document#getBoost()} of the document
+   * containing this field.  If a document has multiple fields with the same
+   * name, all such values are multiplied together.  This product is then
+   * used to compute the norm factor for the field.  By
+   * default, in the {@link
+   * org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Similarity#computeNorm(String,
+   * FieldInvertState)} method, the boost value is multiplied
+   * by the {@link
+   * org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Similarity#lengthNorm(String,
+   * int)} and then
+   * rounded by {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Similarity#encodeNormValue(float)} before it is stored in the
+   * index.  One should attempt to ensure that this product does not overflow
+   * the range of that encoding.
+   *
+   * @see org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Document#setBoost(float)
+   * @see org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Similarity#computeNorm(String, FieldInvertState)
+   * @see org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Similarity#encodeNormValue(float)
+   */
+  public void setBoost(float boost) {
+    this.boost = boost;
+  }
+
+  /** Returns the boost factor for hits for this field.
+   *
+   * <p>The default value is 1.0.
+   *
+   * <p>Note: this value is not stored directly with the document in the index.
+   * Documents returned from {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader#document(int)} and
+   * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Searcher#doc(int)} may thus not have the same value present as when
+   * this field was indexed.
+   *
+   * @see #setBoost(float)
+   */
+  public float getBoost() {
+    return boost;
+  }
+
   /** Returns the name of the field as an interned string.
    * For example "date", "title", "body", ...
    */
@@ -77,10 +125,39 @@ public abstract class AbstractField implements Fieldable {
     Reader-valued. */
   public final boolean  isStored()  { return isStored; }
 
+  /** True iff the value of the field is to be indexed, so that it may be
+    searched on. */
+  public final boolean  isIndexed()   { return isIndexed; }
+
   /** True iff the value of the field should be tokenized as text prior to
     indexing.  Un-tokenized fields are indexed as a single word and may not be
     Reader-valued. */
   public final boolean  isTokenized()   { return isTokenized; }
+
+  /** True iff the term or terms used to index this field are stored as a term
+   *  vector, available from {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader#getTermFreqVector(int,String)}.
+   *  These methods do not provide access to the original content of the field,
+   *  only to terms used to index it. If the original content must be
+   *  preserved, use the <code>stored</code> attribute instead.
+   *
+   * @see org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader#getTermFreqVector(int, String)
+   */
+  public final boolean isTermVectorStored() { return storeTermVector; }
+
+  /**
+   * True iff terms are stored as term vector together with their offsets 
+   * (start and end position in source text).
+   */
+  public boolean isStoreOffsetWithTermVector(){
+    return storeOffsetWithTermVector;
+  }
+
+  /**
+   * True iff terms are stored as term vector together with their token positions.
+   */
+  public boolean isStorePositionWithTermVector(){
+    return storePositionWithTermVector;
+  }
 
   /** True iff the value of the filed is stored as binary */
   public final boolean  isBinary() {
@@ -90,7 +167,7 @@ public abstract class AbstractField implements Fieldable {
 
   /**
    * Return the raw byte[] for the binary field.  Note that
-   * you must also call {@code #getBinaryLength} and {@code
+   * you must also call {@link #getBinaryLength} and {@link
    * #getBinaryOffset} to know which range of bytes in this
    * returned array belong to the field.
    * @return reference to the Field value as byte[].
@@ -129,12 +206,32 @@ public abstract class AbstractField implements Fieldable {
     return binaryOffset;
   }
 
+  /** True if norms are omitted for this indexed field */
+  public boolean getOmitNorms() { return omitNorms; }
+
+  /** @deprecated use {@link #getIndexOptions()} instead. */
+  @Deprecated
+  public boolean getOmitTermFreqAndPositions() { return indexOptions == IndexOptions.DOCS_ONLY; }
+  
+  /** @see #setIndexOptions */
+  public IndexOptions getIndexOptions() { return indexOptions; }
+  
   /** Expert:
    *
    * If set, omit normalization factors associated with this indexed field.
    * This effectively disables indexing boosts and length normalization for this field.
    */
   public void setOmitNorms(boolean omitNorms) { this.omitNorms=omitNorms; }
+
+  /** @deprecated use {@link #setIndexOptions(FieldInfo.IndexOptions)} instead. */
+  @Deprecated
+  public void setOmitTermFreqAndPositions(boolean omitTermFreqAndPositions) { 
+    if (omitTermFreqAndPositions) {
+      indexOptions = IndexOptions.DOCS_ONLY;
+    } else {
+      indexOptions = IndexOptions.DOCS_AND_FREQS_AND_POSITIONS;
+    }
+  }
 
   /** Expert:
    *
@@ -143,11 +240,15 @@ public abstract class AbstractField implements Fieldable {
    *
    * <p><b>NOTE</b>: While this option reduces storage space
    * required in the index, it also means any query
-   * requiring positional information, such as {@code
-   * PhraseQuery} or {@code SpanQuery} subclasses will
+   * requiring positional information, such as {@link
+   * PhraseQuery} or {@link SpanQuery} subclasses will
    * silently fail to find results.
    */
   public void setIndexOptions(IndexOptions indexOptions) { this.indexOptions=indexOptions; }
+ 
+  public boolean isLazy() {
+    return lazy;
+  }
 
   /** Prints a Field for human consumption. */
   @Override
@@ -200,7 +301,7 @@ public abstract class AbstractField implements Fieldable {
     result.append(name);
     result.append(':');
 
-    if (fieldsData != null && !lazy) {
+    if (fieldsData != null && lazy == false) {
       result.append(fieldsData);
     }
 

@@ -16,19 +16,20 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * the License.
  */
 
+import java.io.IOException;
+import java.util.List;
+
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Document;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Fieldable;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.NumericField;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.RAMOutputStream;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
 
-import java.io.IOException;
-import java.util.List;
-
 final class FieldsWriter {
-  static final int FIELD_IS_TOKENIZED = 1;
+  static final int FIELD_IS_TOKENIZED = 1 << 0;
   static final int FIELD_IS_BINARY = 1 << 1;
 
   /** @deprecated Kept for backwards-compatibility with <3.0 indexes; will be removed in 4.0 */
@@ -91,6 +92,28 @@ final class FieldsWriter {
         abort();
       }
     }
+  }
+
+  FieldsWriter(IndexOutput fdx, IndexOutput fdt, FieldInfos fn) {
+    directory = null;
+    segment = null;
+    fieldInfos = fn;
+    fieldsStream = fdt;
+    indexStream = fdx;
+  }
+
+  void setFieldsStream(IndexOutput stream) {
+    this.fieldsStream = stream;
+  }
+
+  // Writes the contents of buffer into the fields stream
+  // and adds a new entry for this document into the index
+  // stream.  This assumes the buffer was already written
+  // in the correct fields format.
+  void flushDocument(int numStoredFields, RAMOutputStream buffer) throws IOException {
+    indexStream.writeLong(fieldsStream.getFilePointer());
+    fieldsStream.writeVInt(numStoredFields);
+    buffer.writeTo(fieldsStream);
   }
 
   void skipDocument() throws IOException {

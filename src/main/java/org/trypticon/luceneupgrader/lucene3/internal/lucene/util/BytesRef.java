@@ -18,13 +18,14 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  */
 
 import java.util.Comparator;
+import java.io.UnsupportedEncodingException;
 
 /** Represents byte[], as a slice (offset + length) into an
  *  existing byte[].
  *
  * <p><b>Important note:</b> Unless otherwise noted, Lucene uses this class to
  * represent terms that are encoded as <b>UTF8</b> bytes in the index. To
- * convert them to a Java {@code String} (which is UTF16), use {@code #utf8ToString}.
+ * convert them to a Java {@link String} (which is UTF16), use {@link #utf8ToString}.
  * Using code like {@code new String(bytes, offset, length)} to do this
  * is <b>wrong</b>, as it does not respect the correct character set
  * and may return wrong results (depending on the platform's defaults)!
@@ -44,7 +45,7 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
   /** Length of used bytes. */
   public int length;
 
-  /** Create a BytesRef with {@code #EMPTY_BYTES} */
+  /** Create a BytesRef with {@link #EMPTY_BYTES} */
   public BytesRef() {
     this(EMPTY_BYTES);
   }
@@ -100,6 +101,16 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
   }
 
   /**
+   * Copies the UTF8 bytes for this string.
+   * 
+   * @param text Must be well-formed unicode text, with no
+   * unpaired surrogates.
+   */
+  public void copyChars(char text[], int offset, int length) {
+    UnicodeUtil.UTF16toUTF8(text, offset, length, this);
+  }
+
+  /**
    * Expert: compares the bytes against another BytesRef,
    * returning true if the bytes are equal.
    * 
@@ -123,12 +134,36 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
     }
   }
 
-  @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   public BytesRef clone() {
     return new BytesRef(bytes, offset, length);
   }
 
+  private boolean sliceEquals(BytesRef other, int pos) {
+    if (pos < 0 || length - pos < other.length) {
+      return false;
+    }
+    int i = offset + pos;
+    int j = other.offset;
+    final int k = other.offset + other.length;
+    
+    while (j < k) {
+      if (bytes[i++] != other.bytes[j++]) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  public boolean startsWith(BytesRef other) {
+    return sliceEquals(other, 0);
+  }
+
+  public boolean endsWith(BytesRef other) {
+    return sliceEquals(other, length - other.length);
+  }
+  
   /** Calculates the hash code as required by TermsHash during indexing.
    * <p>It is defined as:
    * <pre>
@@ -159,6 +194,18 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
     return false;
   }
 
+  /** Interprets stored bytes as UTF8 bytes, returning the
+   *  resulting string */
+  public String utf8ToString() {
+    try {
+      return new String(bytes, offset, length, "UTF-8");
+    } catch (UnsupportedEncodingException uee) {
+      // should not happen -- UTF8 is presumably supported
+      // by all JREs
+      throw new RuntimeException(uee);
+    }
+  }
+
   /** Returns hex encoded bytes, eg [0x6c 0x75 0x63 0x65 0x6e 0x65] */
   @Override
   public String toString() {
@@ -176,6 +223,39 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
   }
 
   /**
+   * Copies the bytes from the given {@link BytesRef}
+   * <p>
+   * NOTE: if this would exceed the array size, this method creates a 
+   * new reference array.
+   */
+  public void copyBytes(BytesRef other) {
+    if (bytes.length - offset < other.length) {
+      bytes = new byte[other.length];
+      offset = 0;
+    }
+    System.arraycopy(other.bytes, other.offset, bytes, offset, other.length);
+    length = other.length;
+  }
+
+  /**
+   * Appends the bytes from the given {@link BytesRef}
+   * <p>
+   * NOTE: if this would exceed the array size, this method creates a 
+   * new reference array.
+   */
+  public void append(BytesRef other) {
+    int newLen = length + other.length;
+    if (bytes.length - offset < newLen) {
+      byte[] newBytes = new byte[newLen];
+      System.arraycopy(bytes, offset, newBytes, 0, length);
+      offset = 0;
+      bytes = newBytes;
+    }
+    System.arraycopy(other.bytes, other.offset, bytes, length+offset, other.length);
+    length = newLen;
+  }
+
+  /** 
    * Used to grow the reference array. 
    * 
    * In general this should not be used as it does not take the offset into account.
@@ -192,9 +272,13 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
 
   private final static Comparator<BytesRef> utf8SortedAsUnicodeSortOrder = new UTF8SortedAsUnicodeComparator();
 
+  public static Comparator<BytesRef> getUTF8SortedAsUnicodeComparator() {
+    return utf8SortedAsUnicodeSortOrder;
+  }
+
   private static class UTF8SortedAsUnicodeComparator implements Comparator<BytesRef> {
     // Only singleton
-    private UTF8SortedAsUnicodeComparator() {}
+    private UTF8SortedAsUnicodeComparator() {};
 
     public int compare(BytesRef a, BytesRef b) {
       final byte[] aBytes = a.bytes;
@@ -226,7 +310,7 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
 
   private static class UTF8SortedAsUTF16Comparator implements Comparator<BytesRef> {
     // Only singleton
-    private UTF8SortedAsUTF16Comparator() {}
+    private UTF8SortedAsUTF16Comparator() {};
 
     public int compare(BytesRef a, BytesRef b) {
 
@@ -273,5 +357,18 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
       // One is a prefix of the other, or, they are equal:
       return a.length - b.length;
     }
+  }
+  
+  /**
+   * Creates a new BytesRef that points to a copy of the bytes from 
+   * <code>other</code>
+   * <p>
+   * The returned BytesRef will have a length of other.length
+   * and an offset of zero.
+   */
+  public static BytesRef deepCopyOf(BytesRef other) {
+    BytesRef copy = new BytesRef();
+    copy.copyBytes(other);
+    return copy;
   }
 }

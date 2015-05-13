@@ -22,23 +22,32 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-/** A straightforward implementation of {@code FSDirectory}
+/** A straightforward implementation of {@link FSDirectory}
  *  using java.io.RandomAccessFile.  However, this class has
  *  poor concurrent performance (multiple threads will
  *  bottleneck) as it synchronizes when multiple threads
  *  read from the same file.  It's usually better to use
- *  {@code NIOFSDirectory} or {@code MMapDirectory} instead. */
+ *  {@link NIOFSDirectory} or {@link MMapDirectory} instead. */
 public class SimpleFSDirectory extends FSDirectory {
     
   /** Create a new SimpleFSDirectory for the named location.
    *
    * @param path the path of the directory
    * @param lockFactory the lock factory to use, or null for the default
-   * ({@code NativeFSLockFactory});
+   * ({@link NativeFSLockFactory});
    * @throws IOException
    */
   public SimpleFSDirectory(File path, LockFactory lockFactory) throws IOException {
     super(path, lockFactory);
+  }
+  
+  /** Create a new SimpleFSDirectory for the named location and {@link NativeFSLockFactory}.
+   *
+   * @param path the path of the directory
+   * @throws IOException
+   */
+  public SimpleFSDirectory(File path) throws IOException {
+    super(path, null);
   }
 
   /** Creates an IndexInput for the file with the given name. */
@@ -77,6 +86,12 @@ public class SimpleFSDirectory extends FSDirectory {
     boolean isClone;
     //  LUCENE-1566 - maximum read length on a 32bit JVM to prevent incorrect OOM 
     protected final int chunkSize;
+
+    /** @deprecated please pass resourceDesc */
+    @Deprecated
+    public SimpleFSIndexInput(File path, int bufferSize, int chunkSize) throws IOException {
+      this("anonymous SimpleFSIndexInput", path, bufferSize, chunkSize);
+    }
 
     public SimpleFSIndexInput(String resourceDesc, File path, int bufferSize, int chunkSize) throws IOException {
       super(resourceDesc, bufferSize);
@@ -136,7 +151,7 @@ public class SimpleFSDirectory extends FSDirectory {
     }
   
     @Override
-    protected void seekInternal() {
+    protected void seekInternal(long position) {
     }
   
     @Override
@@ -150,7 +165,14 @@ public class SimpleFSDirectory extends FSDirectory {
       clone.isClone = true;
       return clone;
     }
-
+  
+    /** Method used for testing. Returns true if the underlying
+     *  file descriptor is valid.
+     */
+    boolean isFDValid() throws IOException {
+      return file.getFD().valid();
+    }
+    
     @Override
     public void copyBytes(IndexOutput out, long numBytes) throws IOException {
       numBytes -= flushBuffer(out, numBytes);

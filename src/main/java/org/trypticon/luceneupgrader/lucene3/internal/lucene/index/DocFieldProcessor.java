@@ -33,13 +33,16 @@ import java.util.HashMap;
 
 final class DocFieldProcessor extends DocConsumer {
 
+  final DocumentsWriter docWriter;
   final FieldInfos fieldInfos;
   final DocFieldConsumer consumer;
   final StoredFieldsWriter fieldsWriter;
 
   public DocFieldProcessor(DocumentsWriter docWriter, DocFieldConsumer consumer) {
+    this.docWriter = docWriter;
     this.consumer = consumer;
     fieldInfos = docWriter.getFieldInfos();
+    consumer.setFieldInfos(fieldInfos);
     fieldsWriter = new StoredFieldsWriter(docWriter, fieldInfos);
   }
 
@@ -73,4 +76,13 @@ final class DocFieldProcessor extends DocConsumer {
     }
   }
 
+  @Override
+  public boolean freeRAM() {
+    return consumer.freeRAM();
+  }
+
+  @Override
+  public DocConsumerPerThread addThread(DocumentsWriterThreadState threadState) throws IOException {
+    return new DocFieldProcessorPerThread(threadState, this);
+  }
 }

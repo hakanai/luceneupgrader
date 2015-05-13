@@ -18,7 +18,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  */
 
 abstract class InvertedDocEndConsumerPerThread {
+  abstract void startDocument();
   abstract InvertedDocEndConsumerPerField addField(DocInverterPerField docInverterPerField, FieldInfo fieldInfo);
-
+  abstract void finishDocument();
   abstract void abort();
 }

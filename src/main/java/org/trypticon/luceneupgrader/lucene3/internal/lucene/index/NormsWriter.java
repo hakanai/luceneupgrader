@@ -17,12 +17,17 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Similarity;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
-
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Similarity;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
 
 // TODO FI: norms could actually be stored as doc store
 
@@ -35,6 +40,21 @@ final class NormsWriter extends InvertedDocEndConsumer {
 
   private final byte defaultNorm = Similarity.getDefault().encodeNormValue(1.0f);
   private FieldInfos fieldInfos;
+  @Override
+  public InvertedDocEndConsumerPerThread addThread(DocInverterPerThread docInverterPerThread) {
+    return new NormsWriterPerThread(docInverterPerThread, this);
+  }
+
+  @Override
+  public void abort() {}
+
+  // We only write the _X.nrm file at flush
+  void files(Collection<String> files) {}
+
+  @Override
+  void setFieldInfos(FieldInfos fieldInfos) {
+    this.fieldInfos = fieldInfos;
+  }
 
   /** Produce _X.nrm if any document had a field with norms
    *  not disabled */
@@ -56,9 +76,11 @@ final class NormsWriter extends InvertedDocEndConsumer {
 
         if (perField.upto > 0) {
           // It has some norms
-          List<NormsWriterPerField> l;
-          l = new ArrayList<NormsWriterPerField>();
-          byField.put(perField.fieldInfo, l);
+          List<NormsWriterPerField> l = byField.get(perField.fieldInfo);
+          if (l == null) {
+            l = new ArrayList<NormsWriterPerField>();
+            byField.put(perField.fieldInfo, l);
+          }
           l.add(perField);
         } else
           // Remove this field since we haven't seen it

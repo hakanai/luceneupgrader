@@ -17,9 +17,15 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
  * limitations under the License.
  */
 
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataInput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
+
+import java.io.IOException;
+import java.util.Arrays;
+
 /**
  * Space optimized random access capable array of values with a fixed number of
- * bits. The maximum number of bits/value is 31. Use {@code Packed64} for higher
+ * bits. The maximum number of bits/value is 31. Use {@link Packed64} for higher
  * numbers.
  * </p><p>
  * The implementation strives to avoid conditionals and expensive operations,
@@ -116,6 +122,35 @@ class Packed32 extends PackedInts.ReaderImpl implements PackedInts.Mutable {
   }
 
   /**
+   * Creates an array with content retrieved from the given DataInput.
+   * @param in       a DataInput, positioned at the start of Packed64-content.
+   * @param valueCount  the number of elements.
+   * @param bitsPerValue the number of bits available for any given value.
+   * @throws java.io.IOException if the values for the backing array could not
+   *                             be retrieved.
+   */
+  public Packed32(DataInput in, int valueCount, int bitsPerValue)
+                                                            throws IOException {
+    super(valueCount, bitsPerValue);
+    int size = size(bitsPerValue, valueCount);
+    blocks = new int[size + 1]; // +1 due to non-conditional tricks
+    // TODO: find a faster way to bulk-read ints...
+    for(int i = 0 ; i < size ; i++) {
+      blocks[i] = in.readInt();
+    }
+    if (size % 2 == 1) {
+      in.readInt(); // Align to long
+    }
+    updateCached();
+  }
+
+  private static int size(int bitsPerValue, int valueCount) {
+    final long totBitCount = (long) valueCount * bitsPerValue;
+    return (int) (totBitCount/32 + ((totBitCount % 32 == 0 ) ? 0:1));
+  }
+
+
+  /**
    * Creates an array backed by the given blocks.
    * </p><p>
    * Note: The blocks are used directly, so changes to the given block will
@@ -176,9 +211,17 @@ class Packed32 extends PackedInts.ReaderImpl implements PackedInts.Mutable {
             & writeMasks[base+2]);
   }
 
+  public void clear() {
+    Arrays.fill(blocks, 0);
+  }
+
   @Override
   public String toString() {
     return "Packed32(bitsPerValue=" + bitsPerValue + ", maxPos=" + maxPos
             + ", elements.length=" + blocks.length + ")";
+  }
+
+  public long ramBytesUsed() {
+    return RamUsageEstimator.sizeOf(blocks);
   }
 }

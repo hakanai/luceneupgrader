@@ -40,6 +40,13 @@ final class DocInverter extends DocFieldConsumer {
   }
 
   @Override
+  void setFieldInfos(FieldInfos fieldInfos) {
+    super.setFieldInfos(fieldInfos);
+    consumer.setFieldInfos(fieldInfos);
+    endConsumer.setFieldInfos(fieldInfos);
+  }
+
+  @Override
   void flush(Map<DocFieldConsumerPerThread, Collection<DocFieldConsumerPerField>> threadsAndFields, SegmentWriteState state) throws IOException {
 
     Map<InvertedDocConsumerPerThread,Collection<InvertedDocConsumerPerField>> childThreadsAndFields = new HashMap<InvertedDocConsumerPerThread,Collection<InvertedDocConsumerPerField>>();
@@ -66,7 +73,20 @@ final class DocInverter extends DocFieldConsumer {
 
   @Override
   void abort() {
-    consumer.abort();
+    try {
+      consumer.abort();
+    } finally {
+      endConsumer.abort();
+    }
   }
 
+  @Override
+  public boolean freeRAM() {
+    return consumer.freeRAM();
+  }
+
+  @Override
+  public DocFieldConsumerPerThread addThread(DocFieldProcessorPerThread docFieldProcessorPerThread) {
+    return new DocInverterPerThread(docFieldProcessorPerThread, this);
+  }
 }

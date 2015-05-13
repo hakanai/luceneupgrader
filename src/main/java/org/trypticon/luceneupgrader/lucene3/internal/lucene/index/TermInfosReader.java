@@ -17,13 +17,13 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BytesRef;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.CloseableThreadLocal;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.DoubleBarrelLRUCache;
-
 import java.io.Closeable;
 import java.io.IOException;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BytesRef;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.DoubleBarrelLRUCache;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.CloseableThreadLocal;
 
 /** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
  * Directory.  Pairs are accessed either by Term or by ordinal position the
@@ -62,7 +62,6 @@ final class TermInfosReader implements Closeable {
       this.term = new Term(t.field(), t.text());
     }
 
-    @SuppressWarnings("CloneDoesntCallSuperClone")
     @Override
     public Object clone() {
       return new CloneableTerm(term);
@@ -90,7 +89,7 @@ final class TermInfosReader implements Closeable {
   }
   
   TermInfosReader(Directory dir, String seg, FieldInfos fis, int readBufferSize, int indexDivisor)
-       throws IOException {
+       throws CorruptIndexException, IOException {
     boolean success = false;
 
     if (indexDivisor < 1 && indexDivisor != -1) {
@@ -150,6 +149,11 @@ final class TermInfosReader implements Closeable {
     if (origEnum != null)
       origEnum.close();
     threadResources.close();
+  }
+
+  /** Returns the number of term/value pairs in the set. */
+  final long size() {
+    return size;
   }
 
   private ThreadResources getThreadResources() {
@@ -246,7 +250,7 @@ final class TermInfosReader implements Closeable {
   }
 
   // called only from asserts
-  private boolean sameTermInfo(TermInfo ti1, TermInfo ti2, SegmentTermEnum enumerator) {
+  private final boolean sameTermInfo(TermInfo ti1, TermInfo ti2, SegmentTermEnum enumerator) {
     if (ti1.docFreq != ti2.docFreq) {
       return false;
     }
@@ -257,14 +261,36 @@ final class TermInfosReader implements Closeable {
       return false;
     }
     // skipOffset is only valid when docFreq >= skipInterval:
-    return !(ti1.docFreq >= enumerator.skipInterval &&
-            ti1.skipOffset != ti2.skipOffset);
+    if (ti1.docFreq >= enumerator.skipInterval &&
+        ti1.skipOffset != ti2.skipOffset) {
+      return false;
+    }
+    return true;
   }
 
   private void ensureIndexIsRead() {
     if (index == null) {
       throw new IllegalStateException("terms index was not loaded when this reader was created");
     }
+  }
+
+  /** Returns the position of a Term in the set or -1. */
+  final long getPosition(Term term) throws IOException {
+    if (size == 0) return -1;
+
+    ensureIndexIsRead();
+    BytesRef termBytesRef = new BytesRef(term.text);
+    int indexOffset = index.getIndexOffset(term,termBytesRef);
+    
+    SegmentTermEnum enumerator = getThreadResources().termEnum;
+    index.seekEnum(enumerator, indexOffset);
+
+    while(term.compareTo(enumerator.term()) > 0 && enumerator.next()) {}
+
+    if (term.compareTo(enumerator.term()) == 0)
+      return enumerator.position;
+    else
+      return -1;
   }
 
   /** Returns an enumeration of all the Terms and TermInfos in the set. */

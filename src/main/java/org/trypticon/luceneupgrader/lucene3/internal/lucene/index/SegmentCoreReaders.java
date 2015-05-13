@@ -17,16 +17,16 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.SegmentReader.CoreClosedListener;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.SegmentReader.CoreClosedListener;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
 
 /** Holds core readers that are shared (unchanged) when
  * SegmentReader is cloned or reopened */
@@ -49,6 +49,7 @@ final class SegmentCoreReaders {
   final Directory dir;
   final Directory cfsDir;
   final int readBufferSize;
+  final int termsIndexDivisor;
 
   private final SegmentReader owner;
 
@@ -78,6 +79,7 @@ final class SegmentCoreReaders {
 
       fieldInfos = new FieldInfos(cfsDir, IndexFileNames.segmentFileName(segment, IndexFileNames.FIELD_INFOS_EXTENSION));
 
+      this.termsIndexDivisor = termsIndexDivisor;
       TermInfosReader reader = new TermInfosReader(cfsDir, segment, fieldInfos, readBufferSize, termsIndexDivisor);
       if (termsIndexDivisor == -1) {
         tisNoIndex = reader;
@@ -174,12 +176,20 @@ final class SegmentCoreReaders {
     }
   }
   
-  private void notifyCoreClosedListeners() {
+  private final void notifyCoreClosedListeners() {
     synchronized(coreClosedListeners) {
       for (CoreClosedListener listener : coreClosedListeners) {
         listener.onClose(owner);
       }
     }
+  }
+
+  void addCoreClosedListener(CoreClosedListener listener) {
+    coreClosedListeners.add(listener);
+  }
+  
+  void removeCoreClosedListener(CoreClosedListener listener) {
+    coreClosedListeners.remove(listener);
   }
 
   synchronized void openDocStores(SegmentInfo si) throws IOException {

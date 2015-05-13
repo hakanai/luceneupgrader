@@ -19,7 +19,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
 import java.io.IOException;
 
-/** Base implementation class for buffered {@code IndexOutput}. */
+/** Base implementation class for buffered {@link IndexOutput}. */
 public abstract class BufferedIndexOutput extends IndexOutput {
   static final int BUFFER_SIZE = 16384;
 
@@ -28,7 +28,7 @@ public abstract class BufferedIndexOutput extends IndexOutput {
   private int bufferPosition = 0;         // position in buffer
 
   /** Writes a single byte.
-   *
+   * @see IndexInput#readByte()
    */
   @Override
   public void writeByte(byte b) throws IOException {
@@ -40,7 +40,7 @@ public abstract class BufferedIndexOutput extends IndexOutput {
   /** Writes an array of bytes.
    * @param b the bytes to write
    * @param length the number of bytes to write
-   *
+   * @see IndexInput#readBytes(byte[],int,int)
    */
   @Override
   public void writeBytes(byte[] b, int offset, int length) throws IOException {
@@ -115,7 +115,7 @@ public abstract class BufferedIndexOutput extends IndexOutput {
 
   /** Returns the current position in this file, where the next write will
    * occur.
-   *
+   * @see #seek(long)
    */
   @Override
   public long getFilePointer() {
@@ -123,7 +123,7 @@ public abstract class BufferedIndexOutput extends IndexOutput {
   }
 
   /** Sets current position in this file, where the next write will occur.
-   *
+   * @see #getFilePointer()
    */
   @Override
   public void seek(long pos) throws IOException {

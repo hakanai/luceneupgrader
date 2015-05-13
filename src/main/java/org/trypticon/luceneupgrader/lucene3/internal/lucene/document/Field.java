@@ -17,10 +17,14 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.document;
  * limitations under the License.
  */
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInfo.IndexOptions;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.TokenStream;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexWriter;   // for javadoc
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper;
 
+import java.io.Reader;
 import java.io.Serializable;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInfo.IndexOptions;
 
 /**
   A field is a section of a Document.  Each field has two parts, a name and a
@@ -33,7 +37,7 @@ import java.io.Serializable;
 public final class Field extends AbstractField implements Fieldable, Serializable {
   
   /** Specifies whether and how a field should be stored. */
-  public enum Store {
+  public static enum Store {
 
     /** Store the original field value in the index. This is useful for short texts
      * like a document's title which should be displayed with the results. The
@@ -55,11 +59,11 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
   }
 
   /** Specifies whether and how a field should be indexed. */
-  public enum Index {
+  public static enum Index {
 
     /** Do not index the field value. This field can thus not be searched,
      * but one can still access its contents provided it is
-     * {@code Field.Store stored}. */
+     * {@link Field.Store stored}. */
     NO {
       @Override
       public boolean isIndexed()  { return false; }
@@ -97,7 +101,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     /** Expert: Index the field's value without an Analyzer,
      * and also disable the indexing of norms.  Note that you
      * can also separately enable/disable norms by calling
-     * {@code Field#setOmitNorms}.  No norms means that
+     * {@link Field#setOmitNorms}.  No norms means that
      * index-time field and document boosting and field
      * length normalization are disabled.  The benefit is
      * less memory usage as norms take up one byte of RAM
@@ -120,7 +124,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     /** Expert: Index the tokens produced by running the
      *  field's value through an Analyzer, and also
      *  separately disable the storing of norms.  See
-     *  {@code #NOT_ANALYZED_NO_NORMS} for what norms are
+     *  {@link #NOT_ANALYZED_NO_NORMS} for what norms are
      *  and why you may want to disable them. */
     ANALYZED_NO_NORMS {
       @Override
@@ -165,7 +169,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
   }
 
   /** Specifies whether and how a field should have term vectors. */
-  public enum TermVector {
+  public static enum TermVector {
     
     /** Do not store term vectors. 
      */
@@ -192,7 +196,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     /**
      * Store the term vector + token position information
      * 
-     *
+     * @see #YES
      */ 
     WITH_POSITIONS {
       @Override
@@ -206,7 +210,7 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     /**
      * Store the term vector + Token offset information
      * 
-     *
+     * @see #YES
      */ 
     WITH_OFFSETS {
       @Override
@@ -220,9 +224,9 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     /**
      * Store the term vector + Token position and offset information
      * 
-     *
-     *
-     *
+     * @see #YES
+     * @see #WITH_POSITIONS
+     * @see #WITH_OFFSETS
      */ 
     WITH_POSITIONS_OFFSETS {
       @Override
@@ -264,8 +268,111 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
    * binary value is used.  Exactly one of stringValue(),
    * readerValue(), and getBinaryValue() must be set. */
   public String stringValue()   { return fieldsData instanceof String ? (String)fieldsData : null; }
+  
+  /** The value of the field as a Reader, or null.  If null, the String value or
+   * binary value is used.  Exactly one of stringValue(),
+   * readerValue(), and getBinaryValue() must be set. */
+  public Reader readerValue()   { return fieldsData instanceof Reader ? (Reader)fieldsData : null; }
+    
+  /** The TokesStream for this field to be used when indexing, or null.  If null, the Reader value
+   * or String value is analyzed to produce the indexed tokens. */
+  public TokenStream tokenStreamValue()   { return tokenStream; }
+  
 
+  /** <p>Expert: change the value of this field.  This can
+   *  be used during indexing to re-use a single Field
+   *  instance to improve indexing speed by avoiding GC cost
+   *  of new'ing and reclaiming Field instances.  Typically
+   *  a single {@link Document} instance is re-used as
+   *  well.  This helps most on small documents.</p>
+   * 
+   *  <p>Each Field instance should only be used once
+   *  within a single {@link Document} instance.  See <a
+   *  href="http://wiki.apache.org/lucene-java/ImproveIndexingSpeed">ImproveIndexingSpeed</a>
+   *  for details.</p> */
+  public void setValue(String value) {
+    if (isBinary) {
+      throw new IllegalArgumentException("cannot set a String value on a binary field");
+    }
+    fieldsData = value;
+  }
 
+  /** Expert: change the value of this field.  See <a href="#setValue(java.lang.String)">setValue(String)</a>. */
+  public void setValue(Reader value) {
+    if (isBinary) {
+      throw new IllegalArgumentException("cannot set a Reader value on a binary field");
+    }
+    if (isStored) {
+      throw new IllegalArgumentException("cannot set a Reader value on a stored field");
+    }
+    fieldsData = value;
+  }
+
+  /** Expert: change the value of this field.  See <a href="#setValue(java.lang.String)">setValue(String)</a>. */
+  public void setValue(byte[] value) {
+    if (!isBinary) {
+      throw new IllegalArgumentException("cannot set a byte[] value on a non-binary field");
+    }
+    fieldsData = value;
+    binaryLength = value.length;
+    binaryOffset = 0;
+  }
+
+  /** Expert: change the value of this field.  See <a href="#setValue(java.lang.String)">setValue(String)</a>. */
+  public void setValue(byte[] value, int offset, int length) {
+    if (!isBinary) {
+      throw new IllegalArgumentException("cannot set a byte[] value on a non-binary field");
+    }
+    fieldsData = value;
+    binaryLength = length;
+    binaryOffset = offset;
+  }
+  
+  /** Expert: sets the token stream to be used for indexing and causes isIndexed() and isTokenized() to return true.
+   *  May be combined with stored values from stringValue() or getBinaryValue() */
+  public void setTokenStream(TokenStream tokenStream) {
+    this.isIndexed = true;
+    this.isTokenized = true;
+    this.tokenStream = tokenStream;
+  }
+
+  /**
+   * Create a field by specifying its name, value and how it will
+   * be saved in the index. Term vectors will not be stored in the index.
+   * 
+   * @param name The name of the field
+   * @param value The string to process
+   * @param store Whether <code>value</code> should be stored in the index
+   * @param index Whether the field should be indexed, and if so, if it should
+   *  be tokenized before indexing 
+   * @throws NullPointerException if name or value is <code>null</code>
+   * @throws IllegalArgumentException if the field is neither stored nor indexed 
+   */
+  public Field(String name, String value, Store store, Index index) {
+    this(name, value, store, index, TermVector.NO);
+  }
+  
+  /**
+   * Create a field by specifying its name, value and how it will
+   * be saved in the index.
+   * 
+   * @param name The name of the field
+   * @param value The string to process
+   * @param store Whether <code>value</code> should be stored in the index
+   * @param index Whether the field should be indexed, and if so, if it should
+   *  be tokenized before indexing 
+   * @param termVector Whether term vector should be stored
+   * @throws NullPointerException if name or value is <code>null</code>
+   * @throws IllegalArgumentException in any of the following situations:
+   * <ul> 
+   *  <li>the field is neither stored nor indexed</li> 
+   *  <li>the field is not indexed but termVector is <code>TermVector.YES</code></li>
+   * </ul> 
+   */ 
+  public Field(String name, String value, Store store, Index index, TermVector termVector) {
+    this(name, true, value, store, index, termVector);
+  }
+  
   /**
    * Create a field by specifying its name, value and how it will
    * be saved in the index.
@@ -318,6 +425,115 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
     setStoreTermVector(termVector);
   }
 
+  /**
+   * Create a tokenized and indexed field that is not stored. Term vectors will
+   * not be stored.  The Reader is read only when the Document is added to the index,
+   * i.e. you may not close the Reader until {@link IndexWriter#addDocument(Document)}
+   * has been called.
+   * 
+   * @param name The name of the field
+   * @param reader The reader with the content
+   * @throws NullPointerException if name or reader is <code>null</code>
+   */
+  public Field(String name, Reader reader) {
+    this(name, reader, TermVector.NO);
+  }
+
+  /**
+   * Create a tokenized and indexed field that is not stored, optionally with 
+   * storing term vectors.  The Reader is read only when the Document is added to the index,
+   * i.e. you may not close the Reader until {@link IndexWriter#addDocument(Document)}
+   * has been called.
+   * 
+   * @param name The name of the field
+   * @param reader The reader with the content
+   * @param termVector Whether term vector should be stored
+   * @throws NullPointerException if name or reader is <code>null</code>
+   */ 
+  public Field(String name, Reader reader, TermVector termVector) {
+    if (name == null)
+      throw new NullPointerException("name cannot be null");
+    if (reader == null)
+      throw new NullPointerException("reader cannot be null");
+    
+    this.name = StringHelper.intern(name);        // field names are interned
+    this.fieldsData = reader;
+    
+    this.isStored = false;
+    
+    this.isIndexed = true;
+    this.isTokenized = true;
+    
+    this.isBinary = false;
+    
+    setStoreTermVector(termVector);
+  }
+
+  /**
+   * Create a tokenized and indexed field that is not stored. Term vectors will
+   * not be stored. This is useful for pre-analyzed fields.
+   * The TokenStream is read only when the Document is added to the index,
+   * i.e. you may not close the TokenStream until {@link IndexWriter#addDocument(Document)}
+   * has been called.
+   * 
+   * @param name The name of the field
+   * @param tokenStream The TokenStream with the content
+   * @throws NullPointerException if name or tokenStream is <code>null</code>
+   */ 
+  public Field(String name, TokenStream tokenStream) {
+    this(name, tokenStream, TermVector.NO);
+  }
+  
+  /**
+   * Create a tokenized and indexed field that is not stored, optionally with 
+   * storing term vectors.  This is useful for pre-analyzed fields.
+   * The TokenStream is read only when the Document is added to the index,
+   * i.e. you may not close the TokenStream until {@link IndexWriter#addDocument(Document)}
+   * has been called.
+   * 
+   * @param name The name of the field
+   * @param tokenStream The TokenStream with the content
+   * @param termVector Whether term vector should be stored
+   * @throws NullPointerException if name or tokenStream is <code>null</code>
+   */ 
+  public Field(String name, TokenStream tokenStream, TermVector termVector) {
+    if (name == null)
+      throw new NullPointerException("name cannot be null");
+    if (tokenStream == null)
+      throw new NullPointerException("tokenStream cannot be null");
+    
+    this.name = StringHelper.intern(name);        // field names are interned
+    this.fieldsData = null;
+    this.tokenStream = tokenStream;
+
+    this.isStored = false;
+    
+    this.isIndexed = true;
+    this.isTokenized = true;
+    
+    this.isBinary = false;
+    
+    setStoreTermVector(termVector);
+  }
+
+  
+  /**
+   * Create a stored field with binary value. Optionally the value may be compressed.
+   * 
+   * @param name The name of the field
+   * @param value The binary value
+   * @param store Must be Store.YES
+   * @throws IllegalArgumentException if store is <code>Store.NO</code> 
+   * @deprecated Use {@link #Field(String, byte[]) instead}
+   */
+  @Deprecated
+  public Field(String name, byte[] value, Store store) {
+    this(name, value, 0, value.length);
+
+    if (store == Store.NO) {
+      throw new IllegalArgumentException("binary values can't be unstored");
+    }
+  }
 
   /**
    * Create a stored field with binary value. Optionally the value may be compressed.
@@ -327,6 +543,26 @@ public final class Field extends AbstractField implements Fieldable, Serializabl
    */
   public Field(String name, byte[] value) {
     this(name, value, 0, value.length);
+  }
+
+  /**
+   * Create a stored field with binary value. Optionally the value may be compressed.
+   * 
+   * @param name The name of the field
+   * @param value The binary value
+   * @param offset Starting offset in value where this Field's bytes are
+   * @param length Number of bytes to use for this Field, starting at offset
+   * @param store How <code>value</code> should be stored (compressed or not)
+   * @throws IllegalArgumentException if store is <code>Store.NO</code> 
+   * @deprecated Use {@link #Field(String, byte[], int, int) instead}
+   */
+  @Deprecated
+  public Field(String name, byte[] value, int offset, int length, Store store) {
+    this(name, value, offset, length);
+
+    if (store == Store.NO) {
+      throw new IllegalArgumentException("binary values can't be unstored");
+    }
   }
 
   /**

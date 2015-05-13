@@ -19,19 +19,19 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 
-/** This is a {@code LogMergePolicy} that measures size of a
+/** This is a {@link LogMergePolicy} that measures size of a
  *  segment as the total byte size of the segment's files. */
 public class LogByteSizeMergePolicy extends LogMergePolicy {
 
-  /** Default minimum segment size.  */
+  /** Default minimum segment size.  @see setMinMergeMB */
   public static final double DEFAULT_MIN_MERGE_MB = 1.6;
 
   /** Default maximum segment size.  A segment of this size
-   *  or larger will never be merged.  */
+   *  or larger will never be merged.  @see setMaxMergeMB */
   public static final double DEFAULT_MAX_MERGE_MB = 2048;
 
   /** Default maximum segment size.  A segment of this size
-   *  or larger will never be merged during forceMerge.  */
+   *  or larger will never be merged during forceMerge.  @see setMaxMergeMBForForceMerge */
   public static final double DEFAULT_MAX_MERGE_MB_FOR_FORCED_MERGE = Long.MAX_VALUE;
 
   public LogByteSizeMergePolicy() {
@@ -45,4 +45,77 @@ public class LogByteSizeMergePolicy extends LogMergePolicy {
     return sizeBytes(info);
   }
 
+  /** <p>Determines the largest segment (measured by total
+   *  byte size of the segment's files, in MB) that may be
+   *  merged with other segments.  Small values (e.g., less
+   *  than 50 MB) are best for interactive indexing, as this
+   *  limits the length of pauses while indexing to a few
+   *  seconds.  Larger values are best for batched indexing
+   *  and speedier searches.</p>
+   *
+   *  <p>Note that {@link #setMaxMergeDocs} is also
+   *  used to check whether a segment is too large for
+   *  merging (it's either or).</p>*/
+  public void setMaxMergeMB(double mb) {
+    maxMergeSize = (long) (mb*1024*1024);
+  }
+
+  /** Returns the largest segment (measured by total byte
+   *  size of the segment's files, in MB) that may be merged
+   *  with other segments.
+   *  @see #setMaxMergeMB */
+  public double getMaxMergeMB() {
+    return ((double) maxMergeSize)/1024/1024;
+  }
+
+  /** @deprecated Renamed to {@link
+   * #setMaxMergeMBForForcedMerge} */
+  @Deprecated  
+  public void setMaxMergeMBForOptimize(double mb) {
+    setMaxMergeMBForForcedMerge(mb);
+  }
+
+  /** <p>Determines the largest segment (measured by total
+   *  byte size of the segment's files, in MB) that may be
+   *  merged with other segments during forceMerge. Setting
+   *  it low will leave the index with more than 1 segment,
+   *  even if {@link IndexWriter#forceMerge} is called.*/
+  public void setMaxMergeMBForForcedMerge(double mb) {
+    maxMergeSizeForForcedMerge = (long) (mb*1024*1024);
+  }
+
+  /** @deprecated Renamed to {@link
+   * #getMaxMergeMBForForcedMerge} */
+  @Deprecated  
+  public double getMaxMergeMBForOptimize() {
+    return getMaxMergeMBForForcedMerge();
+  }
+
+  /** Returns the largest segment (measured by total byte
+   *  size of the segment's files, in MB) that may be merged
+   *  with other segments during forceMerge.
+   *  @see #setMaxMergeMBForForcedMerge */
+  public double getMaxMergeMBForForcedMerge() {
+    return ((double) maxMergeSizeForForcedMerge)/1024/1024;
+  }
+
+  /** Sets the minimum size for the lowest level segments.
+   * Any segments below this size are considered to be on
+   * the same level (even if they vary drastically in size)
+   * and will be merged whenever there are mergeFactor of
+   * them.  This effectively truncates the "long tail" of
+   * small segments that would otherwise be created into a
+   * single level.  If you set this too large, it could
+   * greatly increase the merging cost during indexing (if
+   * you flush many small segments). */
+  public void setMinMergeMB(double mb) {
+    minMergeSize = (long) (mb*1024*1024);
+  }
+
+  /** Get the minimum size for a segment to remain
+   *  un-merged.
+   *  @see #setMinMergeMB **/
+  public double getMinMergeMB() {
+    return ((double) minMergeSize)/1024/1024;
+  }
 }

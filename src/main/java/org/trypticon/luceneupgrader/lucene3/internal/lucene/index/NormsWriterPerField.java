@@ -26,13 +26,16 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 
 final class NormsWriterPerField extends InvertedDocEndConsumerPerField implements Comparable<NormsWriterPerField> {
 
-  FieldInfo fieldInfo;
+  final NormsWriterPerThread perThread;
+  final FieldInfo fieldInfo;
+  final DocumentsWriter.DocState docState;
 
   // Holds all docID/norm pairs we've seen
   int[] docIDs = new int[1];
   byte[] norms = new byte[1];
   int upto;
 
+  final FieldInvertState fieldState;
 
   public void reset() {
     // Shrink back if we are overallocated now:
@@ -41,8 +44,37 @@ final class NormsWriterPerField extends InvertedDocEndConsumerPerField implement
     upto = 0;
   }
 
-  public int compareTo(NormsWriterPerField other) {
-    return 0;
+  public NormsWriterPerField(final DocInverterPerField docInverterPerField, final NormsWriterPerThread perThread, final FieldInfo fieldInfo) {
+    this.perThread = perThread;
+    this.fieldInfo = fieldInfo;
+    docState = perThread.docState;
+    fieldState = docInverterPerField.fieldState;
   }
 
+  @Override
+  void abort() {
+    upto = 0;
+  }
+
+  public int compareTo(NormsWriterPerField other) {
+    return fieldInfo.name.compareTo(other.fieldInfo.name);
+  }
+  
+  @Override
+  void finish() {
+    if (fieldInfo.isIndexed && !fieldInfo.omitNorms) {
+      if (docIDs.length <= upto) {
+        assert docIDs.length == upto;
+        docIDs = ArrayUtil.grow(docIDs, 1+upto);
+      }
+      if (norms.length <= upto) {
+        assert norms.length == upto;
+        norms = ArrayUtil.grow(norms, 1+upto);
+      }
+      final float norm = docState.similarity.computeNorm(fieldInfo.name, fieldState);
+      norms[upto] = docState.similarity.encodeNormValue(norm);
+      docIDs[upto] = docState.docID;
+      upto++;
+    }
+  }
 }

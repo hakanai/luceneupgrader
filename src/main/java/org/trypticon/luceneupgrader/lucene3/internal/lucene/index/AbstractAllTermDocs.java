@@ -59,7 +59,21 @@ public abstract class AbstractAllTermDocs implements TermDocs {
     return skipTo(doc+1);
   }
 
-  private boolean skipTo(int target) throws IOException {
+  public int read(int[] docs, int[] freqs) throws IOException {
+    final int length = docs.length;
+    int i = 0;
+    while (i < length && doc < maxDoc) {
+      if (!isDeleted(doc)) {
+        docs[i] = doc;
+        freqs[i] = 1;
+        ++i;
+      }
+      doc++;
+    }
+    return i;
+  }
+
+  public boolean skipTo(int target) throws IOException {
     doc = target;
     while (doc < maxDoc) {
       if (!isDeleted(doc)) {

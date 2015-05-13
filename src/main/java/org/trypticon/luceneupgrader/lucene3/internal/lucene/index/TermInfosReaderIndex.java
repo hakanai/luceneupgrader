@@ -17,18 +17,18 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BitUtil;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BytesRef;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.PagedBytes;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.PagedBytes.PagedBytesDataInput;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.PagedBytes.PagedBytesDataOutput;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed.GrowableWriter;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed.PackedInts;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BitUtil;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BytesRef;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.PagedBytes.PagedBytesDataInput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.PagedBytes.PagedBytesDataOutput;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.PagedBytes;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed.GrowableWriter;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed.PackedInts;
 
 /**
  * This stores a monotonically increasing set of <Term, TermInfo> pairs in an
@@ -162,6 +162,24 @@ class TermInfosReaderIndex {
         return mid;
     }
     return hi;
+  }
+
+  /**
+   * Gets the term at the given position.  For testing.
+   * 
+   * @param termIndex
+   *          the position to read the term from the index.
+   * @return the term.
+   * @throws IOException
+   */
+  Term getTerm(int termIndex) throws IOException {
+    PagedBytesDataInput input = (PagedBytesDataInput) dataInput.clone();
+    input.setPosition(indexToDataOffset.get(termIndex));
+
+    // read the term
+    int fieldId = input.readVInt();
+    Term field = fields[fieldId];
+    return field.createTerm(input.readString());
   }
 
   /**
