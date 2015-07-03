@@ -55,8 +55,10 @@ public class VersionGuesser {
 
                 // Negative versioning used by v2-3
                 //- If it's >= -8, then it's Lucene 2.x
-                //- If it's <= -9 (FORMAT_DIAGNOSTICS), then it's Lucene 3.x
-                if (format >= -8) {                     // FORMAT_USER_DATA, last format of 2.x, I think.
+                //- If it's == -9 (FORMAT_DIAGNOSTICS), then it's Lucene 2.9 or 3.0.
+                //  The docs aren't clear on how to distinguish the two, so we have to treat 3.0 as if it's version 2.
+                //- If it's <= -10, then it must be a later 3.x.
+                if (format >= -9) {                     // FORMAT_USER_DATA, last format of 2.x, I think.
                     return LuceneVersion.VERSION_2;
                 } else if (format >= -11) {             // FORMAT_3_1, last format of 3.x
                     return LuceneVersion.VERSION_3;

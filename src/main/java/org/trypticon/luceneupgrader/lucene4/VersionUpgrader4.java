@@ -1,4 +1,4 @@
-package org.trypticon.luceneupgrader.lucene4.internal;
+package org.trypticon.luceneupgrader.lucene4;
 
 import org.trypticon.luceneupgrader.VersionUpgrader;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.IndexUpgrader;

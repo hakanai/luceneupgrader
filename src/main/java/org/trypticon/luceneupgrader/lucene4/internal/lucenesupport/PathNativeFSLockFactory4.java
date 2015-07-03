@@ -89,14 +89,14 @@ public class PathNativeFSLockFactory4 extends PathFSLockFactory4 {
             }
 
             // Ensure that lockDir exists and is a directory.
-            if (!Files.exists(lockDir)) {
-                if (!Files.exists(lockDir))
-                    throw new IOException("Cannot create directory: " + lockDir);
-            } else if (!Files.isDirectory(lockDir)) {
-                // TODO: NoSuchDirectoryException instead?
-                throw new IOException("Found regular file where directory expected: " + lockDir);
+            Files.createDirectories(lockDir);
+            try {
+                Files.createFile(path);
+            } catch (IOException ignore) {
+                // we must create the file to have a truly canonical path.
+                // if it's already created, we don't care. if it cant be created, it will fail below.
             }
-            final String canonicalPath = path.toRealPath().toString();
+            final Path canonicalPath = path.toRealPath();
             // Make sure nobody else in-process has this lock held
             // already, and, mark it held if not:
             // This is a pretty crazy workaround for some documented
@@ -111,7 +111,7 @@ public class PathNativeFSLockFactory4 extends PathFSLockFactory4 {
             // is that we can't re-obtain the lock in the same JVM but from a different process if that happens. Nevertheless
             // this is super trappy. See LUCENE-5738
             boolean obtained = false;
-            if (LOCK_HELD.add(canonicalPath)) {
+            if (LOCK_HELD.add(canonicalPath.toString())) {
                 try {
                     channel = FileChannel.open(path, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
                     try {

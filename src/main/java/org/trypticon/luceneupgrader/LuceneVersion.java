@@ -1,7 +1,8 @@
 package org.trypticon.luceneupgrader;
 
 import org.trypticon.luceneupgrader.lucene3.VersionUpgrader3;
-import org.trypticon.luceneupgrader.lucene4.internal.VersionUpgrader4;
+import org.trypticon.luceneupgrader.lucene4.VersionUpgrader4;
+import org.trypticon.luceneupgrader.lucene5.VersionUpgrader5;
 
 import java.nio.file.Path;
 
@@ -41,7 +42,7 @@ public enum LuceneVersion {
     VERSION_5 {
         @Override
         protected VersionUpgrader createUpgrader(Path directory) {
-            throw new UnsupportedOperationException("TODO");
+            return new VersionUpgrader5(directory);
         }
     };
 
