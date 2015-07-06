@@ -39,8 +39,7 @@ public class IndexUpgrader {
 
         // Sanity check.
         LuceneVersion actualVersion = new VersionGuesser().guess(directory);
-        if (actualVersion != version)
-        {
+        if (actualVersion != version) {
             throw new IllegalStateException("We tried to upgrade from " + this.version + " to " + version +
                                             ", but it didn't actually happen");
         }
