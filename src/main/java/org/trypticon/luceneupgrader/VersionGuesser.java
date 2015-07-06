@@ -1,10 +1,10 @@
 package org.trypticon.luceneupgrader;
 
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentInfos;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
-import org.trypticon.luceneupgrader.lucene4.internal.lucenesupport.PathFSDirectory4;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.index.SegmentInfos;
+import org.apache.lucene.store.IOContext;
+import org.apache.lucene.store.IndexInput;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -14,8 +14,7 @@ import java.nio.file.Path;
  */
 public class VersionGuesser {
     public LuceneVersion guess(Path path) throws IOException {
-        //TODO: Change this to FSDirectory once lucene 5 is in here.
-        try (Directory directory = PathFSDirectory4.open(path)) {
+        try (Directory directory = FSDirectory.open(path)) {
             return guess(directory);
         }
     }
@@ -42,9 +41,9 @@ public class VersionGuesser {
                 int actualVersion = segments.readInt();
                 // - If the value is 0..3, then it's Lucene 4.x
                 // - If the value is >= 4, then it's Lucene 5.x
-                if (actualVersion >= 0 || actualVersion <= 3) {     // VERSION_40 thru VERSION_49
+                if (actualVersion >= 0 && actualVersion <= 3) {             // VERSION_40 thru VERSION_49
                     return LuceneVersion.VERSION_4;
-                } else if (actualVersion == 4) {                    // VERSION_50
+                } else if (actualVersion >= 4 && actualVersion <= 5) {      // VERSION_50 thru VERSION_51
                     return LuceneVersion.VERSION_5;
                 } else {
                     throw new UnknownFormatException("Appears to be like version 4-5 but actual version " +
