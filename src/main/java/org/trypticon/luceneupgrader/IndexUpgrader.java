@@ -8,10 +8,17 @@ import java.nio.file.Path;
  */
 public class IndexUpgrader {
     private final Path directory;
+    private final InfoStream infoStream;
     private LuceneVersion version;
-    
+
     public IndexUpgrader(Path directory) throws IOException {
+        this(directory, null);
+    }
+
+    public IndexUpgrader(Path directory, InfoStream infoStream) throws IOException {
         this.directory = directory;
+        this.infoStream = infoStream;
+
         version = new VersionGuesser().guess(directory);
     }
 
@@ -28,7 +35,16 @@ public class IndexUpgrader {
     }
 
     private void upgradeOneStepTo(LuceneVersion version) throws IOException {
-        version.createUpgrader(directory).upgrade();
+        version.createUpgrader(directory, infoStream).upgrade();
+
+        // Sanity check.
+        LuceneVersion actualVersion = new VersionGuesser().guess(directory);
+        if (actualVersion != version)
+        {
+            throw new IllegalStateException("We tried to upgrade from " + this.version + " to " + version +
+                                            ", but it didn't actually happen");
+        }
+
         this.version = version;
     }
 

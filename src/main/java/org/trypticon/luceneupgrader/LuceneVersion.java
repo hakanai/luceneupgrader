@@ -13,36 +13,36 @@ public enum LuceneVersion {
 
     VERSION_1 {
         @Override
-        protected VersionUpgrader createUpgrader(Path directory) {
+        protected VersionUpgrader createUpgrader(Path directory, InfoStream infoStream) {
             throw new UnsupportedOperationException("Upgrade from what?");
         }
     },
 
     VERSION_2 {
         @Override
-        protected VersionUpgrader createUpgrader(Path directory) {
+        protected VersionUpgrader createUpgrader(Path directory, InfoStream infoStream) {
             throw new UnsupportedOperationException("TODO");
         }
     },
 
     VERSION_3 {
         @Override
-        protected VersionUpgrader createUpgrader(Path directory) {
-            return new VersionUpgrader3(directory);
+        protected VersionUpgrader createUpgrader(Path directory, InfoStream infoStream) {
+            return new VersionUpgrader3(directory, infoStream);
         }
     },
 
     VERSION_4 {
         @Override
-        protected VersionUpgrader createUpgrader(Path directory) {
-            return new VersionUpgrader4(directory);
+        protected VersionUpgrader createUpgrader(Path directory, InfoStream infoStream) {
+            return new VersionUpgrader4(directory, infoStream);
         }
     },
 
     VERSION_5 {
         @Override
-        protected VersionUpgrader createUpgrader(Path directory) {
-            return new VersionUpgrader5(directory);
+        protected VersionUpgrader createUpgrader(Path directory, InfoStream infoStream) {
+            return new VersionUpgrader5(directory, infoStream);
         }
     };
 
@@ -50,5 +50,5 @@ public enum LuceneVersion {
         return compareTo(version) < 0; // because we order them in the enum
     }
 
-    protected abstract VersionUpgrader createUpgrader(Path directory);
+    protected abstract VersionUpgrader createUpgrader(Path directory, InfoStream infoStream);
 }
