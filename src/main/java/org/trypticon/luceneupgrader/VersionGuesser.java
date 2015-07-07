@@ -76,7 +76,7 @@ public class VersionGuesser {
     }
 
     private String genToSegmentsFileName(long gen) {
-        if (gen == 0) {
+        if (gen <= 0) {
             return "segments";
         } else {
             return "segments_" + gen;

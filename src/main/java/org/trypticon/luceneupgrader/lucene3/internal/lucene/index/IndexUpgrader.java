@@ -50,6 +50,8 @@ import java.util.Collection;
   * documents.
   */
 public final class IndexUpgrader {
+  
+  private static final String LOG_PREFIX = "IndexUpgrader";
 
   private static void printUsage() {
     System.err.println("Upgrades an index so all segments created with a previous Lucene version are rewritten.");
@@ -149,15 +151,16 @@ public final class IndexUpgrader {
     final IndexWriterConfig c = (IndexWriterConfig) iwc.clone();
     c.setMergePolicy(new UpgradeIndexMergePolicy(c.getMergePolicy()));
     c.setIndexDeletionPolicy(new KeepOnlyLastCommitDeletionPolicy());
-    
-    final IndexWriter w = new IndexWriter(dir, c);
-    try {
+
+    try (final IndexWriter w = new IndexWriter(dir, c)) {
       w.setInfoStream(infoStream);
       w.message("Upgrading all pre-" + Constants.LUCENE_MAIN_VERSION + " segments of index directory '" + dir + "' to version " + Constants.LUCENE_MAIN_VERSION + "...");
       w.forceMerge(1);
       w.message("All segments upgraded to version " + Constants.LUCENE_MAIN_VERSION);
-    } finally {
-      w.close();
+      w.message("Enforcing commit to rewrite all index metadata...");
+      // Workaround for LUCENE-6658
+      w.forceCommit();
+      w.message("Committed upgraded metadata to index.");
     }
   }
   

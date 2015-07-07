@@ -1,6 +1,10 @@
 package org.trypticon.luceneupgrader.lucene5;
 
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexUpgrader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.SegmentInfos;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.trypticon.luceneupgrader.InfoStream;
@@ -24,8 +28,23 @@ public class VersionUpgrader5 implements VersionUpgrader {
     @Override
     public void upgrade() throws IOException {
         try (Directory directory = FSDirectory.open(path)) {
-            IndexUpgrader upgrader = new IndexUpgrader(directory, new AdaptedInfoStream(infoStream), false);
-            upgrader.upgrade();
+            SegmentInfos infos = SegmentInfos.readLatestCommit(directory);
+            int size = infos.size();
+            if (size == 0) {
+
+                //HACK: This is the trick Lucene are using to fix IndexUpgrader for v5.2.2.
+                // I'll remove this once we can depend on the fixed version.
+                try (IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(new FailAnalyzer()))) {
+                    writer.setCommitData(writer.getCommitData());
+                    assert writer.hasUncommittedChanges();
+                    writer.commit();
+                }
+
+            } else {
+                AdaptedInfoStream adaptedInfoStream = infoStream == null ? null : new AdaptedInfoStream(infoStream);
+                IndexUpgrader upgrader = new IndexUpgrader(directory, adaptedInfoStream, false);
+                upgrader.upgrade();
+            }
         }
     }
 
@@ -52,6 +71,16 @@ public class VersionUpgrader5 implements VersionUpgrader {
         @Override
         public void close() throws IOException {
             //
+        }
+    }
+
+    /**
+     * An analyser which deliberately fails, because we don't want to be analysing text at all.
+     */
+    private static class FailAnalyzer extends Analyzer {
+        @Override
+        protected TokenStreamComponents createComponents(String s) {
+            throw new UnsupportedOperationException("This analyser isn't supported for indexing");
         }
     }
 }

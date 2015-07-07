@@ -17,38 +17,20 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.Analyzer;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.LimitTokenCountAnalyzer;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Document;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexWriterConfig.OpenMode;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Query;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Similarity;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.AlreadyClosedException;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.BufferedIndexInput;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Lock;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.LockObtainFailedException;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Constants;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ThreadInterruptedException;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.TwoPhaseCommit;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Version;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.*;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.*;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
   An <code>IndexWriter</code> creates and maintains an index.
@@ -3416,6 +3398,17 @@ public class IndexWriter implements Closeable, TwoPhaseCommit {
 
   // Used only by commit, below; lock order is commitLock -> IW
   private final Object commitLock = new Object();
+
+  /**
+   * Forces a commit, even if nothing has changed.
+   * Not present in real Lucene v3.6 but here as part of a workaround for LUCENE-6658.
+   *
+   * @see #commit()
+   */
+  public final void forceCommit() throws CorruptIndexException, IOException {
+    changeCount++;
+    commit();
+  }
 
   /**
    * <p>Commits all pending changes (added & deleted

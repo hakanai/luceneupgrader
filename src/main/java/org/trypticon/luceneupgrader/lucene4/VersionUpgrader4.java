@@ -25,9 +25,8 @@ public class VersionUpgrader4 implements VersionUpgrader {
     @Override
     public void upgrade() throws IOException {
         try (Directory directory = PathFSDirectory4.open(path)) {
-            IndexUpgrader upgrader = new IndexUpgrader(
-                    directory, Version.LUCENE_4_10_4,
-                    new AdaptedInfoStream(infoStream), false);
+            AdaptedInfoStream adaptedInfoStream = infoStream == null ? null : new AdaptedInfoStream(infoStream);
+            IndexUpgrader upgrader = new IndexUpgrader(directory, Version.LUCENE_4_10_4, adaptedInfoStream, false);
             upgrader.upgrade();
         }
     }
