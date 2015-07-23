@@ -1,5 +1,6 @@
 package org.trypticon.luceneupgrader;
 
+import org.apache.lucene.index.IndexFileNames;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.index.SegmentInfos;
@@ -79,7 +80,7 @@ public class VersionGuesser {
         if (gen <= 0) {
             return "segments";
         } else {
-            return "segments_" + gen;
+            return "segments_" + Long.toString(gen, 36);
         }
     }
 }
