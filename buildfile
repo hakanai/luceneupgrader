@@ -18,5 +18,6 @@ define 'luceneupgrader' do
   compile.with LUCENE
   test.with 'junit:junit:jar:4.12'
   test.with 'org.hamcrest:hamcrest-library:jar:1.3'
+  test.with LUCENE_RUNTIME
   package :jar
 end
