@@ -5,7 +5,9 @@ repositories.remote << 'http://mirrors.ibiblio.org/pub/mirrors/maven2/'
 
 LUCENE = [ '5.0.0',
            '5.1.0',
-           '5.2.0', '5.2.1'
+           '5.2.0', '5.2.1',
+           '5.3.0', '5.3.1',
+           '5.4.0'
            ].map { |version| [version, [ artifact("org.apache.lucene:lucene-core:jar:#{version}"),
                                          artifact("org.apache.lucene:lucene-analyzers-common:jar:#{version}")
                                        ]] }

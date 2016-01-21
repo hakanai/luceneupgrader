@@ -44,7 +44,7 @@ public class VersionGuesser {
                 // - If the value is >= 4, then it's Lucene 5.x
                 if (actualVersion >= 0 && actualVersion <= 3) {             // VERSION_40 thru VERSION_49
                     return LuceneVersion.VERSION_4;
-                } else if (actualVersion >= 4 && actualVersion <= 5) {      // VERSION_50 thru VERSION_51
+                } else if (actualVersion >= 4 && actualVersion <= 6) {      // VERSION_50 thru VERSION_53
                     return LuceneVersion.VERSION_5;
                 } else {
                     throw new UnknownFormatException("Appears to be like version 4-5 but actual version " +

@@ -1,14 +1,14 @@
 
-VERSION_NUMBER = '0.1'
+VERSION_NUMBER = '0.2'
 
 repositories.remote << 'https://oss.sonatype.org/content/repositories/releases'
 repositories.remote << 'https://repository.apache.org/content/repositories/releases'
 repositories.remote << 'http://mirrors.ibiblio.org/pub/mirrors/maven2/'
 
-LUCENE_VERSION = '5.2.1'
+LUCENE_VERSION = '5.3.1'
 
-LUCENE = artifact('org.apache.lucene:lucene-core:jar:5.2.1')
-LUCENE_RUNTIME = artifact('org.apache.lucene:lucene-backward-codecs:jar:5.2.1')
+LUCENE = artifact("org.apache.lucene:lucene-core:jar:#{LUCENE_VERSION}")
+LUCENE_RUNTIME = artifact("org.apache.lucene:lucene-backward-codecs:jar:#{LUCENE_VERSION}")
 
 desc 'Lucene Index Upgrader'
 define 'luceneupgrader' do
@@ -16,6 +16,7 @@ define 'luceneupgrader' do
   project.group = 'org.trypticon.luceneupgrader'
   compile.options.source = compile.options.target = '1.7'
   compile.with LUCENE
-  test.with LUCENE_RUNTIME
+  test.with 'junit:junit:jar:4.12'
+  test.with 'org.hamcrest:hamcrest-library:jar:1.3'
   package :jar
 end
