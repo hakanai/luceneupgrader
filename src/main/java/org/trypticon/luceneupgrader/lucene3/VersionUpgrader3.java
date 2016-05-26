@@ -3,6 +3,8 @@ package org.trypticon.luceneupgrader.lucene3;
 import org.trypticon.luceneupgrader.InfoStream;
 import org.trypticon.luceneupgrader.VersionUpgrader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexUpgrader;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexWriterConfig;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.LogByteSizeMergePolicy;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Version;
 import org.trypticon.luceneupgrader.lucene3.internal.lucenesupport.PathFSDirectory3;
@@ -30,7 +32,9 @@ public class VersionUpgrader3 implements VersionUpgrader {
     public void upgrade() throws IOException {
         try (Directory directory = PathFSDirectory3.open(path)) {
             PrintStream printStream = infoStream == null ? null : new PrintStream(new InfoStreamOutputStream(infoStream));
-            IndexUpgrader upgrader = new IndexUpgrader(directory, Version.LUCENE_36, printStream, false);
+            IndexWriterConfig indexWriterConfig = new IndexWriterConfig(Version.LUCENE_36, null);
+            indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
+            IndexUpgrader upgrader = new IndexUpgrader(directory, indexWriterConfig, printStream, false);
             upgrader.upgrade();
         }
     }

@@ -4,6 +4,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexUpgrader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.LogByteSizeMergePolicy;
 import org.apache.lucene.index.SegmentInfos;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -41,8 +42,13 @@ public class VersionUpgrader5 implements VersionUpgrader {
                 }
 
             } else {
-                AdaptedInfoStream adaptedInfoStream = infoStream == null ? null : new AdaptedInfoStream(infoStream);
-                IndexUpgrader upgrader = new IndexUpgrader(directory, adaptedInfoStream, false);
+                org.apache.lucene.util.InfoStream adaptedInfoStream =
+                    infoStream == null ? org.apache.lucene.util.InfoStream.NO_OUTPUT
+                                       : new AdaptedInfoStream(infoStream);
+                IndexWriterConfig indexWriterConfig = new IndexWriterConfig(null);
+                indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
+                indexWriterConfig.setInfoStream(adaptedInfoStream);
+                IndexUpgrader upgrader = new IndexUpgrader(directory, indexWriterConfig, false);
                 upgrader.upgrade();
             }
         }

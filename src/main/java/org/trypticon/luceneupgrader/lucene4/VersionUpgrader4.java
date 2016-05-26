@@ -3,6 +3,8 @@ package org.trypticon.luceneupgrader.lucene4;
 import org.trypticon.luceneupgrader.InfoStream;
 import org.trypticon.luceneupgrader.VersionUpgrader;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.IndexUpgrader;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.IndexWriterConfig;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.LogByteSizeMergePolicy;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Version;
 import org.trypticon.luceneupgrader.lucene4.internal.lucenesupport.PathFSDirectory4;
@@ -25,8 +27,13 @@ public class VersionUpgrader4 implements VersionUpgrader {
     @Override
     public void upgrade() throws IOException {
         try (Directory directory = PathFSDirectory4.open(path)) {
-            AdaptedInfoStream adaptedInfoStream = infoStream == null ? null : new AdaptedInfoStream(infoStream);
-            IndexUpgrader upgrader = new IndexUpgrader(directory, Version.LUCENE_4_10_4, adaptedInfoStream, false);
+            org.trypticon.luceneupgrader.lucene4.internal.lucene.util.InfoStream adaptedInfoStream =
+                infoStream == null ? org.trypticon.luceneupgrader.lucene4.internal.lucene.util.InfoStream.NO_OUTPUT
+                                   : new AdaptedInfoStream(infoStream);
+            IndexWriterConfig indexWriterConfig = new IndexWriterConfig(Version.LUCENE_4_10_4, null);
+            indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
+            indexWriterConfig.setInfoStream(adaptedInfoStream);
+            IndexUpgrader upgrader = new IndexUpgrader(directory, indexWriterConfig, false);
             upgrader.upgrade();
         }
     }

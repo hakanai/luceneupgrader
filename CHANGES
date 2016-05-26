@@ -1,4 +1,9 @@
 
+v0.2.1 (26 May 2016)
+- Always use LogByteSizeMergePolicy to avoid index reordering in case the
+  application plans to execute migrations which rely on the doc ID being the
+  same as it used to be.
+
 v0.2 (21 Jan 2016)
 - Recognise Lucene 5.3 indexes
 
