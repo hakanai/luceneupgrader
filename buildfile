@@ -5,7 +5,7 @@ repositories.remote << 'https://oss.sonatype.org/content/repositories/releases'
 repositories.remote << 'https://repository.apache.org/content/repositories/releases'
 repositories.remote << 'http://mirrors.ibiblio.org/pub/mirrors/maven2/'
 
-LUCENE_VERSION = '5.4.1'
+LUCENE_VERSION = '5.5.3'
 
 LUCENE = artifact("org.apache.lucene:lucene-core:jar:#{LUCENE_VERSION}")
 LUCENE_RUNTIME = artifact("org.apache.lucene:lucene-backward-codecs:jar:#{LUCENE_VERSION}")
