@@ -34,7 +34,7 @@ public class VersionUpgrader3 implements VersionUpgrader {
             PrintStream printStream = infoStream == null ? null : new PrintStream(new InfoStreamOutputStream(infoStream));
             IndexWriterConfig indexWriterConfig = new IndexWriterConfig(Version.LUCENE_36, null);
             indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
-            IndexUpgrader upgrader = new IndexUpgrader(directory, indexWriterConfig, printStream, false);
+            IndexUpgrader upgrader = new IndexUpgrader(directory, indexWriterConfig, printStream, true);
             upgrader.upgrade();
         }
     }

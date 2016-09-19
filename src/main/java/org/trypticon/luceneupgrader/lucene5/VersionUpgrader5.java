@@ -48,7 +48,7 @@ public class VersionUpgrader5 implements VersionUpgrader {
                 IndexWriterConfig indexWriterConfig = new IndexWriterConfig(null);
                 indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
                 indexWriterConfig.setInfoStream(adaptedInfoStream);
-                IndexUpgrader upgrader = new IndexUpgrader(directory, indexWriterConfig, false);
+                IndexUpgrader upgrader = new IndexUpgrader(directory, indexWriterConfig, true);
                 upgrader.upgrade();
             }
         }

@@ -1,4 +1,9 @@
 
+v0.2.2 (19 Sep 2016)
+- Delete prior commits, as these could be in versions that the version doing
+  the upgrade can't actually read.
+- Add support for up to Lucene 5.5.3.
+
 v0.2.1 (26 May 2016)
 - Always use LogByteSizeMergePolicy to avoid index reordering in case the
   application plans to execute migrations which rely on the doc ID being the

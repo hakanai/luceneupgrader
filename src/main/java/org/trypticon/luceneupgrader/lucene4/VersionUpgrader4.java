@@ -33,7 +33,7 @@ public class VersionUpgrader4 implements VersionUpgrader {
             IndexWriterConfig indexWriterConfig = new IndexWriterConfig(Version.LUCENE_4_10_4, null);
             indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
             indexWriterConfig.setInfoStream(adaptedInfoStream);
-            IndexUpgrader upgrader = new IndexUpgrader(directory, indexWriterConfig, false);
+            IndexUpgrader upgrader = new IndexUpgrader(directory, indexWriterConfig, true);
             upgrader.upgrade();
         }
     }
