@@ -1,15 +1,19 @@
 package org.trypticon.luceneupgrader.lucene5;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.IndexUpgrader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.LogByteSizeMergePolicy;
-import org.apache.lucene.index.SegmentInfos;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
+//import org.apache.lucene.analysis.Analyzer;
+//import org.apache.lucene.index.*;
+//import org.apache.lucene.store.Directory;
+//import org.apache.lucene.store.FSDirectory;
+
 import org.trypticon.luceneupgrader.InfoStream;
 import org.trypticon.luceneupgrader.VersionUpgrader;
+import org.trypticon.luceneupgrader.lucene5.internal.lucene.analysis.Analyzer;
+import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.IndexUpgrader;
+import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.IndexWriterConfig;
+import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LogByteSizeMergePolicy;
+import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SerialMergeScheduler;
+import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.Directory;
+import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.FSDirectory;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -29,35 +33,22 @@ public class VersionUpgrader5 implements VersionUpgrader {
     @Override
     public void upgrade() throws IOException {
         try (Directory directory = FSDirectory.open(path)) {
-            SegmentInfos infos = SegmentInfos.readLatestCommit(directory);
-            int size = infos.size();
-            if (size == 0) {
-
-                //HACK: This is the trick Lucene are using to fix IndexUpgrader for v5.2.2.
-                // I'll remove this once we can depend on the fixed version.
-                try (IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(new FailAnalyzer()))) {
-                    writer.setCommitData(writer.getCommitData());
-                    assert writer.hasUncommittedChanges();
-                    writer.commit();
-                }
-
-            } else {
-                org.apache.lucene.util.InfoStream adaptedInfoStream =
-                    infoStream == null ? org.apache.lucene.util.InfoStream.NO_OUTPUT
-                                       : new AdaptedInfoStream(infoStream);
-                IndexWriterConfig indexWriterConfig = new IndexWriterConfig(null);
-                indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
-                indexWriterConfig.setInfoStream(adaptedInfoStream);
-                IndexUpgrader upgrader = new IndexUpgrader(directory, indexWriterConfig, true);
-                upgrader.upgrade();
-            }
+            org.trypticon.luceneupgrader.lucene5.internal.lucene.util.InfoStream adaptedInfoStream =
+                infoStream == null ? org.trypticon.luceneupgrader.lucene5.internal.lucene.util.InfoStream.NO_OUTPUT
+                                   : new AdaptedInfoStream(infoStream);
+            IndexWriterConfig indexWriterConfig = new IndexWriterConfig(new FailAnalyzer());
+            indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
+            indexWriterConfig.setMergeScheduler(new SerialMergeScheduler());
+            indexWriterConfig.setInfoStream(adaptedInfoStream);
+            IndexUpgrader upgrader = new IndexUpgrader(directory, indexWriterConfig, true);
+            upgrader.upgrade();
         }
     }
 
     /**
      * Adapts Lucene's info stream to pass messages to ours.
      */
-    private static class AdaptedInfoStream extends org.apache.lucene.util.InfoStream {
+    private static class AdaptedInfoStream extends org.trypticon.luceneupgrader.lucene5.internal.lucene.util.InfoStream {
         private final InfoStream infoStream;
 
         private AdaptedInfoStream(InfoStream infoStream) {
@@ -85,7 +76,7 @@ public class VersionUpgrader5 implements VersionUpgrader {
      */
     private static class FailAnalyzer extends Analyzer {
         @Override
-        protected TokenStreamComponents createComponents(String s) {
+        protected Analyzer.TokenStreamComponents createComponents(String s) {
             throw new UnsupportedOperationException("This analyser isn't supported for indexing");
         }
     }

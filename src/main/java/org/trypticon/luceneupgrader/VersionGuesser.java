@@ -1,9 +1,8 @@
 package org.trypticon.luceneupgrader;
 
-import org.apache.lucene.index.IndexFileNames;
+import org.apache.lucene.index.SegmentInfos;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.index.SegmentInfos;
 import org.apache.lucene.store.IOContext;
 import org.apache.lucene.store.IndexInput;
 
@@ -35,6 +34,7 @@ public class VersionGuesser {
             int format = segments.readInt();
             if (format == 0x3fd76c17) { // == CodecUtil.CODEC_MAGIC
 
+                // This string and the int version are read by checkHeaderNoMagic.
                 // Read the next string containing the codec name (discard it?)
                 segments.readString();
 
@@ -44,10 +44,32 @@ public class VersionGuesser {
                 // - If the value is >= 4, then it's Lucene 5.x
                 if (actualVersion >= 0 && actualVersion <= 3) {             // VERSION_40 thru VERSION_49
                     return LuceneVersion.VERSION_4;
-                } else if (actualVersion >= 4 && actualVersion <= 6) {      // VERSION_50 thru VERSION_53
+                } else if (actualVersion >= 4 && actualVersion < 6) {       // VERSION_50 thru VERSION_52
                     return LuceneVersion.VERSION_5;
+                } else if (actualVersion == 6) {                            // VERSION_53
+                    // Have to dig further into the file to disambiguate...
+
+                    // Skip over 16-byte ID.
+                    segments.skipBytes(16);
+
+                    // Skip over "index header suffix"
+                    int suffixLength = segments.readByte() & 255;
+                    segments.skipBytes(suffixLength);
+
+                    int majorVersion = segments.readVInt();
+                    switch (majorVersion) {
+                        case 5:
+                            return LuceneVersion.VERSION_5;
+                        case 6:
+                            return LuceneVersion.VERSION_6;
+                        default:
+                            throw new UnknownFormatException("Appears to be like version 5-6 but major version " +
+                                    "is unrecognised: " + majorVersion);
+                    }
+
+                    /* ---- */
                 } else {
-                    throw new UnknownFormatException("Appears to be like version 4-5 but actual version " +
+                    throw new UnknownFormatException("Appears to be like version 4+ but actual version " +
                             "is unrecognised: " + actualVersion);
                 }
 

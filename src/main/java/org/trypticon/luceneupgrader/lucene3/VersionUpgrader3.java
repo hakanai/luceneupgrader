@@ -5,6 +5,7 @@ import org.trypticon.luceneupgrader.VersionUpgrader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexUpgrader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexWriterConfig;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.LogByteSizeMergePolicy;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.SerialMergeScheduler;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Version;
 import org.trypticon.luceneupgrader.lucene3.internal.lucenesupport.PathFSDirectory3;
@@ -34,6 +35,7 @@ public class VersionUpgrader3 implements VersionUpgrader {
             PrintStream printStream = infoStream == null ? null : new PrintStream(new InfoStreamOutputStream(infoStream));
             IndexWriterConfig indexWriterConfig = new IndexWriterConfig(Version.LUCENE_36, null);
             indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
+            indexWriterConfig.setMergeScheduler(new SerialMergeScheduler());
             IndexUpgrader upgrader = new IndexUpgrader(directory, indexWriterConfig, printStream, true);
             upgrader.upgrade();
         }

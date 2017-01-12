@@ -1,7 +1,6 @@
-Lucene 3 Upgrader
+Lucene Upgrader
 
-This is a snapshot of Lucene 3 source, package-shifted and cut down so that it can only be used
-to upgrade Lucene 2 indices to Lucene 3.
+This project attempts to make a single tool to upgrade Lucene indexes all the way through
+multiple versions. It does this by using the IndexUpgrader tool from each version in turn.
 
-The code in here remains otherwise unchanged from the original Lucene 3.6.2 it was based on.
 

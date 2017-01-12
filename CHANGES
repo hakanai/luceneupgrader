@@ -1,4 +1,11 @@
 
+v0.3.0 (13 Jan 2017)
+- Support Lucene 6.3.0.
+
+v0.2.3 (7 Oct 2016)
+- Use only serial merging, to be absolutely sure that the merging has finished
+  before the upgrader returns.
+
 v0.2.2 (19 Sep 2016)
 - Delete prior commits, as these could be in versions that the version doing
   the upgrade can't actually read.
