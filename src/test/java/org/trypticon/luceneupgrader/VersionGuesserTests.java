@@ -37,7 +37,14 @@ public class VersionGuesserTests {
         List<String> variants = Arrays.asList("empty", "nonempty");
         for (String version : TestIndices.allVersions()) {
             LuceneVersion expected;
-            if (version.startsWith("2.")) {
+            if (version.startsWith("1.")) {
+                // 1.4.x started in a new format already
+                if (version.startsWith("1.4.") || version.startsWith("1.9.")) {
+                    expected = LuceneVersion.VERSION_2;
+                } else {
+                    expected = LuceneVersion.VERSION_1;
+                }
+            } else if (version.startsWith("2.")) {
                 expected = LuceneVersion.VERSION_2;
             } else if (version.startsWith("3.")) {
                 if (version.startsWith("3.0")) {

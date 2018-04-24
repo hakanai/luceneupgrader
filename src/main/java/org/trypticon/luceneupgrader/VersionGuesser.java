@@ -90,10 +90,24 @@ public class VersionGuesser {
                 }
 
             } else {
+                //- when it's some other positive number, it's an even older format. I guess we just hope that
+                //  the magic number 0x3fd76c17 never occurs?
 
-                //- when it's some other positive number, panic? Supposedly positive numbers were an older format,
-                //  but 0x3fd76c17 is also a positive number.
-                throw new UnknownFormatException("Too old for me to figure out, first int value was " + format);
+                // The value we already read is the counter.
+                // Next is the SegmentInfo array.
+                for (int i = segments.readInt(); i > 0; i--) {
+                    segments.readString();  // segment filename
+                    segments.readInt();     // segment doc count
+                }
+
+                // 1.2 and 1.3 had slightly different formats - 1.3 includes an additional version number at the end.
+                // But 1.3 can read 1.2 indices, so we'll consider them the same.
+                if (segments.getFilePointer() == segments.length() ||
+                        segments.getFilePointer() == segments.length() - 8) {
+                    return LuceneVersion.VERSION_1;
+                }
+
+                throw new UnknownFormatException("Appears to be like version 1 but file length is unusual");
             }
         }
     }

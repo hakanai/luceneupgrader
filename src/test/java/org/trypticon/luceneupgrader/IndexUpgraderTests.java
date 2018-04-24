@@ -27,6 +27,11 @@ public class IndexUpgraderTests {
     public static Collection<Object[]> data() {
         List<Object[]> data = new LinkedList<>();
         for (String version : TestIndices.allVersions()) {
+            if ("1.2".equals(version) || "1.3".equals(version)) {
+                //TODO: Version 1 not supported yet.
+                continue;
+            }
+
             data.add(new Object[] { version });
         }
         return data;

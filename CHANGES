@@ -1,4 +1,8 @@
 
+vX.X.X
+- Support detecting the version of, but not migrating, the v1 format used by
+  Lucene 1.2 and 1.3.
+
 v0.3.0 (13 Jan 2017)
 - Support Lucene 6.3.0.
 
