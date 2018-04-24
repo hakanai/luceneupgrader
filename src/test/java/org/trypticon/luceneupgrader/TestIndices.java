@@ -19,7 +19,11 @@ class TestIndices {
      * @return all Lucene versions.
      */
     static Collection<String> allVersions() {
-        return Arrays.asList("2.0.0",
+        return Arrays.asList("1.2",
+                             "1.3",
+                             "1.4.1", "1.4.2", "1.4.3",
+                             "1.9.1",
+                             "2.0.0",
                              "2.1.0",
                              "2.2.0",
                              "2.3.0", "2.3.1", "2.3.2",
