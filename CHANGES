@@ -1,7 +1,7 @@
 
-vX.X.X
+v0.4.0 (19 Feb 2019)
 - Support versions up to Lucene 7.5.0.
-- Now requires Java 8
+- Require Java 8 minimum.
 - Support detecting the version of, but not migrating, the v1 format used by
   Lucene 1.2 and 1.3.
 
