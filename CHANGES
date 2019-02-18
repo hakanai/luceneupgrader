@@ -1,5 +1,7 @@
 
 vX.X.X
+- Support versions up to Lucene 7.5.0.
+- Now requires Java 8
 - Support detecting the version of, but not migrating, the v1 format used by
   Lucene 1.2 and 1.3.
 

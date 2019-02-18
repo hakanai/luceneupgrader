@@ -68,6 +68,8 @@ public class VersionGuesser {
                     }
 
                     /* ---- */
+                } else if (actualVersion >= 7 && actualVersion <= 9) {
+                    return LuceneVersion.VERSION_7;
                 } else {
                     throw new UnknownFormatException("Appears to be like version 4+ but actual version " +
                             "is unrecognised: " + actualVersion);
