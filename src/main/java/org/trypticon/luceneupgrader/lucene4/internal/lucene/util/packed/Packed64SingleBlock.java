@@ -1,5 +1,3 @@
-// This file has been automatically generated, DO NOT EDIT
-
 package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
 
 /*

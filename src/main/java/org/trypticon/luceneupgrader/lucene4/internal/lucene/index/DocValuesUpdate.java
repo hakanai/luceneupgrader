@@ -1,15 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
-import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator.NUM_BYTES_ARRAY_HEADER;
-import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator.NUM_BYTES_CHAR;
-import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator.NUM_BYTES_INT;
-import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator.NUM_BYTES_OBJECT_HEADER;
-import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator.NUM_BYTES_OBJECT_REF;
-
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.document.NumericDocValuesField;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -26,6 +14,12 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimat
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
+
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
+
+import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator.*;
 
 abstract class DocValuesUpdate {
   

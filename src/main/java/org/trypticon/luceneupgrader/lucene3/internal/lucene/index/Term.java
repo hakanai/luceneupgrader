@@ -1,7 +1,3 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,6 +14,9 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper;
 
 public final class Term implements Comparable<Term>, java.io.Serializable {
   String field;

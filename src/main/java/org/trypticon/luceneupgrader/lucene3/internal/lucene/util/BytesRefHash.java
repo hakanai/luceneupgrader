@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,17 +13,16 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-import static org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ByteBlockPool.BYTE_BLOCK_MASK;
-import static org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ByteBlockPool.BYTE_BLOCK_SHIFT;
-import static org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ByteBlockPool.BYTE_BLOCK_SIZE;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ByteBlockPool.*;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ByteBlockPool.DirectAllocator;
+import static org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ByteBlockPool.*;
 
 public final class BytesRefHash {
 

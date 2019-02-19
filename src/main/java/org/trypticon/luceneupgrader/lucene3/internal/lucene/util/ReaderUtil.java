@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,17 +13,18 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInfo;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInfos;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInfo;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInfos;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 
 public final class ReaderUtil {
 

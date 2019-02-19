@@ -1,8 +1,3 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
-import java.util.Comparator;
-import java.util.StringTokenizer;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -19,7 +14,10 @@ import java.util.StringTokenizer;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
+import java.util.Comparator;
+import java.util.StringTokenizer;
 
 public abstract class StringHelper {
   public static StringInterner interner = new SimpleStringInterner(1024,8);

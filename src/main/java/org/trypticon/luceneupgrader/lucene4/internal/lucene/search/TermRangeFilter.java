@@ -1,7 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,6 +14,9 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
+
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
 public class TermRangeFilter extends MultiTermQueryWrapperFilter<TermRangeQuery> {
     

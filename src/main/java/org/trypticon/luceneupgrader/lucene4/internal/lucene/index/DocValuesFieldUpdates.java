@@ -1,11 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.DocIdSetIterator;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PagedGrowableWriter;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -22,6 +14,10 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PagedGro
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
+
+import java.util.HashMap;
+import java.util.Map;
 
 abstract class DocValuesFieldUpdates {
   

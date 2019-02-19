@@ -1,7 +1,3 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-import java.io.IOException;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,8 +14,9 @@ import java.io.IOException;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-
+import java.io.IOException;
 
 public class LogDocMergePolicy extends LogMergePolicy {
 

@@ -1,4 +1,3 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,12 +14,11 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ToStringUtils;
 
 import java.io.IOException;
-
 
 public class SpanPositionRangeQuery extends SpanPositionCheckQuery {
   protected int start = 0;

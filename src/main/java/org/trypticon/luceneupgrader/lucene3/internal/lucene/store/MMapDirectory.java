@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -16,26 +14,25 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.File;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.BufferUnderflowException;
-import java.nio.channels.ClosedChannelException; // javadoc
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileChannel.MapMode;
 
-import java.util.Iterator;
-
-import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
-import java.security.PrivilegedActionException;
-import java.lang.reflect.Method;
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Constants;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.WeakIdentityMap;
+
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.lang.reflect.Method;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.Iterator;
 
 public class MMapDirectory extends FSDirectory {
   private boolean useUnmapHack = UNMAP_SUPPORTED;

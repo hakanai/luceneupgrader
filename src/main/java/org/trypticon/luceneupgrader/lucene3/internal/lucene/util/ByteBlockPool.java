@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -16,15 +14,16 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataOutput;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataOutput;
-
 import static org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator.NUM_BYTES_OBJECT_REF;
-
 
 public final class ByteBlockPool {
   public final static int BYTE_BLOCK_SHIFT = 15;

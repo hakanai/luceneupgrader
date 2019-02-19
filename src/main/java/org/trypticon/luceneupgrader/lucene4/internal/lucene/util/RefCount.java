@@ -1,8 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -19,6 +14,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RefCount<T> {
   

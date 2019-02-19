@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -16,7 +14,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
+
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.ByteBufferIndexInput.BufferCleaner;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Constants;
 
@@ -24,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
-import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.nio.file.StandardOpenOption;

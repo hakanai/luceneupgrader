@@ -1,6 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -17,6 +14,9 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
+
+
 
 
 /*
@@ -26,7 +26,7 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  *   http://www.unicode.org/Public/PROGRAMS/CVTUTF
  *
  * Full Copyright for that code follows:
-*/
+ */
 
 /*
  * Copyright 2001-2004 Unicode, Inc.

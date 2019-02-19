@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -16,10 +14,7 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-  
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SingleTermsEnum;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.Terms;
@@ -27,6 +22,10 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.TermsEnum;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.PrefixTermsEnum;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CompiledAutomaton {
   public enum AUTOMATON_TYPE {

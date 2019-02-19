@@ -1,4 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,8 +14,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
 
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.DocsEnum; // javadocs
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.OrdTermState;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.TermState;
 

@@ -1,14 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.document.BinaryDocValuesField;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.DocIdSetIterator;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.InPlaceMergeSorter;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PagedGrowableWriter;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PagedMutable;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -25,6 +14,15 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PagedMut
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
+
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.DocIdSetIterator;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.InPlaceMergeSorter;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PagedGrowableWriter;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PagedMutable;
 
 class BinaryDocValuesFieldUpdates extends DocValuesFieldUpdates {
   

@@ -1,4 +1,3 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,12 +14,12 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import java.io.IOException;
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.NumericUtils;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.NumericField; // for javadocs
+
+import java.io.IOException;
 
 public abstract class FieldCacheRangeFilter<T> extends Filter {
   final String field;

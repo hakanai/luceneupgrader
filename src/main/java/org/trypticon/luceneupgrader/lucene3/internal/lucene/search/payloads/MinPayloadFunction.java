@@ -1,6 +1,3 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.payloads;
-
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Explanation;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -17,7 +14,9 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Explanation;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.payloads;
 
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Explanation;
 
 public class MinPayloadFunction extends PayloadFunction {
 

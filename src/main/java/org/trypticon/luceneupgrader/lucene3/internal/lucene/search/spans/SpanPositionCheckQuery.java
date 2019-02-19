@@ -1,4 +1,3 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +14,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
@@ -25,8 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
-
-
 
 public abstract class SpanPositionCheckQuery extends SpanQuery implements Cloneable {
   protected SpanQuery match;

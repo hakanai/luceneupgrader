@@ -1,7 +1,3 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInvertState;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,7 +14,9 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInvertSta
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInvertState;
 
 @Deprecated
 public class SimilarityDelegator extends Similarity {

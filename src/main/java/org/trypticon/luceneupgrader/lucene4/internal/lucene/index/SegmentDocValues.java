@@ -1,17 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.DocValuesFormat;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.DocValuesProducer;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RefCount;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -28,6 +14,19 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RefCount;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
+
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.DocValuesFormat;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.DocValuesProducer;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RefCount;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 final class SegmentDocValues {
 

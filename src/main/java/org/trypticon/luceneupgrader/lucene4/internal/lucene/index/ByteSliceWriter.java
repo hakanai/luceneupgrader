@@ -1,8 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataOutput;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ByteBlockPool;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -19,7 +14,10 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ByteBlockPool;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataOutput;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ByteBlockPool;
 
 final class ByteSliceWriter extends DataOutput {
 

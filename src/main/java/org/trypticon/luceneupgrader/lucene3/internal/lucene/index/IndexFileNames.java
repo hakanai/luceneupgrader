@@ -1,7 +1,3 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-import java.util.regex.Pattern;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,6 +14,9 @@ import java.util.regex.Pattern;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
+
+import java.util.regex.Pattern;
 
 public final class IndexFileNames {
 

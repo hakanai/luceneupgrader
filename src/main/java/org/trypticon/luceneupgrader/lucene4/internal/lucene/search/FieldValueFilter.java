@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -16,12 +14,14 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import java.io.IOException;
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.AtomicReaderContext;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits.MatchAllBits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits.MatchNoBits;
+
+import java.io.IOException;
 
 public class FieldValueFilter extends Filter {
   private final String field;
