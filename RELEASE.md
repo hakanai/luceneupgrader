@@ -26,8 +26,9 @@ Process:
 
 5. Go to the [staging repository](https://oss.sonatype.org/#stagingRepositories)
    and manually inspect the repository contents.
-6. Smoke test the new artifacts by pointing some other build at the staging
+6. Once satisfied that everything is present, Close the staging repository.
+   All of their checks should pass at this point.
+7. Smoke test the new artifacts by pointing some other build at the staging
    repository and checking that it still builds.
-7. Once satisfied that everything is okay, Close the staging repository.
-   All of their checks should pass, and the artifact should become visible
+8. Release the staging repository, and the artifact should become visible
    in the public repository.
