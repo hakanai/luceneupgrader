@@ -5,6 +5,10 @@ repositories.remote << 'https://oss.sonatype.org/content/repositories/releases'
 repositories.remote << 'https://repository.apache.org/content/repositories/releases'
 repositories.remote << 'http://mirrors.ibiblio.org/pub/mirrors/maven2/'
 
+repositories.release_to[:url] = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+repositories.release_to[:username] = ENV['USERNAME']
+repositories.release_to[:password] = ENV['PASSWORD']
+
 LUCENE_VERSION = '7.5.0'
 
 LUCENE = artifact("org.apache.lucene:lucene-core:jar:#{LUCENE_VERSION}")
