@@ -18,9 +18,11 @@ Process:
 3. Commit those changes if you haven't already.
 4. Run:
 
-        DEPLOY_USER=<YOUR USERNAME> DEPLOY_PASS=<YOUR PASSWORD> \
-        GPG_USER=<YOUR GPG MAIL ADDRESS> \
-        buildr release
+    ```sh
+    DEPLOY_USER=<YOUR USERNAME> DEPLOY_PASS=<YOUR PASSWORD> \
+    GPG_USER=<YOUR GPG MAIL ADDRESS> \
+    buildr release
+    ```
 
 5. Go to the [staging repository](https://oss.sonatype.org/#stagingRepositories)
    and manually inspect the repository contents.
