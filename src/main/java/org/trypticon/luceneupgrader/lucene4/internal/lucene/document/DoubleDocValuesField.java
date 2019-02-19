@@ -20,25 +20,9 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.document;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.AtomicReader; // javadocs
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.FieldCache; // javadocs
 
-/**
- * Syntactic sugar for encoding doubles as NumericDocValues
- * via {@link Double#doubleToRawLongBits(double)}.
- * <p>
- * Per-document double values can be retrieved via
- * {@link FieldCache#getDoubles(AtomicReader, String, boolean)}.
- * <p>
- * <b>NOTE</b>: In most all cases this will be rather inefficient,
- * requiring eight bytes per document. Consider encoding double
- * values yourself with only as much precision as you require.
- */
 public class DoubleDocValuesField extends NumericDocValuesField {
 
-  /** 
-   * Creates a new DocValues field with the specified 64-bit double value 
-   * @param name field name
-   * @param value 64-bit double value
-   * @throws IllegalArgumentException if the field name is null
-   */
+
   public DoubleDocValuesField(String name, double value) {
     super(name, Double.doubleToRawLongBits(value));
   }

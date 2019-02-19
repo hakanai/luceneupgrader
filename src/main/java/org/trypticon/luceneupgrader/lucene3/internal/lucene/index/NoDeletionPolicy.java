@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,14 +20,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * An {@link IndexDeletionPolicy} which keeps all index commits around, never
- * deleting them. This class is a singleton and can be accessed by referencing
- * {@link #INSTANCE}.
- */
 public final class NoDeletionPolicy implements IndexDeletionPolicy {
 
-  /** The single instance of this class. */
   public static final IndexDeletionPolicy INSTANCE = new NoDeletionPolicy();
   
   private NoDeletionPolicy() {

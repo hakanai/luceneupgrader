@@ -35,49 +35,21 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * On-disk sorting of byte arrays. Each byte array (entry) is a composed of the following
- * fields:
- * <ul>
- *   <li>(two bytes) length of the following byte array,
- *   <li>exactly the above count of bytes for the sequence to be sorted.
- * </ul>
- * 
- * @see #sort(Path, Path)
- * @lucene.experimental
- * @lucene.internal
- */
 public final class OfflineSorter {
 
   private static Path DEFAULT_TEMP_DIR;
 
-  /** Convenience constant for megabytes */
   public final static long MB = 1024 * 1024;
-  /** Convenience constant for gigabytes */
   public final static long GB = MB * 1024;
   
-  /**
-   * Minimum recommended buffer size for sorting.
-   */
   public final static long MIN_BUFFER_SIZE_MB = 32;
 
-  /**
-   * Absolute minimum required buffer size for sorting.
-   */
   public static final long ABSOLUTE_MIN_SORT_BUFFER_SIZE = MB / 2;
   private static final String MIN_BUFFER_SIZE_MSG = "At least 0.5MB RAM buffer is needed";
 
-  /**
-   * Maximum number of temporary files before doing an intermediate merge.
-   */
   public final static int MAX_TEMPFILES = 128;
 
-  /** 
-   * A bit more descriptive unit for constructors.
-   * 
-   * @see #automatic()
-   * @see #megabytes(long)
-   */
+
   public static final class BufferSize {
     final int bytes;
   
@@ -94,20 +66,10 @@ public final class OfflineSorter {
       this.bytes = (int) bytes;
     }
     
-    /**
-     * Creates a {@link BufferSize} in MB. The given 
-     * values must be &gt; 0 and &lt; 2048.
-     */
     public static BufferSize megabytes(long mb) {
       return new BufferSize(mb * MB);
     }
   
-    /** 
-     * Approximately half of the currently available free heap, but no less
-     * than {@link #ABSOLUTE_MIN_SORT_BUFFER_SIZE}. However if current heap allocation 
-     * is insufficient or if there is a large portion of unallocated heap-space available 
-     * for sorting consult with max allowed heap size. 
-     */
     public static BufferSize automatic() {
       Runtime rt = Runtime.getRuntime();
       
@@ -133,28 +95,16 @@ public final class OfflineSorter {
     }
   }
   
-  /**
-   * Sort info (debugging mostly).
-   */
   public class SortInfo {
-    /** number of temporary files created when merging partitions */
     public int tempMergeFiles;
-    /** number of partition merges */
     public int mergeRounds;
-    /** number of lines of data read */
     public int lines;
-    /** time spent merging sorted partitions (in milliseconds) */
     public long mergeTime;
-    /** time spent sorting data (in milliseconds) */
     public long sortTime;
-    /** total time spent (in milliseconds) */
     public long totalTime;
-    /** time spent in i/o read (in milliseconds) */
     public long readTime;
-    /** read buffer size (in bytes) */
     public final long bufferSize = ramBufferSize.bytes;
     
-    /** create a new SortInfo (with empty statistics) for debugging */
     public SortInfo() {}
     
     @Override
@@ -176,32 +126,16 @@ public final class OfflineSorter {
   private int maxTempFiles;
   private final Comparator<BytesRef> comparator;
   
-  /** Default comparator: sorts in binary (codepoint) order */
   public static final Comparator<BytesRef> DEFAULT_COMPARATOR = BytesRef.getUTF8SortedAsUnicodeComparator();
 
-  /**
-   * Defaults constructor.
-   * 
-   * @see #getDefaultTempDir()
-   * @see BufferSize#automatic()
-   */
   public OfflineSorter() throws IOException {
     this(DEFAULT_COMPARATOR, BufferSize.automatic(), getDefaultTempDir(), MAX_TEMPFILES);
   }
   
-  /**
-   * Defaults constructor with a custom comparator.
-   * 
-   * @see #getDefaultTempDir()
-   * @see BufferSize#automatic()
-   */
   public OfflineSorter(Comparator<BytesRef> comparator) throws IOException {
     this(comparator, BufferSize.automatic(), getDefaultTempDir(), MAX_TEMPFILES);
   }
 
-  /**
-   * All-details constructor.
-   */
   public OfflineSorter(Comparator<BytesRef> comparator, BufferSize ramBufferSize, Path tempDirectory, int maxTempfiles) {
     if (ramBufferSize.bytes < ABSOLUTE_MIN_SORT_BUFFER_SIZE) {
       throw new IllegalArgumentException(MIN_BUFFER_SIZE_MSG + ": " + ramBufferSize.bytes);
@@ -217,10 +151,7 @@ public final class OfflineSorter {
     this.comparator = comparator;
   }
 
-  /** 
-   * Sort input to output, explicit hint for the buffer size. The amount of allocated
-   * memory may deviate from the hint (may be smaller or larger).  
-   */
+
   public SortInfo sort(Path input, Path output) throws IOException {
     sortInfo = new SortInfo();
     sortInfo.totalTime = System.currentTimeMillis();
@@ -290,15 +221,10 @@ public final class OfflineSorter {
     return sortInfo;
   }
 
-  /** Used by test framework */
   static void setDefaultTempDir(Path tempDir) {
     DEFAULT_TEMP_DIR = tempDir;
   }
 
-  /**
-   * Returns the default temporary directory. By default, java.io.tmpdir. If not accessible
-   * or not available, an IOException is thrown
-   */
   public synchronized static Path getDefaultTempDir() throws IOException {
     if (DEFAULT_TEMP_DIR == null) {
       // Lazy init
@@ -317,7 +243,6 @@ public final class OfflineSorter {
     return DEFAULT_TEMP_DIR;
   }
 
-  /** Sort a single partition in-memory. */
   protected Path sortPartition(int len) throws IOException {
     BytesRefArray data = this.buffer;
     Path tempFile = Files.createTempFile(tempDirectory, "sort", "partition");
@@ -344,7 +269,6 @@ public final class OfflineSorter {
     }
   }
 
-  /** Merge a list of sorted temporary files (partitions) into an output file */
   void mergePartitions(List<Path> merges, Path outputFile) throws IOException {
     long start = System.currentTimeMillis();
 
@@ -395,7 +319,6 @@ public final class OfflineSorter {
     }
   }
 
-  /** Read in a single partition of data */
   int readPartition(ByteSequencesReader reader) throws IOException {
     long start = System.currentTimeMillis();
     final BytesRef scratch = new BytesRef();
@@ -423,48 +346,28 @@ public final class OfflineSorter {
     }
   }
 
-  /**
-   * Utility class to emit length-prefixed byte[] entries to an output stream for sorting.
-   * Complementary to {@link ByteSequencesReader}.
-   */
   public static class ByteSequencesWriter implements Closeable {
     private final DataOutput os;
 
-    /** Constructs a ByteSequencesWriter to the provided Path */
     public ByteSequencesWriter(Path path) throws IOException {
       this(new DataOutputStream(
           new BufferedOutputStream(
               Files.newOutputStream(path))));
     }
 
-    /** Constructs a ByteSequencesWriter to the provided DataOutput */
     public ByteSequencesWriter(DataOutput os) {
       this.os = os;
     }
 
-    /**
-     * Writes a BytesRef.
-     * @see #write(byte[], int, int)
-     */
     public void write(BytesRef ref) throws IOException {
       assert ref != null;
       write(ref.bytes, ref.offset, ref.length);
     }
 
-    /**
-     * Writes a byte array.
-     * @see #write(byte[], int, int)
-     */
     public void write(byte [] bytes) throws IOException {
       write(bytes, 0, bytes.length);
     }
 
-    /**
-     * Writes a byte array.
-     * <p>
-     * The length is written as a <code>short</code>, followed
-     * by the bytes.
-     */
     public void write(byte [] bytes, int off, int len) throws IOException {
       assert bytes != null;
       assert off >= 0 && off + len <= bytes.length;
@@ -476,9 +379,6 @@ public final class OfflineSorter {
       os.write(bytes, off, len);
     }
     
-    /**
-     * Closes the provided {@link DataOutput} if it is {@link Closeable}.
-     */
     @Override
     public void close() throws IOException {
       if (os instanceof Closeable) {
@@ -487,33 +387,19 @@ public final class OfflineSorter {
     }    
   }
 
-  /**
-   * Utility class to read length-prefixed byte[] entries from an input.
-   * Complementary to {@link ByteSequencesWriter}.
-   */
   public static class ByteSequencesReader implements Closeable {
     private final DataInput is;
 
-    /** Constructs a ByteSequencesReader from the provided Path */
     public ByteSequencesReader(Path path) throws IOException {
       this(new DataInputStream(
           new BufferedInputStream(
               Files.newInputStream(path))));
     }
 
-    /** Constructs a ByteSequencesReader from the provided DataInput */
     public ByteSequencesReader(DataInput is) {
       this.is = is;
     }
 
-    /**
-     * Reads the next entry into the provided {@link BytesRef}. The internal
-     * storage is resized if needed.
-     * 
-     * @return Returns <code>false</code> if EOF occurred when trying to read
-     * the header of the next sequence. Returns <code>true</code> otherwise.
-     * @throws EOFException if the file ends before the full sequence is read.
-     */
     public boolean read(BytesRefBuilder ref) throws IOException {
       short length;
       try {
@@ -528,15 +414,6 @@ public final class OfflineSorter {
       return true;
     }
 
-    /**
-     * Reads the next entry and returns it if successful.
-     * 
-     * @see #read(BytesRefBuilder)
-     * 
-     * @return Returns <code>null</code> if EOF occurred before the next entry
-     * could be read.
-     * @throws EOFException if the file ends before the full sequence is read.
-     */
     public byte[] read() throws IOException {
       short length;
       try {
@@ -551,9 +428,6 @@ public final class OfflineSorter {
       return result;
     }
 
-    /**
-     * Closes the provided {@link DataInput} if it is {@link Closeable}.
-     */
     @Override
     public void close() throws IOException {
       if (is instanceof Closeable) {
@@ -562,7 +436,6 @@ public final class OfflineSorter {
     }
   }
 
-  /** Returns the comparator in use to sort entries */
   public Comparator<BytesRef> getComparator() {
     return comparator;
   }  

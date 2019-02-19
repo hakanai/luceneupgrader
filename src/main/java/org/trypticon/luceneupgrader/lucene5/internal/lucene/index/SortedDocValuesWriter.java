@@ -33,8 +33,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimat
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedLongValues;
 
-/** Buffers up pending byte[] per doc, deref and sorting via
- *  int ord, then flushes when segment flushes. */
 class SortedDocValuesWriter extends DocValuesWriter {
   final BytesRefHash hash;
   private PackedLongValues.Builder pending;

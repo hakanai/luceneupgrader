@@ -34,31 +34,15 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.FixedBitSet;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.MutableBits;
 
-/** 
- * Lucene 5.0 live docs format 
- * <p>The .liv file is optional, and only exists when a segment contains
- * deletions.
- * <p>Although per-segment, this file is maintained exterior to compound segment
- * files.
- * <p>Deletions (.liv) --&gt; IndexHeader,Generation,Bits
- * <ul>
- *   <li>SegmentHeader --&gt; {@link CodecUtil#writeIndexHeader IndexHeader}</li>
- *   <li>Bits --&gt; &lt;{@link DataOutput#writeLong Int64}&gt; <sup>LongCount</sup></li>
- * </ul>
- */
 public final class Lucene50LiveDocsFormat extends LiveDocsFormat {
   
-  /** Sole constructor. */
   public Lucene50LiveDocsFormat() {
   }
   
-  /** extension of live docs */
   private static final String EXTENSION = "liv";
   
-  /** codec of live docs */
   private static final String CODEC_NAME = "Lucene50LiveDocs";
   
-  /** supported version range */
   private static final int VERSION_START = 0;
   private static final int VERSION_CURRENT = VERSION_START;
 

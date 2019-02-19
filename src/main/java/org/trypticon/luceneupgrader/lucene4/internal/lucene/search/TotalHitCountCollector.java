@@ -19,14 +19,10 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.AtomicReaderContext;
 
-/**
- * Just counts the total number of hits.
- */
 
 public class TotalHitCountCollector extends Collector {
   private int totalHits;
 
-  /** Returns how many hits matched the search. */
   public int getTotalHits() {
     return totalHits;
   }

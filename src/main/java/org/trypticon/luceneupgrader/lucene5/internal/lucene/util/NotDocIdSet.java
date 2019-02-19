@@ -22,12 +22,6 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.DocIdSet;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.DocIdSetIterator;
 
-/**
- * This {@link DocIdSet} encodes the negation of another {@link DocIdSet}.
- * It is cacheable and supports random-access if the underlying set is
- * cacheable and supports random-access.
- * @lucene.internal
- */
 public final class NotDocIdSet extends DocIdSet {
 
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(NotDocIdSet.class);
@@ -35,7 +29,6 @@ public final class NotDocIdSet extends DocIdSet {
   private final int maxDoc;
   private final DocIdSet in;
 
-  /** Sole constructor. */
   public NotDocIdSet(int maxDoc, DocIdSet in) {
     this.maxDoc = maxDoc;
     this.in = in;

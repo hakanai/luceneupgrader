@@ -26,15 +26,12 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Selector;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.StringHelper;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.packed.PackedInts;
 
-/** Utility APIs for sorting and partitioning buffered points.
- *
- * @lucene.internal */
+
 public final class MutablePointsReaderUtils {
 
   MutablePointsReaderUtils() {}
 
-  /** Sort the given {@link MutablePointsReader} based on its packed value then doc ID. */
-  public static void sort(int maxDoc, int packedBytesLength,
+    public static void sort(int maxDoc, int packedBytesLength,
                           MutablePointsReader reader, int from, int to) {
     final int bitsPerDocId = PackedInts.bitsRequired(maxDoc - 1);
     new MSBRadixSorter(packedBytesLength + (bitsPerDocId + 7) / 8) {
@@ -90,8 +87,7 @@ public final class MutablePointsReaderUtils {
     }.sort(from, to);
   }
 
-  /** Sort points on the given dimension. */
-  public static void sortByDim(int sortedDim, int bytesPerDim, int[] commonPrefixLengths,
+    public static void sortByDim(int sortedDim, int bytesPerDim, int[] commonPrefixLengths,
                                MutablePointsReader reader, int from, int to,
                                BytesRef scratch1, BytesRef scratch2) {
 
@@ -127,9 +123,7 @@ public final class MutablePointsReaderUtils {
     }.sort(from, to);
   }
 
-  /** Partition points around {@code mid}. All values on the left must be less
-   *  than or equal to it and all values on the right must be greater than or
-   *  equal to it. */
+
   public static void partition(int maxDoc, int splitDim, int bytesPerDim, int commonPrefixLen,
                                MutablePointsReader reader, int from, int to, int mid,
                                BytesRef scratch1, BytesRef scratch2) {

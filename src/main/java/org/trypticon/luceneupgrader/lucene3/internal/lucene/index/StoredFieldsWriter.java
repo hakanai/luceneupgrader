@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,7 +22,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.RAMOutputStrea
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
 
-/** This is a DocFieldConsumer that writes stored fields. */
 final class StoredFieldsWriter {
 
   FieldsWriter fieldsWriter;
@@ -92,7 +91,6 @@ final class StoredFieldsWriter {
     }
   }
 
-  /** Fills in any hole in the docIDs */
   void fill(int docID) throws IOException {
     // We must "catch up" for all docs before us
     // that had no stored fields:

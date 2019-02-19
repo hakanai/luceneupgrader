@@ -25,14 +25,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.UndeadNormsPr
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentReadState;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentWriteState;
 
-/**
- * Lucene 4.9 Score normalization format.
- * @deprecated only for reading 4.9/4.10 indexes
- */
 @Deprecated
 public class Lucene49NormsFormat extends NormsFormat {
 
-  /** Sole Constructor */
   public Lucene49NormsFormat() {}
   
   @Override

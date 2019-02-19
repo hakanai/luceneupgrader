@@ -28,8 +28,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimat
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedLongValues;
 
-/** Buffers up pending long per doc, then flushes when
- *  segment flushes. */
 class NumericDocValuesWriter extends DocValuesWriter {
 
   private final static long MISSING = 0L;

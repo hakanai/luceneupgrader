@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,7 +19,6 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
 import java.io.IOException;
 
-/** Base implementation class for buffered {@link IndexOutput}. */
 public abstract class BufferedIndexOutput extends IndexOutput {
   static final int BUFFER_SIZE = 16384;
 
@@ -27,9 +26,7 @@ public abstract class BufferedIndexOutput extends IndexOutput {
   private long bufferStart = 0;           // position in file of buffer
   private int bufferPosition = 0;         // position in buffer
 
-  /** Writes a single byte.
-   * @see IndexInput#readByte()
-   */
+
   @Override
   public void writeByte(byte b) throws IOException {
     if (bufferPosition >= BUFFER_SIZE)
@@ -37,11 +34,7 @@ public abstract class BufferedIndexOutput extends IndexOutput {
     buffer[bufferPosition++] = b;
   }
 
-  /** Writes an array of bytes.
-   * @param b the bytes to write
-   * @param length the number of bytes to write
-   * @see IndexInput#readBytes(byte[],int,int)
-   */
+
   @Override
   public void writeBytes(byte[] b, int offset, int length) throws IOException {
     int bytesLeft = BUFFER_SIZE - bufferPosition;
@@ -82,7 +75,6 @@ public abstract class BufferedIndexOutput extends IndexOutput {
     }
   }
 
-  /** Forces any buffered output to be written. */
   @Override
   public void flush() throws IOException {
     flushBuffer(buffer, bufferPosition);
@@ -90,48 +82,32 @@ public abstract class BufferedIndexOutput extends IndexOutput {
     bufferPosition = 0;
   }
 
-  /** Expert: implements buffer write.  Writes bytes at the current position in
-   * the output.
-   * @param b the bytes to write
-   * @param len the number of bytes to write
-   */
+
   private void flushBuffer(byte[] b, int len) throws IOException {
     flushBuffer(b, 0, len);
   }
 
-  /** Expert: implements buffer write.  Writes bytes at the current position in
-   * the output.
-   * @param b the bytes to write
-   * @param offset the offset in the byte array
-   * @param len the number of bytes to write
-   */
+
   protected abstract void flushBuffer(byte[] b, int offset, int len) throws IOException;
   
-  /** Closes this stream to further operations. */
   @Override
   public void close() throws IOException {
     flush();
   }
 
-  /** Returns the current position in this file, where the next write will
-   * occur.
-   * @see #seek(long)
-   */
+
   @Override
   public long getFilePointer() {
     return bufferStart + bufferPosition;
   }
 
-  /** Sets current position in this file, where the next write will occur.
-   * @see #getFilePointer()
-   */
+
   @Override
   public void seek(long pos) throws IOException {
     flush();
     bufferStart = pos;
   }
 
-  /** The number of bytes in the file. */
   @Override
   public abstract long length() throws IOException;
 

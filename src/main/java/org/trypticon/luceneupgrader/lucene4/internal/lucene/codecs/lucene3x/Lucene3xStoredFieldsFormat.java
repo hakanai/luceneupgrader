@@ -27,7 +27,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentInfo;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 
-/** @deprecated Only for reading existing 3.x indexes */
 @Deprecated
 class Lucene3xStoredFieldsFormat extends StoredFieldsFormat {
 

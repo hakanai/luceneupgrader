@@ -21,15 +21,10 @@ import java.io.IOException;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
-/** 
- * Simple implementation of {@link ChecksumIndexInput} that wraps
- * another input and delegates calls.
- */
 public class BufferedChecksumIndexInput extends ChecksumIndexInput {
   final IndexInput main;
   final Checksum digest;
 
-  /** Creates a new BufferedChecksumIndexInput */
   public BufferedChecksumIndexInput(IndexInput main) {
     super("BufferedChecksumIndexInput(" + main + ")");
     this.main = main;

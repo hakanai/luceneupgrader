@@ -25,17 +25,11 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.IndexFileNames
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentReadState;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentWriteState;
 
-/**
- * Lucene 4.0 DocValues format.
- * @deprecated Only for reading old 4.0 and 4.1 segments
- */
 @Deprecated
 public class Lucene40DocValuesFormat extends DocValuesFormat {
   
-  /** Maximum length for each binary doc values field. */
   static final int MAX_BINARY_FIELD_LENGTH = (1 << 15) - 2;
   
-  /** Sole constructor. */
   public Lucene40DocValuesFormat() {
     super("Lucene40");
   }

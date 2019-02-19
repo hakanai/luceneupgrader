@@ -26,14 +26,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.IndexFileNames
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentReadState;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentWriteState;
 
-/**
- * Lucene 4.0 Norms Format.
- * @deprecated Only for reading old 4.0 and 4.1 segments
- */
 @Deprecated
 public class Lucene40NormsFormat extends NormsFormat {
 
-  /** Sole constructor. */
   public Lucene40NormsFormat() {}
   
   @Override

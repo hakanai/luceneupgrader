@@ -37,7 +37,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimat
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst.FST;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst.Util;
 
-/** Iterates through terms in this field */
 final class SegmentTermsEnum extends TermsEnum {
 
   // Lazy init:
@@ -118,8 +117,6 @@ final class SegmentTermsEnum extends TermsEnum {
     }
   }
 
-  /** Runs next() through the entire terms dict,
-   *  computing aggregate statistics. */
   public Stats computeBlockStats() throws IOException {
 
     Stats stats = new Stats(fr.parent.segment, fr.fieldInfo.name);

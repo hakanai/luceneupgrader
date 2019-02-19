@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,10 +24,8 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
 
 abstract class TermCollectingRewrite<Q extends Query> extends MultiTermQuery.RewriteMethod {
   
-  /** Return a suitable top-level Query for holding all expanded terms. */
   protected abstract Q getTopLevelQuery() throws IOException;
   
-  /** Add a MultiTermQuery term to the top-level query */
   protected abstract void addClause(Q topLevel, Term term, float boost) throws IOException;
   
   protected final void collectTerms(IndexReader reader, MultiTermQuery query, TermCollector collector) throws IOException {
@@ -44,7 +42,6 @@ abstract class TermCollectingRewrite<Q extends Query> extends MultiTermQuery.Rew
   }
   
   protected interface TermCollector {
-    /** return false to stop collecting */
     boolean collect(Term t, float boost) throws IOException;
   }
 }

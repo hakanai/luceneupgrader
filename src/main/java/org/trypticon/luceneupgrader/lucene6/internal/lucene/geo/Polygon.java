@@ -19,39 +19,16 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.geo;
 import java.text.ParseException;
 import java.util.Arrays;
 
-/**
- * Represents a closed polygon on the earth's surface.  You can either construct the Polygon directly yourself with {@code double[]}
- * coordinates, or use {@link Polygon#fromGeoJSON} if you have a polygon already encoded as a
- * <a href="http://geojson.org/geojson-spec.html">GeoJSON</a> string.
- * <p>
- * NOTES:
- * <ol>
- *   <li>Coordinates must be in clockwise order, except for holes. Holes must be in counter-clockwise order.
- *   <li>The polygon must be closed: the first and last coordinates need to have the same values.
- *   <li>The polygon must not be self-crossing, otherwise may result in unexpected behavior.
- *   <li>All latitude/longitude values must be in decimal degrees.
- *   <li>Polygons cannot cross the 180th meridian. Instead, use two polygons: one on each side.
- *   <li>For more advanced GeoSpatial indexing and query operations see the {@code spatial-extras} module
- * </ol>
- * @lucene.experimental
- */
 public final class Polygon {
   private final double[] polyLats;
   private final double[] polyLons;
   private final Polygon[] holes;
 
-  /** minimum latitude of this polygon's bounding box area */
   public final double minLat;
-  /** maximum latitude of this polygon's bounding box area */
   public final double maxLat;
-  /** minimum longitude of this polygon's bounding box area */
   public final double minLon;
-  /** maximum longitude of this polygon's bounding box area */
   public final double maxLon;
 
-  /**
-   * Creates a new Polygon from the supplied latitude/longitude array, and optionally any holes.
-   */
   public Polygon(double[] polyLats, double[] polyLons, Polygon... holes) {
     if (polyLats == null) {
       throw new IllegalArgumentException("polyLats must not be null");
@@ -109,17 +86,14 @@ public final class Polygon {
     this.maxLon = maxLon;
   }
 
-  /** Returns a copy of the internal latitude array */
   public double[] getPolyLats() {
     return polyLats.clone();
   }
 
-  /** Returns a copy of the internal longitude array */
   public double[] getPolyLons() {
     return polyLons.clone();
   }
 
-  /** Returns a copy of the internal holes array */
   public Polygon[] getHoles() {
     return holes.clone();
   }
@@ -163,10 +137,7 @@ public final class Polygon {
     return sb.toString();
   }
 
-  /** Parses a standard GeoJSON polygon string.  The type of the incoming GeoJSON object must be a Polygon or MultiPolygon, optionally
-   *  embedded under a "type: Feature".  A Polygon will return as a length 1 array, while a MultiPolygon will be 1 or more in length.
-   *
-   *  <p>See <a href="http://geojson.org/geojson-spec.html">the GeoJSON specification</a>. */
+
   public static Polygon[] fromGeoJSON(String geojson) throws ParseException {
     return new SimpleGeoJSONPolygonParser(geojson).parse();
   }

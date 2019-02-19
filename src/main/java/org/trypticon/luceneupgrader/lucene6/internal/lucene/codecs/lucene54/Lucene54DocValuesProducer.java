@@ -60,7 +60,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.packed.Monotoni
 
 import static org.trypticon.luceneupgrader.lucene6.internal.lucene.codecs.lucene54.Lucene54DocValuesFormat.*;
 
-/** reader for {@link Lucene54DocValuesFormat} */
 final class Lucene54DocValuesProducer extends DocValuesProducer implements Closeable {
   private final Map<String,NumericEntry> numerics = new HashMap<>();
   private final Map<String,BinaryEntry> binaries = new HashMap<>();
@@ -99,7 +98,6 @@ final class Lucene54DocValuesProducer extends DocValuesProducer implements Close
     merging = true;
   }
 
-  /** expert: instantiates a new reader */
   Lucene54DocValuesProducer(SegmentReadState state, String dataCodec, String dataExtension, String metaCodec, String metaExtension) throws IOException {
     String metaName = IndexFileNames.segmentFileName(state.segmentInfo.name, state.segmentSuffix, metaExtension);
     this.maxDoc = state.segmentInfo.maxDoc();
@@ -571,11 +569,7 @@ final class Lucene54DocValuesProducer extends DocValuesProducer implements Close
       this.nextDocId = firstDocId;
     }
 
-    /** Gallop forward and stop as soon as an index is found that is greater than
-     *  the given docId. {@code index} will store an index that stores a value
-     *  that is &lt;= {@code docId} while the return value will give an index
-     *  that stores a value that is &gt; {@code docId}. These indices can then be
-     *  used to binary search. */
+
     private long gallop(long docId) {
       index++;
       this.docId = nextDocId;
@@ -743,7 +737,6 @@ final class Lucene54DocValuesProducer extends DocValuesProducer implements Close
     };
   }
 
-  /** returns an address instance for prefix-compressed binary values. */
   private synchronized MonotonicBlockPackedReader getIntervalInstance(FieldInfo field, BinaryEntry bytes) throws IOException {
     MonotonicBlockPackedReader addresses = addressInstances.get(field.name);
     if (addresses == null) {
@@ -758,7 +751,6 @@ final class Lucene54DocValuesProducer extends DocValuesProducer implements Close
     return addresses;
   }
 
-  /** returns a reverse lookup instance for prefix-compressed binary values. */
   private synchronized ReverseTermsIndex getReverseIndexInstance(FieldInfo field, BinaryEntry bytes) throws IOException {
     ReverseTermsIndex index = reverseIndexInstances.get(field.name);
     if (index == null) {
@@ -829,7 +821,6 @@ final class Lucene54DocValuesProducer extends DocValuesProducer implements Close
     };
   }
 
-  /** returns an address instance for sortedset ordinal lists */
   private LongValues getOrdIndexInstance(FieldInfo field, NumericEntry entry) throws IOException {
     RandomAccessInput data = this.data.randomAccessSlice(entry.offset, entry.endOffset - entry.offset);
     return DirectMonotonicReader.getInstance(entry.monotonicMeta, data);
@@ -1126,62 +1117,44 @@ final class Lucene54DocValuesProducer extends DocValuesProducer implements Close
     data.close();
   }
 
-  /** metadata entry for a numeric docvalues field */
   static class NumericEntry {
     private NumericEntry() {}
-    /** offset to the bitset representing docsWithField, or -1 if no documents have missing values */
     long missingOffset;
-    /** offset to the actual numeric values */
     public long offset;
-    /** end offset to the actual numeric values */
     public long endOffset;
-    /** bits per value used to pack the numeric values */
     public int bitsPerValue;
 
     int format;
-    /** count of values written */
     public long count;
 
-    /** monotonic meta */
     public DirectMonotonicReader.Meta monotonicMeta;
 
     long minValue;
     long gcd;
     long table[];
 
-    /** for sparse compression */
     long numDocsWithValue;
     NumericEntry nonMissingValues;
     NumberType numberType;
 
   }
 
-  /** metadata entry for a binary docvalues field */
   static class BinaryEntry {
     private BinaryEntry() {}
-    /** offset to the bitset representing docsWithField, or -1 if no documents have missing values */
     long missingOffset;
-    /** offset to the actual binary values */
     long offset;
 
     int format;
-    /** count of values written */
     public long count;
     int minLength;
     int maxLength;
-    /** offset to the addressing data that maps a value to its slice of the byte[] */
     public long addressesOffset, addressesEndOffset;
-    /** meta data for addresses */
     public DirectMonotonicReader.Meta addressesMeta;
-    /** offset to the reverse index */
     public long reverseIndexOffset;
-    /** packed ints version used to encode addressing information */
     public int packedIntsVersion;
-    /** packed ints blocksize */
     public int blockSize;
   }
 
-  /** metadata entry for a sorted-set docvalues field */
   static class SortedSetEntry {
     private SortedSetEntry() {}
     int format;

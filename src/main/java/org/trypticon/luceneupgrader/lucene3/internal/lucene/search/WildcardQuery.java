@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,18 +23,7 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ToStringUtils;
 
 import java.io.IOException;
 
-/** Implements the wildcard search query. Supported wildcards are <code>*</code>, which
- * matches any character sequence (including the empty one), and <code>?</code>,
- * which matches any single character. Note this query can be slow, as it
- * needs to iterate over many terms. In order to prevent extremely slow WildcardQueries,
- * a Wildcard term should not start with one of the wildcards <code>*</code> or
- * <code>?</code>.
- * 
- * <p>This query uses the {@link
- * MultiTermQuery#CONSTANT_SCORE_AUTO_REWRITE_DEFAULT}
- * rewrite method.
- *
- * @see WildcardTermEnum */
+
 public class WildcardQuery extends MultiTermQuery {
   private boolean termContainsWildcard;
   private boolean termIsPrefix;
@@ -62,14 +51,10 @@ public class WildcardQuery extends MultiTermQuery {
     }
   }
   
-  /**
-   * Returns the pattern term.
-   */
   public Term getTerm() {
     return term;
   }
   
-  /** Prints a user-readable version of this query. */
   @Override
   public String toString(String field) {
     StringBuilder buffer = new StringBuilder();

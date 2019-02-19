@@ -20,13 +20,10 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 import java.io.EOFException;
 import java.io.IOException;
 
-/** Base implementation class for buffered {@link IndexInput}. */
 public abstract class BufferedIndexInput extends IndexInput implements RandomAccessInput {
 
-  /** Default buffer size set to {@value #BUFFER_SIZE}. */
   public static final int BUFFER_SIZE = 1024;
   
-  /** Minimum buffer size allowed */
   public static final int MIN_BUFFER_SIZE = 8;
   
   // The normal read buffer size defaults to 1024, but
@@ -35,9 +32,6 @@ public abstract class BufferedIndexInput extends IndexInput implements RandomAcc
   // it too much because there are quite a few
   // BufferedIndexInputs created during merging.  See
   // LUCENE-888 for details.
-  /**
-   * A buffer size for merges set to {@value #MERGE_BUFFER_SIZE}.
-   */
   public static final int MERGE_BUFFER_SIZE = 4096;
 
   private int bufferSize = BUFFER_SIZE;
@@ -63,14 +57,12 @@ public abstract class BufferedIndexInput extends IndexInput implements RandomAcc
     this(resourceDesc, bufferSize(context));
   }
 
-  /** Inits BufferedIndexInput with a specific bufferSize */
   public BufferedIndexInput(String resourceDesc, int bufferSize) {
     super(resourceDesc);
     checkBufferSize(bufferSize);
     this.bufferSize = bufferSize;
   }
 
-  /** Change the buffer size used by this IndexInput */
   public final void setBufferSize(int newSize) {
     assert buffer == null || bufferSize == buffer.length: "buffer=" + buffer + " bufferSize=" + bufferSize + " buffer.length=" + (buffer != null ? buffer.length : 0);
     if (newSize != bufferSize) {
@@ -101,7 +93,6 @@ public abstract class BufferedIndexInput extends IndexInput implements RandomAcc
     buffer = newBuffer;
   }
 
-  /** Returns buffer size.  @see #setBufferSize */
   public final int getBufferSize() {
     return bufferSize;
   }
@@ -345,12 +336,7 @@ public abstract class BufferedIndexInput extends IndexInput implements RandomAcc
     bufferPosition = 0;
   }
 
-  /** Expert: implements buffer refill.  Reads bytes from the current position
-   * in the input.
-   * @param b the array to read bytes into
-   * @param offset the offset in the array to start storing bytes
-   * @param length the number of bytes to read
-   */
+
   protected abstract void readInternal(byte[] b, int offset, int length)
           throws IOException;
 
@@ -369,10 +355,7 @@ public abstract class BufferedIndexInput extends IndexInput implements RandomAcc
     }
   }
 
-  /** Expert: implements seek.  Sets current position in this file, where the
-   * next {@link #readInternal(byte[],int,int)} will occur.
-   * @see #readInternal(byte[],int,int)
-   */
+
   protected abstract void seekInternal(long pos) throws IOException;
 
   @Override
@@ -392,15 +375,6 @@ public abstract class BufferedIndexInput extends IndexInput implements RandomAcc
     return wrap(sliceDescription, this, offset, length);
   }
 
-  /**
-   * Flushes the in-memory buffer to the given output, copying at most
-   * <code>numBytes</code>.
-   * <p>
-   * <b>NOTE:</b> this method does not refill the buffer, however it does
-   * advance the buffer position.
-   * 
-   * @return the number of bytes actually flushed from the in-memory buffer.
-   */
   protected final int flushBuffer(IndexOutput out, long numBytes) throws IOException {
     int toCopy = bufferLength - bufferPosition;
     if (toCopy > numBytes) {
@@ -413,9 +387,6 @@ public abstract class BufferedIndexInput extends IndexInput implements RandomAcc
     return toCopy;
   }
   
-  /**
-   * Returns default buffer sizes for the given {@link IOContext}
-   */
   public static int bufferSize(IOContext context) {
     switch (context.context) {
     case MERGE:
@@ -425,17 +396,12 @@ public abstract class BufferedIndexInput extends IndexInput implements RandomAcc
     }
   }
   
-  /** 
-   * Wraps a portion of another IndexInput with buffering.
-   * <p><b>Please note:</b> This is in most cases ineffective, because it may double buffer!
-   */
+
   public static BufferedIndexInput wrap(String sliceDescription, IndexInput other, long offset, long length) {
     return new SlicedIndexInput(sliceDescription, other, offset, length);
   }
   
-  /** 
-   * Implementation of an IndexInput that reads from a portion of a file.
-   */
+
   private static final class SlicedIndexInput extends BufferedIndexInput {
     IndexInput base;
     long fileOffset;

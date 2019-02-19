@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,14 +17,11 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
-/** Implement this class to plug into the TermsHash
- *  processor, which inverts & stores Tokens into a hash
- *  table and provides an API for writing bytes into
- *  multiple streams for each unique Token. */
 
-import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Fieldable;
+
+import java.io.IOException;
 
 abstract class TermsHashConsumerPerField {
   abstract boolean start(Fieldable[] fields, int count) throws IOException;

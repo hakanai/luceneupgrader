@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,7 +20,6 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 import java.util.ArrayList;
 import java.io.Serializable;
 
-/** @lucene.internal */
 public class RAMFile implements Serializable {
 
   private static final long serialVersionUID = 1l;
@@ -79,12 +78,6 @@ public class RAMFile implements Serializable {
     return buffers.size();
   }
 
-  /**
-   * Expert: allocate a new buffer. 
-   * Subclasses can allocate differently. 
-   * @param size size of allocated buffer.
-   * @return allocated buffer.
-   */
   protected byte[] newBuffer(int size) {
     return new byte[size];
   }

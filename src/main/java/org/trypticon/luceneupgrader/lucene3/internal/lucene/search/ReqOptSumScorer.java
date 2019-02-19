@@ -1,5 +1,5 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,22 +18,12 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.IOException;
 
-/** A Scorer for queries with a required part and an optional part.
- * Delays skipTo() on the optional part until a score() is needed.
- * <br>
- * This <code>Scorer</code> implements {@link Scorer#skipTo(int)}.
- */
 class ReqOptSumScorer extends Scorer {
-  /** The scorers passed from the constructor.
-   * These are set to null as soon as their next() or skipTo() returns false.
-   */
+
   private Scorer reqScorer;
   private Scorer optScorer;
 
-  /** Construct a <code>ReqOptScorer</code>.
-   * @param reqScorer The required scorer. This must match.
-   * @param optScorer The optional scorer. This is used for scoring only.
-   */
+
   public ReqOptSumScorer(
       Scorer reqScorer,
       Scorer optScorer)
@@ -58,11 +48,7 @@ class ReqOptSumScorer extends Scorer {
     return reqScorer.docID();
   }
   
-  /** Returns the score of the current document matching the query.
-   * Initially invalid, until {@link #nextDoc()} is called the first time.
-   * @return The score of the required scorer, eventually increased by the score
-   * of the optional scorer when it also matches the current document.
-   */
+
   @Override
   public float score() throws IOException {
     int curDoc = reqScorer.docID();

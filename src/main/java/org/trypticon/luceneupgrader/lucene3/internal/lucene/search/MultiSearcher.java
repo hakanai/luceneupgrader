@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -33,24 +33,9 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.locks.Lock;
 
-/** Implements search over a set of <code>Searchables</code>.
- *
- * <p>Applications usually need only call the inherited {@link #search(Query,int)}
- * or {@link #search(Query,Filter,int)} methods.
- *
- * @deprecated If you are using MultiSearcher over
- * IndexSearchers, please use MultiReader instead; this class
- * does not properly handle certain kinds of queries (see <a
- * href="https://issues.apache.org/jira/browse/LUCENE-2756">LUCENE-2756</a>).
- */
 @Deprecated
 public class MultiSearcher extends Searcher {
   
-  /**
-   * Document Frequency cache acting as a Dummy-Searcher. This class is no
-   * full-fledged Searcher, but only supports the methods necessary to
-   * initialize Weights.
-   */
   private static class CachedDfSource extends Searcher {
     private final Map<Term,Integer> dfMap; // Map from Terms to corresponding doc freqs
     private final int maxDoc; // document count
@@ -136,7 +121,6 @@ public class MultiSearcher extends Searcher {
   private int[] starts;
   private int maxDoc = 0;
 
-  /** Creates a searcher which searches <i>searchers</i>. */
   public MultiSearcher(Searchable... searchables) throws IOException {
     this.searchables = searchables;
 
@@ -148,7 +132,6 @@ public class MultiSearcher extends Searcher {
     starts[searchables.length] = maxDoc;
   }
   
-  /** Return the array of {@link Searchable}s this searches. */
   public Searchable[] getSearchables() {
     return searchables;
   }
@@ -186,14 +169,10 @@ public class MultiSearcher extends Searcher {
     return searchables[i].doc(n - starts[i], fieldSelector);	  // dispatch to searcher
   }
   
-  /** Returns index of the searcher for document <code>n</code> in the array
-   * used to construct this searcher. */
   public int subSearcher(int n) {                 // find searcher for doc n:
     return ReaderUtil.subIndex(n, starts);
   }
 
-  /** Returns the document number of document <code>n</code> within its
-   * sub-index. */
   public int subDoc(int n) {
     return n - starts[subSearcher(n)];
   }
@@ -294,21 +273,6 @@ public class MultiSearcher extends Searcher {
     return searchables[i].explain(weight, doc - starts[i]); // dispatch to searcher
   }
 
-  /**
-   * Create weight in multiple index scenario.
-   * 
-   * Distributed query processing is done in the following steps:
-   * 1. rewrite query
-   * 2. extract necessary terms
-   * 3. collect dfs for these terms from the Searchables
-   * 4. create query weight using aggregate dfs.
-   * 5. distribute that weight to Searchables
-   * 6. merge results
-   *
-   * Steps 1-4 are done here, 5+6 in the search() methods
-   *
-   * @return rewritten queries
-   */
   @Override
   public Weight createNormalizedWeight(Query original) throws IOException {
     // step 1
@@ -327,14 +291,6 @@ public class MultiSearcher extends Searcher {
 
     return cacheSim.createNormalizedWeight(rewrittenQuery);
   }
-  /**
-   * Collects the document frequency for the given terms form all searchables
-   * @param terms term set used to collect the document frequency form all
-   *        searchables 
-   * @return a map with a term as the key and the terms aggregated document
-   *         frequency as a value  
-   * @throws IOException if a searchable throws an {@link IOException}
-   */
    Map<Term, Integer> createDocFrequencyMap(final Set<Term> terms) throws IOException  {
     final Term[] allTermsArray = terms.toArray(new Term[terms.size()]);
     final int[] aggregatedDfs = new int[allTermsArray.length];
@@ -351,9 +307,6 @@ public class MultiSearcher extends Searcher {
     return dfMap;
   }
   
-  /**
-   * A thread subclass for searching a single searchable 
-   */
   static final class MultiSearcherCallableNoSort implements Callable<TopDocs> {
 
     private final Lock lock;
@@ -396,9 +349,6 @@ public class MultiSearcher extends Searcher {
     }
   }
 
-  /**
-   * A thread subclass for searching a single searchable 
-   */
   static final class MultiSearcherCallableWithSort implements Callable<TopFieldDocs> {
 
     private final Lock lock;

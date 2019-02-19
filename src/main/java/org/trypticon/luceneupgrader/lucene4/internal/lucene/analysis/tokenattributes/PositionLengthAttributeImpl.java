@@ -19,11 +19,9 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattri
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeImpl;
 
-/** Default implementation of {@link PositionLengthAttribute}. */
 public class PositionLengthAttributeImpl extends AttributeImpl implements PositionLengthAttribute, Cloneable {
   private int positionLength = 1;
   
-  /** Initializes this attribute with position length of 1. */
   public PositionLengthAttributeImpl() {}
   
   @Override

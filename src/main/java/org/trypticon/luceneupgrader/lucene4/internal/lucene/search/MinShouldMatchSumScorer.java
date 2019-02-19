@@ -25,55 +25,26 @@ import java.util.List;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ArrayUtil;
 
-/**
- * A Scorer for OR like queries, counterpart of <code>ConjunctionScorer</code>.
- * This Scorer implements {@link Scorer#advance(int)} and uses advance() on the given Scorers.
- * 
- * This implementation uses the minimumMatch constraint actively to efficiently
- * prune the number of candidates, it is hence a mixture between a pure DisjunctionScorer
- * and a ConjunctionScorer.
- */
 class MinShouldMatchSumScorer extends Scorer {
 
-  /** The overall number of non-finalized scorers */
   private int numScorers;
-  /** The minimum number of scorers that should match */
   private final int mm;
 
-  /** A static array of all subscorers sorted by decreasing cost */
   private final Scorer sortedSubScorers[];
-  /** A monotonically increasing index into the array pointing to the next subscorer that is to be excluded */
   private int sortedSubScorersIdx = 0;
 
   private final Scorer subScorers[]; // the first numScorers-(mm-1) entries are valid
   private int nrInHeap; // 0..(numScorers-(mm-1)-1)
 
-  /** mmStack is supposed to contain the most costly subScorers that still did
-   *  not run out of docs, sorted by increasing sparsity of docs returned by that subScorer.
-   *  For now, the cost of subscorers is assumed to be inversely correlated with sparsity.
-   */
+
   private final Scorer mmStack[]; // of size mm-1: 0..mm-2, always full
 
-  /** The document number of the current match. */
   private int doc = -1;
-  /** The number of subscorers that provide the current match. */
   protected int nrMatchers = -1;
   private double score = Float.NaN;
   
   private final float coord[];
 
-  /**
-   * Construct a <code>MinShouldMatchSumScorer</code>.
-   * 
-   * @param weight The weight to be used.
-   * @param subScorers A collection of at least two subscorers.
-   * @param minimumNrMatchers The positive minimum number of subscorers that should
-   * match to match this query.
-   * <br>When <code>minimumNrMatchers</code> is bigger than
-   * the number of <code>subScorers</code>, no matches will be produced.
-   * <br>When minimumNrMatchers equals the number of subScorers,
-   * it is more efficient to use <code>ConjunctionScorer</code>.
-   */
   public MinShouldMatchSumScorer(Weight weight, List<Scorer> subScorers, int minimumNrMatchers, float coord[]) throws IOException {
     super(weight);
     this.nrInHeap = this.numScorers = subScorers.size();
@@ -212,10 +183,6 @@ class MinShouldMatchSumScorer extends Scorer {
     }
   }
 
-  /**
-   * Returns the score of the current document matching the query. Initially
-   * invalid, until {@link #nextDoc()} is called the first time.
-   */
   @Override
   public float score() throws IOException {
     return coord[nrMatchers] * (float) score;
@@ -231,15 +198,6 @@ class MinShouldMatchSumScorer extends Scorer {
     return nrMatchers;
   }
 
-  /**
-   * Advances to the first match beyond the current whose document number is
-   * greater than or equal to a given target. <br>
-   * The implementation uses the advance() method on the subscorers.
-   * 
-   * @param target the target document number.
-   * @return the document whose number is greater than or equal to the given
-   *         target, or -1 if none exist.
-   */
   @Override
   public int advance(int target) throws IOException {
     if (numScorers < mm)
@@ -283,19 +241,12 @@ class MinShouldMatchSumScorer extends Scorer {
            );
   }
   
-  /**
-   * Organize subScorers into a min heap with scorers generating the earliest document on top.
-   */
   protected final void minheapHeapify() {
     for (int i = (nrInHeap >> 1) - 1; i >= 0; i--) {
       minheapSiftDown(i);
     }
   }
   
-  /**
-   * The subtree of subScorers at root is a min heap except possibly for its root element.
-   * Bubble the root down as required to make the subtree a heap.
-   */
   protected final void minheapSiftDown(int root) {
     // TODO could this implementation also move rather than swapping neighbours?
     Scorer scorer = subScorers[root];
@@ -349,9 +300,6 @@ class MinShouldMatchSumScorer extends Scorer {
     subScorers[i] = scorer;
   }
 
-  /**
-   * Remove the root Scorer from subScorers and re-establish it as a heap
-   */
   protected final void minheapRemoveRoot() {
     if (nrInHeap == 1) {
       //subScorers[0] = null; // not necessary
@@ -364,10 +312,6 @@ class MinShouldMatchSumScorer extends Scorer {
     }
   }
   
-  /**
-   * Removes a given Scorer from the heap by placing end of heap at that
-   * position and bubbling it either up or down
-   */
   protected final boolean minheapRemove(Scorer scorer) {
     // find scorer: O(nrInHeap)
     for (int i = 0; i < nrInHeap; i++) {

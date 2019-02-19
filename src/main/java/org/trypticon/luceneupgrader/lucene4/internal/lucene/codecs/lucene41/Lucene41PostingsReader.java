@@ -45,13 +45,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 
-/**
- * Concrete class that reads docId(maybe frq,pos,offset,payloads) list
- * with postings format.
- *
- * @see Lucene41SkipReader for details
- * @lucene.experimental
- */
 public final class Lucene41PostingsReader extends PostingsReaderBase {
 
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(Lucene41PostingsReader.class);
@@ -65,7 +58,6 @@ public final class Lucene41PostingsReader extends PostingsReaderBase {
 
   // public static boolean DEBUG = false;
 
-  /** Sole constructor. */
   public Lucene41PostingsReader(Directory dir, FieldInfos fieldInfos, SegmentInfo segmentInfo, IOContext ioContext, String segmentSuffix) throws IOException {
     boolean success = false;
     IndexInput docIn = null;
@@ -140,9 +132,6 @@ public final class Lucene41PostingsReader extends PostingsReaderBase {
     }
   }
 
-  /**
-   * Read values that have been written using variable-length encoding instead of bit-packing.
-   */
   static void readVIntBlock(IndexInput docIn, int[] docBuffer,
       int[] freqBuffer, int num, boolean indexHasFreq) throws IOException {
     if (indexHasFreq) {

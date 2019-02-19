@@ -19,9 +19,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import java.io.*;
 
-/**
- * A {@link DataOutput} wrapping a plain {@link OutputStream}.
- */
 public class OutputStreamDataOutput extends DataOutput implements Closeable {
   private final OutputStream os;
   

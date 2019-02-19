@@ -19,9 +19,6 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.util;
 
 import java.util.Arrays;
 
-/**
- * A LSB Radix sorter for unsigned int values.
- */
 final class LSBRadixSorter {
 
   private static final int INSERTION_SORT_THRESHOLD = 30;

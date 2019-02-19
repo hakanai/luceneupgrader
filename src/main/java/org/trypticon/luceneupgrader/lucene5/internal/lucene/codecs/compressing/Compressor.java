@@ -21,19 +21,10 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.DataOutput;
 
-/**
- * A data compressor.
- */
 public abstract class Compressor {
 
-  /** Sole constructor, typically called from sub-classes. */
   protected Compressor() {}
 
-  /**
-   * Compress bytes into <code>out</code>. It it the responsibility of the
-   * compressor to add all necessary information so that a {@link Decompressor}
-   * will know when to stop decompressing bytes from the stream.
-   */
   public abstract void compress(byte[] bytes, int off, int len, DataOutput out) throws IOException;
 
 }

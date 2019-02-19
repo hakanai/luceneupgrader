@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,11 +22,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimat
 
 import java.io.IOException;
 import java.util.Arrays;
-
-/**
- * Direct wrapping of 8 bit values to a backing array of bytes.
- * @lucene.internal
- */
 
 class Direct8 extends PackedInts.ReaderImpl
         implements PackedInts.Mutable {
@@ -57,13 +52,6 @@ class Direct8 extends PackedInts.ReaderImpl
     this.values = values;
   }
 
-  /**
-   * Creates an array backed by the given values.
-   * </p><p>
-   * Note: The values are used directly, so changes to the given values will
-   * affect the structure.
-   * @param values used as the internal backing array.
-   */
   public Direct8(byte[] values) {
     super(values.length, BITS_PER_VALUE);
     this.values = values;

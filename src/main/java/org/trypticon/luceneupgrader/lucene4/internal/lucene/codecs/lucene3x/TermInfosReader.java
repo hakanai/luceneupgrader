@@ -33,13 +33,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.CloseableThread
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.DoubleBarrelLRUCache;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 
-/** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
- * Directory.  Pairs are accessed either by Term or by ordinal position the
- * set
- * @deprecated (4.0) This class has been replaced by
- * FormatPostingsTermsDictReader, except for reading old segments. 
- * @lucene.experimental
- */
 @Deprecated
 class TermInfosReader implements Closeable {
   private final Directory directory;
@@ -92,9 +85,6 @@ class TermInfosReader implements Closeable {
 
   private final DoubleBarrelLRUCache<CloneableTerm,TermInfoAndOrd> termsCache = new DoubleBarrelLRUCache<>(DEFAULT_CACHE_SIZE);
 
-  /**
-   * Per-thread resources managed by ThreadLocal
-   */
   private static final class ThreadResources {
     SegmentTermEnum termEnum;
   }
@@ -167,7 +157,6 @@ class TermInfosReader implements Closeable {
     IOUtils.close(origEnum, threadResources);
   }
 
-  /** Returns the number of term/value pairs in the set. */
   long size() {
     return size;
   }
@@ -193,12 +182,10 @@ class TermInfosReader implements Closeable {
     }
   }
 
-  /** Returns the TermInfo for a Term in the set, or null. */
   TermInfo get(Term term) throws IOException {
     return get(term, false);
   }
   
-  /** Returns the TermInfo for a Term in the set, or null. */
   private TermInfo get(Term term, boolean mustSeekEnum) throws IOException {
     if (size == 0) return null;
 
@@ -330,7 +317,6 @@ class TermInfosReader implements Closeable {
     }
   }
 
-  /** Returns the position of a Term in the set or -1. */
   long getPosition(Term term) throws IOException {
     if (size == 0) return -1;
 
@@ -348,12 +334,10 @@ class TermInfosReader implements Closeable {
       return -1;
   }
 
-  /** Returns an enumeration of all the Terms and TermInfos in the set. */
   public SegmentTermEnum terms() {
     return origEnum.clone();
   }
 
-  /** Returns an enumeration of terms starting at or after the named term. */
   public SegmentTermEnum terms(Term term) throws IOException {
     get(term, true);
     return getThreadResources().termEnum.clone();

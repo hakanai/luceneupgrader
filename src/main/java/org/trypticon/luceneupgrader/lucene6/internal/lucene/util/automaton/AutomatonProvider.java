@@ -31,20 +31,7 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.util.automaton;
 
 import java.io.IOException;
 
-/**
- * Automaton provider for <code>RegExp.</code>
- * {@link RegExp#toAutomaton(AutomatonProvider,int)}
- * 
- * @lucene.experimental
- */
 public interface AutomatonProvider {
   
-  /**
-   * Returns automaton of the given name.
-   * 
-   * @param name automaton name
-   * @return automaton
-   * @throws IOException if errors occur
-   */
   public Automaton getAutomaton(String name) throws IOException;
 }

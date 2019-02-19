@@ -19,28 +19,14 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 
-/** This class is used to score a range of documents at
- *  once, and is returned by {@link Weight#bulkScorer}.  Only
- *  queries that have a more optimized means of scoring
- *  across a range of documents need to override this.
- *  Otherwise, a default implementation is wrapped around
- *  the {@link Scorer} returned by {@link Weight#scorer}. */
+
 
 public abstract class BulkScorer {
 
-  /** Scores and collects all matching documents.
-   * @param collector The collector to which all matching documents are passed.
-   */
+
   public void score(Collector collector) throws IOException {
     score(collector, Integer.MAX_VALUE);
   }
 
-  /**
-   * Collects matching documents in a range.
-   * 
-   * @param collector The collector to which all matching documents are passed.
-   * @param max Score up to, but not including, this doc
-   * @return true if more matching documents may remain.
-   */
   public abstract boolean score(Collector collector, int max) throws IOException;
 }

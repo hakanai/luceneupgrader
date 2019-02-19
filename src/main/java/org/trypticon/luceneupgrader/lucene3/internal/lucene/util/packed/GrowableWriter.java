@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,13 +15,6 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
-/**     
- * Implements {@link PackedInts.Mutable}, but grows the
- * bit count of the underlying packed ints on-demand.
- *
- * <p>@lucene.internal</p>
  */
 
 public class GrowableWriter implements PackedInts.Mutable {

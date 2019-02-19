@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -25,9 +25,7 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.DoubleBarrelLRUCache;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.CloseableThreadLocal;
 
-/** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
- * Directory.  Pairs are accessed either by Term or by ordinal position the
- * set.  */
+
 
 final class TermInfosReader implements Closeable {
   private final Directory directory;
@@ -81,9 +79,6 @@ final class TermInfosReader implements Closeable {
 
   private final DoubleBarrelLRUCache<CloneableTerm,TermInfoAndOrd> termsCache = new DoubleBarrelLRUCache<CloneableTerm,TermInfoAndOrd>(DEFAULT_CACHE_SIZE);
   
-  /**
-   * Per-thread resources managed by ThreadLocal
-   */
   private static final class ThreadResources {
     SegmentTermEnum termEnum;
   }
@@ -151,7 +146,6 @@ final class TermInfosReader implements Closeable {
     threadResources.close();
   }
 
-  /** Returns the number of term/value pairs in the set. */
   final long size() {
     return size;
   }
@@ -166,13 +160,11 @@ final class TermInfosReader implements Closeable {
     return resources;
   }
 
-  /** Returns the TermInfo for a Term in the set, or null. */
   TermInfo get(Term term) throws IOException {
     BytesRef termBytesRef = new BytesRef(term.text);
     return get(term, false, termBytesRef);
   }
   
-  /** Returns the TermInfo for a Term in the set, or null. */
   private TermInfo get(Term term, boolean mustSeekEnum, BytesRef termBytesRef) throws IOException {
     if (size == 0) return null;
 
@@ -274,7 +266,6 @@ final class TermInfosReader implements Closeable {
     }
   }
 
-  /** Returns the position of a Term in the set or -1. */
   final long getPosition(Term term) throws IOException {
     if (size == 0) return -1;
 
@@ -293,12 +284,10 @@ final class TermInfosReader implements Closeable {
       return -1;
   }
 
-  /** Returns an enumeration of all the Terms and TermInfos in the set. */
   public SegmentTermEnum terms() {
     return (SegmentTermEnum)origEnum.clone();
   }
 
-  /** Returns an enumeration of terms starting at or after the named term. */
   public SegmentTermEnum terms(Term term) throws IOException {
     BytesRef termBytesRef = new BytesRef(term.text);
     get(term, true, termBytesRef);

@@ -26,12 +26,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 
-/**
- * Exposes {@link TermsEnum} API, merged from {@link TermsEnum} API of sub-segments.
- * This does a merge sort, by term text, of the sub-readers.
- *
- * @lucene.experimental
- */
 public final class MultiTermsEnum extends TermsEnum {
     
   private final TermMergeQueue queue;
@@ -61,20 +55,15 @@ public final class MultiTermsEnum extends TermsEnum {
     }
   }
 
-  /** Returns how many sub-reader slices contain the current
-   *  term.  @see #getMatchArray */
   public int getMatchCount() {
     return numTop;
   }
 
-  /** Returns sub-reader slices positioned to the current term. */
   public TermsEnumWithSlice[] getMatchArray() {
     return top;
   }
 
-  /** Sole constructor.
-   *  @param slices Which sub-reader slices we should
-   *  merge. */
+
   public MultiTermsEnum(ReaderSlice[] slices) {
     queue = new TermMergeQueue(slices.length);
     top = new TermsEnumWithSlice[slices.length];
@@ -101,8 +90,6 @@ public final class MultiTermsEnum extends TermsEnum {
     return termComp;
   }
 
-  /** The terms array must be newly created TermsEnum, ie
-   *  {@link TermsEnum#next} has not yet been called. */
   public TermsEnum reset(TermsEnumIndex[] termsEnumsIndex) throws IOException {
     assert termsEnumsIndex.length <= top.length;
     numSubs = 0;

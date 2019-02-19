@@ -9,31 +9,15 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 
-/**
- * Clone of {@link SimpleFSDirectory} accepting {@link Path} instead of {@link File}.
- */
 public class PathSimpleFSDirectory4 extends PathFSDirectory4 {
-    /** Create a new PathSimpleFSDirectory4 for the named location.
-     *
-     * @param path the path of the directory
-     * @param lockFactory the lock factory to use, or null for the default
-     * ({@link NativeFSLockFactory});
-     * @throws IOException if there is a low-level I/O error
-     */
     public PathSimpleFSDirectory4(Path path, LockFactory lockFactory) throws IOException {
         super(path, lockFactory);
     }
 
-    /** Create a new PathSimpleFSDirectory4 for the named location and {@link NativeFSLockFactory}.
-     *
-     * @param path the path of the directory
-     * @throws IOException if there is a low-level I/O error
-     */
     public PathSimpleFSDirectory4(Path path) throws IOException {
         super(path, null);
     }
 
-    /** Creates an IndexInput for the file with the given name. */
     @Override
     public IndexInput openInput(String name, IOContext context) throws IOException {
         ensureOpen();
@@ -45,13 +29,9 @@ public class PathSimpleFSDirectory4 extends PathFSDirectory4 {
     static final class SimpleFSIndexInput extends BufferedIndexInput {
         private static final int CHUNK_SIZE = 8192;
 
-        /** the file channel we will read from */
         protected final FileChannel file;
-        /** is this instance a clone and hence does not own the file to close it */
         boolean isClone = false;
-        /** start offset: non-zero in the slice case */
         protected final long off;
-        /** end offset (start+length) */
         protected final long end;
 
         public SimpleFSIndexInput(String resourceDesc, FileChannel file, IOContext context) throws IOException {
@@ -96,7 +76,6 @@ public class PathSimpleFSDirectory4 extends PathFSDirectory4 {
             return end - off;
         }
 
-        /** IndexInput methods */
         @Override
         protected void readInternal(byte[] b, int offset, int len)
                 throws IOException {

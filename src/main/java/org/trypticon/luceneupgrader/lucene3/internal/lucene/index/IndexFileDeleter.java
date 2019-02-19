@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -102,8 +102,6 @@ final class IndexFileDeleter {
   final boolean startingCommitDeleted;
   private SegmentInfos lastSegmentInfos;
 
-  /** Change to true to see details of reference counts when
-   *  infoStream != null */
   public static boolean VERBOSE_REF_COUNTS = false;
 
   // Used only for assert
@@ -125,14 +123,6 @@ final class IndexFileDeleter {
     return writer == null || Thread.holdsLock(writer);
   }
 
-  /**
-   * Initialize the deleter: find all previous commits in
-   * the Directory, incref the files they reference, call
-   * the policy to let it delete commits.  This will remove
-   * any files not referenced by any of the commits.
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
   public IndexFileDeleter(Directory directory, IndexDeletionPolicy policy, SegmentInfos segmentInfos, PrintStream infoStream, IndexWriter writer)
     throws CorruptIndexException, IOException {
 
@@ -276,10 +266,6 @@ final class IndexFileDeleter {
     return lastSegmentInfos;
   }
 
-  /**
-   * Remove the CommitPoints in the commitsToDelete List by
-   * DecRef'ing all files from each SegmentInfos.
-   */
   private void deleteCommits() throws IOException {
 
     int size = commitsToDelete.size();
@@ -321,14 +307,6 @@ final class IndexFileDeleter {
     }
   }
 
-  /**
-   * Writer calls this when it has hit an error and had to
-   * roll back, to tell us that there may now be
-   * unreferenced files in the filesystem.  So we re-list
-   * the filesystem and delete such files.  If segmentName
-   * is non-null, we will only delete files corresponding to
-   * that segment.
-   */
   public void refresh(String segmentName) throws IOException {
     assert locked();
 
@@ -382,15 +360,6 @@ final class IndexFileDeleter {
     deletePendingFiles();
   }
 
-  /**
-   * Revisits the {@link IndexDeletionPolicy} by calling its
-   * {@link IndexDeletionPolicy#onCommit(List)} again with the known commits.
-   * This is useful in cases where a deletion policy which holds onto index
-   * commits is used. The application may know that some commits are not held by
-   * the deletion policy anymore and call
-   * {@link IndexWriter#deleteUnusedFiles()}, which will attempt to delete the
-   * unused commits again.
-   */
   void revisitPolicy() throws IOException {
     assert locked();
     if (infoStream != null) {
@@ -418,26 +387,6 @@ final class IndexFileDeleter {
     }
   }
 
-  /**
-   * For definition of "check point" see IndexWriter comments:
-   * "Clarification: Check Points (and commits)".
-   * 
-   * Writer calls this when it has made a "consistent
-   * change" to the index, meaning new files are written to
-   * the index and the in-memory SegmentInfos have been
-   * modified to point to those files.
-   *
-   * This may or may not be a commit (segments_N may or may
-   * not have been written).
-   *
-   * We simply incref the files referenced by the new
-   * SegmentInfos and decref the files we had previously
-   * seen (if any).
-   *
-   * If this is a commit, we also call the policy to give it
-   * a chance to remove other commits.  If any commits are
-   * removed, we decref their files as well.
-   */
   public void checkpoint(SegmentInfos segmentInfos, boolean isCommit) throws IOException {
     assert locked();
 
@@ -554,8 +503,6 @@ final class IndexFileDeleter {
     }
   }
 
-  /** Deletes the specified files, but only if they are new
-   *  (have not yet been incref'd). */
   void deleteNewFiles(Collection<String> files) throws IOException {
     assert locked();
     for (final String fileName: files) {
@@ -597,9 +544,6 @@ final class IndexFileDeleter {
     }
   }
 
-  /**
-   * Tracks the reference count for a single index file:
-   */
   final private static class RefCount {
 
     // fileName used only for better assert error messages
@@ -625,13 +569,6 @@ final class IndexFileDeleter {
       return --count;
     }
   }
-
-  /**
-   * Holds details for each commit point.  This class is
-   * also passed to the deletion policy.  Note: this class
-   * has a natural ordering that is inconsistent with
-   * equals.
-   */
 
   final private static class CommitPoint extends IndexCommit {
 
@@ -696,10 +633,6 @@ final class IndexFileDeleter {
       return userData;
     }
 
-    /**
-     * Called only be the deletion policy, to remove this
-     * commit point from the index.
-     */
     @Override
     public void delete() {
       if (!deleted) {

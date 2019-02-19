@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,23 +22,10 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
 
-/**
- * Subclass of FilteredTermEnum for enumerating a single term.
- * <p>
- * This can be used by {@link MultiTermQuery}s that need only visit one term,
- * but want to preserve MultiTermQuery semantics such as
- * {@link MultiTermQuery#rewriteMethod}.
- */
 public class SingleTermEnum extends FilteredTermEnum {
   private Term singleTerm;
   private boolean endEnum = false;
   
-  /**
-   * Creates a new <code>SingleTermEnum</code>.
-   * <p>
-   * After calling the constructor the enumeration is already pointing to the term,
-   * if it exists.
-   */
   public SingleTermEnum(IndexReader reader, Term singleTerm) throws IOException {
     super();
     this.singleTerm = singleTerm;

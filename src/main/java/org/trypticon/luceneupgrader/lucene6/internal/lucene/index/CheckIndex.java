@@ -68,17 +68,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Version;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.automaton.Automata;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.automaton.CompiledAutomaton;
 
-/**
- * Basic tool and API to check the health of an index and
- * write a new segments file that removes reference to
- * problematic segments.
- * 
- * <p>As this tool checks every byte in the index, on a large
- * index it can take quite a long time to run.
- *
- * @lucene.experimental Please make a complete backup of your
- * index before using this to exorcise corrupted documents from your index!
- */
 public final class CheckIndex implements Closeable {
 
   private PrintStream infoStream;
@@ -86,328 +75,209 @@ public final class CheckIndex implements Closeable {
   private Lock writeLock;
   private volatile boolean closed;
 
-  /**
-   * Returned from {@link #checkIndex()} detailing the health and status of the index.
-   *
-   * @lucene.experimental
-   **/
+
 
   public static class Status {
 
     Status() {
     }
 
-    /** True if no problems were found with the index. */
     public boolean clean;
 
-    /** True if we were unable to locate and load the segments_N file. */
     public boolean missingSegments;
 
-    /** True if we were unable to open the segments_N file. */
     public boolean cantOpenSegments;
 
-    /** True if we were unable to read the version number from segments_N file. */
     public boolean missingSegmentVersion;
 
-    /** Name of latest segments_N file in the index. */
     public String segmentsFileName;
 
-    /** Number of segments in the index. */
     public int numSegments;
 
-    /** Empty unless you passed specific segments list to check as optional 3rd argument.
-     *  @see CheckIndex#checkIndex(List) */
     public List<String> segmentsChecked = new ArrayList<>();
   
-    /** True if the index was created with a newer version of Lucene than the CheckIndex tool. */
     public boolean toolOutOfDate;
 
-    /** List of {@link SegmentInfoStatus} instances, detailing status of each segment. */
     public List<SegmentInfoStatus> segmentInfos = new ArrayList<>();
   
-    /** Directory index is in. */
     public Directory dir;
 
-    /** 
-     * SegmentInfos instance containing only segments that
-     * had no problems (this is used with the {@link CheckIndex#exorciseIndex} 
-     * method to repair the index. 
-     */
     SegmentInfos newSegments;
 
-    /** How many documents will be lost to bad segments. */
     public int totLoseDocCount;
 
-    /** How many bad segments were found. */
     public int numBadSegments;
 
-    /** True if we checked only specific segments ({@link
-     * #checkIndex(List)}) was called with non-null
-     * argument). */
+
     public boolean partial;
 
-    /** The greatest segment name. */
     public int maxSegmentName;
 
-    /** Whether the SegmentInfos.counter is greater than any of the segments' names. */
-    public boolean validCounter; 
+    public boolean validCounter;
 
-    /** Holds the userData of the last commit in the index */
     public Map<String, String> userData;
 
-    /** Holds the status of each segment in the index.
-     *  See {@link #segmentInfos}.
-     *
-     * @lucene.experimental
-     */
     public static class SegmentInfoStatus {
 
       SegmentInfoStatus() {
       }
 
-      /** Name of the segment. */
       public String name;
 
-      /** Codec used to read this segment. */
       public Codec codec;
 
-      /** Document count (does not take deletions into account). */
       public int maxDoc;
 
-      /** True if segment is compound file format. */
       public boolean compound;
 
-      /** Number of files referenced by this segment. */
       public int numFiles;
 
-      /** Net size (MB) of the files referenced by this
-       *  segment. */
       public double sizeMB;
 
-      /** True if this segment has pending deletions. */
       public boolean hasDeletions;
 
-      /** Current deletions generation. */
       public long deletionsGen;
 
-      /** True if we were able to open a CodecReader on this
-       *  segment. */
       public boolean openReaderPassed;
 
-      /** Map that includes certain
-       *  debugging details that IndexWriter records into
-       *  each segment it creates */
+
       public Map<String,String> diagnostics;
       
-      /** Status for testing of livedocs */
       public LiveDocStatus liveDocStatus;
       
-      /** Status for testing of field infos */
       public FieldInfoStatus fieldInfoStatus;
 
-      /** Status for testing of field norms (null if field norms could not be tested). */
       public FieldNormStatus fieldNormStatus;
 
-      /** Status for testing of indexed terms (null if indexed terms could not be tested). */
       public TermIndexStatus termIndexStatus;
 
-      /** Status for testing of stored fields (null if stored fields could not be tested). */
       public StoredFieldStatus storedFieldStatus;
 
-      /** Status for testing of term vectors (null if term vectors could not be tested). */
       public TermVectorStatus termVectorStatus;
       
-      /** Status for testing of DocValues (null if DocValues could not be tested). */
       public DocValuesStatus docValuesStatus;
 
-      /** Status for testing of PointValues (null if PointValues could not be tested). */
       public PointsStatus pointsStatus;
 
-      /** Status of index sort */
       public IndexSortStatus indexSortStatus;
     }
     
-    /**
-     * Status from testing livedocs
-     */
     public static final class LiveDocStatus {
       private LiveDocStatus() {
       }
       
-      /** Number of deleted documents. */
       public int numDeleted;
       
-      /** Exception thrown during term index test (null on success) */
       public Throwable error = null;
     }
     
-    /**
-     * Status from testing field infos.
-     */
     public static final class FieldInfoStatus {
       private FieldInfoStatus() {
       }
 
-      /** Number of fields successfully tested */
       public long totFields = 0L;
 
-      /** Exception thrown during term index test (null on success) */
       public Throwable error = null;
     }
 
-    /**
-     * Status from testing field norms.
-     */
     public static final class FieldNormStatus {
       private FieldNormStatus() {
       }
 
-      /** Number of fields successfully tested */
       public long totFields = 0L;
 
-      /** Exception thrown during term index test (null on success) */
       public Throwable error = null;
     }
 
-    /**
-     * Status from testing term index.
-     */
     public static final class TermIndexStatus {
 
       TermIndexStatus() {
       }
 
-      /** Number of terms with at least one live doc. */
       public long termCount = 0L;
 
-      /** Number of terms with zero live docs docs. */
       public long delTermCount = 0L;
 
-      /** Total frequency across all terms. */
       public long totFreq = 0L;
       
-      /** Total number of positions. */
       public long totPos = 0L;
 
-      /** Exception thrown during term index test (null on success) */
       public Throwable error = null;
 
-      /** Holds details of block allocations in the block
-       *  tree terms dictionary (this is only set if the
-       *  {@link PostingsFormat} for this segment uses block
-       *  tree. */
+
       public Map<String,Object> blockTreeStats = null;
     }
 
-    /**
-     * Status from testing stored fields.
-     */
     public static final class StoredFieldStatus {
 
       StoredFieldStatus() {
       }
       
-      /** Number of documents tested. */
       public int docCount = 0;
       
-      /** Total number of stored fields tested. */
       public long totFields = 0;
       
-      /** Exception thrown during stored fields test (null on success) */
       public Throwable error = null;
     }
 
-    /**
-     * Status from testing stored fields.
-     */
     public static final class TermVectorStatus {
       
       TermVectorStatus() {
       }
 
-      /** Number of documents tested. */
       public int docCount = 0;
       
-      /** Total number of term vectors tested. */
       public long totVectors = 0;
       
-      /** Exception thrown during term vector test (null on success) */
       public Throwable error = null;
     }
     
-    /**
-     * Status from testing DocValues
-     */
     public static final class DocValuesStatus {
 
       DocValuesStatus() {
       }
 
-      /** Total number of docValues tested. */
       public long totalValueFields;
       
-      /** Total number of numeric fields */
       public long totalNumericFields;
       
-      /** Total number of binary fields */
       public long totalBinaryFields;
       
-      /** Total number of sorted fields */
       public long totalSortedFields;
       
-      /** Total number of sortednumeric fields */
       public long totalSortedNumericFields;
       
-      /** Total number of sortedset fields */
       public long totalSortedSetFields;
       
-      /** Exception thrown during doc values test (null on success) */
       public Throwable error = null;
     }
 
-    /**
-     * Status from testing PointValues
-     */
     public static final class PointsStatus {
 
       PointsStatus() {
       }
 
-      /** Total number of values points tested. */
       public long totalValuePoints;
 
-      /** Total number of fields with points. */
       public int totalValueFields;
       
-      /** Exception thrown during doc values test (null on success) */
       public Throwable error = null;
     }
 
-    /**
-     * Status from testing index sort
-     */
     public static final class IndexSortStatus {
       IndexSortStatus() {
       }
 
-      /** Exception thrown during term index test (null on success) */
       public Throwable error = null;
     }
     
   }
 
-  /** Create a new CheckIndex on the directory. */
   public CheckIndex(Directory dir) throws IOException {
     this(dir, dir.obtainLock(IndexWriter.WRITE_LOCK_NAME));
   }
   
-  /** 
-   * Expert: create a directory with the specified lock.
-   * This should really not be used except for unit tests!!!!
-   * It exists only to support special tests (such as TestIndexWriterExceptions*),
-   * that would otherwise be more complicated to debug if they had to close the writer
-   * for each check.
-   */
+
   public CheckIndex(Directory dir, Lock writeLock) throws IOException {
     this.dir = dir;
     this.writeLock = writeLock;
@@ -428,57 +298,45 @@ public final class CheckIndex implements Closeable {
 
   private boolean crossCheckTermVectors;
 
-  /** If true, term vectors are compared against postings to
-   *  make sure they are the same.  This will likely
-   *  drastically increase time it takes to run CheckIndex! */
+
   public void setCrossCheckTermVectors(boolean v) {
     crossCheckTermVectors = v;
   }
 
-  /** See {@link #setCrossCheckTermVectors}. */
   public boolean getCrossCheckTermVectors() {
     return crossCheckTermVectors;
   }
 
   private boolean failFast;
 
-  /** If true, just throw the original exception immediately when
-   *  corruption is detected, rather than continuing to iterate to other
-   *  segments looking for more corruption.  */
+
   public void setFailFast(boolean v) {
     failFast = v;
   }
 
-  /** See {@link #setFailFast}. */
   public boolean getFailFast() {
     return failFast;
   }
 
   private boolean verbose;
   
-  /** See {@link #getChecksumsOnly}. */
   public boolean getChecksumsOnly() {
     return checksumsOnly;
   }
   
-  /** 
-   * If true, only validate physical integrity for all files. 
-   * Note that the returned nested status objects (e.g. storedFieldStatus) will be null.  */
+
   public void setChecksumsOnly(boolean v) {
     checksumsOnly = v;
   }
   
   private boolean checksumsOnly;
 
-  /** Set infoStream where messages should go.  If null, no
-   *  messages are printed.  If verbose is true then more
-   *  details are printed. */
+
   public void setInfoStream(PrintStream out, boolean verbose) {
     infoStream = out;
     this.verbose = verbose;
   }
 
-  /** Set infoStream where messages should go. See {@link #setInfoStream(PrintStream,boolean)}. */
   public void setInfoStream(PrintStream out) {
     setInfoStream(out, false);
   }
@@ -488,27 +346,12 @@ public final class CheckIndex implements Closeable {
       out.println(msg);
   }
 
-  /** Returns a {@link Status} instance detailing
-   *  the state of the index.
-   *
-   *  <p>As this method checks every byte in the index, on a large
-   *  index it can take quite a long time to run.
-   *
-   *  <p><b>WARNING</b>: make sure
-   *  you only call this when the index is not opened by any
-   *  writer. */
+
   public Status checkIndex() throws IOException {
     return checkIndex(null);
   }
   
-  /** Returns a {@link Status} instance detailing
-   *  the state of the index.
-   * 
-   *  @param onlySegments list of specific segment names to check
-   *
-   *  <p>As this method checks every byte in the specified
-   *  segments, on a large index it can take quite a long
-   *  time to run. */
+
   public Status checkIndex(List<String> onlySegments) throws IOException {
     ensureOpen();
     long startNS = System.nanoTime();
@@ -830,10 +673,6 @@ public final class CheckIndex implements Closeable {
     return result;
   }
 
-  /**
-   * Tests index sort order.
-   * @lucene.experimental
-   */
   public static Status.IndexSortStatus testSort(CodecReader reader, Sort sort, PrintStream infoStream, boolean failFast) throws IOException {
     // This segment claims its documents are sorted according to the incoming sort ... let's make sure:
 
@@ -896,10 +735,6 @@ public final class CheckIndex implements Closeable {
     return status;
   }
   
-  /**
-   * Test live docs.
-   * @lucene.experimental
-   */
   public static Status.LiveDocStatus testLiveDocs(CodecReader reader, PrintStream infoStream, boolean failFast) throws IOException {
     long startNS = System.nanoTime();
     final Status.LiveDocStatus status = new Status.LiveDocStatus();
@@ -953,10 +788,6 @@ public final class CheckIndex implements Closeable {
     return status;
   }
   
-  /**
-   * Test field infos.
-   * @lucene.experimental
-   */
   public static Status.FieldInfoStatus testFieldInfos(CodecReader reader, PrintStream infoStream, boolean failFast) throws IOException {
     long startNS = System.nanoTime();
     final Status.FieldInfoStatus status = new Status.FieldInfoStatus();
@@ -986,10 +817,6 @@ public final class CheckIndex implements Closeable {
     return status;
   }
 
-  /**
-   * Test field norms.
-   * @lucene.experimental
-   */
   public static Status.FieldNormStatus testFieldNorms(CodecReader reader, PrintStream infoStream, boolean failFast) throws IOException {
     long startNS = System.nanoTime();
     final Status.FieldNormStatus status = new Status.FieldNormStatus();
@@ -1025,8 +852,6 @@ public final class CheckIndex implements Closeable {
     return status;
   }
 
-  /** Visits all terms in the range minTerm (inclusive) to maxTerm (exclusive), marking all doc IDs encountered into allDocsSeen, and
-   *  returning the total number of terms visited. */
   private static long getDocsFromTermRange(String field, int maxDoc, TermsEnum termsEnum, FixedBitSet docsSeen, BytesRef minTerm, BytesRef maxTerm, boolean isIntersect) throws IOException {
     docsSeen.clear(0, docsSeen.length());
 
@@ -1106,8 +931,6 @@ public final class CheckIndex implements Closeable {
     }
   }
 
-  /** Test Terms.intersect on this range, and validates that it returns the same doc ids as using non-intersect TermsEnum.  Returns true if
-   *  any fake terms were seen. */
   private static boolean checkSingleTermRange(String field, int maxDoc, Terms terms, BytesRef minTerm, BytesRef maxTerm, FixedBitSet normalDocs, FixedBitSet intersectDocs) throws IOException {
     //System.out.println("    check minTerm=" + minTerm.utf8ToString() + " maxTerm=" + maxTerm.utf8ToString());
     assert minTerm.compareTo(maxTerm) <= 0;
@@ -1136,10 +959,7 @@ public final class CheckIndex implements Closeable {
     return intersectTermCount != normalTermCount;
   }
 
-  /** Make an effort to visit "fake" (e.g. auto-prefix) terms.  We do this by running term range intersections across an initially wide
-   *  interval of terms, at different boundaries, and then gradually decrease the interval.  This is not guaranteed to hit all non-real
-   *  terms (doing that in general is non-trivial), but it should hit many of them, and validate their postings against the postings for the
-   *  real terms. */
+
   private static void checkTermRanges(String field, int maxDoc, Terms terms, long numTerms) throws IOException {
 
     // We'll target this many terms in our interval for the current level:
@@ -1203,10 +1023,6 @@ public final class CheckIndex implements Closeable {
     }
   }
 
-  /**
-   * checks Fields api is consistent with itself.
-   * searcher is optional, to verify with queries. Can be null.
-   */
   private static Status.TermIndexStatus checkFields(Fields fields, Bits liveDocs, int maxDoc, FieldInfos fieldInfos, boolean doPrint, boolean isVectors, PrintStream infoStream, boolean verbose) throws IOException {
     // TODO: we should probably return our own stats thing...?!
     long startNS;
@@ -1740,18 +1556,10 @@ public final class CheckIndex implements Closeable {
     return status;
   }
 
-  /**
-   * Test the term index.
-   * @lucene.experimental
-   */
   public static Status.TermIndexStatus testPostings(CodecReader reader, PrintStream infoStream) throws IOException {
     return testPostings(reader, infoStream, false, false);
   }
   
-  /**
-   * Test the term index.
-   * @lucene.experimental
-   */
   public static Status.TermIndexStatus testPostings(CodecReader reader, PrintStream infoStream, boolean verbose, boolean failFast) throws IOException {
 
     // TODO: we should go and verify term vectors match, if
@@ -1783,10 +1591,6 @@ public final class CheckIndex implements Closeable {
     return status;
   }
 
-  /**
-   * Test the points index
-   * @lucene.experimental
-   */
   public static Status.PointsStatus testPoints(CodecReader reader, PrintStream infoStream, boolean failFast) throws IOException {
     if (infoStream != null) {
       infoStream.print("    test: points..............");
@@ -1854,9 +1658,7 @@ public final class CheckIndex implements Closeable {
     return status;
   }
 
-  /** Walks the entire N-dimensional points space, verifying that all points fall within the last cell's boundaries.
-   *
-   * @lucene.internal */
+
   public static class VerifyPointsVisitor implements PointValues.IntersectVisitor {
     private long pointCountSeen;
     private int lastDocID = -1;
@@ -1872,7 +1674,6 @@ public final class CheckIndex implements Closeable {
     private final int bytesPerDim;
     private final String fieldName;
 
-    /** Sole constructor */
     public VerifyPointsVisitor(String fieldName, int maxDoc, PointValues values) throws IOException {
       this.maxDoc = maxDoc;
       this.fieldName = fieldName;
@@ -1910,12 +1711,10 @@ public final class CheckIndex implements Closeable {
       }
     }
 
-    /** Returns total number of points in this BKD tree */
     public long getPointCountSeen() {
       return pointCountSeen;
     }
 
-    /** Returns total number of unique docIDs in this BKD tree */
     public long getDocCountSeen() {
       return docsSeen.cardinality();
     }
@@ -2037,10 +1836,6 @@ public final class CheckIndex implements Closeable {
     }
   }
   
-  /**
-   * Test stored fields.
-   * @lucene.experimental
-   */
   public static Status.StoredFieldStatus testStoredFields(CodecReader reader, PrintStream infoStream, boolean failFast) throws IOException {
     long startNS = System.nanoTime();
     final Status.StoredFieldStatus status = new Status.StoredFieldStatus();
@@ -2088,10 +1883,6 @@ public final class CheckIndex implements Closeable {
     return status;
   }
   
-  /**
-   * Test docvalues.
-   * @lucene.experimental
-   */
   public static Status.DocValuesStatus testDocValues(CodecReader reader,
                                                      PrintStream infoStream,
                                                      boolean failFast) throws IOException {
@@ -2320,18 +2111,10 @@ public final class CheckIndex implements Closeable {
     }
   }
 
-  /**
-   * Test term vectors.
-   * @lucene.experimental
-   */
   public static Status.TermVectorStatus testTermVectors(CodecReader reader, PrintStream infoStream) throws IOException {
     return testTermVectors(reader, infoStream, false, false, false);
   }
 
-  /**
-   * Test term vectors.
-   * @lucene.experimental
-   */
   public static Status.TermVectorStatus testTermVectors(CodecReader reader, PrintStream infoStream, boolean verbose, boolean crossCheckTermVectors, boolean failFast) throws IOException {
     long startNS = System.nanoTime();
     final Status.TermVectorStatus status = new Status.TermVectorStatus();
@@ -2528,17 +2311,7 @@ public final class CheckIndex implements Closeable {
     return status;
   }
 
-  /** Repairs the index using previously returned result
-   *  from {@link #checkIndex}.  Note that this does not
-   *  remove any of the unreferenced files after it's done;
-   *  you must separately open an {@link IndexWriter}, which
-   *  deletes unreferenced files when it's created.
-   *
-   * <p><b>WARNING</b>: this writes a
-   *  new segments file into the index, effectively removing
-   *  all documents in broken segments from the index.
-   *  BE CAREFUL.
-   */
+
   public void exorciseIndex(Status result) throws IOException {
     ensureOpen();
     if (result.partial)
@@ -2554,55 +2327,16 @@ public final class CheckIndex implements Closeable {
     return true;
   }
 
-  /**
-   * Check whether asserts are enabled or not.
-   * @return true iff asserts are enabled
-   */
   public static boolean assertsOn() {
     assert testAsserts();
     return assertsOn;
   }
 
-  /** Command-line interface to check and exorcise corrupt segments from an index.
-
-    <p>
-    Run it like this:
-    <pre>
-    java -ea:org.trypticon.luceneupgrader.lucene6.internal.lucene... org.trypticon.luceneupgrader.lucene6.internal.lucene.index.CheckIndex pathToIndex [-exorcise] [-verbose] [-segment X] [-segment Y]
-    </pre>
-    <ul>
-    <li><code>-exorcise</code>: actually write a new segments_N file, removing any problematic segments. *LOSES DATA*
-
-    <li><code>-segment X</code>: only check the specified
-    segment(s).  This can be specified multiple times,
-    to check more than one segment, eg <code>-segment _2
-    -segment _a</code>.  You can't use this with the -exorcise
-    option.
-    </ul>
-
-    <p><b>WARNING</b>: <code>-exorcise</code> should only be used on an emergency basis as it will cause
-                       documents (perhaps many) to be permanently removed from the index.  Always make
-                       a backup copy of your index before running this!  Do not run this tool on an index
-                       that is actively being written to.  You have been warned!
-
-    <p>                Run without -exorcise, this tool will open the index, report version information
-                       and report any exceptions it hits and what action it would take if -exorcise were
-                       specified.  With -exorcise, this tool will remove any segments that have issues and
-                       write a new segments_N file.  This means all documents contained in the affected
-                       segments will be removed.
-
-    <p>
-                       This tool exits with exit code 1 if the index cannot be opened or has any
-                       corruption, else 0.
-   */
   public static void main(String[] args) throws IOException, InterruptedException {
     int exitCode = doMain(args);
     System.exit(exitCode);
   }
 
-  /**
-   * Run-time configuration options for CheckIndex commands.
-   */
   public static class Options {
     boolean doExorcise = false;
     boolean doCrossCheckTermVectors = false;
@@ -2613,26 +2347,16 @@ public final class CheckIndex implements Closeable {
     String dirImpl = null;
     PrintStream out = null;
 
-    /** Sole constructor. */
     public Options() {}
 
-    /**
-     * Get the name of the FSDirectory implementation class to use.
-     */
     public String getDirImpl() {
       return dirImpl;
     }
 
-    /**
-     * Get the directory containing the index.
-     */
     public String getIndexPath() {
       return indexPath;
     }
 
-    /**
-     * Set the PrintStream to use for reporting results.
-     */
     public void setOut(PrintStream out) {
       this.out = out;
     }
@@ -2674,12 +2398,6 @@ public final class CheckIndex implements Closeable {
     }
   }
 
-  /**
-   * Parse command line args into fields
-   * @param args The command line arguments
-   * @return An Options struct
-   * @throws IllegalArgumentException if any of the CLI args are invalid
-   */
   public static Options parseOptions(String[] args) {
     Options opts = new Options();
 
@@ -2758,11 +2476,6 @@ public final class CheckIndex implements Closeable {
     return opts;
   }
 
-  /**
-   * Actually perform the index check
-   * @param opts The options to use for this check
-   * @return 0 iff the index is clean, 1 otherwise
-   */
   public int doCheck(Options opts) throws IOException, InterruptedException {
     setCrossCheckTermVectors(opts.doCrossCheckTermVectors);
     setChecksumsOnly(opts.doChecksumsOnly);

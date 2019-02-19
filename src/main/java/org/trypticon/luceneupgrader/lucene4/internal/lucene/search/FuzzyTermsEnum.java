@@ -17,37 +17,18 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.DocsAndPositionsEnum;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.DocsEnum;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.FilteredTermsEnum;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.Term;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.TermState;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.Terms;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.TermsEnum;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Attribute;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeImpl;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeSource;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.UnicodeUtil;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.*;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.*;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.Automaton;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.ByteRunAutomaton;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.CompiledAutomaton;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.LevenshteinAutomata;
 
-/** Subclass of TermsEnum for enumerating all terms that are similar
- * to the specified filter term.
- *
- * <p>Term enumerations are always ordered by
- * {@link #getComparator}.  Each term in the enumeration is
- * greater than all that precede it.</p>
- */
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 public class FuzzyTermsEnum extends TermsEnum {
   private TermsEnum actualEnum;
   private BoostAttribute actualBoostAtt;
@@ -79,25 +60,7 @@ public class FuzzyTermsEnum extends TermsEnum {
   
   private final boolean transpositions;
   
-  /**
-   * Constructor for enumeration of all terms from specified <code>reader</code> which share a prefix of
-   * length <code>prefixLength</code> with <code>term</code> and which have a fuzzy similarity &gt;
-   * <code>minSimilarity</code>.
-   * <p>
-   * After calling the constructor the enumeration is already pointing to the first 
-   * valid term if such a term exists. 
-   * 
-   * @param terms Delivers terms.
-   * @param atts {@link AttributeSource} created by the rewrite method of {@link MultiTermQuery}
-   * thats contains information about competitive boosts during rewrite. It is also used
-   * to cache DFAs between segment transitions.
-   * @param term Pattern term.
-   * @param minSimilarity Minimum required similarity for terms from the reader. Pass an integer value
-   *        representing edit distance. Passing a fraction is deprecated.
-   * @param prefixLength Length of required common prefix. Default value is 0.
-   * @throws IOException if there is a low-level IO error
-   */
-  public FuzzyTermsEnum(Terms terms, AttributeSource atts, Term term, 
+  public FuzzyTermsEnum(Terms terms, AttributeSource atts, Term term,
       final float minSimilarity, final int prefixLength, boolean transpositions) throws IOException {
     if (minSimilarity >= 1.0f && minSimilarity != (int)minSimilarity)
       throw new IllegalArgumentException("fractional edit distances are not allowed");
@@ -143,10 +106,6 @@ public class FuzzyTermsEnum extends TermsEnum {
     bottomChanged(null, true);
   }
   
-  /**
-   * return an automata-based enum for matching up to editDistance from
-   * lastTerm, if possible
-   */
   protected TermsEnum getAutomatonEnum(int editDistance, BytesRef lastTerm)
       throws IOException {
     final List<CompiledAutomaton> runAutomata = initAutomata(editDistance);
@@ -160,7 +119,6 @@ public class FuzzyTermsEnum extends TermsEnum {
     }
   }
 
-  /** initialize levenshtein DFAs up to maxDistance, if possible */
   private List<CompiledAutomaton> initAutomata(int maxDistance) {
     final List<CompiledAutomaton> runAutomata = dfaAtt.automata();
     //System.out.println("cached automata size: " + runAutomata.size());
@@ -179,16 +137,11 @@ public class FuzzyTermsEnum extends TermsEnum {
     return runAutomata;
   }
 
-  /** swap in a new actual enum to proxy to */
   protected void setEnum(TermsEnum actualEnum) {
     this.actualEnum = actualEnum;
     this.actualBoostAtt = actualEnum.attributes().addAttribute(BoostAttribute.class);
   }
   
-  /**
-   * fired when the max non-competitive boost has changed. this is the hook to
-   * swap in a smarter actualEnum
-   */
   private void bottomChanged(BytesRef lastTerm, boolean init)
       throws IOException {
     int oldMaxEdits = maxEdits;
@@ -316,13 +269,6 @@ public class FuzzyTermsEnum extends TermsEnum {
     return actualEnum.term();
   }
 
-  /**
-   * Implement fuzzy enumeration with Terms.intersect.
-   * <p>
-   * This is the fastest method as opposed to LinearFuzzyTermsEnum:
-   * as enumeration is logarithmic to the number of terms (instead of linear)
-   * and comparison is linear to length of the term (rather than quadratic)
-   */
   private class AutomatonFuzzyTermsEnum extends FilteredTermsEnum {
     private final ByteRunAutomaton matchers[];
     
@@ -339,7 +285,6 @@ public class FuzzyTermsEnum extends TermsEnum {
       termRef = new BytesRef(term.text());
     }
 
-    /** finds the smallest Lev(n) DFA that accepts the term. */
     @Override
     protected AcceptStatus accept(BytesRef term) {    
       //System.out.println("AFTE.accept term=" + term);
@@ -376,33 +321,25 @@ public class FuzzyTermsEnum extends TermsEnum {
       }
     }
     
-    /** returns true if term is within k edits of the query term */
     final boolean matches(BytesRef term, int k) {
       return k == 0 ? term.equals(termRef) : matchers[k].run(term.bytes, term.offset, term.length);
     }
   }
 
-  /** @lucene.internal */
   public float getMinSimilarity() {
     return minSimilarity;
   }
   
-  /** @lucene.internal */
   public float getScaleFactor() {
     return scale_factor;
   }
   
-  /**
-   * reuses compiled automata across different segments,
-   * because they are independent of the index
-   * @lucene.internal */
+
   public static interface LevenshteinAutomataAttribute extends Attribute {
     public List<CompiledAutomaton> automata();
   }
     
-  /** 
-   * Stores compiled automata as a list (indexed by edit distance)
-   * @lucene.internal */
+
   public static final class LevenshteinAutomataAttributeImpl extends AttributeImpl implements LevenshteinAutomataAttribute {
     private final List<CompiledAutomaton> automata = new ArrayList<>();
       

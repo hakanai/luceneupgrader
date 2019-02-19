@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -32,12 +32,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
 
-/**
- * Information about a segment such as it's name, directory, and files related
- * to the segment.
- * 
- * @lucene.experimental
- */
 public final class SegmentInfo implements Cloneable {
 
   static final int NO = -1;          // e.g. no norms; no deletes;
@@ -123,9 +117,6 @@ public final class SegmentInfo implements Cloneable {
     this.version = Constants.LUCENE_MAIN_VERSION;
   }
 
-  /**
-   * Copy everything from src SegmentInfo into our instance.
-   */
   void reset(SegmentInfo src) {
     clearFiles();
     version = src.version;
@@ -157,14 +148,6 @@ public final class SegmentInfo implements Cloneable {
     return diagnostics;
   }
 
-  /**
-   * Construct a new SegmentInfo instance by reading a
-   * previously saved SegmentInfo from input.
-   *
-   * @param dir directory to load from
-   * @param format format of the segments info file
-   * @param input input handle to read segment info from
-   */
   SegmentInfo(Directory dir, int format, IndexInput input) throws IOException {
     this.dir = dir;
     if (format <= SegmentInfos.FORMAT_3_1) {
@@ -285,11 +268,6 @@ public final class SegmentInfo implements Cloneable {
     }
   }
 
-  /**
-   * Returns total size in bytes of all of files used by this segment (if
-   * {@code includeDocStores} is true), or the size of all files except the store
-   * files otherwise.
-   */
   public long sizeInBytes(boolean includeDocStores) throws IOException {
     if (includeDocStores) {
       if (sizeInBytesWithStore != -1) {
@@ -400,11 +378,6 @@ public final class SegmentInfo implements Cloneable {
     }
   }
 
-  /**
-   * Returns true if this field for this segment has saved a separate norms file (_<segment>_N.sX).
-   *
-   * @param fieldNumber the field index to check
-   */
   public boolean hasSeparateNorms(int fieldNumber)
     throws IOException {
     if ((normGen == null && preLockless) || (normGen != null && normGen[fieldNumber] == CHECK_DIR)) {
@@ -418,9 +391,6 @@ public final class SegmentInfo implements Cloneable {
     }
   }
 
-  /**
-   * Returns true if any fields in this segment have separate norms.
-   */
   public boolean hasSeparateNorms()
     throws IOException {
     if (normGen == null) {
@@ -470,12 +440,6 @@ public final class SegmentInfo implements Cloneable {
     return false;
   }
 
-  /**
-   * Increment the generation count for the norms file for
-   * this field.
-   *
-   * @param fieldIndex field whose norm file will be rewritten
-   */
   void advanceNormGen(int fieldIndex) {
     if (normGen[fieldIndex] == NO) {
       normGen[fieldIndex] = YES;
@@ -485,11 +449,6 @@ public final class SegmentInfo implements Cloneable {
     clearFiles();
   }
 
-  /**
-   * Get the file name for the norms file for this field.
-   *
-   * @param number field index
-   */
   public String getNormFileName(int number) throws IOException {
     long gen;
     if (normGen == null) {
@@ -512,12 +471,6 @@ public final class SegmentInfo implements Cloneable {
     return IndexFileNames.fileNameFromGeneration(name, "f" + number, WITHOUT_GEN);
   }
 
-  /**
-   * Mark whether this segment is stored as a compound file.
-   *
-   * @param isCompoundFile true if this is a compound file;
-   * else, false
-   */
   void setUseCompoundFile(boolean isCompoundFile) {
     if (isCompoundFile) {
       this.isCompoundFile = YES;
@@ -527,10 +480,6 @@ public final class SegmentInfo implements Cloneable {
     clearFiles();
   }
 
-  /**
-   * Returns true if this segment is stored as a compound
-   * file; else, false.
-   */
   public boolean getUseCompoundFile() throws IOException {
     if (isCompoundFile == NO) {
       return false;
@@ -591,9 +540,6 @@ public final class SegmentInfo implements Cloneable {
     clearFiles();
   }
   
-  /**
-   * Save this segment's info.
-   */
   void write(IndexOutput output)
     throws IOException {
     assert delCount <= docCount: "delCount=" + delCount + " docCount=" + docCount + " segment=" + name;
@@ -750,24 +696,12 @@ public final class SegmentInfo implements Cloneable {
     sizeInBytesWithStore = -1;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     return toString(dir, 0);
   }
 
-  /** Used for debugging.  Format may suddenly change.
-   * 
-   *  <p>Current format looks like
-   *  <code>_a(3.1):c45/4->_1</code>, which means the segment's
-   *  name is <code>_a</code>; it was created with Lucene 3.1 (or
-   *  '?' if it's unkown); it's using compound file
-   *  format (would be <code>C</code> if not compound); it
-   *  has 45 documents; it has 4 deletions (this part is
-   *  left off when there are no deletions); it's using the
-   *  shared doc stores named <code>_1</code> (this part is
-   *  left off if doc stores are private).</p>
-   */
+
   public String toString(Directory dir, int pendingDelCount) {
 
     StringBuilder s = new StringBuilder();
@@ -824,8 +758,6 @@ public final class SegmentInfo implements Cloneable {
     return s.toString();
   }
 
-  /** We consider another SegmentInfo instance equal if it
-   *  has the same dir and same name. */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) return true;
@@ -842,21 +774,10 @@ public final class SegmentInfo implements Cloneable {
     return dir.hashCode() + name.hashCode();
   }
 
-  /**
-   * Used by SegmentInfos to upgrade segments that do not record their code
-   * version (either "2.x" or "3.0").
-   * <p>
-   * <b>NOTE:</b> this method is used for internal purposes only - you should
-   * not modify the version of a SegmentInfo, or it may result in unexpected
-   * exceptions thrown when you attempt to open the index.
-   * 
-   * @lucene.internal
-   */
   void setVersion(String version) {
     this.version = version;
   }
   
-  /** Returns the version of the code which wrote the segment. */
   public String getVersion() {
     return version;
   }

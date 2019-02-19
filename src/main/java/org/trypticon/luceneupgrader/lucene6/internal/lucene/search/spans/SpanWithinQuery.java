@@ -26,14 +26,9 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.Term;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.TermContext;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.IndexSearcher;
 
-/** Keep matches that are contained within another Spans. */
 public final class SpanWithinQuery extends SpanContainQuery {
 
-  /** Construct a SpanWithinQuery matching spans from <code>little</code>
-   * that are inside of <code>big</code>.
-   * This query has the boost of <code>little</code>.
-   * <code>big</code> and <code>little</code> must be in the same field.
-   */
+
   public SpanWithinQuery(SpanQuery big, SpanQuery little) {
     super(big, little);
   }
@@ -58,10 +53,6 @@ public final class SpanWithinQuery extends SpanContainQuery {
       super(searcher, terms, bigWeight, littleWeight);
     }
 
-    /**
-     * Return spans from <code>little</code> that are contained in a spans from <code>big</code>.
-     * The payload is from the spans of <code>little</code>.
-     */
     @Override
     public Spans getSpans(final LeafReaderContext context, Postings requiredPostings) throws IOException {
       ArrayList<Spans> containerContained = prepareConjunction(context, requiredPostings);

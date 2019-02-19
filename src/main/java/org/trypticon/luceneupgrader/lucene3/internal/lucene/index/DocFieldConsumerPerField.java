@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,7 +21,6 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Fieldable;
 
 abstract class DocFieldConsumerPerField {
-  /** Processes all occurrences of a single field */
   abstract void processFields(Fieldable[] fields, int count) throws IOException;
   abstract void abort();
   abstract void close();

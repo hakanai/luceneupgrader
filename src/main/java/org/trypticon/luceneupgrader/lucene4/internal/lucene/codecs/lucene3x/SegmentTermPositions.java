@@ -26,10 +26,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder;
 
-/**
- * @lucene.experimental
- * @deprecated (4.0)
- */
 @Deprecated
 final class SegmentTermPositions
 extends SegmentTermDocs  {
@@ -134,7 +130,6 @@ extends SegmentTermDocs  {
   }
 
 
-  /** Called by super.skipTo(). */
   @Override
   protected void skipProx(long proxPointer, int payloadLength) throws IOException {
     // we save the pointer, we might have to skip there lazily

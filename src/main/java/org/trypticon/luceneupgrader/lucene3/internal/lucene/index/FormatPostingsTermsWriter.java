@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -44,7 +44,6 @@ final class FormatPostingsTermsWriter extends FormatPostingsTermsConsumer implem
   long freqStart;
   long proxStart;
 
-  /** Adds a new term in this field */
   @Override
   FormatPostingsDocsConsumer addTerm(char[] text, int start) {
     currentTerm = text;
@@ -62,7 +61,6 @@ final class FormatPostingsTermsWriter extends FormatPostingsTermsConsumer implem
     return docsWriter;
   }
 
-  /** Called when we are done adding terms to this field */
   @Override
   void finish() {
   }

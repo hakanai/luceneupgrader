@@ -37,9 +37,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.fst.Outputs;
 
 // NOTE: cannot seek!
 
-/**
- * @deprecated Only for 4.x backcompat
- */
 @Deprecated
 final class Lucene40IntersectTermsEnum extends TermsEnum {
   final IndexInput in;

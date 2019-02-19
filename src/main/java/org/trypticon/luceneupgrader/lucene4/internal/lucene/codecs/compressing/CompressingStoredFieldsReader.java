@@ -60,10 +60,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
-/**
- * {@link StoredFieldsReader} impl for {@link CompressingStoredFieldsFormat}.
- * @lucene.experimental
- */
 public final class CompressingStoredFieldsReader extends StoredFieldsReader {
 
   // Do not reuse the decompression buffer when there is more than 32kb to decompress
@@ -98,7 +94,6 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
     this.closed = false;
   }
 
-  /** Sole constructor. */
   public CompressingStoredFieldsReader(Directory d, SegmentInfo si, String segmentSuffix, FieldInfos fn,
       IOContext context, String formatName, CompressionMode compressionMode) throws IOException {
     this.compressionMode = compressionMode;
@@ -170,18 +165,13 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
     }
   }
 
-  /**
-   * @throws AlreadyClosedException if this FieldsReader is closed
-   */
   private void ensureOpen() throws AlreadyClosedException {
     if (closed) {
       throw new AlreadyClosedException("this FieldsReader is closed");
     }
   }
 
-  /** 
-   * Close the underlying {@link IndexInput}s.
-   */
+
   @Override
   public void close() throws IOException {
     if (!closed) {
@@ -423,9 +413,6 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
       fieldsStream.seek(indexReader.getStartPointer(startDocId));
     }
 
-    /**
-     * Return the decompressed size of the chunk
-     */
     int chunkSize() {
       int sum = 0;
       for (int i = 0; i < chunkDocs; ++i) {
@@ -434,9 +421,6 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
       return sum;
     }
 
-    /**
-     * Go to the chunk containing the provided doc ID.
-     */
     void next(int doc) throws IOException {
       assert doc >= docBase + chunkDocs : doc + " " + docBase + " " + chunkDocs;
       fieldsStream.seek(indexReader.getStartPointer(doc));
@@ -488,9 +472,6 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
       }
     }
 
-    /**
-     * Decompress the chunk.
-     */
     void decompress() throws IOException {
       // decompress data
       final int chunkSize = chunkSize();
@@ -512,9 +493,6 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
       }
     }
 
-    /**
-     * Check integrity of the data. The iterator is not usable after this method has been called.
-     */
     void checkIntegrity() throws IOException {
       if (version >= VERSION_CHECKSUM) {
         fieldsStream.seek(fieldsStream.length() - CodecUtil.footerLength());

@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,13 +17,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
-/**
- *  Access to the Fieldable Info file that describes document fields and whether or
- *  not they are indexed. Each segment has a separate Fieldable Info file. Objects
- *  of this class are thread-safe for multiple readers, but only one thread can
- *  be adding documents at a time, with no other reader or writer threads
- *  accessing this object.
- **/
+
 public final class FieldInfo {
   public final String name;
   public final int number;
@@ -38,17 +32,10 @@ public final class FieldInfo {
   
   public boolean storePayloads; // whether this field stores payloads together with term positions
 
-  /**
-   * Controls how much information is stored in the postings lists.
-   * @lucene.experimental
-   */
-  public static enum IndexOptions { 
-    /** only documents are indexed: term frequencies and positions are omitted */
+  public static enum IndexOptions {
     DOCS_ONLY,
-    /** only documents and term frequencies are indexed: positions are omitted */  
     DOCS_AND_FREQS,
-    /** full postings: documents, frequencies, and positions */
-    DOCS_AND_FREQS_AND_POSITIONS 
+    DOCS_AND_FREQS_AND_POSITIONS
   };
 
   FieldInfo(String na, boolean tk, int nu, boolean storeTermVector, 

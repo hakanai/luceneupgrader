@@ -24,25 +24,11 @@ import java.util.List;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeSource;
 
-/**
- * This class can be used if the token attributes of a TokenStream
- * are intended to be consumed more than once. It caches
- * all token attribute states locally in a List.
- * 
- * <P>CachingTokenFilter implements the optional method
- * {@link TokenStream#reset()}, which repositions the
- * stream to the first Token. 
- */
 public final class CachingTokenFilter extends TokenFilter {
   private List<AttributeSource.State> cache = null;
   private Iterator<AttributeSource.State> iterator = null; 
   private AttributeSource.State finalState;
   
-  /**
-   * Create a new CachingTokenFilter around <code>input</code>,
-   * caching its token attributes, which can be replayed again
-   * after a call to {@link #reset()}.
-   */
   public CachingTokenFilter(TokenStream input) {
     super(input);
   }
@@ -72,13 +58,6 @@ public final class CachingTokenFilter extends TokenFilter {
     }
   }
 
-  /**
-   * Rewinds the iterator to the beginning of the cached list.
-   * <p>
-   * Note that this does not call reset() on the wrapped tokenstream ever, even
-   * the first time. You should reset() the inner tokenstream before wrapping
-   * it with CachingTokenFilter.
-   */
   @Override
   public void reset() {
     if(cache != null) {

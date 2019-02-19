@@ -26,28 +26,17 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.FieldInfo;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.StoredFieldVisitor;
 
-/** A {@link StoredFieldVisitor} that creates a {@link
- *  Document} containing all stored fields, or only specific
- *  requested fields provided to {@link #DocumentStoredFieldVisitor(Set)}.
- *  <p>
- *  This is used by {@link IndexReader#document(int)} to load a
- *  document.
- *
- * @lucene.experimental */
+
 
 public class DocumentStoredFieldVisitor extends StoredFieldVisitor {
   private final Document doc = new Document();
   private final Set<String> fieldsToAdd;
 
-  /** 
-   * Load only fields named in the provided <code>Set&lt;String&gt;</code>. 
-   * @param fieldsToAdd Set of fields to load, or <code>null</code> (all fields).
-   */
+
   public DocumentStoredFieldVisitor(Set<String> fieldsToAdd) {
     this.fieldsToAdd = fieldsToAdd;
   }
 
-  /** Load only fields named in the provided fields. */
   public DocumentStoredFieldVisitor(String... fields) {
     fieldsToAdd = new HashSet<>(fields.length);
     for(String field : fields) {
@@ -55,7 +44,6 @@ public class DocumentStoredFieldVisitor extends StoredFieldVisitor {
     }
   }
 
-  /** Load all stored fields. */
   public DocumentStoredFieldVisitor() {
     this.fieldsToAdd = null;
   }
@@ -99,13 +87,6 @@ public class DocumentStoredFieldVisitor extends StoredFieldVisitor {
     return fieldsToAdd == null || fieldsToAdd.contains(fieldInfo.name) ? Status.YES : Status.NO;
   }
 
-  /**
-   * Retrieve the visited document.
-   * @return Document populated with stored fields. Note that only
-   *         the stored information in the field instances is valid,
-   *         data such as boosts, indexing options, term vector options,
-   *         etc is not set.
-   */
   public Document getDocument() {
     return doc;
   }

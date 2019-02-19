@@ -41,8 +41,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.CloseableThread
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 
-/** Holds core readers that are shared (unchanged) when
- * SegmentReader is cloned or reopened */
 final class SegmentCoreReaders implements Accountable {
 
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(SegmentCoreReaders.class);

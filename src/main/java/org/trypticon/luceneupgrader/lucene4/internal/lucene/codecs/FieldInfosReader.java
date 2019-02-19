@@ -23,17 +23,9 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.FieldInfos;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 
-/**
- * Codec API for reading {@link FieldInfos}.
- * @lucene.experimental
- */
 public abstract class FieldInfosReader {
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected FieldInfosReader() {
   }
 
-  /** Read the {@link FieldInfos} previously written with {@link
-   *  FieldInfosWriter}. */
   public abstract FieldInfos read(Directory directory, String segmentName, String segmentSuffix, IOContext iocontext) throws IOException;
 }

@@ -18,9 +18,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
  * limitations under the License.
  */
 
-/**
- * Non-specialized {@link BulkOperation} for {@link PackedInts.Format#PACKED}.
- */
 class BulkOperationPacked extends BulkOperation {
 
   private final int bitsPerValue;

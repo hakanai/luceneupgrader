@@ -22,13 +22,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.TermsEnum;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.StringHelper;
 
-/**
- * Subclass of FilteredTermEnum for enumerating all terms that match the
- * specified prefix filter term.
- * <p>Term enumerations are always ordered by
- * {@link #getComparator}.  Each term in the enumeration is
- * greater than all that precede it.</p>
- */
 public class PrefixTermsEnum extends FilteredTermsEnum {
 
   private final BytesRef prefixRef;

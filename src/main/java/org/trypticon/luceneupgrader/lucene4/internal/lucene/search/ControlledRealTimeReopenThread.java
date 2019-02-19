@@ -26,19 +26,7 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.IndexWriter;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.TrackingIndexWriter;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ThreadInterruptedException;
 
-/** Utility class that runs a thread to manage periodicc
- *  reopens of a {@link ReferenceManager}, with methods to wait for a specific
- *  index changes to become visible.  To use this class you
- *  must first wrap your {@link IndexWriter} with a {@link
- *  TrackingIndexWriter} and always use it to make changes
- *  to the index, saving the returned generation.  Then,
- *  when a given search request needs to see a specific
- *  index change, call the {#waitForGeneration} to wait for
- *  that change to be visible.  Note that this will only
- *  scale well if most searches do not need to wait for a
- *  specific index generation.
- *
- * @lucene.experimental */
+
 
 public class ControlledRealTimeReopenThread<T> extends Thread implements Closeable {
   private final ReferenceManager<T> manager;
@@ -53,22 +41,6 @@ public class ControlledRealTimeReopenThread<T> extends Thread implements Closeab
   private final ReentrantLock reopenLock = new ReentrantLock();
   private final Condition reopenCond = reopenLock.newCondition();
   
-  /**
-   * Create ControlledRealTimeReopenThread, to periodically
-   * reopen the a {@link ReferenceManager}.
-   *
-   * @param targetMaxStaleSec Maximum time until a new
-   *        reader must be opened; this sets the upper bound
-   *        on how slowly reopens may occur, when no
-   *        caller is waiting for a specific generation to
-   *        become visible.
-   *
-   * @param targetMinStaleSec Mininum time until a new
-   *        reader can be opened; this sets the lower bound
-   *        on how quickly reopens may occur, when a caller
-   *        is waiting for a specific generation to
-   *        become visible.
-   */
   public ControlledRealTimeReopenThread(TrackingIndexWriter writer, ReferenceManager<T> manager, double targetMaxStaleSec, double targetMinStaleSec) {
     if (targetMaxStaleSec < targetMinStaleSec) {
       throw new IllegalArgumentException("targetMaxScaleSec (= " + targetMaxStaleSec + ") < targetMinStaleSec (=" + targetMinStaleSec + ")");
@@ -121,39 +93,10 @@ public class ControlledRealTimeReopenThread<T> extends Thread implements Closeab
     notifyAll();
   }
 
-  /**
-   * Waits for the target generation to become visible in
-   * the searcher.
-   * If the current searcher is older than the
-   * target generation, this method will block
-   * until the searcher is reopened, by another via
-   * {@link ReferenceManager#maybeRefresh} or until the {@link ReferenceManager} is closed.
-   * 
-   * @param targetGen the generation to wait for
-   */
   public void waitForGeneration(long targetGen) throws InterruptedException {
     waitForGeneration(targetGen, -1);
   }
 
-  /**
-   * Waits for the target generation to become visible in
-   * the searcher, up to a maximum specified milli-seconds.
-   * If the current searcher is older than the target
-   * generation, this method will block until the
-   * searcher has been reopened by another thread via
-   * {@link ReferenceManager#maybeRefresh}, the given waiting time has elapsed, or until
-   * the {@link ReferenceManager} is closed.
-   * <p>
-   * NOTE: if the waiting time elapses before the requested target generation is
-   * available the current {@link SearcherManager} is returned instead.
-   * 
-   * @param targetGen
-   *          the generation to wait for
-   * @param maxMS
-   *          maximum milliseconds to wait, or -1 to wait indefinitely
-   * @return true if the targetGeneration is now available,
-   *         or false if maxMS wait time was exceeded
-   */
   public synchronized boolean waitForGeneration(long targetGen, int maxMS) throws InterruptedException {
     final long curGen = writer.getGeneration();
     if (targetGen > curGen) {

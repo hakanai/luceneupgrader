@@ -23,15 +23,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LeafReaderCont
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.FieldValueHitQueue.Entry;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.PriorityQueue;
 
-/**
- * A {@link Collector} that sorts by {@link SortField} using
- * {@link FieldComparator}s.
- * <p>
- * See the {@link #create(org.trypticon.luceneupgrader.lucene5.internal.lucene.search.Sort, int, boolean, boolean, boolean)} method
- * for instantiating a TopFieldCollector.
- *
- * @lucene.experimental
- */
 public abstract class TopFieldCollector extends TopDocsCollector<Entry> {
 
   // TODO: one optimization we could do is to pre-fill
@@ -403,80 +394,12 @@ public abstract class TopFieldCollector extends TopDocsCollector<Entry> {
     return needsScores;
   }
 
-  /**
-   * Creates a new {@link TopFieldCollector} from the given
-   * arguments.
-   *
-   * <p><b>NOTE</b>: The instances returned by this method
-   * pre-allocate a full array of length
-   * <code>numHits</code>.
-   *
-   * @param sort
-   *          the sort criteria (SortFields).
-   * @param numHits
-   *          the number of results to collect.
-   * @param fillFields
-   *          specifies whether the actual field values should be returned on
-   *          the results (FieldDoc).
-   * @param trackDocScores
-   *          specifies whether document scores should be tracked and set on the
-   *          results. Note that if set to false, then the results' scores will
-   *          be set to Float.NaN. Setting this to true affects performance, as
-   *          it incurs the score computation on each competitive result.
-   *          Therefore if document scores are not required by the application,
-   *          it is recommended to set it to false.
-   * @param trackMaxScore
-   *          specifies whether the query's maxScore should be tracked and set
-   *          on the resulting {@link TopDocs}. Note that if set to false,
-   *          {@link TopDocs#getMaxScore()} returns Float.NaN. Setting this to
-   *          true affects performance as it incurs the score computation on
-   *          each result. Also, setting this true automatically sets
-   *          <code>trackDocScores</code> to true as well.
-   * @return a {@link TopFieldCollector} instance which will sort the results by
-   *         the sort criteria.
-   * @throws IOException if there is a low-level I/O error
-   */
   public static TopFieldCollector create(Sort sort, int numHits,
       boolean fillFields, boolean trackDocScores, boolean trackMaxScore)
       throws IOException {
     return create(sort, numHits, null, fillFields, trackDocScores, trackMaxScore);
   }
 
-  /**
-   * Creates a new {@link TopFieldCollector} from the given
-   * arguments.
-   *
-   * <p><b>NOTE</b>: The instances returned by this method
-   * pre-allocate a full array of length
-   * <code>numHits</code>.
-   *
-   * @param sort
-   *          the sort criteria (SortFields).
-   * @param numHits
-   *          the number of results to collect.
-   * @param after
-   *          only hits after this FieldDoc will be collected
-   * @param fillFields
-   *          specifies whether the actual field values should be returned on
-   *          the results (FieldDoc).
-   * @param trackDocScores
-   *          specifies whether document scores should be tracked and set on the
-   *          results. Note that if set to false, then the results' scores will
-   *          be set to Float.NaN. Setting this to true affects performance, as
-   *          it incurs the score computation on each competitive result.
-   *          Therefore if document scores are not required by the application,
-   *          it is recommended to set it to false.
-   * @param trackMaxScore
-   *          specifies whether the query's maxScore should be tracked and set
-   *          on the resulting {@link TopDocs}. Note that if set to false,
-   *          {@link TopDocs#getMaxScore()} returns Float.NaN. Setting this to
-   *          true affects performance as it incurs the score computation on
-   *          each result. Also, setting this true automatically sets
-   *          <code>trackDocScores</code> to true as well.
-   * @return a {@link TopFieldCollector} instance which will sort the results by
-   *         the sort criteria.
-   * @throws IOException if there is a low-level I/O error
-   */
   public static TopFieldCollector create(Sort sort, int numHits, FieldDoc after,
       boolean fillFields, boolean trackDocScores, boolean trackMaxScore)
       throws IOException {

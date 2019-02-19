@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,44 +20,29 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 import java.lang.reflect.Field;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.LucenePackage;
 
-/**
- * Some useful constants.
- **/
+
 
 public final class Constants {
   private Constants() {}			  // can't construct
 
-  /** JVM vendor info. */
-  public static final String JVM_VENDOR = System.getProperty("java.vm.vendor");
+    public static final String JVM_VENDOR = System.getProperty("java.vm.vendor");
   public static final String JVM_VERSION = System.getProperty("java.vm.version");
   public static final String JVM_NAME = System.getProperty("java.vm.name");
 
-  /** The value of <tt>System.getProperty("java.version")<tt>. **/
-  public static final String JAVA_VERSION = System.getProperty("java.version");
+    public static final String JAVA_VERSION = System.getProperty("java.version");
  
-  /** True iff this is Java version 1.1.
-   * @deprecated This constant is useless since Lucene is on Java 5 */
   @Deprecated
   public static final boolean JAVA_1_1 = JAVA_VERSION.startsWith("1.1.");
-  /** True iff this is Java version 1.2.
-   * @deprecated This constant is useless since Lucene is on Java 5 */
   @Deprecated
   public static final boolean JAVA_1_2 = JAVA_VERSION.startsWith("1.2.");
-  /** True iff this is Java version 1.3.
-   * @deprecated This constant is useless since Lucene is on Java 5 */
   @Deprecated
   public static final boolean JAVA_1_3 = JAVA_VERSION.startsWith("1.3.");
 
-  /** The value of <tt>System.getProperty("os.name")<tt>. **/
-  public static final String OS_NAME = System.getProperty("os.name");
-  /** True iff running on Linux. */
-  public static final boolean LINUX = OS_NAME.startsWith("Linux");
-  /** True iff running on Windows. */
-  public static final boolean WINDOWS = OS_NAME.startsWith("Windows");
-  /** True iff running on SunOS. */
-  public static final boolean SUN_OS = OS_NAME.startsWith("SunOS");
-  /** True iff running on Mac OS X */
-  public static final boolean MAC_OS_X = OS_NAME.startsWith("Mac OS X");
+    public static final String OS_NAME = System.getProperty("os.name");
+    public static final boolean LINUX = OS_NAME.startsWith("Linux");
+    public static final boolean WINDOWS = OS_NAME.startsWith("Windows");
+    public static final boolean SUN_OS = OS_NAME.startsWith("SunOS");
+    public static final boolean MAC_OS_X = OS_NAME.startsWith("Mac OS X");
 
   public static final String OS_ARCH = System.getProperty("os.arch");
   public static final String OS_VERSION = System.getProperty("os.version");
@@ -66,8 +51,7 @@ public final class Constants {
   public static final boolean JRE_IS_MINIMUM_JAVA6;
   public static final boolean JRE_IS_MINIMUM_JAVA7;
   
-  /** True iff running on a 64bit JVM */
-  public static final boolean JRE_IS_64BIT;
+    public static final boolean JRE_IS_64BIT;
   
   static {
     boolean is64Bit = false;

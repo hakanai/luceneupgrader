@@ -19,10 +19,6 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.lucene41;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.BlockTermState;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.TermState;
 
-/**
- * term state for Lucene 4.1 postings format
- * @deprecated only for reading old 4.x segments
- */
 @Deprecated
 final class IntBlockTermState extends BlockTermState {
   long docStartFP = 0;

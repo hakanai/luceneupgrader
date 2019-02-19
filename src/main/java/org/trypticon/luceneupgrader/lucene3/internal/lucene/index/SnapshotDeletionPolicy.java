@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -29,29 +29,8 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
 
-/**
- * An {@link IndexDeletionPolicy} that wraps around any other
- * {@link IndexDeletionPolicy} and adds the ability to hold and later release
- * snapshots of an index. While a snapshot is held, the {@link IndexWriter} will
- * not remove any files associated with it even if the index is otherwise being
- * actively, arbitrarily changed. Because we wrap another arbitrary
- * {@link IndexDeletionPolicy}, this gives you the freedom to continue using
- * whatever {@link IndexDeletionPolicy} you would normally want to use with your
- * index.
- * 
- * <p>
- * This class maintains all snapshots in-memory, and so the information is not
- * persisted and not protected against system failures. If persistency is
- * important, you can use {@link PersistentSnapshotDeletionPolicy} (or your own
- * extension) and when creating a new instance of this deletion policy, pass the
- * persistent snapshots information to
- * {@link #SnapshotDeletionPolicy(IndexDeletionPolicy, Map)}.
- * 
- * @lucene.experimental
- */
 public class SnapshotDeletionPolicy implements IndexDeletionPolicy {
 
-  /** Holds a Snapshot's information. */
   private static class SnapshotInfo {
     String id;
     String segmentsFileName;
@@ -81,10 +60,6 @@ public class SnapshotDeletionPolicy implements IndexDeletionPolicy {
       return "SnapshotDeletionPolicy.SnapshotCommitPoint(" + cp + ")";
     }
 
-    /**
-     * Returns true if this segment can be deleted. The default implementation
-     * returns false if this segment is currently held as snapshot.
-     */
     protected boolean shouldDelete(String segmentsFileName) {
       return !segmentsFileToIDs.containsKey(segmentsFileName);
     }
@@ -141,7 +116,6 @@ public class SnapshotDeletionPolicy implements IndexDeletionPolicy {
     }
   }
 
-  /** Snapshots info */
   private Map<String, SnapshotInfo> idToSnapshot = new HashMap<String, SnapshotInfo>();
 
   // multiple IDs could point to the same commit point (segments file name)
@@ -154,20 +128,6 @@ public class SnapshotDeletionPolicy implements IndexDeletionPolicy {
     this.primary = primary;
   }
 
-  /**
-   * {@link SnapshotDeletionPolicy} wraps another {@link IndexDeletionPolicy} to
-   * enable flexible snapshotting.
-   * 
-   * @param primary
-   *          the {@link IndexDeletionPolicy} that is used on non-snapshotted
-   *          commits. Snapshotted commits, are not deleted until explicitly
-   *          released via {@link #release(String)}
-   * @param snapshotsInfo
-   *          A mapping of snapshot ID to the segments filename that is being
-   *          snapshotted. The expected input would be the output of
-   *          {@link #getSnapshots()}. A null value signals that there are no
-   *          initial snapshots to maintain.
-   */
   public SnapshotDeletionPolicy(IndexDeletionPolicy primary,
       Map<String, String> snapshotsInfo) {
     this(primary);
@@ -181,10 +141,6 @@ public class SnapshotDeletionPolicy implements IndexDeletionPolicy {
     }
   }
 
-  /**
-   * Checks if the given id is already used by another snapshot, and throws
-   * {@link IllegalStateException} if it is.
-   */
   protected void checkSnapshotted(String id) {
     if (isSnapshotted(id)) {
       throw new IllegalStateException("Snapshot ID " + id
@@ -192,7 +148,6 @@ public class SnapshotDeletionPolicy implements IndexDeletionPolicy {
     }
   }
 
-  /** Registers the given snapshot information. */
   protected void registerSnapshotInfo(String id, String segment, IndexCommit commit) {
     idToSnapshot.put(id, new SnapshotInfo(id, segment, commit));
     Set<String> ids = segmentsFileToIDs.get(segment);
@@ -211,18 +166,6 @@ public class SnapshotDeletionPolicy implements IndexDeletionPolicy {
     return wrappedCommits;
   }
 
-  /**
-   * Get a snapshotted IndexCommit by ID. The IndexCommit can then be used to
-   * open an IndexReader on a specific commit point, or rollback the index by
-   * opening an IndexWriter with the IndexCommit specified in its
-   * {@link IndexWriterConfig}.
-   * 
-   * @param id
-   *          a unique identifier of the commit that was snapshotted.
-   * @throws IllegalStateException
-   *           if no snapshot exists by the specified ID.
-   * @return The {@link IndexCommit} for this particular snapshot.
-   */
   public synchronized IndexCommit getSnapshot(String id) {
     SnapshotInfo snapshotInfo = idToSnapshot.get(id);
     if (snapshotInfo == null) {
@@ -231,12 +174,6 @@ public class SnapshotDeletionPolicy implements IndexDeletionPolicy {
     return snapshotInfo.commit;
   }
 
-  /**
-   * Get all the snapshots in a map of snapshot IDs to the segments they
-   * 'cover.' This can be passed to
-   * {@link #SnapshotDeletionPolicy(IndexDeletionPolicy, Map)} in order to
-   * initialize snapshots at construction.
-   */
   public synchronized Map<String, String> getSnapshots() {
     Map<String, String> snapshots = new HashMap<String, String>();
     for (Entry<String, SnapshotInfo> e : idToSnapshot.entrySet()) {
@@ -245,11 +182,6 @@ public class SnapshotDeletionPolicy implements IndexDeletionPolicy {
     return snapshots;
   }
 
-  /**
-   * Returns true if the given ID is already used by a snapshot. You can call
-   * this method before {@link #snapshot(String)} if you are not sure whether
-   * the ID is already used or not.
-   */
   public boolean isSnapshotted(String id) {
     return idToSnapshot.containsKey(id);
   }
@@ -306,14 +238,6 @@ public class SnapshotDeletionPolicy implements IndexDeletionPolicy {
     }
   }
 
-  /**
-   * Release a snapshotted commit by ID.
-   * 
-   * @param id
-   *          a unique identifier of the commit that is un-snapshotted.
-   * @throws IllegalStateException
-   *           if no snapshot exists by this ID.
-   */
   public synchronized void release(String id) throws IOException {
     SnapshotInfo info = idToSnapshot.remove(id);
     if (info == null) {
@@ -328,28 +252,6 @@ public class SnapshotDeletionPolicy implements IndexDeletionPolicy {
     }
   }
 
-  /**
-   * Snapshots the last commit. Once a commit is 'snapshotted,' it is protected
-   * from deletion (as long as this {@link IndexDeletionPolicy} is used). The
-   * commit can be removed by calling {@link #release(String)} using the same ID
-   * parameter followed by a call to {@link IndexWriter#deleteUnusedFiles()}.
-   * <p>
-   * <b>NOTE:</b> ID must be unique in the system. If the same ID is used twice,
-   * an {@link IllegalStateException} is thrown.
-   * <p>
-   * <b>NOTE:</b> while the snapshot is held, the files it references will not
-   * be deleted, which will consume additional disk space in your index. If you
-   * take a snapshot at a particularly bad time (say just before you call
-   * forceMerge) then in the worst case this could consume an extra 1X of your
-   * total index size, until you release the snapshot.
-   * 
-   * @param id
-   *          a unique identifier of the commit that is being snapshotted.
-   * @throws IllegalStateException
-   *           if either there is no 'last commit' to snapshot, or if the
-   *           parameter 'ID' refers to an already snapshotted commit.
-   * @return the {@link IndexCommit} that was snapshotted.
-   */
   public synchronized IndexCommit snapshot(String id) throws IOException {
     if (lastCommit == null) {
       // no commit exists. Really shouldn't happen, but might be if SDP is

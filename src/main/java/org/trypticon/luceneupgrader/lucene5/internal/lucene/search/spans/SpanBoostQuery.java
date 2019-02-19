@@ -36,14 +36,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.IndexSearcher
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.Query;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.Scorer;
 
-/**
- * Counterpart of {@link BoostQuery} for spans.
- */
 public final class SpanBoostQuery extends SpanQuery {
 
-  /** By default we enclose the wrapped query within parenthesis, but this is
-   *  not required for all queries, so we use a whitelist of queries that don't
-   *  need parenthesis to have a better toString(). */
+
   private static final Set<Class<? extends SpanQuery>> NO_PARENS_REQUIRED_QUERIES = Collections.unmodifiableSet(
       new HashSet<>(Arrays.asList(
           SpanTermQuery.class,
@@ -58,16 +53,11 @@ public final class SpanBoostQuery extends SpanQuery {
 
   private final SpanQuery query;
 
-  /** Sole constructor: wrap {@code query} in such a way that the produced
-   *  scores will be boosted by {@code boost}. */
   public SpanBoostQuery(SpanQuery query, float boost) {
     this.query = Objects.requireNonNull(query);
     setBoost(boost);
   }
 
-  /**
-   * Return the wrapped {@link SpanQuery}.
-   */
   public SpanQuery getQuery() {
     return query;
   }

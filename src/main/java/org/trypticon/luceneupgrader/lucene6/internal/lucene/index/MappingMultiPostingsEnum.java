@@ -23,13 +23,6 @@ import java.util.List;
 
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 
-/**
- * Exposes flex API, merged from flex API of sub-segments,
- * remapping docIDs (this is used for segment merging).
- *
- * @lucene.experimental
- */
-
 final class MappingMultiPostingsEnum extends PostingsEnum {
   MultiPostingsEnum multiDocsAndPositionsEnum;
   final String field;
@@ -55,7 +48,6 @@ final class MappingMultiPostingsEnum extends PostingsEnum {
     }
   }
 
-  /** Sole constructor. */
   public MappingMultiPostingsEnum(String field, MergeState mergeState) throws IOException {
     this.field = field;
     allSubs = new MappingPostingsSub[mergeState.fieldsProducers.length];

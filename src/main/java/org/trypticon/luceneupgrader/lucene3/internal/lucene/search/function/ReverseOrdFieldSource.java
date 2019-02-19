@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,41 +22,10 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.FieldCache;
 
 import java.io.IOException;
 
-/**
- * Expert: obtains the ordinal of the field value from the default Lucene 
- * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.FieldCache FieldCache} using getStringIndex()
- * and reverses the order.
- * <p>
- * The native lucene index order is used to assign an ordinal value for each field value.
- * <p>
- * Field values (terms) are lexicographically ordered by unicode value, and numbered starting at 1.
- * <br>
- * Example of reverse ordinal (rord):
- * <br>If there were only three field values: "apple","banana","pear"
- * <br>then rord("apple")=3, rord("banana")=2, ord("pear")=1
- * <p>
- * WARNING: 
- * rord() depends on the position in an index and can thus change 
- * when other documents are inserted or deleted,
- * or if a MultiSearcher is used. 
- * 
- * @lucene.experimental
- *
- * <p><b>NOTE</b>: with the switch in 2.9 to segment-based
- * searching, if {@link #getValues} is invoked with a
- * composite (multi-segment) reader, this can easily cause
- * double RAM usage for the values in the FieldCache.  It's
- * best to switch your application to pass only atomic
- * (single segment) readers to this API.</p>
- */
-
 public class ReverseOrdFieldSource extends ValueSource {
   public String field;
 
-  /** 
-   * Contructor for a certain field.
-   * @param field field whose values reverse order is used.  
-   */
+
   public ReverseOrdFieldSource(String field) {
     this.field = field;
   }

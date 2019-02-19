@@ -17,8 +17,5 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * limitations under the License.
  */
 
-/**
- * Base interface for attributes.
- */
 public interface Attribute {
 }

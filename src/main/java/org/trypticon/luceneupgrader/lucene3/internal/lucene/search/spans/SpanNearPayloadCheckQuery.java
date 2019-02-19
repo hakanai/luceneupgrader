@@ -1,5 +1,5 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,19 +23,9 @@ import java.util.Arrays;
 import java.util.Collection;
 
 
-/**
- * Only return those matches that have a specific payload at
- * the given position.
- * <p/>
- * 
- */
 public class SpanNearPayloadCheckQuery extends SpanPositionCheckQuery {
   protected final Collection<byte[]> payloadToMatch;
 
-  /**
-   * @param match          The underlying {@link SpanQuery} to check
-   * @param payloadToMatch The {@link java.util.Collection} of payloads to match
-   */
   public SpanNearPayloadCheckQuery(SpanNearQuery match, Collection<byte[]> payloadToMatch) {
     super(match);
     this.payloadToMatch = payloadToMatch;

@@ -19,19 +19,9 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities
 
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities.SimilarityBase.log2;
 
-/**
- * Implements the Poisson approximation for the binomial model for DFR.
- * @lucene.experimental
- * <p>
- * WARNING: for terms that do not meet the expected random distribution
- * (e.g. stopwords), this model may give poor performance, such as
- * abnormally high scores for low tf values.
- */
 public class BasicModelP extends BasicModel {
-  /** {@code log2(Math.E)}, precomputed. */
   protected static double LOG2_E = log2(Math.E);
   
-  /** Sole constructor: parameter-free */
   public BasicModelP() {}
   
   @Override

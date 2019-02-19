@@ -23,7 +23,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.LevenshteinAutomata.ParametricDescription;
 
-/** Parametric description for generating a Levenshtein automaton of degree 2 */
 class Lev2ParametricDescription extends ParametricDescription {
   
   @Override

@@ -45,13 +45,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 
-/**
- * Lucene 4.0 Term Vectors reader.
- * <p>
- * It reads .tvd, .tvf, and .tvx files.
- * 
- * @see Lucene40TermVectorsFormat
- */
 public class Lucene40TermVectorsReader extends TermVectorsReader implements Closeable {
 
   static final byte STORE_POSITIONS_WITH_TERMVECTOR = 0x1;
@@ -60,13 +53,10 @@ public class Lucene40TermVectorsReader extends TermVectorsReader implements Clos
   
   static final byte STORE_PAYLOAD_WITH_TERMVECTOR = 0x4;
   
-  /** Extension of vectors fields file */
   static final String VECTORS_FIELDS_EXTENSION = "tvf";
 
-  /** Extension of vectors documents file */
   static final String VECTORS_DOCUMENTS_EXTENSION = "tvd";
 
-  /** Extension of vectors index file */
   static final String VECTORS_INDEX_EXTENSION = "tvx";
   
   static final String CODEC_NAME_FIELDS = "Lucene40TermVectorsFields";
@@ -91,7 +81,6 @@ public class Lucene40TermVectorsReader extends TermVectorsReader implements Clos
   private int numTotalDocs;
   
 
-  /** Used by clone. */
   Lucene40TermVectorsReader(FieldInfos fieldInfos, IndexInput tvx, IndexInput tvd, IndexInput tvf, int size, int numTotalDocs) {
     this.fieldInfos = fieldInfos;
     this.tvx = tvx;
@@ -101,7 +90,6 @@ public class Lucene40TermVectorsReader extends TermVectorsReader implements Clos
     this.numTotalDocs = numTotalDocs;
   }
     
-  /** Sole constructor. */
   public Lucene40TermVectorsReader(Directory d, SegmentInfo si, FieldInfos fieldInfos, IOContext context)
     throws IOException {
     final String segment = si.name;
@@ -162,12 +150,7 @@ public class Lucene40TermVectorsReader extends TermVectorsReader implements Clos
     tvx.seek(docNum * 16L + HEADER_LENGTH_INDEX);
   }
 
-  /** Retrieve the length (in bytes) of the tvd and tvf
-   *  entries for the next numDocs starting with
-   *  startDocID.  This is used for bulk copying when
-   *  merging segments, if the field numbers are
-   *  congruent.  Once this returns, the tvf & tvd streams
-   *  are seeked to the startDocID. */
+
   final void rawDocs(int[] tvdLengths, int[] tvfLengths, int startDocID, int numDocs) throws IOException {
 
     if (tvx == null) {
@@ -212,10 +195,6 @@ public class Lucene40TermVectorsReader extends TermVectorsReader implements Clos
     IOUtils.close(tvx, tvd, tvf);
   }
 
-  /**
-   * 
-   * @return The number of documents in the reader
-   */
   int size() {
     return size;
   }

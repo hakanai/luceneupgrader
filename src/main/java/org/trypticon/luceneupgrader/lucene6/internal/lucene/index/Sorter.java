@@ -32,15 +32,9 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.TimSorter;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.packed.PackedInts;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.packed.PackedLongValues;
 
-/**
- * Sorts documents of a given index by returning a permutation on the document
- * IDs.
- * @lucene.experimental
- */
 final class Sorter {
   final Sort sort;
   
-  /** Creates a new Sorter to sort the index with {@code sort} */
   Sorter(Sort sort) {
     if (sort.needsScores()) {
       throw new IllegalArgumentException("Cannot sort an index with a Sort that refers to the relevance score");
@@ -48,27 +42,16 @@ final class Sorter {
     this.sort = sort;
   }
 
-  /**
-   * A permutation of doc IDs. For every document ID between <tt>0</tt> and
-   * {@link IndexReader#maxDoc()}, <code>oldToNew(newToOld(docID))</code> must
-   * return <code>docID</code>.
-   */
   static abstract class DocMap {
 
-    /** Given a doc ID from the original index, return its ordinal in the
-     *  sorted index. */
     abstract int oldToNew(int docID);
 
-    /** Given the ordinal of a doc ID, return its doc ID in the original index. */
     abstract int newToOld(int docID);
 
-    /** Return the number of documents in this map. This must be equal to the
-     *  {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.index.LeafReader#maxDoc() number of documents} of the
-     *  {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.index.LeafReader} which is sorted. */
+
     abstract int size();
   }
 
-  /** Check consistency of a {@link DocMap}, useful for assertions. */
   static boolean isConsistent(DocMap docMap) {
     final int maxDoc = docMap.size();
     for (int i = 0; i < maxDoc; ++i) {
@@ -83,11 +66,8 @@ final class Sorter {
     return true;
   }
 
-  /** A comparator of doc IDs. */
   static abstract class DocComparator {
 
-    /** Compare docID1 against docID2. The contract for the return value is the
-     *  same as {@link Comparator#compare(Object, Object)}. */
     public abstract int compare(int docID1, int docID2);
 
   }
@@ -138,7 +118,6 @@ final class Sorter {
     }
   }
 
-  /** Computes the old-to-new permutation over the given comparator. */
   static Sorter.DocMap sort(final int maxDoc, DocComparator comparator) {
     // check if the index is sorted
     boolean sorted = true;
@@ -202,8 +181,6 @@ final class Sorter {
     };
   }
 
-  /** Returns the native sort type for {@link SortedSetSortField} and {@link SortedNumericSortField},
-   * {@link SortField#getType()} otherwise */
   static SortField.Type getSortFieldType(SortField sortField) {
     if (sortField instanceof SortedSetSortField) {
       return SortField.Type.STRING;
@@ -214,8 +191,6 @@ final class Sorter {
     }
   }
 
-  /** Wraps a {@link SortedNumericDocValues} as a single-valued view if the field is an instance of {@link SortedNumericSortField},
-   * returns {@link NumericDocValues} for the field otherwise. */
   static NumericDocValues getOrWrapNumeric(LeafReader reader, SortField sortField) throws IOException {
     if (sortField instanceof SortedNumericSortField) {
       SortedNumericSortField sf = (SortedNumericSortField) sortField;
@@ -225,8 +200,6 @@ final class Sorter {
     }
   }
 
-  /** Wraps a {@link SortedSetDocValues} as a single-valued view if the field is an instance of {@link SortedSetSortField},
-   * returns {@link SortedDocValues} for the field otherwise. */
   static SortedDocValues getOrWrapSorted(LeafReader reader, SortField sortField) throws IOException {
     if (sortField instanceof SortedSetSortField) {
       SortedSetSortField sf = (SortedSetSortField) sortField;
@@ -236,18 +209,6 @@ final class Sorter {
     }
   }
 
-  /**
-   * Returns a mapping from the old document ID to its new location in the
-   * sorted index. Implementations can use the auxiliary
-   * {@link #sort(int, DocComparator)} to compute the old-to-new permutation
-   * given a list of documents and their corresponding values.
-   * <p>
-   * A return value of <tt>null</tt> is allowed and means that
-   * <code>reader</code> is already sorted.
-   * <p>
-   * <b>NOTE:</b> deleted documents are expected to appear in the mapping as
-   * well, they will however be marked as deleted in the sorted view.
-   */
   DocMap sort(LeafReader reader) throws IOException {
     SortField fields[] = sort.getSort();
     final int reverseMul[] = new int[fields.length];
@@ -281,13 +242,6 @@ final class Sorter {
     return sort(reader.maxDoc(), comparator);
   }
 
-  /**
-   * Returns the identifier of this {@link Sorter}.
-   * <p>This identifier is similar to {@link Object#hashCode()} and should be
-   * chosen so that two instances of this class that sort documents likewise
-   * will have the same identifier. On the contrary, this identifier should be
-   * different on different {@link Sort sorts}.
-   */
   public String getID() {
     return sort.toString();
   }

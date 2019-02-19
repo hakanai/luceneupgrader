@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,23 +24,8 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
 import java.io.IOException;
 import java.util.Map;
 
-/**  A <code>FilterIndexReader</code> contains another IndexReader, which it
- * uses as its basic source of data, possibly transforming the data along the
- * way or providing additional functionality. The class
- * <code>FilterIndexReader</code> itself simply implements all abstract methods
- * of <code>IndexReader</code> with versions that pass all requests to the
- * contained index reader. Subclasses of <code>FilterIndexReader</code> may
- * further override some of these methods and may also provide additional
- * methods and fields.
- * <p><b>Note:</b> The default implementation of {@link FilterIndexReader#doOpenIfChanged}
- * throws {@link UnsupportedOperationException} (like the base class),
- * so it's not possible to reopen a <code>FilterIndexReader</code>.
- * To reopen, you have to first reopen the underlying reader
- * and wrap it again with the custom filter.
- */
 public class FilterIndexReader extends IndexReader {
 
-  /** Base class for filtering {@link TermDocs} implementations. */
   public static class FilterTermDocs implements TermDocs {
     protected TermDocs in;
 
@@ -58,7 +43,6 @@ public class FilterIndexReader extends IndexReader {
     public void close() throws IOException { in.close(); }
   }
 
-  /** Base class for filtering {@link TermPositions} implementations. */
   public static class FilterTermPositions
           extends FilterTermDocs implements TermPositions {
 
@@ -83,7 +67,6 @@ public class FilterIndexReader extends IndexReader {
     }
   }
 
-  /** Base class for filtering {@link TermEnum} implementations. */
   public static class FilterTermEnum extends TermEnum {
     protected TermEnum in;
 
@@ -101,13 +84,6 @@ public class FilterIndexReader extends IndexReader {
 
   protected IndexReader in;
 
-  /**
-   * <p>Construct a FilterIndexReader based on the specified base reader.
-   * Directory locking for delete, undeleteAll, and setNorm operations is
-   * left to the base reader.</p>
-   * <p>Note that base reader is closed if this FilterIndexReader is closed.</p>
-   * @param in specified base reader.
-   */
   public FilterIndexReader(IndexReader in) {
     super();
     this.in = in;
@@ -198,7 +174,6 @@ public class FilterIndexReader extends IndexReader {
     return in.hasDeletions();
   }
 
-  /** {@inheritDoc} */
   @Override @Deprecated
   protected void doUndeleteAll() throws CorruptIndexException, IOException {in.undeleteAll();}
 
@@ -220,7 +195,6 @@ public class FilterIndexReader extends IndexReader {
     in.norms(f, bytes, offset);
   }
 
-  /** {@inheritDoc} */
   @Override @Deprecated
   protected void doSetNorm(int d, String f, byte b) throws CorruptIndexException, IOException {
     in.setNorm(d, f, b);
@@ -262,11 +236,9 @@ public class FilterIndexReader extends IndexReader {
     return in.termPositions();
   }
 
-  /** {@inheritDoc} */
   @Override @Deprecated
   protected void doDelete(int n) throws  CorruptIndexException, IOException { in.deleteDocument(n); }
   
-  /** {@inheritDoc} */
   @Override @Deprecated
   protected void doCommit(Map<String,String> commitUserData) throws IOException {
     in.commit(commitUserData);
@@ -306,23 +278,18 @@ public class FilterIndexReader extends IndexReader {
     return in.getCommitUserData();
   }
   
-  /** If the subclass of FilteredIndexReader modifies the
-   *  contents of the FieldCache, you must override this
-   *  method to provide a different key */
+
   @Override
   public Object getCoreCacheKey() {
     return in.getCoreCacheKey();
   }
 
-  /** If the subclass of FilteredIndexReader modifies the
-   *  deleted docs, you must override this method to provide
-   *  a different key */
+
   @Override
   public Object getDeletesCacheKey() {
     return in.getDeletesCacheKey();
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     final StringBuilder buffer = new StringBuilder("FilterReader(");

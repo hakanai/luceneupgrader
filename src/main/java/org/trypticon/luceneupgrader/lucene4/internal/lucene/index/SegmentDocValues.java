@@ -29,10 +29,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RefCount;
  * limitations under the License.
  */
 
-/**
- * Manages the {@link DocValuesProducer} held by {@link SegmentReader} and
- * keeps track of their reference counting.
- */
 final class SegmentDocValues {
 
   private final Map<Long,RefCount<DocValuesProducer>> genDVProducers = new HashMap<>();
@@ -60,8 +56,7 @@ final class SegmentDocValues {
     };
   }
 
-  /** Returns the {@link DocValuesProducer} for the given generation. */
-  synchronized DocValuesProducer getDocValuesProducer(long gen, SegmentCommitInfo si, IOContext context, Directory dir, 
+  synchronized DocValuesProducer getDocValuesProducer(long gen, SegmentCommitInfo si, IOContext context, Directory dir,
       DocValuesFormat dvFormat, FieldInfos infos, int termsIndexDivisor) throws IOException {
     RefCount<DocValuesProducer> dvp = genDVProducers.get(gen);
     if (dvp == null) {
@@ -74,10 +69,6 @@ final class SegmentDocValues {
     return dvp.get();
   }
   
-  /**
-   * Decrement the reference count of the given {@link DocValuesProducer}
-   * generations. 
-   */
   synchronized void decRef(List<Long> dvProducersGens) throws IOException {
     Throwable t = null;
     for (Long gen : dvProducersGens) {

@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,30 +20,12 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattri
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.TokenStream;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Attribute;
 
-/**
- * This attribute can be used to mark a token as a keyword. Keyword aware
- * {@link TokenStream}s can decide to modify a token based on the return value
- * of {@link #isKeyword()} if the token is modified. Stemming filters for
- * instance can use this attribute to conditionally skip a term if
- * {@link #isKeyword()} returns <code>true</code>.
- */
+
 public interface KeywordAttribute extends Attribute {
 
-  /**
-   * Returns <code>true</code> iff the current token is a keyword, otherwise
-   * <code>false</code>/
-   * 
-   * @return <code>true</code> iff the current token is a keyword, otherwise
-   *         <code>false</code>/
-   */
+
   public boolean isKeyword();
 
-  /**
-   * Marks the current token as keyword iff set to <code>true</code>.
-   * 
-   * @param isKeyword
-   *          <code>true</code> iff the current token is a keyword, otherwise
-   *          <code>false</code>.
-   */
+
   public void setKeyword(boolean isKeyword);
 }

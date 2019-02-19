@@ -19,15 +19,8 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.util;
 import java.util.Arrays;
 import java.util.Comparator;
 
-/**
- * Methods for manipulating arrays.
- *
- * @lucene.internal
- */
-
 public final class ArrayUtil {
 
-  /** Maximum length for an array (Integer.MAX_VALUE - RamUsageEstimator.NUM_BYTES_ARRAY_HEADER). */
   public static final int MAX_ARRAY_LENGTH = Integer.MAX_VALUE - RamUsageEstimator.NUM_BYTES_ARRAY_HEADER;
 
   private ArrayUtil() {} // no instance
@@ -39,29 +32,10 @@ public final class ArrayUtil {
 
    */
 
-  /**
-   * Parses a char array into an int.
-   * @param chars the character array
-   * @param offset The offset into the array
-   * @param len The length
-   * @return the int
-   * @throws NumberFormatException if it can't parse
-   */
   public static int parseInt(char[] chars, int offset, int len) throws NumberFormatException {
     return parseInt(chars, offset, len, 10);
   }
 
-  /**
-   * Parses the string argument as if it was an int value and returns the
-   * result. Throws NumberFormatException if the string does not represent an
-   * int quantity. The second argument specifies the radix to use when parsing
-   * the value.
-   *
-   * @param chars a string representation of an int quantity.
-   * @param radix the base to use for conversion.
-   * @return int the value represented by the argument
-   * @throws NumberFormatException if the argument could not be parsed as an int quantity.
-   */
   public static int parseInt(char[] chars, int offset, int len, int radix)
           throws NumberFormatException {
     if (chars == null || radix < Character.MIN_RADIX
@@ -120,23 +94,7 @@ public final class ArrayUtil {
  END APACHE HARMONY CODE
   */
 
-  /** Returns an array size &gt;= minTargetSize, generally
-   *  over-allocating exponentially to achieve amortized
-   *  linear-time cost as the array grows.
-   *
-   *  NOTE: this was originally borrowed from Python 2.4.2
-   *  listobject.c sources (attribution in LICENSE.txt), but
-   *  has now been substantially changed based on
-   *  discussions from java-dev thread with subject "Dynamic
-   *  array reallocation algorithms", started on Jan 12
-   *  2010.
-   *
-   * @param minTargetSize Minimum required value to be returned.
-   * @param bytesPerElement Bytes used by each element of
-   * the array.  See constants in {@link RamUsageEstimator}.
-   *
-   * @lucene.internal
-   */
+
 
   public static int oversize(int minTargetSize, int bytesPerElement) {
 
@@ -303,10 +261,6 @@ public final class ArrayUtil {
     return grow(array, 1 + array.length);
   }
 
-  /**
-   * Returns hash of chars in range start (inclusive) to
-   * end (inclusive)
-   */
   public static int hashCode(char[] array, int start, int end) {
     int code = 0;
     for (int i = end - 1; i >= start; i--)
@@ -315,18 +269,6 @@ public final class ArrayUtil {
   }
   
   // Since Arrays.equals doesn't implement offsets for equals
-  /**
-   * See if two array slices are the same.
-   *
-   * @param left        The left array to compare
-   * @param offsetLeft  The offset into the array.  Must be positive
-   * @param right       The right array to compare
-   * @param offsetRight the offset into the right array.  Must be positive
-   * @param length      The length of the section of the array to compare
-   * @return true if the two arrays, starting at their respective offsets, are equal
-   * 
-   * @see java.util.Arrays#equals(byte[], byte[])
-   */
   public static boolean equals(byte[] left, int offsetLeft, byte[] right, int offsetRight, int length) {
     if ((offsetLeft + length <= left.length) && (offsetRight + length <= right.length)) {
       for (int i = 0; i < length; i++) {
@@ -341,18 +283,6 @@ public final class ArrayUtil {
   }
 
   // Since Arrays.equals doesn't implement offsets for equals
-  /**
-   * See if two array slices are the same.
-   *
-   * @param left        The left array to compare
-   * @param offsetLeft  The offset into the array.  Must be positive
-   * @param right       The right array to compare
-   * @param offsetRight the offset into the right array.  Must be positive
-   * @param length      The length of the section of the array to compare
-   * @return true if the two arrays, starting at their respective offsets, are equal
-   * 
-   * @see java.util.Arrays#equals(char[], char[])
-   */
   public static boolean equals(int[] left, int offsetLeft, int[] right, int offsetRight, int length) {
     if ((offsetLeft + length <= left.length) && (offsetRight + length <= right.length)) {
       for (int i = 0; i < length; i++) {
@@ -366,7 +296,6 @@ public final class ArrayUtil {
     return false;
   }
 
-  /** Swap values stored in slots <code>i</code> and <code>j</code> */
   public static <T> void swap(T[] arr, int i, int j) {
     final T tmp = arr[i];
     arr[i] = arr[j];
@@ -375,90 +304,45 @@ public final class ArrayUtil {
 
   // intro-sorts
   
-  /**
-   * Sorts the given array slice using the {@link Comparator}. This method uses the intro sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   * @param fromIndex start index (inclusive)
-   * @param toIndex end index (exclusive)
-   */
   public static <T> void introSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> comp) {
     if (toIndex-fromIndex <= 1) return;
     new ArrayIntroSorter<>(a, comp).sort(fromIndex, toIndex);
   }
   
-  /**
-   * Sorts the given array using the {@link Comparator}. This method uses the intro sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   */
   public static <T> void introSort(T[] a, Comparator<? super T> comp) {
     introSort(a, 0, a.length, comp);
   }
   
-  /**
-   * Sorts the given array slice in natural order. This method uses the intro sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   * @param fromIndex start index (inclusive)
-   * @param toIndex end index (exclusive)
-   */
   public static <T extends Comparable<? super T>> void introSort(T[] a, int fromIndex, int toIndex) {
     if (toIndex-fromIndex <= 1) return;
     introSort(a, fromIndex, toIndex, Comparator.naturalOrder());
   }
   
-  /**
-   * Sorts the given array in natural order. This method uses the intro sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   */
   public static <T extends Comparable<? super T>> void introSort(T[] a) {
     introSort(a, 0, a.length);
   }
 
   // tim sorts:
   
-  /**
-   * Sorts the given array slice using the {@link Comparator}. This method uses the Tim sort
-   * algorithm, but falls back to binary sort for small arrays.
-   * @param fromIndex start index (inclusive)
-   * @param toIndex end index (exclusive)
-   */
   public static <T> void timSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> comp) {
     if (toIndex-fromIndex <= 1) return;
     new ArrayTimSorter<>(a, comp, a.length / 64).sort(fromIndex, toIndex);
   }
   
-  /**
-   * Sorts the given array using the {@link Comparator}. This method uses the Tim sort
-   * algorithm, but falls back to binary sort for small arrays.
-   */
   public static <T> void timSort(T[] a, Comparator<? super T> comp) {
     timSort(a, 0, a.length, comp);
   }
   
-  /**
-   * Sorts the given array slice in natural order. This method uses the Tim sort
-   * algorithm, but falls back to binary sort for small arrays.
-   * @param fromIndex start index (inclusive)
-   * @param toIndex end index (exclusive)
-   */
   public static <T extends Comparable<? super T>> void timSort(T[] a, int fromIndex, int toIndex) {
     if (toIndex-fromIndex <= 1) return;
     timSort(a, fromIndex, toIndex, Comparator.naturalOrder());
   }
   
-  /**
-   * Sorts the given array in natural order. This method uses the Tim sort
-   * algorithm, but falls back to binary sort for small arrays.
-   */
   public static <T extends Comparable<? super T>> void timSort(T[] a) {
     timSort(a, 0, a.length);
   }
 
-  /** Reorganize {@code arr[from:to[} so that the element at offset k is at the
-   *  same position as if {@code arr[from:to[} was sorted, and all elements on
-   *  its left are less than or equal to it, and all elements on its right are
-   *  greater than or equal to it.
-   *  This runs in linear time on average and in {@code n log(n)} time in the
-   *  worst case.*/
+
   public static <T> void select(T[] arr, int from, int to, int k, Comparator<? super T> comparator) {
     new IntroSelector() {
 

@@ -22,12 +22,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import java.io.IOException;
 import java.util.Arrays;
 
-/**
- * Exposes flex API, merged from flex API of sub-segments.
- *
- * @lucene.experimental
- */
-
 public final class MultiDocsAndPositionsEnum extends DocsAndPositionsEnum {
   private final MultiTermsEnum parent;
   final DocsAndPositionsEnum[] subDocsAndPositionsEnum;
@@ -38,7 +32,6 @@ public final class MultiDocsAndPositionsEnum extends DocsAndPositionsEnum {
   int currentBase;
   int doc = -1;
 
-  /** Sole constructor. */
   public MultiDocsAndPositionsEnum(MultiTermsEnum parent, int subReaderCount) {
     this.parent = parent;
     subDocsAndPositionsEnum = new DocsAndPositionsEnum[subReaderCount];
@@ -48,13 +41,10 @@ public final class MultiDocsAndPositionsEnum extends DocsAndPositionsEnum {
     }
   }
 
-  /** Returns {@code true} if this instance can be reused by
-   *  the provided {@link MultiTermsEnum}. */
   public boolean canReuse(MultiTermsEnum parent) {
     return this.parent == parent;
   }
 
-  /** Rre-use and reset this instance on the provided slices. */
   public MultiDocsAndPositionsEnum reset(final EnumWithSlice[] subs, final int numSubs) {
     this.numSubs = numSubs;
     for(int i=0;i<numSubs;i++) {
@@ -67,13 +57,10 @@ public final class MultiDocsAndPositionsEnum extends DocsAndPositionsEnum {
     return this;
   }
 
-  /** How many sub-readers we are merging.
-   *  @see #getSubs */
   public int getNumSubs() {
     return numSubs;
   }
 
-  /** Returns sub-readers we are merging. */
   public EnumWithSlice[] getSubs() {
     return subs;
   }
@@ -159,17 +146,12 @@ public final class MultiDocsAndPositionsEnum extends DocsAndPositionsEnum {
   }
 
   // TODO: implement bulk read more efficiently than super
-  /** Holds a {@link DocsAndPositionsEnum} along with the
-   *  corresponding {@link ReaderSlice}. */
   public final static class EnumWithSlice {
     EnumWithSlice() {
     }
 
-    /** {@link DocsAndPositionsEnum} for this sub-reader. */
     public DocsAndPositionsEnum docsAndPositionsEnum;
 
-    /** {@link ReaderSlice} describing how this sub-reader
-     *  fits into the composite reader. */
     public ReaderSlice slice;
     
     @Override

@@ -25,34 +25,18 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentReadSta
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentWriteState;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 
-/**
- * Lucene 4.2 DocValues format.
- * @deprecated Only for reading old 4.2 segments
- */
 @Deprecated
 public class Lucene42DocValuesFormat extends DocValuesFormat {
 
-  /** Maximum length for each binary doc values field. */
   static final int MAX_BINARY_FIELD_LENGTH = (1 << 15) - 2;
   
   final float acceptableOverheadRatio;
   
-  /** 
-   * Calls {@link #Lucene42DocValuesFormat(float) 
-   * Lucene42DocValuesFormat(PackedInts.DEFAULT)} 
-   */
+
   public Lucene42DocValuesFormat() {
     this(PackedInts.DEFAULT);
   }
   
-  /**
-   * Creates a new Lucene42DocValuesFormat with the specified
-   * <code>acceptableOverheadRatio</code> for NumericDocValues.
-   * @param acceptableOverheadRatio compression parameter for numerics. 
-   *        Currently this is only used when the number of unique values is small.
-   *        
-   * @lucene.experimental
-   */
   public Lucene42DocValuesFormat(float acceptableOverheadRatio) {
     super("Lucene42");
     this.acceptableOverheadRatio = acceptableOverheadRatio;

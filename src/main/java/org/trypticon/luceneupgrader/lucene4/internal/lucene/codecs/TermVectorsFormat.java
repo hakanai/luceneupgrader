@@ -24,20 +24,11 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentInfo;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 
-/**
- * Controls the format of term vectors
- */
 public abstract class TermVectorsFormat {
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected TermVectorsFormat() {
   }
 
-  /** Returns a {@link TermVectorsReader} to read term
-   *  vectors. */
   public abstract TermVectorsReader vectorsReader(Directory directory, SegmentInfo segmentInfo, FieldInfos fieldInfos, IOContext context) throws IOException;
 
-  /** Returns a {@link TermVectorsWriter} to write term
-   *  vectors. */
   public abstract TermVectorsWriter vectorsWriter(Directory directory, SegmentInfo segmentInfo, IOContext context) throws IOException;
 }

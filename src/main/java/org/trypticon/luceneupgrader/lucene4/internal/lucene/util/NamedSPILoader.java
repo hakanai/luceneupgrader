@@ -24,10 +24,6 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.ServiceConfigurationError;
 
-/**
- * Helper class for loading named SPIs from classpath (e.g. Codec, PostingsFormat).
- * @lucene.internal
- */
 public final class NamedSPILoader<S extends NamedSPILoader.NamedSPI> implements Iterable<S> {
 
   private volatile Map<String,S> services = Collections.emptyMap();
@@ -47,17 +43,7 @@ public final class NamedSPILoader<S extends NamedSPILoader.NamedSPI> implements 
     reload(classloader);
   }
   
-  /** 
-   * Reloads the internal SPI list from the given {@link ClassLoader}.
-   * Changes to the service list are visible after the method ends, all
-   * iterators ({@link #iterator()},...) stay consistent. 
-   * 
-   * <p><b>NOTE:</b> Only new service providers are added, existing ones are
-   * never removed or replaced.
-   * 
-   * <p><em>This method is expensive and should only be called for discovery
-   * of new service providers on the given classpath/classloader!</em>
-   */
+
   public synchronized void reload(ClassLoader classloader) {
     final LinkedHashMap<String,S> services = new LinkedHashMap<>(this.services);
     final SPIClassIterator<S> loader = SPIClassIterator.get(clazz, classloader);
@@ -80,9 +66,6 @@ public final class NamedSPILoader<S extends NamedSPILoader.NamedSPI> implements 
     this.services = Collections.unmodifiableMap(services);
   }
   
-  /**
-   * Validates that a service name meets the requirements of {@link NamedSPI}
-   */
   public static void checkServiceName(String name) {
     // based on harmony charset.java
     if (name.length() >= 128) {
@@ -96,9 +79,6 @@ public final class NamedSPILoader<S extends NamedSPILoader.NamedSPI> implements 
     }
   }
   
-  /**
-   * Checks whether a character is a letter or digit (ascii) which are defined in the spec.
-   */
   private static boolean isLetterOrDigit(char c) {
     return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || ('0' <= c && c <= '9');
   }
@@ -120,11 +100,6 @@ public final class NamedSPILoader<S extends NamedSPILoader.NamedSPI> implements 
     return services.values().iterator();
   }
   
-  /**
-   * Interface to support {@link NamedSPILoader#lookup(String)} by name.
-   * <p>
-   * Names must be all ascii alphanumeric, and less than 128 characters in length.
-   */
   public static interface NamedSPI {
     String getName();
   }

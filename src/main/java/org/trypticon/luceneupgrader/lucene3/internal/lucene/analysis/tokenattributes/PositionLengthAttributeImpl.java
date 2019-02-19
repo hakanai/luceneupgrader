@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,13 +19,10 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattri
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.AttributeImpl;
 
-/** See {@link PositionLengthAttribute}. */
 public class PositionLengthAttributeImpl extends AttributeImpl implements PositionLengthAttribute, Cloneable {
   private int positionLength = 1;
   
-  /** @param positionLength how many positions this token
-   *  spans.  NOTE: this is optional, and most analyzers
-   *  don't change the default value (1). */
+
   public void setPositionLength(int positionLength) {
     if (positionLength < 1) {
       throw new IllegalArgumentException
@@ -34,9 +31,7 @@ public class PositionLengthAttributeImpl extends AttributeImpl implements Positi
     this.positionLength = positionLength;
   }
 
-  /** Returns the position length of this Token.
-   * @see #setPositionLength    
-   */
+
   public int getPositionLength() {
     return positionLength;
   }

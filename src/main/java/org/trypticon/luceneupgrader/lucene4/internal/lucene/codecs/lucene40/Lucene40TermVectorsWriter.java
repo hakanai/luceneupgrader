@@ -53,19 +53,11 @@ import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene
 //     file; saves a seek to tvd only to read a 0 vint (and
 //     saves a byte in tvd)
 
-/**
- * Lucene 4.0 Term Vectors writer.
- * <p>
- * It writes .tvd, .tvf, and .tvx files.
- * 
- * @see Lucene40TermVectorsFormat
- */
 public final class Lucene40TermVectorsWriter extends TermVectorsWriter {
   private final Directory directory;
   private final String segment;
   private IndexOutput tvx = null, tvd = null, tvf = null;
   
-  /** Sole constructor. */
   public Lucene40TermVectorsWriter(Directory directory, String segment, IOContext context) throws IOException {
     this.directory = directory;
     this.segment = segment;
@@ -287,11 +279,6 @@ public final class Lucene40TermVectorsWriter extends TermVectorsWriter {
         IndexFileNames.segmentFileName(segment, "", Lucene40TermVectorsReader.VECTORS_FIELDS_EXTENSION));
   }
 
-  /**
-   * Do a bulk copy of numDocs documents from reader to our
-   * streams.  This is used to expedite merging, if the
-   * field numbers are congruent.
-   */
   private void addRawDocuments(Lucene40TermVectorsReader reader, int[] tvdLengths, int[] tvfLengths, int numDocs) throws IOException {
     long tvdPosition = tvd.getFilePointer();
     long tvfPosition = tvf.getFilePointer();
@@ -339,8 +326,6 @@ public final class Lucene40TermVectorsWriter extends TermVectorsWriter {
     return numDocs;
   }
 
-  /** Maximum number of contiguous documents to bulk-copy
-      when merging term vectors */
   private final static int MAX_RAW_MERGE_DOCS = 4192;
 
   private int copyVectorsWithDeletions(MergeState mergeState,
@@ -437,7 +422,6 @@ public final class Lucene40TermVectorsWriter extends TermVectorsWriter {
       throw new RuntimeException("tvx size mismatch: mergedDocs is " + numDocs + " but tvx size is " + indexFP + " (wrote numDocs=" + ((indexFP - HEADER_LENGTH_INDEX)/16.0) + " file=" + tvx.toString() + "; now aborting this merge to prevent index corruption");
   }
 
-  /** Close all streams. */
   @Override
   public void close() throws IOException {
     // make an effort to close all streams we can but remember and re-throw

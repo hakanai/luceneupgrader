@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,16 +22,6 @@ import java.net.Socket;
 import java.io.OutputStream;
 import java.io.InputStream;
 import java.io.IOException;
-
-/**
- * Simple standalone server that must be running when you
- * use {@link VerifyingLockFactory}.  This server simply
- * verifies at most one process holds the lock at a time.
- * Run without any args to see usage.
- *
- * @see VerifyingLockFactory
- * @see LockStressTest
- */
 
 public class LockVerifyServer {
 

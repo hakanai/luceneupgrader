@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,11 +21,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashSet;
 
-/**
- * Filename filter that accept filenames and extensions only created by Lucene.
- *
- * @lucene.internal
- */
 public class IndexFileNameFilter implements FilenameFilter {
 
   private static IndexFileNameFilter singleton = new IndexFileNameFilter();
@@ -67,12 +62,6 @@ public class IndexFileNameFilter implements FilenameFilter {
     return false;
   }
 
-  /**
-   * Returns true if this is a file that would be contained
-   * in a CFS file.  This function should only be called on
-   * files that pass the above "accept" (ie, are already
-   * known to be a Lucene index file).
-   */
   public boolean isCFSFile(String name) {
     int i = name.lastIndexOf('.');
     if (i != -1) {

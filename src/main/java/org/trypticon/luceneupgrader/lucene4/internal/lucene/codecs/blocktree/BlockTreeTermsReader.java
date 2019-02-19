@@ -39,36 +39,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 
-/** A block-based terms index and dictionary that assigns
- *  terms to variable length blocks according to how they
- *  share prefixes.  The terms index is a prefix trie
- *  whose leaves are term blocks.  The advantage of this
- *  approach is that seekExact is often able to
- *  determine a term cannot exist without doing any IO, and
- *  intersection with Automata is very fast.  Note that this
- *  terms dictionary has it's own fixed terms index (ie, it
- *  does not support a pluggable terms index
- *  implementation).
- *
- *  <p><b>NOTE</b>: this terms dictionary does not support
- *  index divisor when opening an IndexReader.  Instead, you
- *  can change the min/maxItemsPerBlock during indexing.</p>
- *
- *  <p>The data structure used by this implementation is very
- *  similar to a burst trie
- *  (http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.18.3499),
- *  but with added logic to break up too-large blocks of all
- *  terms sharing a given prefix into smaller ones.</p>
- *
- *  <p>Use {@link org.trypticon.luceneupgrader.lucene4.internal.lucene.index.CheckIndex} with the <code>-verbose</code>
- *  option to see summary statistics on the blocks in the
- *  dictionary.
- *
- *  See {@link BlockTreeTermsWriter}.
- *
- * @lucene.experimental
- */
-
 public class BlockTreeTermsReader extends FieldsProducer {
 
   private static long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(BlockTreeTermsReader.class);
@@ -84,17 +54,14 @@ public class BlockTreeTermsReader extends FieldsProducer {
 
   private final TreeMap<String,FieldReader> fields = new TreeMap<>();
 
-  /** File offset where the directory starts in the terms file. */
   private long dirOffset;
 
-  /** File offset where the directory starts in the index file. */
   private long indexDirOffset;
 
   final String segment;
   
   private final int version;
 
-  /** Sole constructor. */
   public BlockTreeTermsReader(Directory dir, FieldInfos fieldInfos, SegmentInfo info,
                               PostingsReaderBase postingsReader, IOContext ioContext,
                               String segmentSuffix, int indexDivisor)
@@ -217,7 +184,6 @@ public class BlockTreeTermsReader extends FieldsProducer {
     return bytes;
   }
 
-  /** Reads terms file header. */
   protected int readHeader(IndexInput input) throws IOException {
     int version = CodecUtil.checkHeader(input, BlockTreeTermsWriter.TERMS_CODEC_NAME,
                           BlockTreeTermsWriter.VERSION_START,
@@ -228,7 +194,6 @@ public class BlockTreeTermsReader extends FieldsProducer {
     return version;
   }
 
-  /** Reads index file header. */
   protected int readIndexHeader(IndexInput input) throws IOException {
     int version = CodecUtil.checkHeader(input, BlockTreeTermsWriter.TERMS_INDEX_CODEC_NAME,
                           BlockTreeTermsWriter.VERSION_START,
@@ -239,7 +204,6 @@ public class BlockTreeTermsReader extends FieldsProducer {
     return version;
   }
 
-  /** Seek {@code input} to the directory offset. */
   protected void seekDir(IndexInput input, long dirOffset)
       throws IOException {
     if (version >= BlockTreeTermsWriter.VERSION_CHECKSUM) {

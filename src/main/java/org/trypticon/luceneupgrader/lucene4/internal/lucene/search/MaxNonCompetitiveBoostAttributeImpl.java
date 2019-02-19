@@ -20,9 +20,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeImpl;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
-/** Implementation class for {@link MaxNonCompetitiveBoostAttribute}.
- * @lucene.internal
- */
 public final class MaxNonCompetitiveBoostAttributeImpl extends AttributeImpl implements MaxNonCompetitiveBoostAttribute {
   private float maxNonCompetitiveBoost = Float.NEGATIVE_INFINITY;
   private BytesRef competitiveTerm = null;

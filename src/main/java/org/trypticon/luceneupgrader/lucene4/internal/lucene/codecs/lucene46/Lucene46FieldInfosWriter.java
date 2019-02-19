@@ -31,15 +31,8 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 
-/**
- * Lucene 4.6 FieldInfos writer.
- * 
- * @see Lucene46FieldInfosFormat
- * @lucene.experimental
- */
 final class Lucene46FieldInfosWriter extends FieldInfosWriter {
   
-  /** Sole constructor. */
   public Lucene46FieldInfosWriter() {
   }
   

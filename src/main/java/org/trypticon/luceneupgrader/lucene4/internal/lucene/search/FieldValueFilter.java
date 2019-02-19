@@ -23,52 +23,23 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits.MatchAllBits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits.MatchNoBits;
 
-/**
- * A {@link Filter} that accepts all documents that have one or more values in a
- * given field. This {@link Filter} request {@link Bits} from the
- * {@link FieldCache} and build the bits if not present.
- */
 public class FieldValueFilter extends Filter {
   private final String field;
   private final boolean negate;
 
-  /**
-   * Creates a new {@link FieldValueFilter}
-   * 
-   * @param field
-   *          the field to filter
-   */
   public FieldValueFilter(String field) {
     this(field, false);
   }
 
-  /**
-   * Creates a new {@link FieldValueFilter}
-   * 
-   * @param field
-   *          the field to filter
-   * @param negate
-   *          iff <code>true</code> all documents with no value in the given
-   *          field are accepted.
-   * 
-   */
   public FieldValueFilter(String field, boolean negate) {
     this.field = field;
     this.negate = negate;
   }
   
-  /**
-   * Returns the field this filter is applied on.
-   * @return the field this filter is applied on.
-   */
   public String field() {
     return field;
   }
   
-  /**
-   * Returns <code>true</code> iff this filter is negated, otherwise <code>false</code> 
-   * @return <code>true</code> iff this filter is negated, otherwise <code>false</code>
-   */
   public boolean negate() {
     return negate; 
   }

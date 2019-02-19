@@ -25,38 +25,22 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.FixedBitSet; //
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 
 
-/** A DocIdSet in Elias-Fano encoding.
- * @lucene.internal
- */
 public class EliasFanoDocIdSet extends DocIdSet {
 
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(EliasFanoDocIdSet.class);
 
   final EliasFanoEncoder efEncoder;
 
-  /**
-   * Construct an EliasFanoDocIdSet. For efficient encoding, the parameters should be chosen as low as possible.
-   * @param numValues At least the number of document ids that will be encoded.
-   * @param upperBound  At least the highest document id that will be encoded.
-   */
   public EliasFanoDocIdSet(int numValues, int upperBound) {
     efEncoder = new EliasFanoEncoder(numValues, upperBound);
   }
 
-  /** Provide an indication that is better to use an {@link EliasFanoDocIdSet} than a {@link FixedBitSet}
-   *  to encode document identifiers.
-   *  @param numValues The number of document identifiers that is to be encoded. Should be non negative.
-   *  @param upperBound The maximum possible value for a document identifier. Should be at least <code>numValues</code>.
-   *  @return See {@link EliasFanoEncoder#sufficientlySmallerThanBitSet(long, long)}
-   */
+
   public static boolean sufficientlySmallerThanBitSet(long numValues, long upperBound) {
     return EliasFanoEncoder.sufficientlySmallerThanBitSet(numValues, upperBound);
   }
 
-  /** Encode the document ids from a DocIdSetIterator.
-   *  @param disi This DocIdSetIterator should provide document ids that are consistent
-   *              with <code>numValues</code> and <code>upperBound</code> as provided to the constructor.  
-   */
+
   public void encodeFromDisi(DocIdSetIterator disi) throws IOException {
     while (efEncoder.numEncoded < efEncoder.numValues) {
       int x = disi.nextDoc();
@@ -69,9 +53,6 @@ public class EliasFanoDocIdSet extends DocIdSet {
     }
   }
 
-  /**
-   * Provides a {@link DocIdSetIterator} to access encoded document ids.
-   */
   @Override
   public DocIdSetIterator iterator() {
     if (efEncoder.lastEncoded >= DocIdSetIterator.NO_MORE_DOCS) {
@@ -111,9 +92,7 @@ public class EliasFanoDocIdSet extends DocIdSet {
     };
   }
 
-  /** This DocIdSet implementation is cacheable.
-   * @return <code>true</code>
-   */
+
   @Override
   public boolean isCacheable() {
     return true;

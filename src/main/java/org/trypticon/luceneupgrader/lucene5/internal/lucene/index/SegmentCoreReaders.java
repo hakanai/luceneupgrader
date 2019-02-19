@@ -36,8 +36,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.CloseableThreadLocal;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 
-/** Holds core readers that are shared (unchanged) when
- * SegmentReader is cloned or reopened */
 final class SegmentCoreReaders {
 
   // Counts how many other readers share the core objects
@@ -54,10 +52,7 @@ final class SegmentCoreReaders {
   final StoredFieldsReader fieldsReaderOrig;
   final TermVectorsReader termVectorsReaderOrig;
   final Directory cfsReader;
-  /** 
-   * fieldinfos for this core: means gen=-1.
-   * this is the exact fieldinfos these codec components saw at write.
-   * in the case of DV updates, SR may hold a newer version. */
+
   final FieldInfos coreFieldInfos;
 
   // TODO: make a single thread local w/ a

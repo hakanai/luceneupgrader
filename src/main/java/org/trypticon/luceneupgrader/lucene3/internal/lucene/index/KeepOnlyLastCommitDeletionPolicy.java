@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,26 +19,13 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.util.List;
 
-/**
- * This {@link IndexDeletionPolicy} implementation that
- * keeps only the most recent commit and immediately removes
- * all prior commits after a new commit is done.  This is
- * the default deletion policy.
- */
-
 public final class KeepOnlyLastCommitDeletionPolicy implements IndexDeletionPolicy {
 
-  /**
-   * Deletes all commits except the most recent one.
-   */
   public void onInit(List<? extends IndexCommit> commits) {
     // Note that commits.size() should normally be 1:
     onCommit(commits);
   }
 
-  /**
-   * Deletes all commits except the most recent one.
-   */
   public void onCommit(List<? extends IndexCommit> commits) {
     // Note that commits.size() should normally be 2 (if not
     // called by onInit above):

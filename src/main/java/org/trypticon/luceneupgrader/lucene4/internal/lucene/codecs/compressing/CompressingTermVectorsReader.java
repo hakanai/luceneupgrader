@@ -63,10 +63,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.BlockPac
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
 
-/**
- * {@link TermVectorsReader} for {@link CompressingTermVectorsFormat}.
- * @lucene.experimental
- */
 public final class CompressingTermVectorsReader extends TermVectorsReader implements Closeable {
 
   private final FieldInfos fieldInfos;
@@ -96,7 +92,6 @@ public final class CompressingTermVectorsReader extends TermVectorsReader implem
     this.closed = false;
   }
 
-  /** Sole constructor. */
   public CompressingTermVectorsReader(Directory d, SegmentInfo si, String segmentSuffix, FieldInfos fn,
       IOContext context, String formatName, CompressionMode compressionMode) throws IOException {
     this.compressionMode = compressionMode;
@@ -180,9 +175,6 @@ public final class CompressingTermVectorsReader extends TermVectorsReader implem
     return vectorsStream;
   }
 
-  /**
-   * @throws AlreadyClosedException if this TermVectorsReader is closed
-   */
   private void ensureOpen() throws AlreadyClosedException {
     if (closed) {
       throw new AlreadyClosedException("this FieldsReader is closed");

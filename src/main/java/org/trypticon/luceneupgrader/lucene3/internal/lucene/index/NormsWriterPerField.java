@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,10 +19,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 
-/** Taps into DocInverter, as an InvertedDocEndConsumer,
- *  which is called at the end of inverting each field.  We
- *  just look at the length for the field (docState.length)
- *  and record the norm. */
+
 
 final class NormsWriterPerField extends InvertedDocEndConsumerPerField implements Comparable<NormsWriterPerField> {
 

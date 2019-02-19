@@ -31,9 +31,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
 
-/**
- * Expert-only.  Public for use by other weight implementations
- */
 public class SpanWeight extends Weight {
   protected Similarity similarity;
   protected Map<Term,TermContext> termContexts;

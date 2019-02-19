@@ -24,9 +24,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.DocumentsWriterPerThread.FlushedSegment;
 
 
-/**
- * @lucene.internal 
- */
 class DocumentsWriterFlushQueue {
   private final Queue<FlushTicket> queue = new LinkedList<>();
   // we track tickets separately since count must be present even before the ticket is
@@ -175,12 +172,6 @@ class DocumentsWriterFlushQueue {
     protected abstract void publish(IndexWriter writer) throws IOException;
     protected abstract boolean canPublish();
     
-    /**
-     * Publishes the flushed segment, segment private deletes (if any) and its
-     * associated global delete (if present) to IndexWriter.  The actual
-     * publishing operation is synced on IW -> BDS so that the {@link SegmentInfo}'s
-     * delete generation is always GlobalPacket_deleteGeneration + 1
-     */
     protected final void publishFlushedSegment(IndexWriter indexWriter, FlushedSegment newSegment, FrozenBufferedUpdates globalPacket)
         throws IOException {
       assert newSegment != null;

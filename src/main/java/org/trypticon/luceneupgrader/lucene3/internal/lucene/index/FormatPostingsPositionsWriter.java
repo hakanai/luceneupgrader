@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -49,7 +49,6 @@ final class FormatPostingsPositionsWriter extends FormatPostingsPositionsConsume
 
   int lastPosition;
 
-  /** Add a new position & payload */
   @Override
   void addPosition(int position, byte[] payload, int payloadOffset, int payloadLength) throws IOException {
     assert !omitTermFreqAndPositions: "omitTermFreqAndPositions is true";
@@ -76,7 +75,6 @@ final class FormatPostingsPositionsWriter extends FormatPostingsPositionsConsume
     storePayloads = omitTermFreqAndPositions ? false : fieldInfo.storePayloads;
   }
 
-  /** Called when we are done adding positions & payloads */
   @Override
   void finish() {       
     lastPosition = 0;

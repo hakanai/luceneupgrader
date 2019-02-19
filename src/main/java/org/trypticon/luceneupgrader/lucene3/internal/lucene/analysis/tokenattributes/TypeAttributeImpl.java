@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,9 +21,7 @@ import java.io.Serializable;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.AttributeImpl;
 
-/**
- * A Token's lexical type. The Default value is "word". 
- */
+
 public class TypeAttributeImpl extends AttributeImpl implements TypeAttribute, Cloneable, Serializable {
   private String type;
   
@@ -35,13 +33,10 @@ public class TypeAttributeImpl extends AttributeImpl implements TypeAttribute, C
     this.type = type;
   }
   
-  /** Returns this Token's lexical type.  Defaults to "word". */
   public String type() {
     return type;
   }
 
-  /** Set the lexical type.
-      @see #type() */
   public void setType(String type) {
     this.type = type;
   }

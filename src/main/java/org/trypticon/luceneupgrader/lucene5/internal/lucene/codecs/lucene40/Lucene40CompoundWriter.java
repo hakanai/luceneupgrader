@@ -38,20 +38,13 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IndexOutput;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 
-/**
- * Combines multiple files into a single compound file.
- * @deprecated only for testing
- */
 @Deprecated
 final class Lucene40CompoundWriter implements Closeable{
 
   private static final class FileEntry {
-    /** source file */
     String file;
     long length;
-    /** temporary holder for the start of this file's data section */
     long offset;
-    /** the directory which contains the file. */
     Directory dir;
   }
 
@@ -79,13 +72,6 @@ final class Lucene40CompoundWriter implements Closeable{
   // previously this was not also passed to the .CFE
   private final IOContext context;
 
-  /**
-   * Create the compound stream in the specified file. The file name is the
-   * entire name (no extensions are added).
-   * 
-   * @throws NullPointerException
-   *           if <code>dir</code> or <code>name</code> is null
-   */
   Lucene40CompoundWriter(Directory dir, String name, IOContext context) {
     if (dir == null)
       throw new NullPointerException("directory cannot be null");
@@ -115,23 +101,14 @@ final class Lucene40CompoundWriter implements Closeable{
     return dataOut;
   }
 
-  /** Returns the directory of the compound file. */
   Directory getDirectory() {
     return directory;
   }
 
-  /** Returns the name of the compound file. */
   String getName() {
     return dataFileName;
   }
 
-  /**
-   * Closes all resources and writes the entry table
-   * 
-   * @throws IllegalStateException
-   *           if close() had been called before or if no file has been added to
-   *           this object
-   */
   @Override
   public void close() throws IOException {
     if (closed) {
@@ -177,10 +154,6 @@ final class Lucene40CompoundWriter implements Closeable{
     }
   }
 
-  /**
-   * Copy the contents of the file with specified extension into the provided
-   * output stream.
-   */
   private final long copyFileEntry(IndexOutput dataOut, FileEntry fileEntry)
       throws IOException {
     final IndexInput is = fileEntry.dir.openInput(fileEntry.file, IOContext.READONCE);

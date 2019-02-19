@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -27,12 +27,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 
-/**
- * Similar to {@link NearSpansOrdered}, but for the unordered case.
- * 
- * Expert:
- * Only public for subclassing.  Most implementations should not need this class
- */
 public class NearSpansUnordered extends Spans {
   private SpanNearQuery query;
 
@@ -67,7 +61,6 @@ public class NearSpansUnordered extends Spans {
   }
 
 
-  /** Wraps a Spans, and can be used to form a linked list. */
   private class SpansCell extends Spans {
     private Spans spans;
     private SpansCell next;
@@ -234,11 +227,6 @@ public class NearSpansUnordered extends Spans {
   public int end() { return max.end(); }
 
   // TODO: Remove warning after API has been finalized
-  /**
-   * WARNING: The List is not necessarily in order of the the positions
-   * @return Collection of <code>byte[]</code> payloads
-   * @throws IOException
-   */
   @Override
   public Collection<byte[]> getPayload() throws IOException {
     Set<byte[]> matchPayload = new HashSet<byte[]>();

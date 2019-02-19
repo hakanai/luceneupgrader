@@ -42,11 +42,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.automaton.Trans
 
 import static org.trypticon.luceneupgrader.lucene6.internal.lucene.util.automaton.Operations.DEFAULT_MAX_DETERMINIZED_STATES;
 
-/**
- * Consumes a TokenStream and creates an {@link Automaton} where the transition labels are terms from
- * the {@link TermToBytesRefAttribute}.
- * This class also provides helpers to explore the different paths of the {@link Automaton}.
- */
 public final class GraphTokenStreamFiniteStrings {
   private final Map<Integer, BytesRef> idToTerm = new HashMap<>();
   private final Map<Integer, Integer> idToInc = new HashMap<>();
@@ -92,9 +87,6 @@ public final class GraphTokenStreamFiniteStrings {
     this.det = Operations.removeDeadStates(Operations.determinize(aut, DEFAULT_MAX_DETERMINIZED_STATES));
   }
 
-  /**
-   * Returns whether the provided state is the start of multiple side paths of different length (eg: new york, ny)
-   */
   public boolean hasSidePath(int state) {
     int numT = det.initTransition(state, transition);
     if (numT <= 1) {
@@ -111,9 +103,6 @@ public final class GraphTokenStreamFiniteStrings {
     return false;
   }
 
-  /**
-   * Returns the list of terms that start at the provided state
-   */
   public Term[] getTerms(String field, int state) {
     int numT = det.initTransition(state, transition);
     List<Term> terms = new ArrayList<> ();
@@ -127,17 +116,11 @@ public final class GraphTokenStreamFiniteStrings {
     return terms.toArray(new Term[terms.size()]);
   }
 
-  /**
-   * Get all finite strings from the automaton.
-   */
   public Iterator<TokenStream> getFiniteStrings() throws IOException {
     return getFiniteStrings(0, -1);
   }
 
 
-  /**
-   * Get all finite strings that start at {@code startState} and end at {@code endState}.
-   */
   public Iterator<TokenStream> getFiniteStrings(int startState, int endState) throws IOException {
     final FiniteStringsIterator it = new FiniteStringsIterator(det, startState, endState);
     return new Iterator<TokenStream> () {
@@ -167,10 +150,6 @@ public final class GraphTokenStreamFiniteStrings {
     };
   }
 
-  /**
-   * Returns the articulation points (or cut vertices) of the graph:
-   * https://en.wikipedia.org/wiki/Biconnected_component
-   */
   public int[] articulationPoints() {
     if (det.getNumStates() == 0) {
       return new int[0];
@@ -197,9 +176,6 @@ public final class GraphTokenStreamFiniteStrings {
     return points.stream().mapToInt(p -> p).toArray();
   }
 
-  /**
-   * Build an automaton from the provided {@link TokenStream}.
-   */
   private Automaton build(final TokenStream in) throws IOException {
     Automaton.Builder builder = new Automaton.Builder();
     final TermToBytesRefAttribute termBytesAtt = in.addAttribute(TermToBytesRefAttribute.class);
@@ -245,9 +221,6 @@ public final class GraphTokenStreamFiniteStrings {
     return builder.finish();
   }
 
-  /**
-   * Gets an integer id for a given term and saves the position increment if needed.
-   */
   private int getTermID(int incr, int prevIncr, BytesRef term) {
     assert term != null;
     boolean isStackedGap = incr == 0 && prevIncr > 1;

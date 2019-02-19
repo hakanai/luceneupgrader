@@ -35,15 +35,8 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 
-/**
- * Lucene 4.6 FieldInfos reader.
- * 
- * @lucene.experimental
- * @see Lucene46FieldInfosFormat
- */
 final class Lucene46FieldInfosReader extends FieldInfosReader {
 
-  /** Sole constructor. */
   public Lucene46FieldInfosReader() {
   }
 

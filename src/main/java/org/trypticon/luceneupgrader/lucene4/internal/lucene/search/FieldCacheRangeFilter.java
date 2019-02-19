@@ -29,37 +29,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.NumericUtils;
 
-/**
- * A range filter built on top of a cached single term field (in {@link FieldCache}).
- * 
- * <p>{@code FieldCacheRangeFilter} builds a single cache for the field the first time it is used.
- * Each subsequent {@code FieldCacheRangeFilter} on the same field then reuses this cache,
- * even if the range itself changes. 
- * 
- * <p>This means that {@code FieldCacheRangeFilter} is much faster (sometimes more than 100x as fast) 
- * as building a {@link TermRangeFilter}, if using a {@link #newStringRange}.
- * However, if the range never changes it is slower (around 2x as slow) than building
- * a CachingWrapperFilter on top of a single {@link TermRangeFilter}.
- *
- * For numeric data types, this filter may be significantly faster than {@link NumericRangeFilter}.
- * Furthermore, it does not need the numeric values encoded
- * by {@link IntField}, {@link FloatField}, {@link
- * LongField} or {@link DoubleField}. But
- * it has the problem that it only works with exact one value/document (see below).
- *
- * <p>As with all {@link FieldCache} based functionality, {@code FieldCacheRangeFilter} is only valid for 
- * fields which exact one term for each document (except for {@link #newStringRange}
- * where 0 terms are also allowed). Due to a restriction of {@link FieldCache}, for numeric ranges
- * all terms that do not have a numeric value, 0 is assumed.
- *
- * <p>Thus it works on dates, prices and other single value fields but will not work on
- * regular text fields. It is preferable to use a <code>NOT_ANALYZED</code> field to ensure that
- * there is only a single term. 
- *
- * <p>This class does not have an constructor, use one of the static factory methods available,
- * that create a correct instance for different data types supported by {@link FieldCache}.
- */
-
 public abstract class FieldCacheRangeFilter<T> extends Filter {
   final String field;
   final FieldCache.Parser parser;
@@ -77,15 +46,9 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
     this.includeUpper = includeUpper;
   }
   
-  /** This method is implemented for each data type */
   @Override
   public abstract DocIdSet getDocIdSet(AtomicReaderContext context, Bits acceptDocs) throws IOException;
 
-  /**
-   * Creates a string range filter using {@link FieldCache#getTermsIndex}. This works with all
-   * fields containing zero or one term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   public static FieldCacheRangeFilter<String> newStringRange(String field, String lowerVal, String upperVal, boolean includeLower, boolean includeUpper) {
     return new FieldCacheRangeFilter<String>(field, null, lowerVal, upperVal, includeLower, includeUpper) {
       @Override
@@ -137,11 +100,6 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
     };
   }
   
-  /**
-   * Creates a BytesRef range filter using {@link FieldCache#getTermsIndex}. This works with all
-   * fields containing zero or one term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   // TODO: bogus that newStringRange doesnt share this code... generics hell
   public static FieldCacheRangeFilter<BytesRef> newBytesRefRange(String field, BytesRef lowerVal, BytesRef upperVal, boolean includeLower, boolean includeUpper) {
     return new FieldCacheRangeFilter<BytesRef>(field, null, lowerVal, upperVal, includeLower, includeUpper) {
@@ -194,21 +152,11 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
     };
   }
   
-  /**
-   * Creates a numeric range filter using {@link FieldCache#getBytes(AtomicReader,String,boolean)}. This works with all
-   * byte fields containing exactly one numeric term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   @Deprecated
   public static FieldCacheRangeFilter<Byte> newByteRange(String field, Byte lowerVal, Byte upperVal, boolean includeLower, boolean includeUpper) {
     return newByteRange(field, null, lowerVal, upperVal, includeLower, includeUpper);
   }
   
-  /**
-   * Creates a numeric range filter using {@link FieldCache#getBytes(AtomicReader,String,FieldCache.ByteParser,boolean)}. This works with all
-   * byte fields containing exactly one numeric term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   @Deprecated
   public static FieldCacheRangeFilter<Byte> newByteRange(String field, FieldCache.ByteParser parser, Byte lowerVal, Byte upperVal, boolean includeLower, boolean includeUpper) {
     return new FieldCacheRangeFilter<Byte>(field, parser, lowerVal, upperVal, includeLower, includeUpper) {
@@ -247,21 +195,11 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
     };
   }
   
-  /**
-   * Creates a numeric range filter using {@link FieldCache#getShorts(AtomicReader,String,boolean)}. This works with all
-   * short fields containing exactly one numeric term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   @Deprecated
   public static FieldCacheRangeFilter<Short> newShortRange(String field, Short lowerVal, Short upperVal, boolean includeLower, boolean includeUpper) {
     return newShortRange(field, null, lowerVal, upperVal, includeLower, includeUpper);
   }
   
-  /**
-   * Creates a numeric range filter using {@link FieldCache#getShorts(AtomicReader,String,FieldCache.ShortParser,boolean)}. This works with all
-   * short fields containing exactly one numeric term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   @Deprecated
   public static FieldCacheRangeFilter<Short> newShortRange(String field, FieldCache.ShortParser parser, Short lowerVal, Short upperVal, boolean includeLower, boolean includeUpper) {
     return new FieldCacheRangeFilter<Short>(field, parser, lowerVal, upperVal, includeLower, includeUpper) {
@@ -300,20 +238,10 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
     };
   }
   
-  /**
-   * Creates a numeric range filter using {@link FieldCache#getInts(AtomicReader,String,boolean)}. This works with all
-   * int fields containing exactly one numeric term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   public static FieldCacheRangeFilter<Integer> newIntRange(String field, Integer lowerVal, Integer upperVal, boolean includeLower, boolean includeUpper) {
     return newIntRange(field, null, lowerVal, upperVal, includeLower, includeUpper);
   }
   
-  /**
-   * Creates a numeric range filter using {@link FieldCache#getInts(AtomicReader,String,FieldCache.IntParser,boolean)}. This works with all
-   * int fields containing exactly one numeric term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   public static FieldCacheRangeFilter<Integer> newIntRange(String field, FieldCache.IntParser parser, Integer lowerVal, Integer upperVal, boolean includeLower, boolean includeUpper) {
     return new FieldCacheRangeFilter<Integer>(field, parser, lowerVal, upperVal, includeLower, includeUpper) {
       @Override
@@ -351,20 +279,10 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
     };
   }
   
-  /**
-   * Creates a numeric range filter using {@link FieldCache#getLongs(AtomicReader,String,boolean)}. This works with all
-   * long fields containing exactly one numeric term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   public static FieldCacheRangeFilter<Long> newLongRange(String field, Long lowerVal, Long upperVal, boolean includeLower, boolean includeUpper) {
     return newLongRange(field, null, lowerVal, upperVal, includeLower, includeUpper);
   }
   
-  /**
-   * Creates a numeric range filter using {@link FieldCache#getLongs(AtomicReader,String,FieldCache.LongParser,boolean)}. This works with all
-   * long fields containing exactly one numeric term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   public static FieldCacheRangeFilter<Long> newLongRange(String field, FieldCache.LongParser parser, Long lowerVal, Long upperVal, boolean includeLower, boolean includeUpper) {
     return new FieldCacheRangeFilter<Long>(field, parser, lowerVal, upperVal, includeLower, includeUpper) {
       @Override
@@ -402,20 +320,10 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
     };
   }
   
-  /**
-   * Creates a numeric range filter using {@link FieldCache#getFloats(AtomicReader,String,boolean)}. This works with all
-   * float fields containing exactly one numeric term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   public static FieldCacheRangeFilter<Float> newFloatRange(String field, Float lowerVal, Float upperVal, boolean includeLower, boolean includeUpper) {
     return newFloatRange(field, null, lowerVal, upperVal, includeLower, includeUpper);
   }
   
-  /**
-   * Creates a numeric range filter using {@link FieldCache#getFloats(AtomicReader,String,FieldCache.FloatParser,boolean)}. This works with all
-   * float fields containing exactly one numeric term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   public static FieldCacheRangeFilter<Float> newFloatRange(String field, FieldCache.FloatParser parser, Float lowerVal, Float upperVal, boolean includeLower, boolean includeUpper) {
     return new FieldCacheRangeFilter<Float>(field, parser, lowerVal, upperVal, includeLower, includeUpper) {
       @Override
@@ -457,20 +365,10 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
     };
   }
   
-  /**
-   * Creates a numeric range filter using {@link FieldCache#getDoubles(AtomicReader,String,boolean)}. This works with all
-   * double fields containing exactly one numeric term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   public static FieldCacheRangeFilter<Double> newDoubleRange(String field, Double lowerVal, Double upperVal, boolean includeLower, boolean includeUpper) {
     return newDoubleRange(field, null, lowerVal, upperVal, includeLower, includeUpper);
   }
   
-  /**
-   * Creates a numeric range filter using {@link FieldCache#getDoubles(AtomicReader,String,FieldCache.DoubleParser,boolean)}. This works with all
-   * double fields containing exactly one numeric term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   public static FieldCacheRangeFilter<Double> newDoubleRange(String field, FieldCache.DoubleParser parser, Double lowerVal, Double upperVal, boolean includeLower, boolean includeUpper) {
     return new FieldCacheRangeFilter<Double>(field, parser, lowerVal, upperVal, includeLower, includeUpper) {
       @Override
@@ -552,21 +450,15 @@ public abstract class FieldCacheRangeFilter<T> extends Filter {
     return h;
   }
 
-  /** Returns the field name for this filter */
   public String getField() { return field; }
 
-  /** Returns <code>true</code> if the lower endpoint is inclusive */
   public boolean includesLower() { return includeLower; }
   
-  /** Returns <code>true</code> if the upper endpoint is inclusive */
   public boolean includesUpper() { return includeUpper; }
 
-  /** Returns the lower value of this range filter */
   public T getLowerVal() { return lowerVal; }
 
-  /** Returns the upper value of this range filter */
   public T getUpperVal() { return upperVal; }
   
-  /** Returns the current numeric parser ({@code null} for {@code T} is {@code String}} */
   public FieldCache.Parser getParser() { return parser; }
 }

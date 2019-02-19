@@ -31,10 +31,7 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.packed.PackedLo
 
 final class MultiSorter {
   
-  /** Does a merge sort of the leaves of the incoming reader, returning {@link DocMap} to map each leaf's
-   *  documents into the merged segment.  The documents for each incoming leaf reader must already be sorted by the same sort!
-   *  Returns null if the merge sort is not needed (segments are already in index sort order).
-   **/
+
   static MergeState.DocMap[] sort(Sort sort, List<CodecReader> readers) throws IOException {
 
     // TODO: optimize if only 1 reader is incoming, though that's a rare case
@@ -134,7 +131,6 @@ final class MultiSorter {
     public int compare(int readerIndexA, int docIDA, int readerIndexB, int docIDB);
   }
 
-  /** Returns {@code CrossReaderComparator} for the provided readers to represent the requested {@link SortField} sort order. */
   private static CrossReaderComparator getComparator(List<CodecReader> readers, SortField sortField) throws IOException {
     final int reverseMul = sortField.getReverse() ? -1 : 1;
     final SortField.Type sortType = Sorter.getSortFieldType(sortField);

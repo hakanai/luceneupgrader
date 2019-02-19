@@ -23,24 +23,10 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentInfo;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 
-/**
- * Specifies an API for classes that can read {@link SegmentInfo} information.
- * @lucene.experimental
- */
-
 public abstract class SegmentInfoReader {
 
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected SegmentInfoReader() {
   }
 
-  /**
-   * Read {@link SegmentInfo} data from a directory.
-   * @param directory directory to read from
-   * @param segmentName name of the segment to read
-   * @return infos instance to be populated with data
-   * @throws IOException If an I/O error occurs
-   */
   public abstract SegmentInfo read(Directory directory, String segmentName, IOContext context) throws IOException;
 }

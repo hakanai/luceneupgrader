@@ -19,38 +19,12 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
 import java.util.Arrays;
 
-/**
- * A native int hash-based set where one value is reserved to mean "EMPTY" internally. The space overhead is fairly low
- * as there is only one power-of-two sized int[] to hold the values.  The set is re-hashed when adding a value that
- * would make it >= 75% full.  Consider extending and over-riding {@link #hash(int)} if the values might be poor
- * hash keys; Lucene docids should be fine.
- * The internal fields are exposed publicly to enable more efficient use at the expense of better O-O principles.
- * <p/>
- * To iterate over the integers held in this set, simply use code like this:
- * <pre class="prettyprint">
- * SentinelIntSet set = ...
- * for (int v : set.keys) {
- *   if (v == set.emptyVal)
- *     continue;
- *   //use v...
- * }</pre>
- *
- * @lucene.internal
- */
 public class SentinelIntSet {
-  /** A power-of-2 over-sized array holding the integers in the set along with empty values. */
   public int[] keys;
   public int count;
   public final int emptyVal;
-  /** the count at which a rehash should be done */
   public int rehashCount;
 
-  /**
-   *
-   * @param size  The minimum number of elements this set should be able to hold without rehashing
-   *              (i.e. the slots are guaranteed not to change)
-   * @param emptyVal The integer value to use for EMPTY
-   */
   public SentinelIntSet(int size, int emptyVal) {
     this.emptyVal = emptyVal;
     int tsize = Math.max(org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BitUtil.nextHighestPowerOfTwo(size), 1);
@@ -69,17 +43,13 @@ public class SentinelIntSet {
     count = 0;
   }
 
-  /** (internal) Return the hash for the key. The default implementation just returns the key,
-   * which is not appropriate for general purpose use.
-   */
+
   public int hash(int key) {
     return key;
   }
 
-  /** The number of integers in this set. */
   public int size() { return count; }
 
-  /** (internal) Returns the slot for this key */
   public int getSlot(int key) {
     assert key != emptyVal;
     int h = hash(key);
@@ -93,7 +63,6 @@ public class SentinelIntSet {
     return s;
   }
 
-  /** (internal) Returns the slot for this key, or -slot-1 if not found */
   public int find(int key) {
     assert key != emptyVal;
     int h = hash(key);
@@ -109,13 +78,10 @@ public class SentinelIntSet {
     }
   }
 
-  /** Does this set contain the specified integer? */
   public boolean exists(int key) {
     return find(key) >= 0;
   }
 
-  /** Puts this integer (key) in the set, and returns the slot index it was added to.
-   * It rehashes if adding it would make the set more than 75% full. */
   public int put(int key) {
     int s = find(key);
     if (s < 0) {
@@ -131,7 +97,6 @@ public class SentinelIntSet {
     return s;
   }
 
-  /** (internal) Rehashes by doubling {@code int[] key} and filling with the old values. */
   public void rehash() {
     int newSize = keys.length << 1;
     int[] oldKeys = keys;
@@ -146,7 +111,6 @@ public class SentinelIntSet {
     rehashCount = newSize - (newSize>>2);
   }
 
-  /** Return the memory footprint of this class in bytes. */
   public long ramBytesUsed() {
     return RamUsageEstimator.alignObjectSize(
           RamUsageEstimator.NUM_BYTES_INT * 3

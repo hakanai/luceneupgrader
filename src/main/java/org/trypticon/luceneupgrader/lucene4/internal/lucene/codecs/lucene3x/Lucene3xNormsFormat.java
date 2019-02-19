@@ -25,12 +25,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.NormsFormat;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentReadState;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentWriteState;
 
-/**
- * Lucene3x ReadOnly NormsFormat implementation
- * @deprecated (4.0) This is only used to read indexes created
- * before 4.0.
- * @lucene.experimental
- */
 @Deprecated
 class Lucene3xNormsFormat extends NormsFormat {
 

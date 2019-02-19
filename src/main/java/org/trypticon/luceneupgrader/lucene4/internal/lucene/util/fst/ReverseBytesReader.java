@@ -17,7 +17,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst;
  * limitations under the License.
  */
 
-/** Reads in reverse from a single byte[]. */
 final class ReverseBytesReader extends FST.BytesReader {
   private final byte[] bytes;
   private int pos;

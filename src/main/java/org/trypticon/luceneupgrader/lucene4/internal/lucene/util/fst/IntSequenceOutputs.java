@@ -24,13 +24,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataOutput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IntsRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 
-/**
- * An FST {@link Outputs} implementation where each output
- * is a sequence of ints.
- *
- * @lucene.experimental
- */
-
 public final class IntSequenceOutputs extends Outputs<IntsRef> {
 
   private final static IntsRef NO_OUTPUT = new IntsRef();

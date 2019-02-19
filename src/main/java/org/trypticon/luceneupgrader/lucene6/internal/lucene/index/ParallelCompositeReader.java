@@ -23,50 +23,20 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 
-/** An {@link CompositeReader} which reads multiple, parallel indexes.  Each
- * index added must have the same number of documents, and exactly the same
- * number of leaves (with equal {@code maxDoc}), but typically each contains
- * different fields. Deletions are taken from the first reader. Each document
- * contains the union of the fields of all documents with the same document
- * number.  When searching, matches for a query term are from the first index
- * added that has the field.
- *
- * <p>This is useful, e.g., with collections that have large fields which
- * change rarely and small fields that change more frequently.  The smaller
- * fields may be re-indexed in a new index and both indexes may be searched
- * together.
- * 
- * <p><strong>Warning:</strong> It is up to you to make sure all indexes
- * are created and modified the same way. For example, if you add
- * documents to one index, you need to add the same documents in the
- * same order to the other indexes. <em>Failure to do so will result in
- * undefined behavior</em>.
- * A good strategy to create suitable indexes with {@link IndexWriter} is to use
- * {@link LogDocMergePolicy}, as this one does not reorder documents
- * during merging (like {@code TieredMergePolicy}) and triggers merges
- * by number of documents per segment. If you use different {@link MergePolicy}s
- * it might happen that the segment structure of your index is no longer predictable.
- */
 public class ParallelCompositeReader extends BaseCompositeReader<LeafReader> {
   private final boolean closeSubReaders;
   private final Set<IndexReader> completeReaderSet =
     Collections.newSetFromMap(new IdentityHashMap<IndexReader,Boolean>());
 
-  /** Create a ParallelCompositeReader based on the provided
-   *  readers; auto-closes the given readers on {@link #close()}. */
   public ParallelCompositeReader(CompositeReader... readers) throws IOException {
     this(true, readers);
   }
 
-  /** Create a ParallelCompositeReader based on the provided
-   *  readers. */
   public ParallelCompositeReader(boolean closeSubReaders, CompositeReader... readers) throws IOException {
     this(closeSubReaders, readers, readers);
   }
 
-  /** Expert: create a ParallelCompositeReader based on the provided
-   *  readers and storedFieldReaders; when a document is
-   *  loaded, only storedFieldsReaders will be used. */
+
   public ParallelCompositeReader(boolean closeSubReaders, CompositeReader[] readers, CompositeReader[] storedFieldReaders) throws IOException {
     super(prepareLeafReaders(readers, storedFieldReaders));
     this.closeSubReaders = closeSubReaders;

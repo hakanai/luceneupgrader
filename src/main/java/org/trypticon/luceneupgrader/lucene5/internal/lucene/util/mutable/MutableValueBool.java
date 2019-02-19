@@ -16,12 +16,6 @@
  */
 package org.trypticon.luceneupgrader.lucene5.internal.lucene.util.mutable;
 
-/**
- * {@link MutableValue} implementation of type <code>boolean</code>.
- * When mutating instances of this object, the caller is responsible for ensuring 
- * that any instance where <code>exists</code> is set to <code>false</code> must also 
- * <code>value</code> set to <code>false</code> for proper operation.
- */
 public class MutableValueBool extends MutableValue {
   public boolean value;
 

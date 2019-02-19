@@ -18,12 +18,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.mutable;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
-/**
- * {@link MutableValue} implementation of type {@link String}.
- * When mutating instances of this object, the caller is responsible for ensuring 
- * that any instance where <code>exists</code> is set to <code>false</code> must also 
- * have a <code>value</code> with a length set to 0.
- */
 public class MutableValueStr extends MutableValue {
   public BytesRef value = new BytesRef();
 

@@ -28,19 +28,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ToStringUtils;
 
 
-/**
- * A query that applies a filter to the results of another query.
- *
- * <p>Note: the bits are retrieved from the filter each time this
- * query is used in a search - use a CachingWrapperFilter to avoid
- * regenerating the bits every time.
- * @since   1.4
- * @see     CachingWrapperQuery
- * @deprecated FilteredQuery will be removed in Lucene 6.0. It should
- *             be replaced with a {@link BooleanQuery} with one
- *             {@link Occur#MUST} clause for the query and one
- *             {@link Occur#FILTER} clause for the filter.
- */
 @Deprecated
 public class FilteredQuery extends Query {
 
@@ -48,25 +35,10 @@ public class FilteredQuery extends Query {
   private final Filter filter;
   private final FilterStrategy strategy;
 
-  /**
-   * Constructs a new query which applies a filter to the results of the original query.
-   * {@link Filter#getDocIdSet} will be called every time this query is used in a search.
-   * @param query  Query to be filtered, cannot be <code>null</code>.
-   * @param filter Filter to apply to query results, cannot be <code>null</code>.
-   */
   public FilteredQuery(Query query, Filter filter) {
     this(query, filter, RANDOM_ACCESS_FILTER_STRATEGY);
   }
   
-  /**
-   * Expert: Constructs a new query which applies a filter to the results of the original query.
-   * {@link Filter#getDocIdSet} will be called every time this query is used in a search.
-   * @param query  Query to be filtered, cannot be <code>null</code>.
-   * @param filter Filter to apply to query results, cannot be <code>null</code>.
-   * @param strategy a filter strategy used to create a filtered scorer. 
-   * 
-   * @see FilterStrategy
-   */
   public FilteredQuery(Query query, Filter filter, FilterStrategy strategy) {
     this.strategy = Objects.requireNonNull(strategy, "FilterStrategy must not be null");
     this.query = Objects.requireNonNull(query, "Query must not be null");
@@ -85,22 +57,18 @@ public class FilteredQuery extends Query {
     return builder.build();
   }
 
-  /** Returns this FilteredQuery's (unfiltered) Query */
   public final Query getQuery() {
     return query;
   }
 
-  /** Returns this FilteredQuery's filter */
   public final Filter getFilter() {
     return filter;
   }
   
-  /** Returns this FilteredQuery's {@link FilterStrategy} */
   public FilterStrategy getFilterStrategy() {
     return this.strategy;
   }
 
-  /** Prints a user-readable version of this query. */
   @Override
   public String toString (String s) {
     StringBuilder buffer = new StringBuilder();
@@ -112,7 +80,6 @@ public class FilteredQuery extends Query {
     return buffer.toString();
   }
 
-  /** Returns true iff <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object o) {
     if (o == this)
@@ -124,7 +91,6 @@ public class FilteredQuery extends Query {
     return fq.query.equals(this.query) && fq.filter.equals(this.filter) && fq.strategy.equals(this.strategy);
   }
 
-  /** Returns a hash code value for this object. */
   @Override
   public int hashCode() {
     int hash = super.hashCode();
@@ -134,51 +100,16 @@ public class FilteredQuery extends Query {
     return hash;
   }
   
-  /**
-   * A {@link FilterStrategy} that conditionally uses a random access filter if
-   * the given {@link DocIdSet} supports random access (returns a non-null value
-   * from {@link DocIdSet#bits()}) and
-   * {@link RandomAccessFilterStrategy#useRandomAccess(Bits, long)} returns
-   * <code>true</code>. Otherwise this strategy falls back to a "zig-zag join" (
-   * {@link FilteredQuery#LEAP_FROG_FILTER_FIRST_STRATEGY}) strategy.
-   * 
-   * <p>
-   * Note: this strategy is the default strategy in {@link FilteredQuery}
-   * </p>
-   */
   public static final FilterStrategy RANDOM_ACCESS_FILTER_STRATEGY = new RandomAccessFilterStrategy();
   
-  /**
-   * A filter strategy that uses a "leap-frog" approach (also called "zig-zag join").
-   * In spite of the name of this constant, which one will be iterated first depends
-   * on the {@link DocIdSetIterator#cost() cost} of the filter compared to the query.
-   */
   public static final FilterStrategy LEAP_FROG_FILTER_FIRST_STRATEGY = new RandomAccessFilterStrategy() {
     protected boolean useRandomAccess(Bits bits, long filterCost) {
       return false;
     }
   };
   
-  /**
-   * A filter strategy that uses a "leap-frog" approach (also called "zig-zag join").
-   * In spite of the name of this constant, which one will be iterated first depends
-   * on the {@link DocIdSetIterator#cost() cost} of the filter compared to the query.
-   */
   public static final FilterStrategy LEAP_FROG_QUERY_FIRST_STRATEGY = LEAP_FROG_FILTER_FIRST_STRATEGY;
   
-  /**
-   * A filter strategy that advances the Query or rather its {@link Scorer} first and consults the
-   * filter {@link DocIdSet} for each matched document.
-   * <p>
-   * Note: this strategy requires a {@link DocIdSet#bits()} to return a non-null value. Otherwise
-   * this strategy falls back to {@link FilteredQuery#LEAP_FROG_QUERY_FIRST_STRATEGY}
-   * </p>
-   * <p>
-   * Use this strategy if the filter computation is more expensive than document
-   * scoring or if the filter has a linear running time to compute the next
-   * matching doc like exact geo distances.
-   * </p>
-   */
   public static final FilterStrategy QUERY_FIRST_FILTER_STRATEGY = new RandomAccessFilterStrategy() {
     @Override
     boolean alwaysUseRandomAccess() {
@@ -186,22 +117,12 @@ public class FilteredQuery extends Query {
     }
   };
   
-  /** Abstract class that defines how the filter ({@link DocIdSet}) applied during document collection. */
   public static abstract class FilterStrategy {
 
-    /** Rewrite the filter. */
     public abstract Query rewrite(Filter filter);
 
   }
 
-  /**
-   * A {@link FilterStrategy} that conditionally uses a random access filter if
-   * the given {@link DocIdSet} supports random access (returns a non-null value
-   * from {@link DocIdSet#bits()}) and
-   * {@link RandomAccessFilterStrategy#useRandomAccess(Bits, long)} returns
-   * <code>true</code>. Otherwise this strategy falls back to a "zig-zag join" (
-   * {@link FilteredQuery#LEAP_FROG_FILTER_FIRST_STRATEGY}) strategy .
-   */
   public static class RandomAccessFilterStrategy extends FilterStrategy {
 
     @Override
@@ -209,18 +130,6 @@ public class FilteredQuery extends Query {
       return new RandomAccessFilterWrapperQuery(filter, this);
     }
 
-    /**
-     * Expert: decides if a filter should be executed as "random-access" or not.
-     * random-access means the filter "filters" in a similar way as deleted docs are filtered
-     * in Lucene. This is faster when the filter accepts many documents.
-     * However, when the filter is very sparse, it can be faster to execute the query+filter
-     * as a conjunction in some cases.
-     * 
-     * The default implementation returns <code>true</code> if the filter matches more than 1%
-     * of documents
-     * 
-     * @lucene.internal
-     */
     protected boolean useRandomAccess(Bits bits, long filterCost) {
       // if the filter matches more than 1% of documents, we use random-access
       return filterCost * 100 > bits.length();

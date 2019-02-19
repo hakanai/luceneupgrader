@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,34 +21,17 @@ import java.io.Reader;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Version;
 
-/** An {@link Analyzer} that filters {@link LetterTokenizer} 
- *  with {@link LowerCaseFilter} 
- * <p>
- * <a name="version">You must specify the required {@link Version} compatibility
- * when creating {@link CharTokenizer}:
- * <ul>
- * <li>As of 3.1, {@link LowerCaseTokenizer} uses an int based API to normalize and
- * detect token codepoints. See {@link CharTokenizer#isTokenChar(int)} and
- * {@link CharTokenizer#normalize(int)} for details.</li>
- * </ul>
- * <p>
- **/
+
 public final class SimpleAnalyzer extends ReusableAnalyzerBase {
 
   private final Version matchVersion;
   
-  /**
-   * Creates a new {@link SimpleAnalyzer}
-   * @param matchVersion Lucene version to match See {@link <a href="#version">above</a>}
-   */
+
   public SimpleAnalyzer(Version matchVersion) {
     this.matchVersion = matchVersion;
   }
   
-  /**
-   * Creates a new {@link SimpleAnalyzer}
-   * @deprecated use {@link #SimpleAnalyzer(Version)} instead 
-   */
+
   @Deprecated  public SimpleAnalyzer() {
     this(Version.LUCENE_30);
   }

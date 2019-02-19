@@ -20,13 +20,7 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattri
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeImpl;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeReflector;
 
-/** Default implementation of the common attributes used by Lucene:<ul>
- * <li>{@link CharTermAttribute}
- * <li>{@link TypeAttribute}
- * <li>{@link PositionIncrementAttribute}
- * <li>{@link PositionLengthAttribute}
- * <li>{@link OffsetAttribute}
- * </ul>*/
+
 public class PackedTokenAttributeImpl extends CharTermAttributeImpl 
                    implements TypeAttribute, PositionIncrementAttribute,
                               PositionLengthAttribute, OffsetAttribute {
@@ -36,14 +30,9 @@ public class PackedTokenAttributeImpl extends CharTermAttributeImpl
   private int positionIncrement = 1;
   private int positionLength = 1;
 
-  /** Constructs the attribute implementation. */
   public PackedTokenAttributeImpl() {
   }
 
-  /**
-   * {@inheritDoc}
-   * @see PositionIncrementAttribute
-   */
   @Override
   public void setPositionIncrement(int positionIncrement) {
     if (positionIncrement < 0)
@@ -52,55 +41,31 @@ public class PackedTokenAttributeImpl extends CharTermAttributeImpl
     this.positionIncrement = positionIncrement;
   }
 
-  /**
-   * {@inheritDoc}
-   * @see PositionIncrementAttribute
-   */
   @Override
   public int getPositionIncrement() {
     return positionIncrement;
   }
 
-  /**
-   * {@inheritDoc}
-   * @see PositionLengthAttribute
-   */
   @Override
   public void setPositionLength(int positionLength) {
     this.positionLength = positionLength;
   }
 
-  /**
-   * {@inheritDoc}
-   * @see PositionLengthAttribute
-   */
   @Override
   public int getPositionLength() {
     return positionLength;
   }
 
-  /**
-   * {@inheritDoc}
-   * @see OffsetAttribute
-   */
   @Override
   public final int startOffset() {
     return startOffset;
   }
 
-  /**
-   * {@inheritDoc}
-   * @see OffsetAttribute
-   */
   @Override
   public final int endOffset() {
     return endOffset;
   }
 
-  /**
-   * {@inheritDoc}
-   * @see OffsetAttribute
-   */
   @Override
   public void setOffset(int startOffset, int endOffset) {
     if (startOffset < 0 || endOffset < startOffset) {
@@ -111,26 +76,16 @@ public class PackedTokenAttributeImpl extends CharTermAttributeImpl
     this.endOffset = endOffset;
   }
 
-  /**
-   * {@inheritDoc}
-   * @see TypeAttribute
-   */
   @Override
   public final String type() {
     return type;
   }
 
-  /**
-   * {@inheritDoc}
-   * @see TypeAttribute
-   */
   @Override
   public final void setType(String type) {
     this.type = type;
   }
 
-  /** Resets the attributes
-   */
   @Override
   public void clear() {
     super.clear();

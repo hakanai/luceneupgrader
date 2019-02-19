@@ -28,10 +28,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.StoredFieldsF
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.TermVectorsFormat;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.perfield.PerFieldPostingsFormat;
 
-/**
- * Reader for the 4.0 file format
- * @deprecated Only for reading old 4.0 segments
- */
 @Deprecated
 public class Lucene40Codec extends Codec {
   private final StoredFieldsFormat fieldsFormat = new Lucene40StoredFieldsFormat();
@@ -48,7 +44,6 @@ public class Lucene40Codec extends Codec {
     }
   };
 
-  /** Sole constructor. */
   public Lucene40Codec() {
     super("Lucene40");
   }
@@ -102,11 +97,7 @@ public class Lucene40Codec extends Codec {
     return liveDocsFormat;
   }
 
-  /** Returns the postings format that should be used for writing 
-   *  new segments of <code>field</code>.
-   *  
-   *  The default implementation always returns "Lucene40"
-   */
+
   public PostingsFormat getPostingsFormatForField(String field) {
     return defaultFormat;
   }

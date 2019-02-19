@@ -46,26 +46,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRefBuilder
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.DocIdSetBuilder;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.RamUsageEstimator;
 
-/**
- * Specialization for a disjunction over many terms that behaves like a
- * {@link ConstantScoreQuery} over a {@link BooleanQuery} containing only
- * {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.search.BooleanClause.Occur#SHOULD} clauses.
- * <p>For instance in the following example, both @{code q1} and {@code q2}
- * would yield the same scores:
- * <pre class="prettyprint">
- * Query q1 = new TermInSetQuery(new Term("field", "foo"), new Term("field", "bar"));
- *
- * BooleanQuery bq = new BooleanQuery();
- * bq.add(new TermQuery(new Term("field", "foo")), Occur.SHOULD);
- * bq.add(new TermQuery(new Term("field", "bar")), Occur.SHOULD);
- * Query q2 = new ConstantScoreQuery(bq);
- * </pre>
- * <p>When there are few terms, this query executes like a regular disjunction.
- * However, when there are many terms, instead of merging iterators on the fly,
- * it will populate a bit set with matching docs and return a {@link Scorer}
- * over this bit set.
- * <p>NOTE: This query produces scores that are equal to its boost
- */
 public class TermInSetQuery extends Query implements Accountable {
 
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(TermInSetQuery.class);
@@ -76,9 +56,6 @@ public class TermInSetQuery extends Query implements Accountable {
   private final PrefixCodedTerms termData;
   private final int termDataHashCode; // cached hashcode of termData
 
-  /**
-   * Creates a new {@link TermInSetQuery} from the given collection of terms.
-   */
   public TermInSetQuery(String field, Collection<BytesRef> terms) {
     BytesRef[] sortedTerms = terms.toArray(new BytesRef[terms.size()]);
     // already sorted if we are a SortedSet with natural order
@@ -102,9 +79,6 @@ public class TermInSetQuery extends Query implements Accountable {
     termDataHashCode = termData.hashCode();
   }
 
-  /**
-   * Creates a new {@link TermInSetQuery} from the given array of terms.
-   */
   public TermInSetQuery(String field, BytesRef...terms) {
     this(field, Arrays.asList(terms));
   }
@@ -141,7 +115,6 @@ public class TermInSetQuery extends Query implements Accountable {
     return 31 * classHash() + termDataHashCode;
   }
 
-  /** Returns the terms wrapped in a PrefixCodedTerms. */
   public PrefixCodedTerms getTermData() {
     return termData;
   }
@@ -217,10 +190,6 @@ public class TermInSetQuery extends Query implements Accountable {
         // order to protect highlighters
       }
 
-      /**
-       * On the given leaf context, try to either rewrite to a disjunction if
-       * there are few matching terms, or build a bitset containing matching docs.
-       */
       private WeightOrDocIdSet rewrite(LeafReaderContext context) throws IOException {
         final LeafReader reader = context.reader();
 

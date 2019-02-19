@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,20 +19,11 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 
-/** <p>Expert: {@link IndexWriter} uses an instance
- *  implementing this interface to execute the merges
- *  selected by a {@link MergePolicy}.  The default
- *  MergeScheduler is {@link ConcurrentMergeScheduler}.</p>
- *
- * @lucene.experimental
-*/
 public abstract class MergeScheduler {
 
-  /** Run the merges provided by {@link IndexWriter#getNextMerge()}. */
   public abstract void merge(IndexWriter writer)
     throws CorruptIndexException, IOException;
 
-  /** Close this MergeScheduler. */
   public abstract void close()
     throws CorruptIndexException, IOException;
 }

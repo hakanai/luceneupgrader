@@ -19,21 +19,12 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/**
- * An {@link Iterator} implementation that filters elements with a boolean predicate.
- *
- * @param <T> generic parameter for this iterator instance: this iterator implements {@link Iterator Iterator&lt;T&gt;}
- * @param <InnerT> generic parameter of the wrapped iterator, must be <tt>T</tt> or extend <tt>T</tt>
- * @see #predicateFunction
- * @lucene.internal
- */
 public abstract class FilterIterator<T, InnerT extends T> implements Iterator<T> {
   
   private final Iterator<InnerT> iterator;
   private T next = null;
   private boolean nextIsSet = false;
   
-  /** returns true, if this element should be returned by {@link #next()}. */
   protected abstract boolean predicateFunction(InnerT object);
   
   public FilterIterator(Iterator<InnerT> baseIterator) {

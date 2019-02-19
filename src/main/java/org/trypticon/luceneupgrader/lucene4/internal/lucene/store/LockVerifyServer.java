@@ -27,16 +27,6 @@ import java.util.concurrent.CountDownLatch;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 
-/**
- * Simple standalone server that must be running when you
- * use {@link VerifyingLockFactory}.  This server simply
- * verifies at most one process holds the lock at a time.
- * Run without any args to see usage.
- *
- * @see VerifyingLockFactory
- * @see LockStressTest
- */
-
 public class LockVerifyServer {
 
   public static void main(String[] args) throws Exception {

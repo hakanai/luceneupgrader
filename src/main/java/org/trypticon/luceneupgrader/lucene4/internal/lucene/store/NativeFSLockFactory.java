@@ -29,74 +29,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * <p>Implements {@link LockFactory} using native OS file
- * locks.  Note that because this LockFactory relies on
- * java.nio.* APIs for locking, any problems with those APIs
- * will cause locking to fail.  Specifically, on certain NFS
- * environments the java.nio.* locks will fail (the lock can
- * incorrectly be double acquired) whereas {@link
- * SimpleFSLockFactory} worked perfectly in those same
- * environments.  For NFS based access to an index, it's
- * recommended that you try {@link SimpleFSLockFactory}
- * first and work around the one limitation that a lock file
- * could be left when the JVM exits abnormally.</p>
- *
- * <p>The primary benefit of {@link NativeFSLockFactory} is
- * that locks (not the lock file itsself) will be properly
- * removed (by the OS) if the JVM has an abnormal exit.</p>
- * 
- * <p>Note that, unlike {@link SimpleFSLockFactory}, the existence of
- * leftover lock files in the filesystem is fine because the OS
- * will free the locks held against these files even though the
- * files still remain. Lucene will never actively remove the lock
- * files, so although you see them, the index may not be locked.</p>
- *
- * <p>Special care needs to be taken if you change the locking
- * implementation: First be certain that no writer is in fact
- * writing to the index otherwise you can easily corrupt
- * your index. Be sure to do the LockFactory change on all Lucene
- * instances and clean up all leftover lock files before starting
- * the new configuration for the first time. Different implementations
- * can not work together!</p>
- *
- * <p>If you suspect that this or any other LockFactory is
- * not working properly in your environment, you can easily
- * test it by using {@link VerifyingLockFactory}, {@link
- * LockVerifyServer} and {@link LockStressTest}.</p>
- *
- * @see LockFactory
- */
-
 public class NativeFSLockFactory extends FSLockFactory {
 
-  /**
-   * Create a NativeFSLockFactory instance, with null (unset)
-   * lock directory. When you pass this factory to a {@link FSDirectory}
-   * subclass, the lock directory is automatically set to the
-   * directory itself. Be sure to create one instance for each directory
-   * your create!
-   */
   public NativeFSLockFactory() {
     this((File) null);
   }
 
-  /**
-   * Create a NativeFSLockFactory instance, storing lock
-   * files into the specified lockDirName:
-   *
-   * @param lockDirName where lock files are created.
-   */
   public NativeFSLockFactory(String lockDirName) {
     this(new File(lockDirName));
   }
 
-  /**
-   * Create a NativeFSLockFactory instance, storing lock
-   * files into the specified lockDir:
-   * 
-   * @param lockDir where lock files are created.
-   */
   public NativeFSLockFactory(File lockDir) {
     setLockDir(lockDir);
   }

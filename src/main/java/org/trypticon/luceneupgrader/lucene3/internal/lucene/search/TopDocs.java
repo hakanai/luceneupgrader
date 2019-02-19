@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,34 +21,23 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.PriorityQueue;
 
-/** Represents hits returned by {@link
- * Searcher#search(Query,Filter,int)} and {@link
- * Searcher#search(Query,int)}. */
+
 public class TopDocs implements java.io.Serializable {
 
-  /** The total number of hits for the query. */
   public int totalHits;
 
-  /** The top hits for the query. */
   public ScoreDoc[] scoreDocs;
 
-  /** Stores the maximum score value encountered, needed for normalizing. */
   private float maxScore;
   
-  /**
-   * Returns the maximum score value encountered. Note that in case
-   * scores are not tracked, this returns {@link Float#NaN}.
-   */
   public float getMaxScore() {
     return maxScore;
   }
   
-  /** Sets the maximum score value encountered. */
   public void setMaxScore(float maxScore) {
     this.maxScore=maxScore;
   }
 
-  /** Constructs a TopDocs with a default maxScore=Float.NaN. */
   TopDocs(int totalHits, ScoreDoc[] scoreDocs) {
     this(totalHits, scoreDocs, Float.NaN);
   }
@@ -192,17 +181,7 @@ public class TopDocs implements java.io.Serializable {
     }
   }
 
-  /** Returns a new TopDocs, containing topN results across
-   *  the provided TopDocs, sorting by the specified {@link
-   *  Sort}.  Each of the TopDocs must have been sorted by
-   *  the same Sort, and sort field values must have been
-   *  filled (ie, <code>fillFields=true</code> must be
-   *  passed to {@link
-   *  TopFieldCollector#create}.
-   *
-   * <p>Pass sort=null to merge sort by score descending.
-   *
-   * @lucene.experimental */
+
   public static TopDocs merge(Sort sort, int topN, TopDocs[] shardHits) throws IOException {
 
     final PriorityQueue<ShardRef> queue;

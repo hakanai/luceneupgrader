@@ -27,57 +27,22 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.SortedNumericD
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.IndexOrDocValuesQuery;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.Query;
 
-/**
- * <p>
- * Field that stores a per-document <code>long</code> value for scoring, 
- * sorting or value retrieval. Here's an example usage:
- * 
- * <pre class="prettyprint">
- *   document.add(new NumericDocValuesField(name, 22L));
- * </pre>
- * 
- * <p>
- * If you also need to store the value, you should add a
- * separate {@link StoredField} instance.
- * */
+
 
 public class NumericDocValuesField extends Field {
 
-  /**
-   * Type for numeric DocValues.
-   */
   public static final FieldType TYPE = new FieldType();
   static {
     TYPE.setDocValuesType(DocValuesType.NUMERIC);
     TYPE.freeze();
   }
 
-  /** 
-   * Creates a new DocValues field with the specified 64-bit long value 
-   * @param name field name
-   * @param value 64-bit long value
-   * @throws IllegalArgumentException if the field name is null
-   */
+
   public NumericDocValuesField(String name, long value) {
     super(name, TYPE);
     fieldsData = Long.valueOf(value);
   }
 
-  /**
-   * Create a range query that matches all documents whose value is between
-   * {@code lowerValue} and {@code upperValue} included.
-   * <p>
-   * You can have half-open ranges (which are in fact &lt;/&le; or &gt;/&ge; queries)
-   * by setting {@code lowerValue = Long.MIN_VALUE} or {@code upperValue = Long.MAX_VALUE}. 
-   * <p>
-   * Ranges are inclusive. For exclusive ranges, pass {@code Math.addExact(lowerValue, 1)}
-   * or {@code Math.addExact(upperValue, -1)}.
-   * <p><b>NOTE</b>: Such queries cannot efficiently advance to the next match,
-   * which makes them slow if they are not ANDed with a selective query. As a
-   * consequence, they are best used wrapped in an {@link IndexOrDocValuesQuery},
-   * alongside a range query that executes on points, such as
-   * {@link LongPoint#newRangeQuery}.
-   */
   public static Query newRangeQuery(String field, long lowerValue, long upperValue) {
     return new SortedNumericDocValuesRangeQuery(field, lowerValue, upperValue) {
       @Override
@@ -91,14 +56,7 @@ public class NumericDocValuesField extends Field {
     };
   }
 
-  /** 
-   * Create a query for matching an exact long value.
-   * <p><b>NOTE</b>: Such queries cannot efficiently advance to the next match,
-   * which makes them slow if they are not ANDed with a selective query. As a
-   * consequence, they are best used wrapped in an {@link IndexOrDocValuesQuery},
-   * alongside a range query that executes on points, such as
-   * {@link LongPoint#newExactQuery}.
-   */
+
   public static Query newExactQuery(String field, long value) {
     return newRangeQuery(field, value, value);
   }

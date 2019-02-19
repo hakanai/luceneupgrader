@@ -29,13 +29,7 @@ import static org.trypticon.luceneupgrader.lucene6.internal.lucene.geo.GeoUtils.
 
 import java.util.function.Function;
 
-/**
- * reusable geopoint encoding methods
- *
- * @lucene.experimental
- */
 public final class GeoEncodingUtils {
-  /** number of bits used for quantizing latitude and longitude values */
   public static final short BITS = 32;
 
   private static final double LAT_SCALE = (0x1L<<BITS)/180.0D;
@@ -47,12 +41,6 @@ public final class GeoEncodingUtils {
   private GeoEncodingUtils() {
   }
 
-  /**
-   * Quantizes double (64 bit) latitude into 32 bits (rounding down: in the direction of -90)
-   * @param latitude latitude value: must be within standard +/-90 coordinate bounds.
-   * @return encoded value as a 32-bit {@code int}
-   * @throws IllegalArgumentException if latitude is out of bounds
-   */
   public static int encodeLatitude(double latitude) {
     checkLatitude(latitude);
     // the maximum possible value cannot be encoded without overflow
@@ -62,12 +50,6 @@ public final class GeoEncodingUtils {
     return (int) Math.floor(latitude / LAT_DECODE);
   }
 
-  /**
-   * Quantizes double (64 bit) latitude into 32 bits (rounding up: in the direction of +90)
-   * @param latitude latitude value: must be within standard +/-90 coordinate bounds.
-   * @return encoded value as a 32-bit {@code int}
-   * @throws IllegalArgumentException if latitude is out of bounds
-   */
   public static int encodeLatitudeCeil(double latitude) {
     GeoUtils.checkLatitude(latitude);
     // the maximum possible value cannot be encoded without overflow
@@ -77,12 +59,6 @@ public final class GeoEncodingUtils {
     return (int) Math.ceil(latitude / LAT_DECODE);
   }
 
-  /**
-   * Quantizes double (64 bit) longitude into 32 bits (rounding down: in the direction of -180)
-   * @param longitude longitude value: must be within standard +/-180 coordinate bounds.
-   * @return encoded value as a 32-bit {@code int}
-   * @throws IllegalArgumentException if longitude is out of bounds
-   */
   public static int encodeLongitude(double longitude) {
     checkLongitude(longitude);
     // the maximum possible value cannot be encoded without overflow
@@ -92,12 +68,6 @@ public final class GeoEncodingUtils {
     return (int) Math.floor(longitude / LON_DECODE);
   }
 
-  /**
-   * Quantizes double (64 bit) longitude into 32 bits (rounding up: in the direction of +180)
-   * @param longitude longitude value: must be within standard +/-180 coordinate bounds.
-   * @return encoded value as a 32-bit {@code int}
-   * @throws IllegalArgumentException if longitude is out of bounds
-   */
   public static int encodeLongitudeCeil(double longitude) {
     GeoUtils.checkLongitude(longitude);
     // the maximum possible value cannot be encoded without overflow
@@ -107,57 +77,27 @@ public final class GeoEncodingUtils {
     return (int) Math.ceil(longitude / LON_DECODE);
   }
 
-  /**
-   * Turns quantized value from {@link #encodeLatitude} back into a double.
-   * @param encoded encoded value: 32-bit quantized value.
-   * @return decoded latitude value.
-   */
   public static double decodeLatitude(int encoded) {
     double result = encoded * LAT_DECODE;
     assert result >= MIN_LAT_INCL && result < MAX_LAT_INCL;
     return result;
   }
 
-  /**
-   * Turns quantized value from byte array back into a double.
-   * @param src byte array containing 4 bytes to decode at {@code offset}
-   * @param offset offset into {@code src} to decode from.
-   * @return decoded latitude value.
-   */
   public static double decodeLatitude(byte[] src, int offset) {
     return decodeLatitude(NumericUtils.sortableBytesToInt(src, offset));
   }
 
-  /**
-   * Turns quantized value from {@link #encodeLongitude} back into a double.
-   * @param encoded encoded value: 32-bit quantized value.
-   * @return decoded longitude value.
-   */
   public static double decodeLongitude(int encoded) {
     double result = encoded * LON_DECODE;
     assert result >= MIN_LON_INCL && result < MAX_LON_INCL;
     return result;
   }
 
-  /**
-   * Turns quantized value from byte array back into a double.
-   * @param src byte array containing 4 bytes to decode at {@code offset}
-   * @param offset offset into {@code src} to decode from.
-   * @return decoded longitude value.
-   */
   public static double decodeLongitude(byte[] src, int offset) {
     return decodeLongitude(NumericUtils.sortableBytesToInt(src, offset));
   }
 
-  /** Create a predicate that checks whether points are within a distance of a given point.
-   *  It works by computing the bounding box around the circle that is defined
-   *  by the given points/distance and splitting it into between 1024 and 4096
-   *  smaller boxes (4096*0.75^2=2304 on average). Then for each sub box, it
-   *  computes the relation between this box and the distance query. Finally at
-   *  search time, it first computes the sub box that the point belongs to,
-   *  most of the time, no distance computation will need to be performed since
-   *  all points from the sub box will either be in or out of the circle.
-   *  @lucene.internal */
+
   public static DistancePredicate createDistancePredicate(double lat, double lon, double radiusMeters) {
     final Rectangle boundingBox = Rectangle.fromPointDistance(lat, lon, radiusMeters);
     final double axisLat = Rectangle.axisLat(lat, radiusMeters);
@@ -174,9 +114,7 @@ public final class GeoEncodingUtils {
         lat, lon, distanceSortKey);
   }
 
-  /** Create a predicate that checks whether points are within a polygon.
-   *  It works the same way as {@link #createDistancePredicate}.
-   *  @lucene.internal */
+
   public static PolygonPredicate createPolygonPredicate(Polygon[] polygons, Polygon2D tree) {
     final Rectangle boundingBox = Rectangle.fromPolygon(polygons);
     final Function<Rectangle, Relation> boxToRelation = box -> tree.relate(
@@ -246,8 +184,6 @@ public final class GeoEncodingUtils {
         relations);
   }
 
-  /** Compute the minimum shift value so that
-   * {@code (b>>>shift)-(a>>>shift)} is less that {@code ARITY}. */
   private static int computeShift(long a, long b) {
     assert a <= b;
     // We enforce a shift of at least 1 so that when we work with unsigned ints
@@ -291,7 +227,6 @@ public final class GeoEncodingUtils {
     }
   }
 
-  /** A predicate that checks whether a given point is within a distance of another point. */
   public static class DistancePredicate extends Grid {
 
     private final double lat, lon;
@@ -309,8 +244,6 @@ public final class GeoEncodingUtils {
       this.distanceKey = distanceKey;
     }
 
-    /** Check whether the given point is within a distance of another point.
-     *  NOTE: this operates directly on the encoded representation of points. */
     public boolean test(int lat, int lon) {
       final int lat2 = ((lat - Integer.MIN_VALUE) >>> latShift);
       if (lat2 < latBase || lat2 >= latBase + maxLatDelta) {
@@ -337,7 +270,6 @@ public final class GeoEncodingUtils {
     }
   }
 
-  /** A predicate that checks whether a given point is within a polygon. */
   public static class PolygonPredicate extends Grid {
 
     private final Polygon2D tree;
@@ -352,8 +284,6 @@ public final class GeoEncodingUtils {
       this.tree = tree;
     }
 
-    /** Check whether the given point is within the considered polygon.
-     *  NOTE: this operates directly on the encoded representation of points. */
     public boolean test(int lat, int lon) {
       final int lat2 = ((lat - Integer.MIN_VALUE) >>> latShift);
       if (lat2 < latBase || lat2 >= latBase + maxLatDelta) {

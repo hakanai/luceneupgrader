@@ -33,54 +33,22 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.StoredFieldVis
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 
-/**
- * Codec API for writing stored fields:
- * <ol>
- *   <li>For every document, {@link #startDocument()} is called,
- *       informing the Codec that a new document has started.
- *   <li>{@link #writeField(FieldInfo, IndexableField)} is called for 
- *       each field in the document.
- *   <li>After all documents have been written, {@link #finish(FieldInfos, int)} 
- *       is called for verification/sanity-checks.
- *   <li>Finally the writer is closed ({@link #close()})
- * </ol>
- * 
- * @lucene.experimental
- */
 public abstract class StoredFieldsWriter implements Closeable {
   
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected StoredFieldsWriter() {
   }
 
-  /** Called before writing the stored fields of the document.
-   *  {@link #writeField(FieldInfo, IndexableField)} will be called
-   *  for each stored field. Note that this is
-   *  called even if the document has no stored fields. */
+
   public abstract void startDocument() throws IOException;
 
-  /** Called when a document and all its fields have been added. */
   public void finishDocument() throws IOException {}
 
-  /** Writes a single stored field. */
   public abstract void writeField(FieldInfo info, IndexableField field) throws IOException;
   
-  /** Called before {@link #close()}, passing in the number
-   *  of documents that were written. Note that this is 
-   *  intentionally redundant (equivalent to the number of
-   *  calls to {@link #startDocument()}, but a Codec should
-   *  check that this is the case to detect the JRE bug described 
-   *  in LUCENE-1282. */
+
   public abstract void finish(FieldInfos fis, int numDocs) throws IOException;
   
-  /** Merges in the stored fields from the readers in 
-   *  <code>mergeState</code>. The default implementation skips
-   *  over deleted documents, and uses {@link #startDocument()},
-   *  {@link #writeField(FieldInfo, IndexableField)}, and {@link #finish(FieldInfos, int)},
-   *  returning the number of documents that were written.
-   *  Implementations can override this method for more sophisticated
-   *  merging (bulk-byte copying, etc). */
+
   public int merge(MergeState mergeState) throws IOException {
     int docCount = 0;
     for (int i=0;i<mergeState.storedFieldsReaders.length;i++) {
@@ -104,19 +72,7 @@ public abstract class StoredFieldsWriter implements Closeable {
     return docCount;
   }
   
-  /** 
-   * A visitor that adds every field it sees.
-   * <p>
-   * Use like this:
-   * <pre>
-   * MergeVisitor visitor = new MergeVisitor(mergeState, readerIndex);
-   * for (...) {
-   *   startDocument();
-   *   storedFieldsReader.visitDocument(docID, visitor);
-   *   finishDocument();
-   * }
-   * </pre>
-   */
+
   protected class MergeVisitor extends StoredFieldVisitor implements IndexableField {
     BytesRef binaryValue;
     String stringValue;
@@ -124,9 +80,6 @@ public abstract class StoredFieldsWriter implements Closeable {
     FieldInfo currentField;
     FieldInfos remapper;
     
-    /**
-     * Create new merge visitor.
-     */
     public MergeVisitor(MergeState mergeState, int readerIndex) {
       // if field numbers are aligned, we can save hash lookups
       // on every field access. Otherwise, we need to lookup

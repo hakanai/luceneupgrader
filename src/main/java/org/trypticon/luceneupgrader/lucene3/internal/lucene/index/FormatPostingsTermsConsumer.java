@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,14 +22,9 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
 
-/**
- * @lucene.experimental
- */
 
 abstract class FormatPostingsTermsConsumer {
 
-  /** Adds a new term in this field; term ends with U+FFFF
-   *  char */
   abstract FormatPostingsDocsConsumer addTerm(char[] text, int start) throws IOException;
 
   char[] termBuffer;
@@ -42,6 +37,5 @@ abstract class FormatPostingsTermsConsumer {
     return addTerm(termBuffer, 0);
   }
 
-  /** Called when we are done adding terms to this field */
   abstract void finish() throws IOException;
 }

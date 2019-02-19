@@ -22,39 +22,19 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.StoredFieldVisitor;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountable;
 
-/**
- * Codec API for reading stored fields.
- * <p>
- * You need to implement {@link #visitDocument(int, StoredFieldVisitor)} to
- * read the stored fields for a document, implement {@link #clone()} (creating
- * clones of any IndexInputs used, etc), and {@link #close()}
- * @lucene.experimental
- */
 public abstract class StoredFieldsReader implements Cloneable, Closeable, Accountable {
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected StoredFieldsReader() {
   }
   
-  /** Visit the stored fields for document <code>docID</code> */
   public abstract void visitDocument(int docID, StoredFieldVisitor visitor) throws IOException;
 
   @Override
   public abstract StoredFieldsReader clone();
   
-  /** 
-   * Checks consistency of this reader.
-   * <p>
-   * Note that this may be costly in terms of I/O, e.g. 
-   * may involve computing a checksum value against large data files.
-   * @lucene.internal
-   */
+
   public abstract void checkIntegrity() throws IOException;
   
-  /** 
-   * Returns an instance optimized for merging.
-   * <p>
-   * The default implementation returns {@code this} */
+
   public StoredFieldsReader getMergeInstance() throws IOException {
     return this;
   }

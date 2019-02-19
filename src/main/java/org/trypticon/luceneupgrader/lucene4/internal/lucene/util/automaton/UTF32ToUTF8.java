@@ -24,10 +24,6 @@ import java.util.List;
 // TODO
 //   - do we really need the .bits...?  if not we can make util in UnicodeUtil to convert 1 char into a BytesRef
 
-/** 
- * Converts UTF-32 automata to the equivalent UTF-8 representation.
- * @lucene.internal 
- */
 public final class UTF32ToUTF8 {
 
   // Unicode boundaries for UTF8 bytes 1,2,3,4
@@ -120,7 +116,6 @@ public final class UTF32ToUTF8 {
     }
   }
 
-  /** Sole constructor. */
   public UTF32ToUTF8() {
   }
 
@@ -259,11 +254,7 @@ public final class UTF32ToUTF8 {
 
   Automaton.Builder utf8;
 
-  /** Converts an incoming utf32 automaton to an equivalent
-   *  utf8 one.  The incoming automaton need not be
-   *  deterministic.  Note that the returned automaton will
-   *  not in general be deterministic, so you must
-   *  determinize it if that's needed. */
+
   public Automaton convert(Automaton utf32) {
     if (utf32.getNumStates() == 0) {
       return utf32;

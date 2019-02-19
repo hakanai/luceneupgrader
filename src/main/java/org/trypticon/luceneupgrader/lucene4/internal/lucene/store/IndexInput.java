@@ -20,28 +20,11 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 import java.io.Closeable;
 import java.io.IOException;
 
-/** Abstract base class for input from a file in a {@link Directory}.  A
- * random-access input stream.  Used for all Lucene index input operations.
- *
- * <p>{@code IndexInput} may only be used from one thread, because it is not
- * thread safe (it keeps internal state like file position). To allow
- * multithreaded use, every {@code IndexInput} instance must be cloned before
- * used in another thread. Subclasses must therefore implement {@link #clone()},
- * returning a new {@code IndexInput} which operates on the same underlying
- * resource, but positioned independently. Lucene never closes cloned
- * {@code IndexInput}s, it will only do this on the original one.
- * The original instance must take care that cloned instances throw
- * {@link AlreadyClosedException} when the original one is closed.
- 
- * @see Directory
- */
 public abstract class IndexInput extends DataInput implements Cloneable,Closeable {
 
   private final String resourceDescription;
 
-  /** resourceDescription should be a non-null, opaque string
-   *  describing this resource; it's returned from
-   *  {@link #toString}. */
+
   protected IndexInput(String resourceDescription) {
     if (resourceDescription == null) {
       throw new IllegalArgumentException("resourceDescription must not be null");
@@ -49,22 +32,15 @@ public abstract class IndexInput extends DataInput implements Cloneable,Closeabl
     this.resourceDescription = resourceDescription;
   }
 
-  /** Closes the stream to further operations. */
   @Override
   public abstract void close() throws IOException;
 
-  /** Returns the current position in this file, where the next read will
-   * occur.
-   * @see #seek(long)
-   */
+
   public abstract long getFilePointer();
 
-  /** Sets current position in this file, where the next read will occur.
-   * @see #getFilePointer()
-   */
+
   public abstract void seek(long pos) throws IOException;
 
-  /** The number of bytes in the file. */
   public abstract long length();
 
   @Override
@@ -72,29 +48,14 @@ public abstract class IndexInput extends DataInput implements Cloneable,Closeabl
     return resourceDescription;
   }
   
-  /** {@inheritDoc}
-   * <p><b>Warning:</b> Lucene never closes cloned
-   * {@code IndexInput}s, it will only do this on the original one.
-   * The original instance must take care that cloned instances throw
-   * {@link AlreadyClosedException} when the original one is closed.
-   */
+
   @Override
   public IndexInput clone() {
     return (IndexInput) super.clone();
   }
   
-  /**
-   * Creates a slice of this index input, with the given description, offset, and length. 
-   * The slice is seeked to the beginning.
-   */
   public abstract IndexInput slice(String sliceDescription, long offset, long length) throws IOException;
   
-  /**
-   * Creates a random-access slice of this index input, with the given offset and length. 
-   * <p>
-   * The default implementation calls {@link #slice}, and it doesn't support random access,
-   * it implements absolute reads as seek+read.
-   */
   public RandomAccessInput randomAccessSlice(long offset, long length) throws IOException {
     final IndexInput slice = slice("randomaccess", offset, length);
     if (slice instanceof RandomAccessInput) {

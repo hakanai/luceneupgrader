@@ -31,9 +31,7 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.Query;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.spans.FilterSpans.AcceptStatus;
 
 
-/**
- * Base class for filtering a SpanQuery based on the position of a match.
- **/
+
 public abstract class SpanPositionCheckQuery extends SpanQuery implements Cloneable {
   protected SpanQuery match;
 
@@ -41,29 +39,12 @@ public abstract class SpanPositionCheckQuery extends SpanQuery implements Clonea
     this.match = Objects.requireNonNull(match);
   }
 
-  /**
-   * @return the SpanQuery whose matches are filtered.
-   *
-   * */
+
   public SpanQuery getMatch() { return match; }
 
   @Override
   public String getField() { return match.getField(); }
 
-  /**
-   * Implementing classes are required to return whether the current position is a match for the passed in
-   * "match" {@link SpanQuery}.
-   *
-   * This is only called if the underlying last {@link Spans#nextStartPosition()} for the
-   * match indicated a valid start position.
-   *
-   * @param spans The {@link Spans} instance, positioned at the spot to check
-   *
-   * @return whether the match is accepted, rejected, or rejected and should move to the next doc.
-   *
-   * @see Spans#nextDoc()
-   *
-   */
   protected abstract AcceptStatus acceptPosition(Spans spans) throws IOException;
 
   @Override
@@ -120,7 +101,6 @@ public abstract class SpanPositionCheckQuery extends SpanQuery implements Clonea
     return super.rewrite(reader);
   }
 
-  /** Returns true iff <code>other</code> is equal to this. */
   @Override
   public boolean equals(Object other) {
     return sameClassAs(other) &&

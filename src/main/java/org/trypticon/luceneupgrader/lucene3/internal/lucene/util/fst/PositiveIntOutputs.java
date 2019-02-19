@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,13 +21,6 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataOutput;
-
-/**
- * An FST {@link Outputs} implementation where each output
- * is a non-negative long value.
- *
- * @lucene.experimental
- */
 
 public final class PositiveIntOutputs extends Outputs<Long> {
   

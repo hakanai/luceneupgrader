@@ -17,27 +17,11 @@
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.index;
 
 
-/**
- * Encapsulates all required internal state to position the associated
- * {@link TermsEnum} without re-seeking.
- * 
- * @see TermsEnum#seekExact(org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef, TermState)
- * @see TermsEnum#termState()
- * @lucene.experimental
- */
 public abstract class TermState implements Cloneable {
 
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected TermState() {
   }
 
-  /**
-   * Copies the content of the given {@link TermState} to this instance
-   * 
-   * @param other
-   *          the TermState to copy
-   */
   public abstract void copyFrom(TermState other);
 
   @Override

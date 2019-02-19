@@ -56,10 +56,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.BlockPac
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.MonotonicBlockPackedReader;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 
-/**
- * Reader for {@link Lucene50NormsFormat}
- * @deprecated Only for reading old 5.0-5.2 segments
- */
 @Deprecated
 final class Lucene50NormsProducer extends NormsProducer {
   // metadata maps (just file pointers and minimal stuff)

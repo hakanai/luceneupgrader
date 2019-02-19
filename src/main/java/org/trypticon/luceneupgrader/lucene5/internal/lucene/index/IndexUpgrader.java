@@ -30,27 +30,6 @@ import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.util.Collection;
 
-/**
-  * This is an easy-to-use tool that upgrades all segments of an index from previous Lucene versions
-  * to the current segment file format. It can be used from command line:
-  * <pre>
-  *  java -cp lucene-core.jar org.trypticon.luceneupgrader.lucene5.internal.lucene.index.IndexUpgrader [-delete-prior-commits] [-verbose] indexDir
-  * </pre>
-  * Alternatively this class can be instantiated and {@link #upgrade} invoked. It uses {@link UpgradeIndexMergePolicy}
-  * and triggers the upgrade via an forceMerge request to {@link IndexWriter}.
-  * <p>This tool keeps only the last commit in an index; for this
-  * reason, if the incoming index has more than one commit, the tool
-  * refuses to run by default. Specify {@code -delete-prior-commits}
-  * to override this, allowing the tool to delete all but the last commit.
-  * From Java code this can be enabled by passing {@code true} to
-  * {@link #IndexUpgrader(Directory,InfoStream,boolean)}.
-  * <p><b>Warning:</b> This tool may reorder documents if the index was partially
-  * upgraded before execution (e.g., documents were added). If your application relies
-  * on &quot;monotonicity&quot; of doc IDs (which means that the order in which the documents
-  * were added to the index is preserved), do a full forceMerge instead.
-  * The {@link MergePolicy} set by {@link IndexWriterConfig} may also reorder
-  * documents.
-  */
 public final class IndexUpgrader {
   
   private static final String LOG_PREFIX = "IndexUpgrader";
@@ -71,8 +50,6 @@ public final class IndexUpgrader {
     System.exit(1);
   }
 
-  /** Main method to run {code IndexUpgrader} from the
-   *  command-line. */
   @SuppressWarnings("deprecation")
   public static void main(String[] args) throws IOException {
     parseArgs(args).upgrade();
@@ -123,15 +100,11 @@ public final class IndexUpgrader {
   private final IndexWriterConfig iwc;
   private final boolean deletePriorCommits;
   
-  /** Creates index upgrader on the given directory, using an {@link IndexWriter} using the given
-   * {@code matchVersion}. The tool refuses to upgrade indexes with multiple commit points. */
   public IndexUpgrader(Directory dir) {
     this(dir, new IndexWriterConfig(null), false);
   }
   
-  /** Creates index upgrader on the given directory, using an {@link IndexWriter} using the given
-   * {@code matchVersion}. You have the possibility to upgrade indexes with multiple commit points by removing
-   * all older ones. If {@code infoStream} is not {@code null}, all logging output will be sent to this stream. */
+
   public IndexUpgrader(Directory dir, InfoStream infoStream, boolean deletePriorCommits) {
     this(dir, new IndexWriterConfig(null), deletePriorCommits);
     if (null != infoStream) {
@@ -139,16 +112,13 @@ public final class IndexUpgrader {
     }
   }
   
-  /** Creates index upgrader on the given directory, using an {@link IndexWriter} using the given
-   * config. You have the possibility to upgrade indexes with multiple commit points by removing
-   * all older ones. */
+
   public IndexUpgrader(Directory dir, IndexWriterConfig iwc, boolean deletePriorCommits) {
     this.dir = dir;
     this.iwc = iwc;
     this.deletePriorCommits = deletePriorCommits;
   }
 
-  /** Perform the upgrade. */
   public void upgrade() throws IOException {
     if (!DirectoryReader.indexExists(dir)) {
       throw new IndexNotFoundException(dir.toString());

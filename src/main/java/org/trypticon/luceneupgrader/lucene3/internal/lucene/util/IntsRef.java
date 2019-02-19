@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,10 +17,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * limitations under the License.
  */
 
-/** Represents int[], as a slice (offset + length) into an
- *  existing int[].
- *
- *  @lucene.internal */
+
 public final class IntsRef implements Comparable<IntsRef>, Cloneable {
 
   public static final int[] EMPTY_INTS = new int[0];
@@ -89,7 +86,6 @@ public final class IntsRef implements Comparable<IntsRef>, Cloneable {
     }
   }
 
-  /** Signed int order comparison */
   public int compareTo(IntsRef other) {
     if (this == other) return 0;
 
@@ -123,11 +119,7 @@ public final class IntsRef implements Comparable<IntsRef>, Cloneable {
     length = other.length;
   }
 
-  /** 
-   * Used to grow the reference array. 
-   * 
-   * In general this should not be used as it does not take the offset into account.
-   * @lucene.internal */
+
   public void grow(int newLength) {
     assert offset == 0;
     if (ints.length < newLength) {
@@ -150,13 +142,6 @@ public final class IntsRef implements Comparable<IntsRef>, Cloneable {
     return sb.toString();
   }
   
-  /**
-   * Creates a new IntsRef that points to a copy of the ints from 
-   * <code>other</code>
-   * <p>
-   * The returned IntsRef will have a length of other.length
-   * and an offset of zero.
-   */
   public static IntsRef deepCopyOf(IntsRef other) {
     IntsRef clone = new IntsRef();
     clone.copyInts(other);

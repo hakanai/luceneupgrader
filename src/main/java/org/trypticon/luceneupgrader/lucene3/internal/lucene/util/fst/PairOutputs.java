@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,19 +22,12 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataOutput;
 
-/**
- * An FST {@link Outputs} implementation, holding two other outputs.
- *
- * @lucene.experimental
- */
-
 public class PairOutputs<A,B> extends Outputs<PairOutputs.Pair<A,B>> {
 
   private final Pair<A,B> NO_OUTPUT;
   private final Outputs<A> outputs1;
   private final Outputs<B> outputs2;
 
-  /** Holds a single pair of two outputs. */
   public static class Pair<A,B> {
     public final A output1;
     public final B output2;
@@ -69,7 +62,6 @@ public class PairOutputs<A,B> extends Outputs<PairOutputs.Pair<A,B>> {
     NO_OUTPUT = new Pair<A,B>(outputs1.getNoOutput(), outputs2.getNoOutput());
   }
 
-  /** Create a new Pair */
   public Pair<A,B> newPair(A a, B b) {
     if (a.equals(outputs1.getNoOutput())) {
       a = outputs1.getNoOutput();

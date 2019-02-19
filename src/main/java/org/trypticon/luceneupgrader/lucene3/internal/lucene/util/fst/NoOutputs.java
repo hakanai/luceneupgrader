@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,13 +19,6 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataOutput;
-
-/**
- * A null FST {@link Outputs} implementation; use this if
- * you just want to build an FSA.
- *
- * @lucene.experimental
- */
 
 public final class NoOutputs extends Outputs<Object> {
 

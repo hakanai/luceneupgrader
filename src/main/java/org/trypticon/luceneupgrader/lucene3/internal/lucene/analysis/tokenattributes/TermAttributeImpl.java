@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,11 +17,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattri
  * limitations under the License.
  */
 
-/**
- * The term text of a Token.
- * @deprecated This class is not used anymore. The backwards layer in
- * AttributeFactory uses the replacement implementation.
- */
+
 @Deprecated
 public class TermAttributeImpl extends CharTermAttributeImpl {
 }

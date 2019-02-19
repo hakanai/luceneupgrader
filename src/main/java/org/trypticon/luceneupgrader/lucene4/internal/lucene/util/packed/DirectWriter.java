@@ -23,24 +23,6 @@ import java.util.Arrays;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexOutput;
 
-/** 
- * Class for writing packed integers to be directly read from Directory.
- * Integers can be read on-the-fly via {@link DirectReader}.
- * <p>
- * Unlike PackedInts, it optimizes for read i/o operations and supports > 2B values.
- * Example usage:
- * <pre class="prettyprint">
- *   int bitsPerValue = DirectWriter.bitsRequired(100); // values up to and including 100
- *   IndexOutput output = dir.createOutput("packed", IOContext.DEFAULT);
- *   DirectWriter writer = DirectWriter.getInstance(output, numberOfValues, bitsPerValue);
- *   for (int i = 0; i < numberOfValues; i++) {
- *     writer.add(value);
- *   }
- *   writer.finish();
- *   output.close();
- * </pre>
- * @see DirectReader
- */
 public final class DirectWriter {
   final int bitsPerValue;
   final long numValues;
@@ -66,7 +48,6 @@ public final class DirectWriter {
     nextValues = new long[iterations * encoder.byteValueCount()];
   }
   
-  /** Adds a value to this writer */
   public void add(long l) throws IOException {
     assert bitsPerValue == 64 || (l >= 0 && l <= PackedInts.maxValue(bitsPerValue)) : bitsPerValue;
     assert !finished;
@@ -88,7 +69,6 @@ public final class DirectWriter {
     off = 0;
   }
 
-  /** finishes writing */
   public void finish() throws IOException {
     if (count != numValues) {
       throw new IllegalStateException("Wrong number of values added, expected: " + numValues + ", got: " + count);
@@ -102,7 +82,6 @@ public final class DirectWriter {
     finished = true;
   }
   
-  /** Returns an instance suitable for encoding {@code numValues} using {@code bitsPerValue} */
   public static DirectWriter getInstance(IndexOutput output, long numValues, int bitsPerValue) {
     if (Arrays.binarySearch(SUPPORTED_BITS_PER_VALUE, bitsPerValue) < 0) {
       throw new IllegalArgumentException("Unsupported bitsPerValue " + bitsPerValue + ". Did you use bitsRequired?");
@@ -110,14 +89,7 @@ public final class DirectWriter {
     return new DirectWriter(output, numValues, bitsPerValue);
   }
   
-  /** 
-   * Round a number of bits per value to the next amount of bits per value that
-   * is supported by this writer.
-   * 
-   * @param bitsRequired the amount of bits required
-   * @return the next number of bits per value that is gte the provided value
-   *         and supported by this writer
-   */
+
   private static int roundBits(int bitsRequired) {
     int index = Arrays.binarySearch(SUPPORTED_BITS_PER_VALUE, bitsRequired);
     if (index < 0) {
@@ -127,26 +99,10 @@ public final class DirectWriter {
     }
   }
 
-  /**
-   * Returns how many bits are required to hold values up
-   * to and including maxValue
-   *
-   * @param maxValue the maximum value that should be representable.
-   * @return the amount of bits needed to represent values from 0 to maxValue.
-   * @see PackedInts#bitsRequired(long)
-   */
   public static int bitsRequired(long maxValue) {
     return roundBits(PackedInts.bitsRequired(maxValue));
   }
 
-  /**
-   * Returns how many bits are required to hold values up
-   * to and including maxValue, interpreted as an unsigned value.
-   *
-   * @param maxValue the maximum value that should be representable.
-   * @return the amount of bits needed to represent values from 0 to maxValue.
-   * @see PackedInts#unsignedBitsRequired(long)
-   */
   public static int unsignedBitsRequired(long maxValue) {
     return roundBits(PackedInts.unsignedBitsRequired(maxValue));
   }

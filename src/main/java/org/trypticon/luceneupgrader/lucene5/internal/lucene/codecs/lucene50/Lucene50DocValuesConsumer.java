@@ -50,13 +50,11 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedIn
 
 import static org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.lucene50.Lucene50DocValuesFormat.*;
 
-/** writer for {@link Lucene50DocValuesFormat} */
 class Lucene50DocValuesConsumer extends DocValuesConsumer implements Closeable {
 
   IndexOutput data, meta;
   final int maxDoc;
   
-  /** expert: Creates a new writer */
   public Lucene50DocValuesConsumer(SegmentWriteState state, String dataCodec, String dataExtension, String metaCodec, String metaExtension) throws IOException {
     boolean success = false;
     try {
@@ -305,7 +303,6 @@ class Lucene50DocValuesConsumer extends DocValuesConsumer implements Closeable {
     }
   }
   
-  /** expert: writes a value dictionary for a sorted/sortedset field */
   private void addTermsDict(FieldInfo field, final Iterable<BytesRef> values) throws IOException {
     // first check if it's a "fixed-length" terms dict
     int minLength = Integer.MAX_VALUE;

@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,18 +20,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 import java.util.Collection;
 import java.util.Comparator;
 
-/**
- * Methods for manipulating arrays.
- *
- * @lucene.internal
- */
 public final class ArrayUtil {
 
-  /**
-   * @deprecated This constructor was not intended to be public and should not be used.
-   *  This class contains solely a static utility methods.
-   *  It will be made private in Lucene 4.0
-   */
   // make private in 4.0!
   @Deprecated
   public ArrayUtil() {} // no instance
@@ -43,42 +33,14 @@ public final class ArrayUtil {
 
    */
 
-  /**
-   * Parses the string argument as if it was an int value and returns the
-   * result. Throws NumberFormatException if the string does not represent an
-   * int quantity.
-   *
-   * @param chars a string representation of an int quantity.
-   * @return int the value represented by the argument
-   * @throws NumberFormatException if the argument could not be parsed as an int quantity.
-   */
   public static int parseInt(char[] chars) throws NumberFormatException {
     return parseInt(chars, 0, chars.length, 10);
   }
 
-  /**
-   * Parses a char array into an int.
-   * @param chars the character array
-   * @param offset The offset into the array
-   * @param len The length
-   * @return the int
-   * @throws NumberFormatException if it can't parse
-   */
   public static int parseInt(char[] chars, int offset, int len) throws NumberFormatException {
     return parseInt(chars, offset, len, 10);
   }
 
-  /**
-   * Parses the string argument as if it was an int value and returns the
-   * result. Throws NumberFormatException if the string does not represent an
-   * int quantity. The second argument specifies the radix to use when parsing
-   * the value.
-   *
-   * @param chars a string representation of an int quantity.
-   * @param radix the base to use for conversion.
-   * @return int the value represented by the argument
-   * @throws NumberFormatException if the argument could not be parsed as an int quantity.
-   */
   public static int parseInt(char[] chars, int offset, int len, int radix)
           throws NumberFormatException {
     if (chars == null || radix < Character.MIN_RADIX
@@ -137,23 +99,7 @@ public final class ArrayUtil {
  END APACHE HARMONY CODE
   */
 
-  /** Returns an array size >= minTargetSize, generally
-   *  over-allocating exponentially to achieve amortized
-   *  linear-time cost as the array grows.
-   *
-   *  NOTE: this was originally borrowed from Python 2.4.2
-   *  listobject.c sources (attribution in LICENSE.txt), but
-   *  has now been substantially changed based on
-   *  discussions from java-dev thread with subject "Dynamic
-   *  array reallocation algorithms", started on Jan 12
-   *  2010.
-   *
-   * @param minTargetSize Minimum required value to be returned.
-   * @param bytesPerElement Bytes used by each element of
-   * the array.  See constants in {@link RamUsageEstimator}.
-   *
-   * @lucene.internal
-   */
+
 
   public static int oversize(int minTargetSize, int bytesPerElement) {
 
@@ -467,10 +413,6 @@ public final class ArrayUtil {
     }
   }
 
-  /**
-   * Returns hash of chars in range start (inclusive) to
-   * end (inclusive)
-   */
   public static int hashCode(char[] array, int start, int end) {
     int code = 0;
     for (int i = end - 1; i >= start; i--)
@@ -478,10 +420,6 @@ public final class ArrayUtil {
     return code;
   }
 
-  /**
-   * Returns hash of bytes in range start (inclusive) to
-   * end (inclusive)
-   */
   public static int hashCode(byte[] array, int start, int end) {
     int code = 0;
     for (int i = end - 1; i >= start; i--)
@@ -491,18 +429,6 @@ public final class ArrayUtil {
 
 
   // Since Arrays.equals doesn't implement offsets for equals
-  /**
-   * See if two array slices are the same.
-   *
-   * @param left        The left array to compare
-   * @param offsetLeft  The offset into the array.  Must be positive
-   * @param right       The right array to compare
-   * @param offsetRight the offset into the right array.  Must be positive
-   * @param length      The length of the section of the array to compare
-   * @return true if the two arrays, starting at their respective offsets, are equal
-   * 
-   * @see java.util.Arrays#equals(char[], char[])
-   */
   public static boolean equals(char[] left, int offsetLeft, char[] right, int offsetRight, int length) {
     if ((offsetLeft + length <= left.length) && (offsetRight + length <= right.length)) {
       for (int i = 0; i < length; i++) {
@@ -517,18 +443,6 @@ public final class ArrayUtil {
   }
 
   // Since Arrays.equals doesn't implement offsets for equals
-  /**
-   * See if two array slices are the same.
-   *
-   * @param left        The left array to compare
-   * @param offsetLeft  The offset into the array.  Must be positive
-   * @param right       The right array to compare
-   * @param offsetRight the offset into the right array.  Must be positive
-   * @param length      The length of the section of the array to compare
-   * @return true if the two arrays, starting at their respective offsets, are equal
-   * 
-   * @see java.util.Arrays#equals(char[], char[])
-   */
   public static boolean equals(int[] left, int offsetLeft, int[] right, int offsetRight, int length) {
     if ((offsetLeft + length <= left.length) && (offsetRight + length <= right.length)) {
       for (int i = 0; i < length; i++) {
@@ -556,8 +470,7 @@ public final class ArrayUtil {
     return result;
   }
   
-  /** SorterTemplate with custom {@link Comparator} */
-  private static <T> SorterTemplate getSorter(final T[] a, final Comparator<? super T> comp) {
+    private static <T> SorterTemplate getSorter(final T[] a, final Comparator<? super T> comp) {
     return new SorterTemplate() {
       @Override
       protected void swap(int i, int j) {
@@ -585,8 +498,7 @@ public final class ArrayUtil {
     };
   }
   
-  /** Natural SorterTemplate */
-  private static <T extends Comparable<? super T>> SorterTemplate getSorter(final T[] a) {
+    private static <T extends Comparable<? super T>> SorterTemplate getSorter(final T[] a) {
     return new SorterTemplate() {
       @Override
       protected void swap(int i, int j) {
@@ -616,121 +528,61 @@ public final class ArrayUtil {
 
   // quickSorts (endindex is exclusive!):
   
-  /**
-   * Sorts the given array slice using the {@link Comparator}. This method uses the quick sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   * @param fromIndex start index (inclusive)
-   * @param toIndex end index (exclusive)
-   */
   public static <T> void quickSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> comp) {
     if (toIndex-fromIndex <= 1) return;
     getSorter(a, comp).quickSort(fromIndex, toIndex-1);
   }
   
-  /**
-   * Sorts the given array using the {@link Comparator}. This method uses the quick sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   */
   public static <T> void quickSort(T[] a, Comparator<? super T> comp) {
     quickSort(a, 0, a.length, comp);
   }
   
-  /**
-   * Sorts the given array slice in natural order. This method uses the quick sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   * @param fromIndex start index (inclusive)
-   * @param toIndex end index (exclusive)
-   */
   public static <T extends Comparable<? super T>> void quickSort(T[] a, int fromIndex, int toIndex) {
     if (toIndex-fromIndex <= 1) return;
     getSorter(a).quickSort(fromIndex, toIndex-1);
   }
   
-  /**
-   * Sorts the given array in natural order. This method uses the quick sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   */
   public static <T extends Comparable<? super T>> void quickSort(T[] a) {
     quickSort(a, 0, a.length);
   }
 
   // mergeSorts:
   
-  /**
-   * Sorts the given array slice using the {@link Comparator}. This method uses the merge sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   * @param fromIndex start index (inclusive)
-   * @param toIndex end index (exclusive)
-   */
   public static <T> void mergeSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> comp) {
     if (toIndex-fromIndex <= 1) return;
     //System.out.println("SORT: " + (toIndex-fromIndex));
     getSorter(a, comp).mergeSort(fromIndex, toIndex-1);
   }
   
-  /**
-   * Sorts the given array using the {@link Comparator}. This method uses the merge sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   */
   public static <T> void mergeSort(T[] a, Comparator<? super T> comp) {
     mergeSort(a, 0, a.length, comp);
   }
   
-  /**
-   * Sorts the given array slice in natural order. This method uses the merge sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   * @param fromIndex start index (inclusive)
-   * @param toIndex end index (exclusive)
-   */
   public static <T extends Comparable<? super T>> void mergeSort(T[] a, int fromIndex, int toIndex) {
     if (toIndex-fromIndex <= 1) return;
     getSorter(a).mergeSort(fromIndex, toIndex-1);
   }
   
-  /**
-   * Sorts the given array in natural order. This method uses the merge sort
-   * algorithm, but falls back to insertion sort for small arrays.
-   */
   public static <T extends Comparable<? super T>> void mergeSort(T[] a) {
     mergeSort(a, 0, a.length);
   }
 
   // insertionSorts:
   
-  /**
-   * Sorts the given array slice using the {@link Comparator}. This method uses the insertion sort
-   * algorithm. It is only recommended to use this algorithm for partially sorted small arrays!
-   * @param fromIndex start index (inclusive)
-   * @param toIndex end index (exclusive)
-   */
   public static <T> void insertionSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> comp) {
     if (toIndex-fromIndex <= 1) return;
     getSorter(a, comp).insertionSort(fromIndex, toIndex-1);
   }
   
-  /**
-   * Sorts the given array using the {@link Comparator}. This method uses the insertion sort
-   * algorithm. It is only recommended to use this algorithm for partially sorted small arrays!
-   */
   public static <T> void insertionSort(T[] a, Comparator<? super T> comp) {
     insertionSort(a, 0, a.length, comp);
   }
   
-  /**
-   * Sorts the given array slice in natural order. This method uses the insertion sort
-   * algorithm. It is only recommended to use this algorithm for partially sorted small arrays!
-   * @param fromIndex start index (inclusive)
-   * @param toIndex end index (exclusive)
-   */
   public static <T extends Comparable<? super T>> void insertionSort(T[] a, int fromIndex, int toIndex) {
     if (toIndex-fromIndex <= 1) return;
     getSorter(a).insertionSort(fromIndex, toIndex-1);
   }
   
-  /**
-   * Sorts the given array in natural order. This method uses the insertion sort
-   * algorithm. It is only recommended to use this algorithm for partially sorted small arrays!
-   */
   public static <T extends Comparable<? super T>> void insertionSort(T[] a) {
     insertionSort(a, 0, a.length);
   }

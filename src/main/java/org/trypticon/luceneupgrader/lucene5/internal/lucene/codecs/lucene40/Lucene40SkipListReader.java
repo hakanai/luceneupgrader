@@ -22,10 +22,6 @@ import java.util.Arrays;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.MultiLevelSkipListReader;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IndexInput;
 
-/**
- * Lucene 4.0 skiplist reader
- * @deprecated Only for reading old 4.0 segments
- */
 @Deprecated
 final class Lucene40SkipListReader extends MultiLevelSkipListReader {
   private boolean currentFieldStoresPayloads;
@@ -40,7 +36,6 @@ final class Lucene40SkipListReader extends MultiLevelSkipListReader {
   private int lastPayloadLength;
   private int lastOffsetLength;
                            
-  /** Sole constructor. */
   public Lucene40SkipListReader(IndexInput skipStream, int maxSkipLevels, int skipInterval) {
     super(skipStream, maxSkipLevels, skipInterval);
     freqPointer = new long[maxSkipLevels];
@@ -49,7 +44,6 @@ final class Lucene40SkipListReader extends MultiLevelSkipListReader {
     offsetLength = new int[maxSkipLevels];
   }
 
-  /** Per-term initialization. */
   public void init(long skipPointer, long freqBasePointer, long proxBasePointer, int df, boolean storesPayloads, boolean storesOffsets) throws IOException {
     super.init(skipPointer, df);
     this.currentFieldStoresPayloads = storesPayloads;
@@ -63,28 +57,20 @@ final class Lucene40SkipListReader extends MultiLevelSkipListReader {
     Arrays.fill(offsetLength, 0);
   }
 
-  /** Returns the freq pointer of the doc to which the last call of 
-   * {@link MultiLevelSkipListReader#skipTo(int)} has skipped.  */
   public long getFreqPointer() {
     return lastFreqPointer;
   }
 
-  /** Returns the prox pointer of the doc to which the last call of 
-   * {@link MultiLevelSkipListReader#skipTo(int)} has skipped.  */
   public long getProxPointer() {
     return lastProxPointer;
   }
   
-  /** Returns the payload length of the payload stored just before 
-   * the doc to which the last call of {@link MultiLevelSkipListReader#skipTo(int)} 
-   * has skipped.  */
+
   public int getPayloadLength() {
     return lastPayloadLength;
   }
   
-  /** Returns the offset length (endOffset-startOffset) of the position stored just before 
-   * the doc to which the last call of {@link MultiLevelSkipListReader#skipTo(int)} 
-   * has skipped.  */
+
   public int getOffsetLength() {
     return lastOffsetLength;
   }

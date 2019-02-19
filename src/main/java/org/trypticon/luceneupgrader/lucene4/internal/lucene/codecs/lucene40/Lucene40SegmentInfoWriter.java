@@ -30,20 +30,12 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexOutput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 
-/**
- * Lucene 4.0 implementation of {@link SegmentInfoWriter}.
- * 
- * @see Lucene40SegmentInfoFormat
- * @lucene.experimental
- */
 @Deprecated
 public class Lucene40SegmentInfoWriter extends SegmentInfoWriter {
 
-  /** Sole constructor. */
   public Lucene40SegmentInfoWriter() {
   }
 
-  /** Save a single segment's info. */
   @Override
   public void write(Directory dir, SegmentInfo si, FieldInfos fis, IOContext ioContext) throws IOException {
     final String fileName = IndexFileNames.segmentFileName(si.name, "", Lucene40SegmentInfoFormat.SI_EXTENSION);

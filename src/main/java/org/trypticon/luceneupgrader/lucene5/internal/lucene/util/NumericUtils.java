@@ -30,121 +30,32 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.Terms;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.TermsEnum;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.NumericRangeQuery; // for javadocs
 
-/**
- * This is a helper class to generate prefix-encoded representations for numerical values
- * and supplies converters to represent float/double values as sortable integers/longs.
- *
- * <p>To quickly execute range queries in Apache Lucene, a range is divided recursively
- * into multiple intervals for searching: The center of the range is searched only with
- * the lowest possible precision in the trie, while the boundaries are matched
- * more exactly. This reduces the number of terms dramatically.
- *
- * <p>This class generates terms to achieve this: First the numerical integer values need to
- * be converted to bytes. For that integer values (32 bit or 64 bit) are made unsigned
- * and the bits are converted to ASCII chars with each 7 bit. The resulting byte[] is
- * sortable like the original integer value (even using UTF-8 sort order). Each value is also
- * prefixed (in the first char) by the <code>shift</code> value (number of bits removed) used
- * during encoding.
- *
- * <p>To also index floating point numbers, this class supplies two methods to convert them
- * to integer values by changing their bit layout: {@link #doubleToSortableLong},
- * {@link #floatToSortableInt}. You will have no precision loss by
- * converting floating point numbers to integers and back (only that the integer form
- * is not usable). Other data types like dates can easily converted to longs or ints (e.g.
- * date to long: {@link java.util.Date#getTime}).
- *
- * <p>For easy usage, the trie algorithm is implemented for indexing inside
- * {@link NumericTokenStream} that can index <code>int</code>, <code>long</code>,
- * <code>float</code>, and <code>double</code>. For querying,
- * {@link NumericRangeQuery} implements the query part
- * for the same data types.
- *
- * <p>This class can also be used, to generate lexicographically sortable (according to
- * {@link BytesRef#getUTF8SortedAsUTF16Comparator()}) representations of numeric data
- * types for other usages (e.g. sorting).
- *
- * @lucene.internal
- * @since 2.9, API changed non backwards-compliant in 4.0
- */
 public final class NumericUtils {
 
   private NumericUtils() {} // no instance!
   
-  /**
-   * The default precision step used by {@link LongField},
-   * {@link DoubleField}, {@link NumericTokenStream}, {@link
-   * NumericRangeQuery}.
-   */
   public static final int PRECISION_STEP_DEFAULT = 16;
   
-  /**
-   * The default precision step used by {@link IntField} and
-   * {@link FloatField}.
-   */
   public static final int PRECISION_STEP_DEFAULT_32 = 8;
   
-  /**
-   * Longs are stored at lower precision by shifting off lower bits. The shift count is
-   * stored as <code>SHIFT_START_LONG+shift</code> in the first byte
-   */
   public static final byte SHIFT_START_LONG = 0x20;
 
-  /**
-   * The maximum term length (used for <code>byte[]</code> buffer size)
-   * for encoding <code>long</code> values.
-   * @see #longToPrefixCoded
-   */
   public static final int BUF_SIZE_LONG = 63/7 + 2;
 
-  /**
-   * Integers are stored at lower precision by shifting off lower bits. The shift count is
-   * stored as <code>SHIFT_START_INT+shift</code> in the first byte
-   */
   public static final byte SHIFT_START_INT  = 0x60;
 
-  /**
-   * The maximum term length (used for <code>byte[]</code> buffer size)
-   * for encoding <code>int</code> values.
-   * @see #intToPrefixCoded
-   */
   public static final int BUF_SIZE_INT = 31/7 + 2;
 
-  /**
-   * Returns prefix coded bits after reducing the precision by <code>shift</code> bits.
-   * This is method is used by {@link NumericTokenStream}.
-   * After encoding, {@code bytes.offset} will always be 0. 
-   * @param val the numeric value
-   * @param shift how many bits to strip from the right
-   * @param bytes will contain the encoded value
-   * @deprecated Use {@link #longToPrefixCoded} instead.
-   */
   @Deprecated
   public static void longToPrefixCodedBytes(final long val, final int shift, final BytesRefBuilder bytes) {
     longToPrefixCoded(val, shift, bytes);
   }
 
-  /**
-   * Returns prefix coded bits after reducing the precision by <code>shift</code> bits.
-   * This is method is used by {@link NumericTokenStream}.
-   * After encoding, {@code bytes.offset} will always be 0.
-   * @param val the numeric value
-   * @param shift how many bits to strip from the right
-   * @param bytes will contain the encoded value
-   * @deprecated Use {@link #intToPrefixCoded} instead.
-   */
   @Deprecated
   public static void intToPrefixCodedBytes(final int val, final int shift, final BytesRefBuilder bytes) {
     intToPrefixCoded(val, shift, bytes);
   }
 
-  /**
-   * Returns prefix coded bits after reducing the precision by <code>shift</code> bits.
-   * This is method is used by {@link NumericTokenStream}.
-   * After encoding, {@code bytes.offset} will always be 0.
-   * @param val the numeric value
-   * @param shift how many bits to strip from the right
-   * @param bytes will contain the encoded value
-   */
   public static void longToPrefixCoded(final long val, final int shift, final BytesRefBuilder bytes) {
     // ensure shift is 0..63
     if ((shift & ~0x3f) != 0) {
@@ -165,14 +76,6 @@ public final class NumericUtils {
   }
 
 
-  /**
-   * Returns prefix coded bits after reducing the precision by <code>shift</code> bits.
-   * This is method is used by {@link NumericTokenStream}.
-   * After encoding, {@code bytes.offset} will always be 0. 
-   * @param val the numeric value
-   * @param shift how many bits to strip from the right
-   * @param bytes will contain the encoded value
-   */
   public static void intToPrefixCoded(final int val, final int shift, final BytesRefBuilder bytes) {
     // ensure shift is 0..31
     if ((shift & ~0x1f) != 0) {
@@ -193,11 +96,6 @@ public final class NumericUtils {
   }
 
 
-  /**
-   * Returns the shift value from a prefix encoded {@code long}.
-   * @throws NumberFormatException if the supplied {@link BytesRef} is
-   * not correctly prefix encoded.
-   */
   public static int getPrefixCodedLongShift(final BytesRef val) {
     final int shift = val.bytes[val.offset] - SHIFT_START_LONG;
     if (shift > 63 || shift < 0)
@@ -205,11 +103,6 @@ public final class NumericUtils {
     return shift;
   }
 
-  /**
-   * Returns the shift value from a prefix encoded {@code int}.
-   * @throws NumberFormatException if the supplied {@link BytesRef} is
-   * not correctly prefix encoded.
-   */
   public static int getPrefixCodedIntShift(final BytesRef val) {
     final int shift = val.bytes[val.offset] - SHIFT_START_INT;
     if (shift > 31 || shift < 0)
@@ -217,14 +110,6 @@ public final class NumericUtils {
     return shift;
   }
 
-  /**
-   * Returns a long from prefixCoded bytes.
-   * Rightmost bits will be zero for lower precision codes.
-   * This method can be used to decode a term's value.
-   * @throws NumberFormatException if the supplied {@link BytesRef} is
-   * not correctly prefix encoded.
-   * @see #longToPrefixCoded
-   */
   public static long prefixCodedToLong(final BytesRef val) {
     long sortableBits = 0L;
     for (int i=val.offset+1, limit=val.offset+val.length; i<limit; i++) {
@@ -241,14 +126,6 @@ public final class NumericUtils {
     return (sortableBits << getPrefixCodedLongShift(val)) ^ 0x8000000000000000L;
   }
 
-  /**
-   * Returns an int from prefixCoded bytes.
-   * Rightmost bits will be zero for lower precision codes.
-   * This method can be used to decode a term's value.
-   * @throws NumberFormatException if the supplied {@link BytesRef} is
-   * not correctly prefix encoded.
-   * @see #intToPrefixCoded
-   */
   public static int prefixCodedToInt(final BytesRef val) {
     int sortableBits = 0;
     for (int i=val.offset+1, limit=val.offset+val.length; i<limit; i++) {
@@ -265,87 +142,42 @@ public final class NumericUtils {
     return (sortableBits << getPrefixCodedIntShift(val)) ^ 0x80000000;
   }
 
-  /**
-   * Converts a <code>double</code> value to a sortable signed <code>long</code>.
-   * The value is converted by getting their IEEE 754 floating-point &quot;double format&quot;
-   * bit layout and then some bits are swapped, to be able to compare the result as long.
-   * By this the precision is not reduced, but the value can easily used as a long.
-   * The sort order (including {@link Double#NaN}) is defined by
-   * {@link Double#compareTo}; {@code NaN} is greater than positive infinity.
-   * @see #sortableLongToDouble
-   */
   public static long doubleToSortableLong(double val) {
     return sortableDoubleBits(Double.doubleToLongBits(val));
   }
 
-  /**
-   * Converts a sortable <code>long</code> back to a <code>double</code>.
-   * @see #doubleToSortableLong
-   */
   public static double sortableLongToDouble(long val) {
     return Double.longBitsToDouble(sortableDoubleBits(val));
   }
 
-  /**
-   * Converts a <code>float</code> value to a sortable signed <code>int</code>.
-   * The value is converted by getting their IEEE 754 floating-point &quot;float format&quot;
-   * bit layout and then some bits are swapped, to be able to compare the result as int.
-   * By this the precision is not reduced, but the value can easily used as an int.
-   * The sort order (including {@link Float#NaN}) is defined by
-   * {@link Float#compareTo}; {@code NaN} is greater than positive infinity.
-   * @see #sortableIntToFloat
-   */
   public static int floatToSortableInt(float val) {
     return sortableFloatBits(Float.floatToIntBits(val));
   }
 
-  /**
-   * Converts a sortable <code>int</code> back to a <code>float</code>.
-   * @see #floatToSortableInt
-   */
   public static float sortableIntToFloat(int val) {
     return Float.intBitsToFloat(sortableFloatBits(val));
   }
   
-  /** Converts IEEE 754 representation of a double to sortable order (or back to the original) */
   public static long sortableDoubleBits(long bits) {
     return bits ^ (bits >> 63) & 0x7fffffffffffffffL;
   }
   
-  /** Converts IEEE 754 representation of a float to sortable order (or back to the original) */
   public static int sortableFloatBits(int bits) {
     return bits ^ (bits >> 31) & 0x7fffffff;
   }
 
-  /**
-   * Splits a long range recursively.
-   * You may implement a builder that adds clauses to a
-   * {@link org.trypticon.luceneupgrader.lucene5.internal.lucene.search.BooleanQuery} for each call to its
-   * {@link LongRangeBuilder#addRange(BytesRef,BytesRef)}
-   * method.
-   * <p>This method is used by {@link NumericRangeQuery}.
-   */
   public static void splitLongRange(final LongRangeBuilder builder,
     final int precisionStep,  final long minBound, final long maxBound
   ) {
     splitRange(builder, 64, precisionStep, minBound, maxBound);
   }
   
-  /**
-   * Splits an int range recursively.
-   * You may implement a builder that adds clauses to a
-   * {@link org.trypticon.luceneupgrader.lucene5.internal.lucene.search.BooleanQuery} for each call to its
-   * {@link IntRangeBuilder#addRange(BytesRef,BytesRef)}
-   * method.
-   * <p>This method is used by {@link NumericRangeQuery}.
-   */
   public static void splitIntRange(final IntRangeBuilder builder,
     final int precisionStep,  final int minBound, final int maxBound
   ) {
     splitRange(builder, 32, precisionStep, minBound, maxBound);
   }
   
-  /** This helper does the splitting for both 32 and 64 bit. */
   private static void splitRange(
     final Object builder, final int valSize,
     final int precisionStep, long minBound, long maxBound
@@ -385,7 +217,6 @@ public final class NumericUtils {
     }
   }
   
-  /** Helper that delegates to correct range builder */
   private static void addRange(
     final Object builder, final int valSize,
     long minBound, long maxBound,
@@ -410,26 +241,12 @@ public final class NumericUtils {
     }
   }
 
-  /**
-   * Callback for {@link #splitLongRange}.
-   * You need to overwrite only one of the methods.
-   * @lucene.internal
-   * @since 2.9, API changed non backwards-compliant in 4.0
-   */
   public static abstract class LongRangeBuilder {
     
-    /**
-     * Overwrite this method, if you like to receive the already prefix encoded range bounds.
-     * You can directly build classical (inclusive) range queries from them.
-     */
     public void addRange(BytesRef minPrefixCoded, BytesRef maxPrefixCoded) {
       throw new UnsupportedOperationException();
     }
     
-    /**
-     * Overwrite this method, if you like to receive the raw long range bounds.
-     * You can use this for e.g. debugging purposes (print out range bounds).
-     */
     public void addRange(final long min, final long max, final int shift) {
       final BytesRefBuilder minBytes = new BytesRefBuilder(), maxBytes = new BytesRefBuilder();
       longToPrefixCoded(min, shift, minBytes);
@@ -439,26 +256,12 @@ public final class NumericUtils {
   
   }
   
-  /**
-   * Callback for {@link #splitIntRange}.
-   * You need to overwrite only one of the methods.
-   * @lucene.internal
-   * @since 2.9, API changed non backwards-compliant in 4.0
-   */
   public static abstract class IntRangeBuilder {
     
-    /**
-     * Overwrite this method, if you like to receive the already prefix encoded range bounds.
-     * You can directly build classical range (inclusive) queries from them.
-     */
     public void addRange(BytesRef minPrefixCoded, BytesRef maxPrefixCoded) {
       throw new UnsupportedOperationException();
     }
     
-    /**
-     * Overwrite this method, if you like to receive the raw int range bounds.
-     * You can use this for e.g. debugging purposes (print out range bounds).
-     */
     public void addRange(final int min, final int max, final int shift) {
       final BytesRefBuilder minBytes = new BytesRefBuilder(), maxBytes = new BytesRefBuilder();
       intToPrefixCoded(min, shift, minBytes);
@@ -468,15 +271,6 @@ public final class NumericUtils {
   
   }
   
-  /**
-   * Filters the given {@link TermsEnum} by accepting only prefix coded 64 bit
-   * terms with a shift value of <tt>0</tt>.
-   * 
-   * @param termsEnum
-   *          the terms enum to filter
-   * @return a filtered {@link TermsEnum} that only returns prefix coded 64 bit
-   *         terms with a shift value of <tt>0</tt>.
-   */
   public static TermsEnum filterPrefixCodedLongs(TermsEnum termsEnum) {
     return new SeekingNumericFilteredTermsEnum(termsEnum) {
 
@@ -487,15 +281,6 @@ public final class NumericUtils {
     };
   }
 
-  /**
-   * Filters the given {@link TermsEnum} by accepting only prefix coded 32 bit
-   * terms with a shift value of <tt>0</tt>.
-   * 
-   * @param termsEnum
-   *          the terms enum to filter
-   * @return a filtered {@link TermsEnum} that only returns prefix coded 32 bit
-   *         terms with a shift value of <tt>0</tt>.
-   */
   public static TermsEnum filterPrefixCodedInts(TermsEnum termsEnum) {
     return new SeekingNumericFilteredTermsEnum(termsEnum) {
       
@@ -506,10 +291,7 @@ public final class NumericUtils {
     };
   }
 
-  /** Just like FilteredTermsEnum, except it adds a limited
-   *  seekCeil implementation that only works with {@link
-   *  #filterPrefixCodedInts} and {@link
-   *  #filterPrefixCodedLongs}. */
+
   private static abstract class SeekingNumericFilteredTermsEnum extends FilteredTermsEnum {
     public SeekingNumericFilteredTermsEnum(final TermsEnum tenum) {
       super(tenum, false);
@@ -556,10 +338,6 @@ public final class NumericUtils {
       };
   }
     
-  /**
-   * Returns the minimum int value indexed into this
-   * numeric field or null if no terms exist.
-   */
   public static Integer getMinInt(Terms terms) throws IOException {
     // All shift=0 terms are sorted first, so we don't need
     // to filter the incoming terms; we can just get the
@@ -568,19 +346,11 @@ public final class NumericUtils {
     return (min != null) ? NumericUtils.prefixCodedToInt(min) : null;
   }
 
-  /**
-   * Returns the maximum int value indexed into this
-   * numeric field or null if no terms exist.
-   */
   public static Integer getMaxInt(Terms terms) throws IOException {
     BytesRef max = intTerms(terms).getMax();
     return (max != null) ? NumericUtils.prefixCodedToInt(max) : null;
   }
 
-  /**
-   * Returns the minimum long value indexed into this
-   * numeric field or null if no terms exist.
-   */
   public static Long getMinLong(Terms terms) throws IOException {
     // All shift=0 terms are sorted first, so we don't need
     // to filter the incoming terms; we can just get the
@@ -589,10 +359,6 @@ public final class NumericUtils {
     return (min != null) ? NumericUtils.prefixCodedToLong(min) : null;
   }
 
-  /**
-   * Returns the maximum long value indexed into this
-   * numeric field or null if no terms exist.
-   */
   public static Long getMaxLong(Terms terms) throws IOException {
     BytesRef max = longTerms(terms).getMax();
     return (max != null) ? NumericUtils.prefixCodedToLong(max) : null;

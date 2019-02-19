@@ -38,17 +38,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.perfield.PerF
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.perfield.PerFieldPostingsFormat;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentWriteState;
 
-/**
- * Implements the Lucene 4.6 index format, with configurable per-field postings
- * and docvalues formats.
- * <p>
- * If you want to reuse functionality of this codec in another codec, extend
- * {@link FilterCodec}.
- *
- * @see org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene46 package documentation for file format details.
- * @lucene.experimental
- * @deprecated Only for reading old 4.6-4.8 segments
- */
 // NOTE: if we make largish changes in a minor release, easier to just make Lucene46Codec or whatever
 // if they are backwards compatible or smallish we can probably do the backwards in the postingsreader
 // (it writes a minor version, etc).
@@ -74,7 +63,6 @@ public class Lucene46Codec extends Codec {
     }
   };
 
-  /** Sole constructor. */
   public Lucene46Codec() {
     super("Lucene46");
   }
@@ -109,20 +97,12 @@ public class Lucene46Codec extends Codec {
     return liveDocsFormat;
   }
 
-  /** Returns the postings format that should be used for writing 
-   *  new segments of <code>field</code>.
-   *  
-   *  The default implementation always returns "Lucene41"
-   */
+
   public PostingsFormat getPostingsFormatForField(String field) {
     return defaultFormat;
   }
   
-  /** Returns the docvalues format that should be used for writing 
-   *  new segments of <code>field</code>.
-   *  
-   *  The default implementation always returns "Lucene45"
-   */
+
   public DocValuesFormat getDocValuesFormatForField(String field) {
     return defaultDVFormat;
   }

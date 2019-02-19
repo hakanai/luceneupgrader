@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,15 +23,11 @@ import java.util.*;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IntsRef;
 
-/** Static helper methods.
- *
- * @lucene.experimental */
+
 public final class Util {
   private Util() {
   }
 
-  /** Looks up the output for this input, or null if the
-   *  input is not accepted. */
   public static<T> T get(FST<T> fst, IntsRef input) throws IOException {
 
     // TODO: would be nice not to alloc this on every lookup
@@ -57,8 +53,6 @@ public final class Util {
 
   // TODO: maybe a CharsRef version for BYTE2
 
-  /** Looks up the output for this input, or null if the
-   *  input is not accepted */
   public static<T> T get(FST<T> fst, BytesRef input) throws IOException {
     assert fst.inputType == FST.INPUT_TYPE.BYTE1;
 
@@ -83,20 +77,7 @@ public final class Util {
     }
   }
 
-  /** Reverse lookup (lookup by output instead of by input),
-   *  in the special case when your FSTs outputs are
-   *  strictly ascending.  This locates the input/output
-   *  pair where the output is equal to the target, and will
-   *  return null if that output does not exist.
-   *
-   *  <p>NOTE: this only works with FST<Long>, only
-   *  works when the outputs are ascending in order with
-   *  the inputs and only works when you shared
-   *  the outputs (pass doShare=true to {@link
-   *  PositiveIntOutputs#getSingleton}).
-   *  For example, simple ordinals (0, 1,
-   *  2, ...), or file offets (when appending to a file)
-   *  fit this. */
+
   public static IntsRef getByOutput(FST<Long> fst, long targetOutput) throws IOException {
 
     final FST.BytesReader in = fst.getBytesReader(0);
@@ -519,8 +500,6 @@ public final class Util {
     }
   }
 
-  /** Holds a single input (IntsRef) + output, returned by
-   *  {@link #shortestPaths}. */
   public final static class MinResult<T> implements Comparable<MinResult<T>> {
     public final IntsRef input;
     public final T output;
@@ -542,48 +521,13 @@ public final class Util {
     }
   }
 
-  /** Starting from node, find the top N min cost 
-   * completions to a final node.
-   *
-   *  <p>NOTE: you must share the outputs when you build the
-   *  FST (pass doShare=true to {@link
-   *  PositiveIntOutputs#getSingleton}). */
+
 
   public static <T> MinResult<T>[] shortestPaths(FST<T> fst, FST.Arc<T> fromNode, Comparator<T> comparator, int topN) throws IOException {
     return new TopNSearcher<T>(fst, fromNode, topN, comparator).search();
   } 
 
-  /**
-   * Dumps an {@link FST} to a GraphViz's <code>dot</code> language description
-   * for visualization. Example of use:
-   * 
-   * <pre class="prettyprint">
-   * PrintWriter pw = new PrintWriter(&quot;out.dot&quot;);
-   * Util.toDot(fst, pw, true, true);
-   * pw.close();
-   * </pre>
-   * 
-   * and then, from command line:
-   * 
-   * <pre>
-   * dot -Tpng -o out.png out.dot
-   * </pre>
-   * 
-   * <p>
-   * Note: larger FSTs (a few thousand nodes) won't even render, don't bother.
-   * 
-   * @param sameRank
-   *          If <code>true</code>, the resulting <code>dot</code> file will try
-   *          to order states in layers of breadth-first traversal. This may
-   *          mess up arcs, but makes the output FST's structure a bit clearer.
-   * 
-   * @param labelStates
-   *          If <code>true</code> states will have labels equal to their offsets in their
-   *          binary format. Expands the graph considerably. 
-   * 
-   * @see "http://www.graphviz.org/"
-   */
-  public static <T> void toDot(FST<T> fst, Writer out, boolean sameRank, boolean labelStates) 
+  public static <T> void toDot(FST<T> fst, Writer out, boolean sameRank, boolean labelStates)
     throws IOException {    
     final String expandedNodeColor = "blue";
 
@@ -766,9 +710,6 @@ public final class Util {
     out.flush();
   }
 
-  /**
-   * Emit a single state in the <code>dot</code> language. 
-   */
   private static void emitDotState(Writer out, String name, String shape,
       String color, String label) throws IOException {
     out.write("  " + name 
@@ -779,9 +720,6 @@ public final class Util {
         + "]\n");
   }
 
-  /**
-   * Ensures an arc's label is indeed printable (dot uses US-ASCII). 
-   */
   private static String printableLabel(int label) {
     if (label >= 0x20 && label <= 0x7d) {
       return Character.toString((char) label);
@@ -790,9 +728,7 @@ public final class Util {
     }
   }
 
-  /** Decodes the Unicode codepoints from the provided
-   *  CharSequence and places them in the provided scratch
-   *  IntsRef, which must not be null, returning it. */
+
   public static IntsRef toUTF32(CharSequence s, IntsRef scratch) {
     int charIdx = 0;
     int intIdx = 0;
@@ -808,9 +744,7 @@ public final class Util {
     return scratch;
   }
 
-  /** Decodes the Unicode codepoints from the provided
-   *  char[] and places them in the provided scratch
-   *  IntsRef, which must not be null, returning it. */
+
   public static IntsRef toUTF32(char[] s, int offset, int length, IntsRef scratch) {
     int charIdx = offset;
     int intIdx = 0;
@@ -826,8 +760,6 @@ public final class Util {
     return scratch;
   }
 
-  /** Just takes unsigned byte values from the BytesRef and
-   *  converts into an IntsRef. */
   public static IntsRef toIntsRef(BytesRef input, IntsRef scratch) {
     scratch.grow(input.length);
     for(int i=0;i<input.length;i++) {
@@ -837,8 +769,6 @@ public final class Util {
     return scratch;
   }
 
-  /** Just converts IntsRef to BytesRef; you must ensure the
-   *  int values fit into a byte. */
   public static BytesRef toBytesRef(IntsRef input, BytesRef scratch) {
     scratch.grow(input.length);
     for(int i=0;i<input.length;i++) {

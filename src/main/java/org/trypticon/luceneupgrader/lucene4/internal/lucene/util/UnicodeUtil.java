@@ -86,21 +86,9 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * copyright holder.
  */
 
-/**
- * Class to encode java's UTF16 char[] into UTF8 byte[]
- * without always allocating a new byte[] as
- * String.getBytes(StandardCharsets.UTF_8) does.
- *
- * @lucene.internal
- */
-
 public final class UnicodeUtil {
   
-  /** A binary term consisting of a number of 0xff bytes, likely to be bigger than other terms
-   *  (e.g. collation keys) one would normally encounter, and definitely bigger than any UTF-8 terms.
-   *  <p>
-   *  WARNING: This is not a valid UTF8 Term  
-   **/
+
   public static final BytesRef BIG_TERM = new BytesRef(
       new byte[] {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}
   ); // TODO this is unrelated here find a better place for it
@@ -122,13 +110,9 @@ public final class UnicodeUtil {
     Character.MIN_SUPPLEMENTARY_CODE_POINT - 
     (UNI_SUR_HIGH_START << HALF_SHIFT) - UNI_SUR_LOW_START;
 
-  /** Maximum number of UTF8 bytes per UTF16 character. */
   public static final int MAX_UTF8_BYTES_PER_CHAR = 4;
 
-  /** Encode characters from a char[] source, starting at
-   *  offset for length chars. It is the responsibility of the
-   *  caller to make sure that the destination array is large enough.
-   */
+
   public static int UTF16toUTF8(final char[] source, final int offset, final int length, byte[] out) {
 
     int upto = 0;
@@ -175,10 +159,7 @@ public final class UnicodeUtil {
     return upto;
   }
 
-  /** Encode characters from this String, starting at offset
-   *  for length characters. It is the responsibility of the
-   *  caller to make sure that the destination array is large enough.
-   */
+
   // TODO: broken if incoming result.offset != 0
   public static int UTF16toUTF8(final CharSequence s, final int offset, final int length, byte[] out) {
     final int end = offset + length;
@@ -354,17 +335,7 @@ public final class UnicodeUtil {
       };
   }
 
-  /** 
-   * Returns the number of code points in this UTF8 sequence.
-   * 
-   * <p>This method assumes valid UTF8 input. This method 
-   * <strong>does not perform</strong> full UTF8 validation, it will check only the 
-   * first byte of each codepoint (for multi-byte sequences any bytes after 
-   * the head are skipped).  
-   * 
-   * @throws IllegalArgumentException If invalid codepoint header byte occurs or the 
-   *    content is prematurely truncated.
-   */
+
   public static int codePointCount(BytesRef utf8) {
     int pos = utf8.offset;
     final int limit = pos + utf8.length;
@@ -391,16 +362,6 @@ public final class UnicodeUtil {
     return codePointCount;
   }
 
-  /**
-   * <p>This method assumes valid UTF8 input. This method 
-   * <strong>does not perform</strong> full UTF8 validation, it will check only the 
-   * first byte of each codepoint (for multi-byte sequences any bytes after 
-   * the head are skipped). It is the responsibility of the caller to make sure
-   * that the destination array is large enough.
-   * 
-   * @throws IllegalArgumentException If invalid codepoint header byte occurs or the 
-   *    content is prematurely truncated.
-   */
   public static int UTF8toUTF32(final BytesRef utf8, final int[] ints) {
     // TODO: ints cannot be null, should be an assert
     int utf32Count = 0;
@@ -441,30 +402,14 @@ public final class UnicodeUtil {
     return utf32Count;
   }
 
-  /** Shift value for lead surrogate to form a supplementary character. */
   private static final int LEAD_SURROGATE_SHIFT_ = 10;
-  /** Mask to retrieve the significant value from a trail surrogate.*/
   private static final int TRAIL_SURROGATE_MASK_ = 0x3FF;
-  /** Trail surrogate minimum value */
   private static final int TRAIL_SURROGATE_MIN_VALUE = 0xDC00;
-  /** Lead surrogate minimum value */
   private static final int LEAD_SURROGATE_MIN_VALUE = 0xD800;
-  /** The minimum value for Supplementary code points */
   private static final int SUPPLEMENTARY_MIN_VALUE = 0x10000;
-  /** Value that all lead surrogate starts with */
   private static final int LEAD_SURROGATE_OFFSET_ = LEAD_SURROGATE_MIN_VALUE
           - (SUPPLEMENTARY_MIN_VALUE >> LEAD_SURROGATE_SHIFT_);
 
-  /**
-   * Cover JDK 1.5 API. Create a String from an array of codePoints.
-   *
-   * @param codePoints The code array
-   * @param offset The start of the text in the code point array
-   * @param count The number of code points
-   * @return a String representing the code points between offset and count
-   * @throws IllegalArgumentException If an invalid code point is encountered
-   * @throws IndexOutOfBoundsException If the offset or count are out of bounds.
-   */
   public static String newString(int[] codePoints, int offset, int count) {
       if (count < 0) {
           throw new IllegalArgumentException();
@@ -528,14 +473,6 @@ public final class UnicodeUtil {
     return sb.toString();
   }
   
-  /**
-   * Interprets the given byte array as UTF-8 and converts to UTF-16. It is the
-   * responsibility of the caller to make sure that the destination array is large enough.
-   * <p>
-   * NOTE: Full characters are read, even if this reads past the length passed (and
-   * can result in an ArrayOutOfBoundsException if invalid UTF-8 is passed).
-   * Explicit checks for valid UTF-8 are not performed. 
-   */
   // TODO: broken if chars.offset != 0
   public static int UTF8toUTF16(byte[] utf8, int offset, int length, char[] out) {
     int out_offset = 0;
@@ -566,17 +503,10 @@ public final class UnicodeUtil {
     return out_offset;
   }
   
-  /**
-   * Utility method for {@link #UTF8toUTF16(byte[], int, int, char[])}
-   * @see #UTF8toUTF16(byte[], int, int, char[])
-   */
   public static int UTF8toUTF16(BytesRef bytesRef, char[] chars) {
     return UTF8toUTF16(bytesRef.bytes, bytesRef.offset, bytesRef.length, chars);
   }
 
-  /**
-   * @deprecated Uses {@link CharsRef} as a buffer.
-   */
   @Deprecated
   public static void UTF8toUTF16(BytesRef bytes, CharsRef chars) {
     assert chars.offset == 0;
@@ -586,9 +516,6 @@ public final class UnicodeUtil {
     chars.length = UTF8toUTF16(bytes, chars.chars);
   }
 
-  /**
-   * @deprecated Uses {@link BytesRef} as a buffer.
-   */
   @Deprecated
   public static void UTF16toUTF8(CharSequence chars, BytesRef bytes) {
     assert bytes.offset == 0;

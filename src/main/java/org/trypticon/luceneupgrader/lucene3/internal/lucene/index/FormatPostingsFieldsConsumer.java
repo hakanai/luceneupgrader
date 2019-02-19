@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,18 +19,9 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 
-/** Abstract API that consumes terms, doc, freq, prox and
- *  payloads postings.  Concrete implementations of this
- *  actually do "something" with the postings (write it into
- *  the index in a specific format).
- *
- * @lucene.experimental
- */
 abstract class FormatPostingsFieldsConsumer {
 
-  /** Add a new field */
   abstract FormatPostingsTermsConsumer addField(FieldInfo field) throws IOException;
 
-  /** Called when we are done adding everything. */
   abstract void finish() throws IOException;
 }

@@ -19,11 +19,9 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattri
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeImpl;
 
-/** Default implementation of {@link PositionIncrementAttribute}. */
 public class PositionIncrementAttributeImpl extends AttributeImpl implements PositionIncrementAttribute, Cloneable {
   private int positionIncrement = 1;
   
-  /** Initialize this attribute with position increment of 1 */
   public PositionIncrementAttributeImpl() {}
 
   @Override

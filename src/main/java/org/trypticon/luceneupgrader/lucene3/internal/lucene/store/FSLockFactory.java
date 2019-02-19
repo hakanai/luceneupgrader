@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,33 +19,17 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
 import java.io.File;
 
-/**
- * Base class for file system based locking implementation.
- */
 
 public abstract class FSLockFactory extends LockFactory {
 
-  /**
-   * Directory for the lock files.
-   */
   protected File lockDir = null;
 
-  /**
-   * Set the lock directory. This method can be only called
-   * once to initialize the lock directory. It is used by {@link FSDirectory}
-   * to set the lock directory to itself.
-   * Subclasses can also use this method to set the directory
-   * in the constructor.
-   */
   protected final void setLockDir(File lockDir) {
     if (this.lockDir != null)
       throw new IllegalStateException("You can set the lock directory for this factory only once.");
     this.lockDir = lockDir;
   }
   
-  /**
-   * Retrieve the lock directory.
-   */
   public File getLockDir() {
     return lockDir;
   }

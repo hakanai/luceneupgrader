@@ -28,10 +28,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder;
 
-/**
- * Prefix codes term instances (prefixes are shared)
- * @lucene.experimental
- */
 class PrefixCodedTerms implements Iterable<Term>, Accountable {
   final RAMFile buffer;
   
@@ -44,7 +40,6 @@ class PrefixCodedTerms implements Iterable<Term>, Accountable {
     return buffer.ramBytesUsed();
   }
   
-  /** @return iterator over the bytes */
   @Override
   public Iterator<Term> iterator() {
     return new PrefixCodedTermsIterator();
@@ -96,14 +91,12 @@ class PrefixCodedTerms implements Iterable<Term>, Accountable {
     }
   }
   
-  /** Builds a PrefixCodedTerms: call add repeatedly, then finish. */
   public static class Builder {
     private RAMFile buffer = new RAMFile();
     private RAMOutputStream output = new RAMOutputStream(buffer, false);
     private Term lastTerm = new Term("");
     private BytesRefBuilder lastTermBytes = new BytesRefBuilder();
 
-    /** add a term */
     public void add(Term term) {
       assert lastTerm.equals(new Term("")) || term.compareTo(lastTerm) > 0;
 
@@ -126,7 +119,6 @@ class PrefixCodedTerms implements Iterable<Term>, Accountable {
       }
     }
     
-    /** return finalized form */
     public PrefixCodedTerms finish() {
       try {
         output.close();

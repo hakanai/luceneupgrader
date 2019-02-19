@@ -47,10 +47,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.UnicodeUtil;
 
-/** Exposes flex API on a pre-flex index, as a codec. 
- * @lucene.experimental
- * @deprecated (4.0)
- */
 @Deprecated
 class Lucene3xFields extends FieldsProducer {
   

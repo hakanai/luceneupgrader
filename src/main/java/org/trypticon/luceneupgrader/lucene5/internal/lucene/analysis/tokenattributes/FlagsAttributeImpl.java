@@ -20,11 +20,9 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.analysis.tokenattri
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.AttributeImpl;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.AttributeReflector;
 
-/** Default implementation of {@link FlagsAttribute}. */
 public class FlagsAttributeImpl extends AttributeImpl implements FlagsAttribute, Cloneable {
   private int flags = 0;
   
-  /** Initialize this attribute with no bits set */
   public FlagsAttributeImpl() {}
   
   @Override

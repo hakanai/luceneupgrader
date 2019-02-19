@@ -33,7 +33,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.Compi
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst.ByteSequenceOutputs;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst.FST;
 
-/** BlockTree's implementation of {@link Terms}. */
 // public for CheckIndex:
 public final class FieldReader extends Terms implements Accountable {
 
@@ -118,7 +117,6 @@ public final class FieldReader extends Terms implements Accountable {
     }
   }
 
-  /** For debugging -- used by CheckIndex too*/
   // TODO: maybe push this into Terms?
   public Stats computeStats() throws IOException {
     return new SegmentTermsEnum(this).computeBlockStats();

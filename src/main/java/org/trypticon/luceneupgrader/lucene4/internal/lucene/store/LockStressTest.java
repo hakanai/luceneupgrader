@@ -25,15 +25,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Random;
 
-/**
- * Simple standalone tool that forever acquires & releases a
- * lock using a specific LockFactory.  Run without any args
- * to see usage.
- *
- * @see VerifyingLockFactory
- * @see LockVerifyServer
- */ 
-
 public class LockStressTest {
 
   public static void main(String[] args) throws Exception {

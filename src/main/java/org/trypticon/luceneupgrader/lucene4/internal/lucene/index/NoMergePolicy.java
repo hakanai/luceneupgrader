@@ -21,13 +21,8 @@ import java.io.IOException;
 import java.util.Map;
 
 
-/**
- * A {@link MergePolicy} which never returns merges to execute. Use it if you
- * want to prevent segment merges.
- */
 public final class NoMergePolicy extends MergePolicy {
 
-  /** Singleton instance. */
   public static final MergePolicy INSTANCE = new NoMergePolicy();
 
   private NoMergePolicy() {

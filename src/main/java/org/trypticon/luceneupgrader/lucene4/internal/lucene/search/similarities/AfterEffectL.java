@@ -19,13 +19,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.Explanation;
 
-/**
- * Model of the information gain based on Laplace's law of succession.
- * @lucene.experimental
- */
 public class AfterEffectL extends AfterEffect {
   
-  /** Sole constructor: parameter-free */
   public AfterEffectL() {}
 
   @Override

@@ -17,16 +17,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities
  * limitations under the License.
  */
 
-/**
- * Log-logistic distribution.
- * <p>Unlike for DFR, the natural logarithm is used, as
- * it is faster to compute and the original paper does not express any
- * preference to a specific base.</p>
- * @lucene.experimental
- */
 public class DistributionLL extends Distribution {
 
-  /** Sole constructor: parameter-free */
   public DistributionLL() {}
 
   @Override

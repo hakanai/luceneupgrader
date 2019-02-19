@@ -28,10 +28,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.NumericDocValu
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentReadState;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Accountable;
 
-/**
- * Reads 4.0/4.1 norms.
- * @deprecated Only for reading old 4.0 and 4.1 segments
- */
 @Deprecated
 final class Lucene40NormsReader extends NormsProducer {
   private final DocValuesProducer impl;

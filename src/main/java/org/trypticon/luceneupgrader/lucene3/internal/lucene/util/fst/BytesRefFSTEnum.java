@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,26 +22,17 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BytesRef;
 
-/** Enumerates all input (BytesRef) + output pairs in an
- *  FST.
- *
-  * @lucene.experimental
-*/
-
 public final class BytesRefFSTEnum<T> extends FSTEnum<T> {
   private final BytesRef current = new BytesRef(10);
   private final InputOutput<T> result = new InputOutput<T>();
   private BytesRef target;
 
-  /** Holds a single input (BytesRef) + output pair. */
   public static class InputOutput<T> {
     public BytesRef input;
     public T output;
   }
 
-  /** doFloor controls the behavior of advance: if it's true
-   *  doFloor is true, advance positions to the biggest
-   *  term before target.  */
+
   public BytesRefFSTEnum(FST<T> fst) {
     super(fst);
     result.input = current;
@@ -58,7 +49,6 @@ public final class BytesRefFSTEnum<T> extends FSTEnum<T> {
     return setResult();
   }
 
-  /** Seeks to smallest term that's >= target. */
   public InputOutput<T> seekCeil(BytesRef target) throws IOException {
     this.target = target;
     targetLength = target.length;
@@ -66,7 +56,6 @@ public final class BytesRefFSTEnum<T> extends FSTEnum<T> {
     return setResult();
   }
 
-  /** Seeks to biggest term that's <= target. */
   public InputOutput<T> seekFloor(BytesRef target) throws IOException {
     this.target = target;
     targetLength = target.length;
@@ -74,10 +63,7 @@ public final class BytesRefFSTEnum<T> extends FSTEnum<T> {
     return setResult();
   }
 
-  /** Seeks to exactly this term, returning null if the term
-   *  doesn't exist.  This is faster than using {@link
-   *  #seekFloor} or {@link #seekCeil} because it
-   *  short-circuits as soon the match is not found. */
+
   public InputOutput<T> seekExact(BytesRef target) throws IOException {
     this.target = target;
     targetLength = target.length;

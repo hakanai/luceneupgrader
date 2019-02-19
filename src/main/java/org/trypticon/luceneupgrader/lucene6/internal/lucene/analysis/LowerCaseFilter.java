@@ -24,17 +24,9 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.TokenStream
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.CharacterUtils;
 
-/**
- * Normalizes token text to lower case.
- */
 public class LowerCaseFilter extends TokenFilter {
   private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
   
-  /**
-   * Create a new LowerCaseFilter, that normalizes token text to lower case.
-   * 
-   * @param in TokenStream to filter
-   */
   public LowerCaseFilter(TokenStream in) {
     super(in);
   }

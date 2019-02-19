@@ -39,10 +39,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.perfield.PerF
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.perfield.PerFieldPostingsFormat;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentWriteState;
 
-/**
- * Implements the Lucene 4.9 index format
- * @deprecated only for old 4.x segments
- */
 @Deprecated
 public class Lucene49Codec extends Codec {
   private final StoredFieldsFormat fieldsFormat = new Lucene41StoredFieldsFormat();
@@ -66,7 +62,6 @@ public class Lucene49Codec extends Codec {
     }
   };
 
-  /** Sole constructor. */
   public Lucene49Codec() {
     super("Lucene49");
   }
@@ -106,20 +101,12 @@ public class Lucene49Codec extends Codec {
     return compoundFormat;
   }
 
-  /** Returns the postings format that should be used for writing 
-   *  new segments of <code>field</code>.
-   *  
-   *  The default implementation always returns "Lucene41"
-   */
+
   public PostingsFormat getPostingsFormatForField(String field) {
     return defaultFormat;
   }
   
-  /** Returns the docvalues format that should be used for writing 
-   *  new segments of <code>field</code>.
-   *  
-   *  The default implementation always returns "Lucene49"
-   */
+
   public DocValuesFormat getDocValuesFormatForField(String field) {
     return defaultDVFormat;
   }

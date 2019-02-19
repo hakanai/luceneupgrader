@@ -23,17 +23,7 @@ import java.util.TreeSet;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.UnicodeUtil;
 
-/**
- * Class to construct DFAs that match a word within some edit distance.
- * <p>
- * Implements the algorithm described in:
- * Schulz and Mihov: Fast String Correction with Levenshtein Automata
- * <p>
- * @lucene.experimental
- */
 public class LevenshteinAutomata {
-  /** Maximum edit distance this class can generate an automaton for.
-   *  @lucene.internal */
   public static final int MAXIMUM_SUPPORTED_DISTANCE = 2;
   /* input word */
   final int word[];
@@ -49,18 +39,10 @@ public class LevenshteinAutomata {
   
   ParametricDescription descriptions[]; 
   
-  /**
-   * Create a new LevenshteinAutomata for some input String.
-   * Optionally count transpositions as a primitive edit.
-   */
   public LevenshteinAutomata(String input, boolean withTranspositions) {
     this(codePoints(input), Character.MAX_CODE_POINT, withTranspositions);
   }
 
-  /**
-   * Expert: specify a custom maximum possible symbol
-   * (alphaMax); default is Character.MAX_CODE_POINT.
-   */
   public LevenshteinAutomata(int[] word, int alphaMax, boolean withTranspositions) {
     this.word = word;
     this.alphaMax = alphaMax;
@@ -116,33 +98,10 @@ public class LevenshteinAutomata {
     return word;
   }
 
-  /**
-   * Compute a DFA that accepts all strings within an edit distance of <code>n</code>.
-   * <p>
-   * All automata have the following properties:
-   * <ul>
-   * <li>They are deterministic (DFA).
-   * <li>There are no transitions to dead states.
-   * <li>They are not minimal (some transitions could be combined).
-   * </ul>
-   * </p>
-   */
   public Automaton toAutomaton(int n) {
     return toAutomaton(n, "");
   }
 
-  /**
-   * Compute a DFA that accepts all strings within an edit distance of <code>n</code>,
-   * matching the specified exact prefix.
-   * <p>
-   * All automata have the following properties:
-   * <ul>
-   * <li>They are deterministic (DFA).
-   * <li>There are no transitions to dead states.
-   * <li>They are not minimal (some transitions could be combined).
-   * </ul>
-   * </p>
-   */
   public Automaton toAutomaton(int n, String prefix) {
     assert prefix != null;
     if (n == 0) {
@@ -215,10 +174,6 @@ public class LevenshteinAutomata {
     return a;
   }
 
-  /**
-   * Get the characteristic vector <code>X(x, V)</code> 
-   * where V is <code>substring(pos, end)</code>
-   */
   int getVector(int x, int pos, int end) {
     int vector = 0;
     for (int i = pos; i < end; i++) {
@@ -229,18 +184,6 @@ public class LevenshteinAutomata {
     return vector;
   }
     
-  /**
-   * A ParametricDescription describes the structure of a Levenshtein DFA for some degree n.
-   * <p>
-   * There are four components of a parametric description, all parameterized on the length
-   * of the word <code>w</code>:
-   * <ol>
-   * <li>The number of states: {@link #size()}
-   * <li>The set of final states: {@link #isAccept(int)}
-   * <li>The transition function: {@link #transition(int, int, int)}
-   * <li>Minimal boundary function: {@link #getPosition(int)}
-   * </ol>
-   */
   static abstract class ParametricDescription {
     protected final int w;
     protected final int n;
@@ -252,16 +195,10 @@ public class LevenshteinAutomata {
       this.minErrors = minErrors;
     }
     
-    /**
-     * Return the number of states needed to compute a Levenshtein DFA
-     */
     int size() {
       return minErrors.length * (w+1);
     };
 
-    /**
-     * Returns true if the <code>state</code> in any Levenshtein DFA is an accept state (final state).
-     */
     boolean isAccept(int absState) {
       // decode absState -> state, offset
       int state = absState/(w+1);
@@ -270,18 +207,10 @@ public class LevenshteinAutomata {
       return w - offset + minErrors[state] <= n;
     }
 
-    /**
-     * Returns the position in the input word for a given <code>state</code>.
-     * This is the minimal boundary for the state.
-     */
     int getPosition(int absState) {
       return absState % (w+1);
     }
     
-    /**
-     * Returns the state number for a transition from the given <code>state</code>,
-     * assuming <code>position</code> and characteristic vector <code>vector</code>
-     */
     abstract int transition(int state, int position, int vector);
 
     private final static long[] MASKS = new long[] {0x1,0x3,0x7,0xf,

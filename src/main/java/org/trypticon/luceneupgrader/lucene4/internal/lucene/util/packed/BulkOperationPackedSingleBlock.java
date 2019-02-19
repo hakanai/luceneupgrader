@@ -17,9 +17,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
  * limitations under the License.
  */
 
-/**
- * Non-specialized {@link BulkOperation} for {@link PackedInts.Format#PACKED_SINGLE_BLOCK}.
- */
 final class BulkOperationPackedSingleBlock extends BulkOperation {
 
   private static final int BLOCK_COUNT = 1;

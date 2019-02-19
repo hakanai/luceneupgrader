@@ -59,7 +59,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.Monotoni
 
 import static org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.lucene50.Lucene50DocValuesFormat.*;
 
-/** reader for {@link Lucene50DocValuesFormat} */
 class Lucene50DocValuesProducer extends DocValuesProducer implements Closeable {
   private final Map<String,NumericEntry> numerics = new HashMap<>();
   private final Map<String,BinaryEntry> binaries = new HashMap<>();
@@ -99,7 +98,6 @@ class Lucene50DocValuesProducer extends DocValuesProducer implements Closeable {
     merging = true;
   }
   
-  /** expert: instantiates a new reader */
   Lucene50DocValuesProducer(SegmentReadState state, String dataCodec, String dataExtension, String metaCodec, String metaExtension) throws IOException {
     String metaName = IndexFileNames.segmentFileName(state.segmentInfo.name, state.segmentSuffix, metaExtension);
     this.maxDoc = state.segmentInfo.maxDoc();
@@ -529,7 +527,6 @@ class Lucene50DocValuesProducer extends DocValuesProducer implements Closeable {
     };
   }
   
-  /** returns an address instance for variable-length binary values. */
   private synchronized MonotonicBlockPackedReader getAddressInstance(FieldInfo field, BinaryEntry bytes) throws IOException {
     MonotonicBlockPackedReader addresses = addressInstances.get(field.name);
     if (addresses == null) {
@@ -568,7 +565,6 @@ class Lucene50DocValuesProducer extends DocValuesProducer implements Closeable {
     };
   }
   
-  /** returns an address instance for prefix-compressed binary values. */
   private synchronized MonotonicBlockPackedReader getIntervalInstance(FieldInfo field, BinaryEntry bytes) throws IOException {
     MonotonicBlockPackedReader addresses = addressInstances.get(field.name);
     if (addresses == null) {
@@ -583,7 +579,6 @@ class Lucene50DocValuesProducer extends DocValuesProducer implements Closeable {
     return addresses;
   }
   
-  /** returns a reverse lookup instance for prefix-compressed binary values. */
   private synchronized ReverseTermsIndex getReverseIndexInstance(FieldInfo field, BinaryEntry bytes) throws IOException {
     ReverseTermsIndex index = reverseIndexInstances.get(field.name);
     if (index == null) {
@@ -654,7 +649,6 @@ class Lucene50DocValuesProducer extends DocValuesProducer implements Closeable {
     };
   }
   
-  /** returns an address instance for sortedset ordinal lists */
   private synchronized MonotonicBlockPackedReader getOrdIndexInstance(FieldInfo field, NumericEntry entry) throws IOException {
     MonotonicBlockPackedReader instance = ordIndexInstances.get(field.name);
     if (instance == null) {
@@ -944,24 +938,16 @@ class Lucene50DocValuesProducer extends DocValuesProducer implements Closeable {
     data.close();
   }
   
-  /** metadata entry for a numeric docvalues field */
   static class NumericEntry {
     private NumericEntry() {}
-    /** offset to the bitset representing docsWithField, or -1 if no documents have missing values */
     long missingOffset;
-    /** offset to the actual numeric values */
     public long offset;
-    /** end offset to the actual numeric values */
     public long endOffset;
-    /** bits per value used to pack the numeric values */
     public int bitsPerValue;
 
     int format;
-    /** packed ints version used to encode these numerics */
     public int packedIntsVersion;
-    /** count of values written */
     public long count;
-    /** packed ints blocksize */
     public int blockSize;
     
     long minValue;
@@ -969,30 +955,21 @@ class Lucene50DocValuesProducer extends DocValuesProducer implements Closeable {
     long table[];
   }
   
-  /** metadata entry for a binary docvalues field */
   static class BinaryEntry {
     private BinaryEntry() {}
-    /** offset to the bitset representing docsWithField, or -1 if no documents have missing values */
     long missingOffset;
-    /** offset to the actual binary values */
     long offset;
 
     int format;
-    /** count of values written */
     public long count;
     int minLength;
     int maxLength;
-    /** offset to the addressing data that maps a value to its slice of the byte[] */
     public long addressesOffset;
-    /** offset to the reverse index */
     public long reverseIndexOffset;
-    /** packed ints version used to encode addressing information */
     public int packedIntsVersion;
-    /** packed ints blocksize */
     public int blockSize;
   }
 
-  /** metadata entry for a sorted-set docvalues field */
   static class SortedSetEntry {
     private SortedSetEntry() {}
     int format;

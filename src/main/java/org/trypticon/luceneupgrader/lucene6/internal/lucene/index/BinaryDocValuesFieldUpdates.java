@@ -26,12 +26,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.packed.PackedIn
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.packed.PagedGrowableWriter;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.packed.PagedMutable;
 
-/**
- * A {@link DocValuesFieldUpdates} which holds updates of documents, of a single
- * {@link BinaryDocValuesField}.
- * 
- * @lucene.experimental
- */
 class BinaryDocValuesFieldUpdates extends DocValuesFieldUpdates {
   
   final static class Iterator extends DocValuesFieldUpdates.Iterator {

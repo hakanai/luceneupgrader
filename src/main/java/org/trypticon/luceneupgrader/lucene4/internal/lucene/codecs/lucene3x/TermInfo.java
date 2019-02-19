@@ -17,14 +17,10 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
  * limitations under the License.
  */
 
-/** A TermInfo is the record of information stored for a
- * term
- * @deprecated (4.0) This class is no longer used in flexible
- * indexing. */
+
 
 @Deprecated
 class TermInfo {
-  /** The number of documents which contain the term. */
   public int docFreq = 0;
 
   public long freqPointer = 0;

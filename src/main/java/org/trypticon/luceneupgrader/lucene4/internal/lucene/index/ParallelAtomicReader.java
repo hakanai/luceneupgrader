@@ -29,24 +29,6 @@ import java.util.TreeMap;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 
 
-/** An {@link AtomicReader} which reads multiple, parallel indexes.  Each index
- * added must have the same number of documents, but typically each contains
- * different fields. Deletions are taken from the first reader.
- * Each document contains the union of the fields of all documents
- * with the same document number.  When searching, matches for a
- * query term are from the first index added that has the field.
- *
- * <p>This is useful, e.g., with collections that have large fields which
- * change rarely and small fields that change more frequently.  The smaller
- * fields may be re-indexed in a new index and both indexes may be searched
- * together.
- * 
- * <p><strong>Warning:</strong> It is up to you to make sure all indexes
- * are created and modified the same way. For example, if you add
- * documents to one index, you need to add the same documents in the
- * same order to the other indexes. <em>Failure to do so will result in
- * undefined behavior</em>.
- */
 public class ParallelAtomicReader extends AtomicReader {
   private final FieldInfos fieldInfos;
   private final ParallelFields fields = new ParallelFields();
@@ -59,21 +41,15 @@ public class ParallelAtomicReader extends AtomicReader {
   private final SortedMap<String,AtomicReader> fieldToReader = new TreeMap<>();
   private final SortedMap<String,AtomicReader> tvFieldToReader = new TreeMap<>();
   
-  /** Create a ParallelAtomicReader based on the provided
-   *  readers; auto-closes the given readers on {@link #close()}. */
   public ParallelAtomicReader(AtomicReader... readers) throws IOException {
     this(true, readers);
   }
 
-  /** Create a ParallelAtomicReader based on the provided
-   *  readers. */
   public ParallelAtomicReader(boolean closeSubReaders, AtomicReader... readers) throws IOException {
     this(closeSubReaders, readers, readers);
   }
 
-  /** Expert: create a ParallelAtomicReader based on the provided
-   *  readers and storedFieldReaders; when a document is
-   *  loaded, only storedFieldsReaders will be used. */
+
   public ParallelAtomicReader(boolean closeSubReaders, AtomicReader[] readers, AtomicReader[] storedFieldsReaders) throws IOException {
     this.closeSubReaders = closeSubReaders;
     if (readers.length == 0 && storedFieldsReaders.length > 0)
@@ -186,14 +162,6 @@ public class ParallelAtomicReader extends AtomicReader {
     }
   }
   
-  /**
-   * {@inheritDoc}
-   * <p>
-   * NOTE: the returned field numbers will likely not
-   * correspond to the actual field numbers in the underlying
-   * readers, and codec metadata ({@link FieldInfo#getAttribute(String)}
-   * will be unavailable.
-   */
   @Override
   public FieldInfos getFieldInfos() {
     return fieldInfos;

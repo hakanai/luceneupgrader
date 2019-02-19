@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,12 +19,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
 import java.io.IOException;
 
-/**
- * Subclasses of CharFilter can be chained to filter CharStream.
- * They can be used as {@link java.io.Reader} with additional offset
- * correction. {@link Tokenizer}s will automatically use {@link #correctOffset}
- * if a CharFilter/CharStream subclass is used.
- */
+
 public abstract class CharFilter extends CharStream {
 
   protected CharStream input;
@@ -33,20 +28,12 @@ public abstract class CharFilter extends CharStream {
     input = in;
   }
 
-  /**
-   * Subclass may want to override to correct the current offset.
-   *
-   * @param currentOff current offset
-   * @return corrected offset
-   */
+
   protected int correct(int currentOff) {
     return currentOff;
   }
 
-  /**
-   * Chains the corrected offset through the input
-   * CharFilter.
-   */
+
   @Override
   public final int correctOffset(int currentOff) {
     return input.correctOffset(correct(currentOff));

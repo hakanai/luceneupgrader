@@ -35,10 +35,7 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedIn
 
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene49.Lucene49NormsFormat.VERSION_CURRENT;
 
-/**
- * Writer for {@link Lucene49NormsFormat}
- */
-class Lucene49NormsConsumer extends DocValuesConsumer { 
+class Lucene49NormsConsumer extends DocValuesConsumer {
   static final byte DELTA_COMPRESSED = 0;
   static final byte TABLE_COMPRESSED = 1;
   static final byte CONST_COMPRESSED = 2;
@@ -218,7 +215,6 @@ class Lucene49NormsConsumer extends DocValuesConsumer {
       Arrays.fill(singleByteRange, (short)-1);
     }
 
-    /** adds an item to the mapping. returns true if actually added */
     public boolean add(long l) {
       assert size <= 256; // once we add > 256 values, we nullify the map in addNumericField and don't use this strategy
       if (l >= Byte.MIN_VALUE && l <= Byte.MAX_VALUE) {
@@ -242,7 +238,6 @@ class Lucene49NormsConsumer extends DocValuesConsumer {
       }
     }
     
-    /** gets the ordinal for a previously added item */
     public int getOrd(long l) {
       if (l >= Byte.MIN_VALUE && l <= Byte.MAX_VALUE) {
         int index = (int) (l + 128);
@@ -253,7 +248,6 @@ class Lucene49NormsConsumer extends DocValuesConsumer {
       }
     }
     
-    /** retrieves the ordinal table for previously added items */
     public long[] getDecodeTable() {
       long decode[] = new long[size];
       for (int i = 0; i < singleByteRange.length; i++) {

@@ -19,14 +19,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
  * limitations under the License.
  */
 
-/**
- * Concatenates multiple Bits together, on every lookup.
- *
- * <p><b>NOTE</b>: This is very costly, as every lookup must
- * do a binary search to locate the right sub-reader.
- *
- * @lucene.experimental
- */
 final class MultiBits implements Bits {
   private final Bits[] subs;
 
@@ -79,23 +71,11 @@ final class MultiBits implements Bits {
     return b.toString();
   }
 
-  /**
-   * Represents a sub-Bits from 
-   * {@link MultiBits#getMatchingSub(org.trypticon.luceneupgrader.lucene4.internal.lucene.index.ReaderSlice) getMatchingSub()}.
-   */
   public final static class SubResult {
     public boolean matches;
     public Bits result;
   }
 
-  /**
-   * Returns a sub-Bits matching the provided <code>slice</code>
-   * <p>
-   * Because <code>null</code> usually has a special meaning for
-   * Bits (e.g. no deleted documents), you must check
-   * {@link SubResult#matches} instead to ensure the sub was 
-   * actually found.
-   */
   public SubResult getMatchingSub(ReaderSlice slice) {
     int reader = ReaderUtil.subIndex(slice.start, starts);
     assert reader != -1;

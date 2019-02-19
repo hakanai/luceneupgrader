@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,37 +22,13 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.FieldCache;
 
 import java.io.IOException;
 
-/**
- * Expert: obtains int field values from the 
- * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.FieldCache FieldCache}
- * using <code>getInts()</code> and makes those values 
- * available as other numeric types, casting as needed.
- * 
- * @lucene.experimental
- * 
- * @see org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function.FieldCacheSource for requirements
- * on the field.
- *
- * <p><b>NOTE</b>: with the switch in 2.9 to segment-based
- * searching, if {@link #getValues} is invoked with a
- * composite (multi-segment) reader, this can easily cause
- * double RAM usage for the values in the FieldCache.  It's
- * best to switch your application to pass only atomic
- * (single segment) readers to this API.</p>
- */
 public class IntFieldSource extends FieldCacheSource {
   private FieldCache.IntParser parser;
 
-  /**
-   * Create a cached int field source with default string-to-int parser. 
-   */
   public IntFieldSource(String field) {
     this(field, null);
   }
 
-  /**
-   * Create a cached int field source with a specific string-to-int parser. 
-   */
   public IntFieldSource(String field, FieldCache.IntParser parser) {
     super(field);
     this.parser = parser;

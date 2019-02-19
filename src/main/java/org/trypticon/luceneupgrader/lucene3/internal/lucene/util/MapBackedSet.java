@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,23 +22,12 @@ import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * A Set implementation that wraps an actual Map based
- * implementation.
- * 
- * @lucene.internal This class is only provided with Lucene, as Java 5 does
- * not yet support {@code <E> Set<E> Collections.newSetFromMap(Map<E,Boolean>)}.
- * It will be removed in Lucene 4.
- */
 public final class MapBackedSet<E> extends AbstractSet<E> implements Serializable {
 
   private static final long serialVersionUID = -6761513279741915432L;
 
   private final Map<E, Boolean> map;
 
-  /**
-   * Creates a new instance which wraps the specified {@code map}.
-   */
   public MapBackedSet(Map<E, Boolean> map) {
     this.map = map;
   }

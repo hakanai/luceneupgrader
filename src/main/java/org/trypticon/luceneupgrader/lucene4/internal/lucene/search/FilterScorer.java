@@ -21,16 +21,6 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeSource;
 
-/** 
- * A {@code FilterScorer} contains another {@code Scorer}, which it
- * uses as its basic source of data, possibly transforming the data along the
- * way or providing additional functionality. The class
- * {@code FilterScorer} itself simply implements all abstract methods
- * of {@code Scorer} with versions that pass all requests to the
- * contained scorer. Subclasses of {@code FilterScorer} may
- * further override some of these methods and may also provide additional
- * methods and fields.
- */
 abstract class FilterScorer extends Scorer {
   protected final Scorer in;
   

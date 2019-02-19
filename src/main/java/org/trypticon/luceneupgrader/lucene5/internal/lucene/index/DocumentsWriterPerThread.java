@@ -49,11 +49,6 @@ import static org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ByteBloc
 
 class DocumentsWriterPerThread {
 
-  /**
-   * The IndexingChain must define the {@link #getChain(DocumentsWriterPerThread)} method
-   * which returns the DocConsumer that the DocumentsWriter calls to process the
-   * documents.
-   */
   abstract static class IndexingChain {
     abstract DocConsumer getChain(DocumentsWriterPerThread documentsWriterPerThread) throws IOException;
   }
@@ -109,10 +104,7 @@ class DocumentsWriterPerThread {
     }
   }
 
-  /** Called if we hit an exception at a bad time (when
-   *  updating the index files) and must discard all
-   *  currently buffered docs.  This resets our state,
-   *  discarding any docs added since last flush. */
+
   void abort() {
     //System.out.println(Thread.currentThread().getName() + ": now abort seg=" + segmentInfo.name);
     aborted = true;
@@ -202,8 +194,6 @@ class DocumentsWriterPerThread {
     }
   }
 
-  /** Anything that will add N docs to the index should reserve first to
-   *  make sure it's allowed. */
   private void reserveOneDoc() {
     if (pendingNumDocs.incrementAndGet() > IndexWriter.getActualMaxDocs()) {
       // Reserve failed: put the one doc back and throw exc:
@@ -349,28 +339,17 @@ class DocumentsWriterPerThread {
     // confounding exception).
   }
 
-  /**
-   * Returns the number of delete terms in this {@link DocumentsWriterPerThread}
-   */
   public int numDeleteTerms() {
     // public for FlushPolicy
     return pendingUpdates.numTermDeletes.get();
   }
 
-  /**
-   * Returns the number of RAM resident documents in this {@link DocumentsWriterPerThread}
-   */
   public int getNumDocsInRAM() {
     // public for FlushPolicy
     return numDocsInRAM;
   }
 
   
-  /**
-   * Prepares this DWPT for flushing. This method will freeze and return the
-   * {@link DocumentsWriterDeleteQueue}s global buffer and apply all pending
-   * deletes to this DWPT.
-   */
   FrozenBufferedUpdates prepareFlush() {
     assert numDocsInRAM > 0;
     final FrozenBufferedUpdates globalUpdates = deleteQueue.freezeGlobalBuffer(deleteSlice);
@@ -385,7 +364,6 @@ class DocumentsWriterPerThread {
     return globalUpdates;
   }
 
-  /** Flush all pending docs to a new segment */
   FlushedSegment flush() throws IOException, AbortingException {
     assert numDocsInRAM > 0;
     assert deleteSlice.isEmpty() : "all deletes must be applied in prepareFlush";
@@ -470,10 +448,6 @@ class DocumentsWriterPerThread {
   public Set<String> pendingFilesToDelete() {
     return filesToDelete;
   }
-  /**
-   * Seals the {@link SegmentInfo} for the new flushed segment and persists
-   * the deleted documents {@link MutableBits}.
-   */
   void sealFlushedSegment(FlushedSegment flushedSegment) throws IOException {
     assert flushedSegment != null;
 
@@ -540,7 +514,6 @@ class DocumentsWriterPerThread {
     }
   }
 
-  /** Get current segment info we are writing. */
   SegmentInfo getSegmentInfo() {
     return segmentInfo;
   }

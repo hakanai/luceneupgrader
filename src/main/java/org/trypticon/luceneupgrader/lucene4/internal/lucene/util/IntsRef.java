@@ -17,38 +17,24 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * limitations under the License.
  */
 
-/** Represents int[], as a slice (offset + length) into an
- *  existing int[].  The {@link #ints} member should never be null; use
- *  {@link #EMPTY_INTS} if necessary.
- *
- *  @lucene.internal */
+
 public final class IntsRef implements Comparable<IntsRef>, Cloneable {
-  /** An empty integer array for convenience */
   public static final int[] EMPTY_INTS = new int[0];
 
-  /** The contents of the IntsRef. Should never be {@code null}. */
   public int[] ints;
-  /** Offset of first valid integer. */
   public int offset;
-  /** Length of used ints. */
   public int length;
 
-  /** Create a IntsRef with {@link #EMPTY_INTS} */
   public IntsRef() {
     ints = EMPTY_INTS;
   }
 
-  /** 
-   * Create a IntsRef pointing to a new array of size <code>capacity</code>.
-   * Offset and length will both be zero.
-   */
+
   public IntsRef(int capacity) {
     ints = new int[capacity];
   }
 
-  /** This instance will directly reference ints w/o making a copy.
-   * ints should not be null.
-   */
+
   public IntsRef(int[] ints, int offset, int length) {
     this.ints = ints;
     this.offset = offset;
@@ -56,13 +42,6 @@ public final class IntsRef implements Comparable<IntsRef>, Cloneable {
     assert isValid();
   }
 
-  /**
-   * Returns a shallow clone of this instance (the underlying ints are
-   * <b>not</b> copied and will be shared by both the returned object and this
-   * object.
-   * 
-   * @see #deepCopyOf
-   */  
   @Override
   public IntsRef clone() {
     return new IntsRef(ints, offset, length);
@@ -106,7 +85,6 @@ public final class IntsRef implements Comparable<IntsRef>, Cloneable {
     }
   }
 
-  /** Signed int order comparison */
   @Override
   public int compareTo(IntsRef other) {
     if (this == other) return 0;
@@ -132,9 +110,6 @@ public final class IntsRef implements Comparable<IntsRef>, Cloneable {
     return this.length - other.length;
   }
 
-  /**
-   * @deprecated {@link IntsRef} should not be used as a buffer, use {@link IntsRefBuilder} instead
-   */
   @Deprecated
   public void copyInts(IntsRef other) {
     if (ints.length - offset < other.length) {
@@ -145,12 +120,7 @@ public final class IntsRef implements Comparable<IntsRef>, Cloneable {
     length = other.length;
   }
 
-  /** 
-   * Used to grow the reference array. 
-   * 
-   * In general this should not be used as it does not take the offset into account.
-   * @deprecated {@link IntsRef} should not be used as a buffer, use {@link IntsRefBuilder} instead
-   * @lucene.internal */
+
   @Deprecated
   public void grow(int newLength) {
     assert offset == 0;
@@ -174,23 +144,13 @@ public final class IntsRef implements Comparable<IntsRef>, Cloneable {
     return sb.toString();
   }
   
-  /**
-   * Creates a new IntsRef that points to a copy of the ints from 
-   * <code>other</code>
-   * <p>
-   * The returned IntsRef will have a length of other.length
-   * and an offset of zero.
-   */
   public static IntsRef deepCopyOf(IntsRef other) {
     IntsRef clone = new IntsRef();
     clone.copyInts(other);
     return clone;
   }
   
-  /** 
-   * Performs internal consistency checks.
-   * Always returns true (or throws IllegalStateException) 
-   */
+
   public boolean isValid() {
     if (ints == null) {
       throw new IllegalStateException("ints is null");

@@ -39,14 +39,6 @@ import java.nio.charset.StandardCharsets;
 
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40.Lucene40StoredFieldsWriter.*;
 
-/**
- * Class responsible for access to stored document fields.
- * <p/>
- * It uses &lt;segment&gt;.fdt and &lt;segment&gt;.fdx; files.
- * 
- * @see Lucene40StoredFieldsFormat
- * @lucene.internal
- */
 public final class Lucene40StoredFieldsReader extends StoredFieldsReader implements Cloneable, Closeable {
 
   private static final long RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(Lucene40StoredFieldsReader.class);
@@ -58,18 +50,13 @@ public final class Lucene40StoredFieldsReader extends StoredFieldsReader impleme
   private int size;
   private boolean closed;
 
-  /** Returns a cloned FieldsReader that shares open
-   *  IndexInputs with the original one.  It is the caller's
-   *  job not to close the original FieldsReader until all
-   *  clones are called (eg, currently SegmentReader manages
-   *  this logic). */
+
   @Override
   public Lucene40StoredFieldsReader clone() {
     ensureOpen();
     return new Lucene40StoredFieldsReader(fieldInfos, numTotalDocs, size, fieldsStream.clone(), indexStream.clone());
   }
   
-  /** Used only by clone. */
   private Lucene40StoredFieldsReader(FieldInfos fieldInfos, int numTotalDocs, int size, IndexInput fieldsStream, IndexInput indexStream) {
     this.fieldInfos = fieldInfos;
     this.numTotalDocs = numTotalDocs;
@@ -78,7 +65,6 @@ public final class Lucene40StoredFieldsReader extends StoredFieldsReader impleme
     this.indexStream = indexStream;
   }
 
-  /** Sole constructor. */
   public Lucene40StoredFieldsReader(Directory d, SegmentInfo si, FieldInfos fn, IOContext context) throws IOException {
     final String segment = si.name;
     boolean success = false;
@@ -114,21 +100,12 @@ public final class Lucene40StoredFieldsReader extends StoredFieldsReader impleme
     }
   }
 
-  /**
-   * @throws AlreadyClosedException if this FieldsReader is closed
-   */
   private void ensureOpen() throws AlreadyClosedException {
     if (closed) {
       throw new AlreadyClosedException("this FieldsReader is closed");
     }
   }
 
-  /**
-   * Closes the underlying {@link org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput} streams.
-   * This means that the Fields values will not be accessible.
-   *
-   * @throws IOException If an I/O error occurs
-   */
   @Override
   public final void close() throws IOException {
     if (!closed) {
@@ -137,7 +114,6 @@ public final class Lucene40StoredFieldsReader extends StoredFieldsReader impleme
     }
   }
 
-  /** Returns number of documents. */
   public final int size() {
     return size;
   }
@@ -224,10 +200,7 @@ public final class Lucene40StoredFieldsReader extends StoredFieldsReader impleme
     }
   }
 
-  /** Returns the length in bytes of each raw document in a
-   *  contiguous range of length numDocs starting with
-   *  startDocID.  Returns the IndexInput (the fieldStream),
-   *  already seeked to the starting point for startDocID.*/
+
   public final IndexInput rawDocs(int[] lengths, int startDocID, int numDocs) throws IOException {
     seekIndex(startDocID);
     long startOffset = indexStream.readLong();

@@ -19,22 +19,11 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.TermsEnum; // javadocs
 
-/**
- * Holder for per-term statistics.
- * 
- * @see TermsEnum#docFreq
- * @see TermsEnum#totalTermFreq
- */
 public class TermStats {
-  /** How many documents have at least one occurrence of
-   *  this term. */
   public final int docFreq;
   
-  /** Total number of times this term occurs across all
-   *  documents in the field. */
   public final long totalTermFreq;
 
-  /** Sole constructor. */
   public TermStats(int docFreq, long totalTermFreq) {
     this.docFreq = docFreq;
     this.totalTermFreq = totalTermFreq;

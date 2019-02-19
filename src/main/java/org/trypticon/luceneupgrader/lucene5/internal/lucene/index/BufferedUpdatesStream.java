@@ -153,9 +153,7 @@ class BufferedUpdatesStream implements Accountable {
     }
   };
   
-  /** Resolves the buffered deleted Term/Query/docIDs, into
-   *  actual deleted docIDs in the liveDocs MutableBits for
-   *  each SegmentReader. */
+
   public synchronized ApplyDeletesResult applyDeletesAndUpdates(IndexWriter.ReaderPool pool, List<SegmentCommitInfo> infos) throws IOException {
     final long t0 = System.currentTimeMillis();
 
@@ -400,7 +398,6 @@ class BufferedUpdatesStream implements Accountable {
     }
   }
 
-  /** Does a merge sort by current term across all segments. */
   static class SegmentQueue extends PriorityQueue<SegmentState> {
     public SegmentQueue(int size) {
       super(size);
@@ -412,7 +409,6 @@ class BufferedUpdatesStream implements Accountable {
     }
   }
 
-  /** Opens SegmentReader and inits SegmentState for each segment. */
   private SegmentState[] openSegmentStates(IndexWriter.ReaderPool pool, List<SegmentCommitInfo> infos) throws IOException {
     int numReaders = infos.size();
     SegmentState[] segStates = new SegmentState[numReaders];
@@ -439,7 +435,6 @@ class BufferedUpdatesStream implements Accountable {
     return segStates;
   }
 
-  /** Close segment states previously opened with openSegmentStates. */
   private ApplyDeletesResult closeSegmentStates(IndexWriter.ReaderPool pool, SegmentState[] segStates, boolean success, long gen) throws IOException {
     int numReaders = segStates.length;
     Throwable firstExc = null;
@@ -480,7 +475,6 @@ class BufferedUpdatesStream implements Accountable {
     return new ApplyDeletesResult(totDelCount > 0, gen, allDeleted);      
   }
 
-  /** Merge sorts the deleted terms and all segments to resolve terms to docIDs for deletion. */
   private synchronized long applyTermDeletes(CoalescedUpdates updates, SegmentState[] segStates) throws IOException {
 
     long startNS = System.nanoTime();

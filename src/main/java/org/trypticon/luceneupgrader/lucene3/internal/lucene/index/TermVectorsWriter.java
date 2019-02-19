@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -58,13 +58,6 @@ final class TermVectorsWriter {
     this.fieldInfos = fieldInfos;
   }
 
-  /**
-   * Add a complete document specified by all its term vectors. If document has no
-   * term vectors, add value for tvx.
-   * 
-   * @param vectors
-   * @throws IOException
-   */
   public final void addAllDocVectors(TermFreqVector[] vectors) throws IOException {
 
     tvx.writeLong(tvd.getFilePointer());
@@ -180,11 +173,6 @@ final class TermVectorsWriter {
       tvd.writeVInt(0);
   }
 
-  /**
-   * Do a bulk copy of numDocs documents from reader to our
-   * streams.  This is used to expedite merging, if the
-   * field numbers are congruent.
-   */
   final void addRawDocuments(TermVectorsReader reader, int[] tvdLengths, int[] tvfLengths, int numDocs) throws IOException {
     long tvdPosition = tvd.getFilePointer();
     long tvfPosition = tvf.getFilePointer();
@@ -214,7 +202,6 @@ final class TermVectorsWriter {
     }
   }
   
-  /** Close all streams. */
   final void close() throws IOException {
     // make an effort to close all streams we can but remember and re-throw
     // the first exception encountered in this process

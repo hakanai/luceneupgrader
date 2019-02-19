@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,37 +17,19 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * limitations under the License.
  */
 
-/**
- * This class was inspired by CGLIB, but provides a better
- * QuickSort algorithm without additional InsertionSort
- * at the end.
- * To use, subclass and override the four abstract methods
- * which compare and modify your data.
- * Allows custom swap so that two arrays can be sorted
- * at the same time.
- * @lucene.internal
- */
 public abstract class SorterTemplate {
 
   private static final int MERGESORT_THRESHOLD = 12;
   private static final int QUICKSORT_THRESHOLD = 7;
 
-  /** Implement this method, that swaps slots {@code i} and {@code j} in your data */
   protected abstract void swap(int i, int j);
   
-  /** Compares slots {@code i} and {@code j} of you data.
-   * Should be implemented like <code><em>valueOf(i)</em>.compareTo(<em>valueOf(j)</em>)</code> */
   protected abstract int compare(int i, int j);
 
-  /** Implement this method, that stores the value of slot {@code i} as pivot value */
   protected abstract void setPivot(int i);
   
-  /** Implements the compare function for the previously stored pivot value.
-   * Should be implemented like <code>pivot.compareTo(<em>valueOf(j)</em>)</code> */
   protected abstract int comparePivot(int j);
   
-  /** Sorts via stable in-place InsertionSort algorithm
-   *(ideal for small collections which are mostly presorted). */
   public final void insertionSort(int lo, int hi) {
     for (int i = lo + 1 ; i <= hi; i++) {
       for (int j = i; j > lo; j--) {
@@ -60,8 +42,6 @@ public abstract class SorterTemplate {
     }
   }
 
-  /** Sorts via in-place, but unstable, QuickSort algorithm.
-   * For small collections falls back to {@link #insertionSort(int,int)}. */
   public final void quickSort(final int lo, final int hi) {
     if (hi <= lo) return;
     // from Integer's Javadocs: ceil(log2(x)) = 32 - numberOfLeadingZeros(x - 1)
@@ -118,8 +98,6 @@ public abstract class SorterTemplate {
     quickSort(left + 1, hi, maxDepth);
   }
   
-  /** Sorts via stable in-place MergeSort algorithm
-   * For small collections falls back to {@link #insertionSort(int,int)}. */
   public final void mergeSort(int lo, int hi) {
     final int diff = hi - lo;
     if (diff <= MERGESORT_THRESHOLD) {

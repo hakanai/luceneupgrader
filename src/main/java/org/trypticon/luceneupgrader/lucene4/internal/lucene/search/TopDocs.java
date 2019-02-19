@@ -21,34 +21,23 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.PriorityQueue;
 
 import java.io.IOException;
 
-/** Represents hits returned by {@link
- * IndexSearcher#search(Query,Filter,int)} and {@link
- * IndexSearcher#search(Query,int)}. */
+
 public class TopDocs {
 
-  /** The total number of hits for the query. */
   public int totalHits;
 
-  /** The top hits for the query. */
   public ScoreDoc[] scoreDocs;
 
-  /** Stores the maximum score value encountered, needed for normalizing. */
   private float maxScore;
   
-  /**
-   * Returns the maximum score value encountered. Note that in case
-   * scores are not tracked, this returns {@link Float#NaN}.
-   */
   public float getMaxScore() {
     return maxScore;
   }
   
-  /** Sets the maximum score value encountered. */
   public void setMaxScore(float maxScore) {
     this.maxScore = maxScore;
   }
 
-  /** Constructs a TopDocs with a default maxScore=Float.NaN. */
   TopDocs(int totalHits, ScoreDoc[] scoreDocs) {
     this(totalHits, scoreDocs, Float.NaN);
   }
@@ -194,25 +183,11 @@ public class TopDocs {
     }
   }
 
-  /** Returns a new TopDocs, containing topN results across
-   *  the provided TopDocs, sorting by the specified {@link
-   *  Sort}.  Each of the TopDocs must have been sorted by
-   *  the same Sort, and sort field values must have been
-   *  filled (ie, <code>fillFields=true</code> must be
-   *  passed to {@link
-   *  TopFieldCollector#create}.
-   *
-   * <p>Pass sort=null to merge sort by score descending.
-   *
-   * @lucene.experimental */
+
   public static TopDocs merge(Sort sort, int topN, TopDocs[] shardHits) throws IOException {
     return merge(sort, 0, topN, shardHits);
   }
 
-  /**
-   * Same as {@link #merge(Sort, int, TopDocs[])} but also slices the result at the same time based
-   * on the provided start and size. The return TopDocs will always have a scoreDocs with length of at most size.
-   */
   public static TopDocs merge(Sort sort, int start, int size, TopDocs[] shardHits) throws IOException {
     final PriorityQueue<ShardRef> queue;
     if (sort == null) {

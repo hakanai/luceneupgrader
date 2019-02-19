@@ -20,9 +20,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BroadWord; // bit selection in long
 
 
-/** A decoder for an {@link EliasFanoEncoder}.
- * @lucene.internal
- */
 public class EliasFanoDecoder {
   private static final int LOG2_LONG_SIZE = Long.numberOfTrailingZeros(Long.SIZE);
 
@@ -36,9 +33,7 @@ public class EliasFanoDecoder {
   private final long numIndexEntries;
   private final long indexMask;
 
-  /** Construct a decoder for a given {@link EliasFanoEncoder}.
-   * The decoding index is set to just before the first encoded value.
-   */
+
   public EliasFanoDecoder(EliasFanoEncoder efEncoder) {
     this.efEncoder = efEncoder;
     this.numEncoded = efEncoder.numEncoded; // not final in EliasFanoEncoder
@@ -46,28 +41,17 @@ public class EliasFanoDecoder {
     this.indexMask = (1L << efEncoder.nIndexEntryBits) - 1;
   }
 
-  /** @return The Elias-Fano encoder that is decoded. */
   public EliasFanoEncoder getEliasFanoEncoder() {
     return efEncoder;
   }
   
-  /** The number of values encoded by the encoder.
-   * @return The number of values encoded by the encoder.
-   */
+
   public long numEncoded() { 
     return numEncoded;
   }
 
 
-  /** The current decoding index.
-   * The first value encoded by {@link EliasFanoEncoder#encodeNext} has index 0.
-   * Only valid directly after
-   * {@link #nextValue}, {@link #advanceToValue},
-   * {@link #previousValue}, or {@link #backToValue}
-   * returned another value than {@link #NO_MORE_VALUES},
-   * or {@link #advanceToIndex} returned true.
-   * @return The decoding index of the last decoded value, or as last set by {@link #advanceToIndex}.
-   */
+
   public long currentIndex() {
     if (efIndex < 0) {
       throw new IllegalStateException("index before sequence");
@@ -78,21 +62,15 @@ public class EliasFanoDecoder {
     return efIndex;
   }
 
-  /** The value at the current decoding index.
-   * Only valid when {@link #currentIndex} would return a valid result.
-   * <br>This is only intended for use after {@link #advanceToIndex} returned true.
-   * @return The value encoded at {@link #currentIndex}.
-   */
+
   public long currentValue() {
     return combineHighLowValues(currentHighValue(), currentLowValue());
   }
 
-  /**  @return The high value for the current decoding index. */
   private long currentHighValue() {
     return setBitForIndex - efIndex; // sequence of unary gaps
   }
 
-  /** See also {@link EliasFanoEncoder#packValue} */
   private static long unPackValue(long[] longArray, int numBits, long packIndex, long bitsMask) {
     if (numBits == 0) {
       return 0;
@@ -108,15 +86,12 @@ public class EliasFanoDecoder {
     return value;
   }
 
-  /**  @return The low value for the current decoding index. */
   private long currentLowValue() {
     assert ((efIndex >= 0) && (efIndex < numEncoded)) : "efIndex " + efIndex;
     return unPackValue(efEncoder.lowerLongs, efEncoder.numLowBits, efIndex, efEncoder.lowerBitsMask);
   }
 
-  /**  @return The given highValue shifted left by the number of low bits from by the EliasFanoSequence,
-   *           logically OR-ed with the given lowValue.
-   */
+
   private long combineHighLowValues(long highValue, long lowValue) {
     return (highValue << efEncoder.numLowBits) | lowValue;
   }
@@ -139,23 +114,17 @@ public class EliasFanoDecoder {
   /* Forward decoding section */
 
 
-  /** Set the decoding index to just before the first encoded value.
-   */
   public void toBeforeSequence() {
     efIndex = -1;
     setBitForIndex = -1;
   }
 
-  /** @return the number of bits in a long after (setBitForIndex modulo Long.SIZE) */
   private int getCurrentRightShift() {
     int s = (int) (setBitForIndex & (Long.SIZE-1));
     return s;
   }
 
-  /** Increment efIndex and setBitForIndex and
-   * shift curHighLong so that it does not contain the high bits before setBitForIndex.
-   * @return true iff efIndex still smaller than numEncoded.
-   */
+
   private boolean toAfterCurrentHighBit() {
     efIndex += 1;
     if (efIndex >= numEncoded) {
@@ -167,9 +136,7 @@ public class EliasFanoDecoder {
     return true;
   }
 
-  /** The current high long has been determined to not contain the set bit that is needed.
-   *  Increment setBitForIndex to the next high long and set curHighLong accordingly.
-   */
+
   private void toNextHighLong() {
     setBitForIndex += Long.SIZE - (setBitForIndex & (Long.SIZE-1));
     //assert getCurrentRightShift() == 0;
@@ -177,9 +144,7 @@ public class EliasFanoDecoder {
     curHighLong = efEncoder.upperLongs[highIndex];
   }
 
-  /** setBitForIndex and efIndex have just been incremented, scan to the next high set bit
-   *  by incrementing setBitForIndex, and by setting curHighLong accordingly.
-   */
+
   private void toNextHighValue() {
     while (curHighLong == 0L) {
       toNextHighLong(); // inlining and unrolling would simplify somewhat
@@ -187,18 +152,13 @@ public class EliasFanoDecoder {
     setBitForIndex += Long.numberOfTrailingZeros(curHighLong);
   }
 
-  /** setBitForIndex and efIndex have just been incremented, scan to the next high set bit
-   *  by incrementing setBitForIndex, and by setting curHighLong accordingly.
-   *  @return the next encoded high value.
-   */
+
   private long nextHighValue() {
     toNextHighValue();
     return currentHighValue();
   }
 
-  /** If another value is available after the current decoding index, return this value and
-   * and increase the decoding index by 1. Otherwise return {@link #NO_MORE_VALUES}.
-   */
+
   public long nextValue() {
     if (! toAfterCurrentHighBit()) {
       return NO_MORE_VALUES;
@@ -207,12 +167,7 @@ public class EliasFanoDecoder {
     return combineHighLowValues(highValue, currentLowValue());
   }
 
-  /** Advance the decoding index to a given index.
-   * and return <code>true</code> iff it is available.
-   * <br>See also {@link #currentValue}.
-   * <br>The current implementation does not use the index on the upper bit zero bit positions.
-   * <br>Note: there is currently no implementation of <code>backToIndex</code>.
-   */
+
   public boolean advanceToIndex(long index) {
     assert index > efIndex;
     if (index >= numEncoded) {
@@ -244,10 +199,7 @@ public class EliasFanoDecoder {
 
 
 
-  /** Given a target value, advance the decoding index to the first bigger or equal value
-   * and return it if it is available. Otherwise return {@link #NO_MORE_VALUES}.
-   * <br>The current implementation uses the index on the upper zero bit positions.
-   */
+
   public long advanceToValue(long target) {
     efIndex += 1;
     if (efIndex >= numEncoded) {
@@ -359,23 +311,17 @@ public class EliasFanoDecoder {
 
   /* Backward decoding section */
 
-  /** Set the decoding index to just after the last encoded value.
-   */
   public void toAfterSequence() {
     efIndex = numEncoded; // just after last index
     setBitForIndex = (efEncoder.lastEncoded >>> efEncoder.numLowBits) + numEncoded;
   }
 
-  /** @return the number of bits in a long before (setBitForIndex modulo Long.SIZE) */
   private int getCurrentLeftShift() {
     int s = Long.SIZE - 1 - (int) (setBitForIndex & (Long.SIZE-1));
     return s;
   }
 
-  /** Decrement efindex and setBitForIndex and
-   * shift curHighLong so that it does not contain the high bits after setBitForIndex.
-   * @return true iff efindex still >= 0
-   */
+
   private boolean toBeforeCurrentHighBit() {
     efIndex -= 1;
     if (efIndex < 0) {
@@ -387,9 +333,7 @@ public class EliasFanoDecoder {
     return true;
   }
 
-  /** The current high long has been determined to not contain the set bit that is needed.
-   *  Decrement setBitForIndex to the previous high long and set curHighLong accordingly.
-   */
+
   private void toPreviousHighLong() {
     setBitForIndex -= (setBitForIndex & (Long.SIZE-1)) + 1;
     //assert getCurrentLeftShift() == 0;
@@ -397,10 +341,7 @@ public class EliasFanoDecoder {
     curHighLong = efEncoder.upperLongs[highIndex];
   }
 
-  /** setBitForIndex and efIndex have just been decremented, scan to the previous high set bit
-   *  by decrementing setBitForIndex and by setting curHighLong accordingly.
-   *  @return the previous encoded high value.
-   */
+
   private long previousHighValue() {
     while (curHighLong == 0L) {
       toPreviousHighLong(); // inlining and unrolling would simplify somewhat
@@ -409,9 +350,7 @@ public class EliasFanoDecoder {
     return currentHighValue();
   }
 
-  /** If another value is available before the current decoding index, return this value
-   * and decrease the decoding index by 1. Otherwise return {@link #NO_MORE_VALUES}.
-   */
+
   public long previousValue() {
     if (! toBeforeCurrentHighBit()) {
       return NO_MORE_VALUES;
@@ -421,12 +360,7 @@ public class EliasFanoDecoder {
   }
 
 
-  /** setBitForIndex and efIndex have just been decremented, scan backward to the high set bit
-   *  of at most a given high value
-   *  by decrementing setBitForIndex and by setting curHighLong accordingly.
-   * <br>The current implementation does not use the index on the upper zero bit positions.
-   *  @return the largest encoded high value that is at most the given one.
-   */
+
   private long backToHighValue(long highTarget) {
     /* CHECKME: Add using the index as in advanceToHighValue */
     int curSetBits = Long.bitCount(curHighLong); // is shifted by getCurrentLeftShift()
@@ -454,10 +388,7 @@ public class EliasFanoDecoder {
     return highValue;
   }
 
-  /** Given a target value, go back to the first smaller or equal value
-   * and return it if it is available. Otherwise return {@link #NO_MORE_VALUES}.
-   * <br>The current implementation does not use the index on the upper zero bit positions.
-   */
+
   public long backToValue(long target) {
     if (! toBeforeCurrentHighBit()) {
       return NO_MORE_VALUES;

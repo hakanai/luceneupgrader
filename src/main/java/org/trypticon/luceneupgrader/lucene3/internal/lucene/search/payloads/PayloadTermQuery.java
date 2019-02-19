@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.payloads;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -33,18 +33,7 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans.SpanSco
 
 import java.io.IOException;
 
-/**
- * This class is very similar to
- * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans.SpanTermQuery} except that it factors
- * in the value of the payload located at each of the positions where the
- * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term} occurs.
- * <p>
- * In order to take advantage of this, you must override
- * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Similarity#scorePayload(int, String, int, int, byte[],int,int)}
- * which returns 1 by default.
- * <p>
- * Payload scores are aggregated using a pluggable {@link PayloadFunction}.
- **/
+
 public class PayloadTermQuery extends SpanTermQuery {
   protected PayloadFunction function;
   private boolean includeSpanScore;
@@ -139,11 +128,6 @@ public class PayloadTermQuery extends SpanTermQuery {
         }
       }
 
-      /**
-       * 
-       * @return {@link #getSpanScore()} * {@link #getPayloadScore()}
-       * @throws IOException
-       */
       @Override
       public float score() throws IOException {
 
@@ -151,26 +135,10 @@ public class PayloadTermQuery extends SpanTermQuery {
             : getPayloadScore();
       }
 
-      /**
-       * Returns the SpanScorer score only.
-       * <p/>
-       * Should not be overridden without good cause!
-       * 
-       * @return the score for just the Span part w/o the payload
-       * @throws IOException
-       * 
-       * @see #score()
-       */
       protected float getSpanScore() throws IOException {
         return super.score();
       }
 
-      /**
-       * The score for the payload
-       * 
-       * @return The score, as calculated by
-       *         {@link PayloadFunction#docScore(int, String, int, float)}
-       */
       protected float getPayloadScore() {
         return function.docScore(doc, term.field(), payloadsSeen, payloadScore);
       }

@@ -17,12 +17,10 @@
 package org.trypticon.luceneupgrader.lucene6.internal.lucene;
 
 
-/** Lucene's package information, including version. **/
 public final class LucenePackage {
 
   private LucenePackage() {}                      // can't construct
 
-  /** Return Lucene's package, including version information. */
   public static Package get() {
     return LucenePackage.class.getPackage();
   }

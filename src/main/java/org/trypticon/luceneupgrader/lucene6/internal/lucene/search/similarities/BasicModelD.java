@@ -19,21 +19,8 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.search.similarities
 
 import static org.trypticon.luceneupgrader.lucene6.internal.lucene.search.similarities.SimilarityBase.log2;
 
-/**
- * Implements the approximation of the binomial model with the divergence
- * for DFR. The formula used in Lucene differs slightly from the one in the
- * original paper: to avoid underflow for small values of {@code N} and
- * {@code F}, {@code N} is increased by {@code 1} and
- * {@code F} is always increased by {@code tfn+1}.
- * <p>
- * WARNING: for terms that do not meet the expected random distribution
- * (e.g. stopwords), this model may give poor performance, such as
- * abnormally high or NaN scores for low tf values.
- * @lucene.experimental
- */
 public class BasicModelD extends BasicModel {
   
-  /** Sole constructor: parameter-free */
   public BasicModelD() {}
   
   @Override

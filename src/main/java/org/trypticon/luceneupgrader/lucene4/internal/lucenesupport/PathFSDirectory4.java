@@ -14,15 +14,7 @@ import java.util.*;
 
 import static java.util.Collections.synchronizedSet;
 
-/**
- * Clone of {@link FSDirectory} accepting {@link Path} instead of {@link File}.
- */
 public abstract class PathFSDirectory4 extends BaseDirectory {
-    /**
-     * Default read chunk size: 8192 bytes (this is the size up to which the JDK
-     does not allocate additional arrays while reading/writing)
-     @deprecated This constant is no longer used since Lucene 4.5.
-     */
     @Deprecated
     public static final int DEFAULT_READ_CHUNK_SIZE = 8192;
 
@@ -30,12 +22,6 @@ public abstract class PathFSDirectory4 extends BaseDirectory {
     protected final Set<String> staleFiles = synchronizedSet(new HashSet<String>()); // Files written, but not yet sync'ed
     private int chunkSize = DEFAULT_READ_CHUNK_SIZE;
 
-    /** Create a new PathFSDirectory4 for the named location (ctor for subclasses).
-     * @param path the path of the directory
-     * @param lockFactory the lock factory to use, or null for the default
-     * ({@link PathNativeFSLockFactory4});
-     * @throws IOException if there is a low-level I/O error
-     */
     protected PathFSDirectory4(Path path, LockFactory lockFactory) throws IOException {
         // new ctors use always PathNativeFSLockFactory4 as default:
         if (lockFactory == null) {
@@ -50,32 +36,11 @@ public abstract class PathFSDirectory4 extends BaseDirectory {
 
     }
 
-    /** Creates an PathFSDirectory4 instance, trying to pick the
-     *  best implementation given the current environment.
-     *  The directory returned uses the {@link PathNativeFSLockFactory4}.
-     *
-     *  <p>Currently this returns {@link MMapDirectory} for most Solaris
-     *  and Windows 64-bit JREs, {@link NIOFSDirectory} for other
-     *  non-Windows JREs, and {@link SimpleFSDirectory} for other
-     *  JREs on Windows. It is highly recommended that you consult the
-     *  implementation's documentation for your platform before
-     *  using this method.
-     *
-     * <p><b>NOTE</b>: this method may suddenly change which
-     * implementation is returned from release to release, in
-     * the event that higher performance defaults become
-     * possible; if the precise implementation is important to
-     * your application, please instantiate it directly,
-     * instead. For optimal performance you should consider using
-     * {@link MMapDirectory} on 64 bit JVMs.
-     *
-     * <p>See <a href="#subclasses">above</a> */
+
     public static PathFSDirectory4 open(Path path) throws IOException {
         return open(path, null);
     }
 
-    /** Just like {@link #open(Path)}, but allows you to
-     *  also specify a custom {@link LockFactory}. */
     public static PathFSDirectory4 open(Path path, LockFactory lockFactory) throws IOException {
         if (Constants.JRE_IS_64BIT && MMapDirectory.UNMAP_SUPPORTED) {
             return new PathMMapDirectory4(path, lockFactory);
@@ -106,14 +71,7 @@ public abstract class PathFSDirectory4 extends BaseDirectory {
 
     }
 
-    /** Lists all files (not subdirectories) in the
-     *  directory.  This method never returns null (throws
-     *  {@link IOException} instead).
-     *
-     *  @throws NoSuchDirectoryException if the directory
-     *   does not exist, or does exist but is not a
-     *   directory.
-     *  @throws IOException if list() returns null */
+
     public static String[] listAll(Path dir) throws IOException {
         List<String> entries = new ArrayList<>();
 
@@ -131,16 +89,13 @@ public abstract class PathFSDirectory4 extends BaseDirectory {
         return entries.toArray(new String[entries.size()]);
     }
 
-    /** Lists all files (not subdirectories) in the
-     * directory.
-     * @see #listAll(Path) */
+
     @Override
     public String[] listAll() throws IOException {
         ensureOpen();
         return listAll(directory);
     }
 
-    /** Returns true iff a file with the given name exists. */
     @Override
     public boolean fileExists(String name) {
         ensureOpen();
@@ -148,21 +103,18 @@ public abstract class PathFSDirectory4 extends BaseDirectory {
         return Files.exists(file);
     }
 
-    /** Returns the length in bytes of a file in the directory. */
     @Override
     public long fileLength(String name) throws IOException {
         ensureOpen();
         return Files.size(directory.resolve(name));
     }
 
-    /** Removes an existing file in the directory. */
     @Override
     public void deleteFile(String name) throws IOException {
         ensureOpen();
         Files.delete(directory.resolve(name));
     }
 
-    /** Creates an IndexOutput for the file with the given name. */
     @Override
     public IndexOutput createOutput(String name, IOContext context) throws IOException {
         ensureOpen();
@@ -175,10 +127,6 @@ public abstract class PathFSDirectory4 extends BaseDirectory {
         Files.deleteIfExists(directory.resolve(name)); // delete existing, if any
     }
 
-    /**
-     * Sub classes should call this method on closing an open {@link IndexOutput}, reporting the name of the file
-     * that was closed. {@code PathFSDirectory4} needs this information to take care of syncing stale files.
-     */
     protected void onIndexOutputClosed(String name) {
         staleFiles.add(name);
     }
@@ -220,28 +168,21 @@ public abstract class PathFSDirectory4 extends BaseDirectory {
         return "lucene-" + Integer.toHexString(digest);
     }
 
-    /** Closes the store to future operations. */
     @Override
     public synchronized void close() {
         isOpen = false;
     }
 
-    /** @return the underlying filesystem directory */
     public Path getDirectory() {
         ensureOpen();
         return directory;
     }
 
-    /** For debug output. */
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "@" + directory + " lockFactory=" + getLockFactory();
     }
 
-    /**
-     * This setting has no effect anymore.
-     * @deprecated This is no longer used since Lucene 4.5.
-     */
     @Deprecated
     public final void setReadChunkSize(int chunkSize) {
         if (chunkSize <= 0) {
@@ -250,20 +191,12 @@ public abstract class PathFSDirectory4 extends BaseDirectory {
         this.chunkSize = chunkSize;
     }
 
-    /**
-     * This setting has no effect anymore.
-     * @deprecated This is no longer used since Lucene 4.5.
-     */
     @Deprecated
     public final int getReadChunkSize() {
         return chunkSize;
     }
 
     final class FSIndexOutput extends OutputStreamIndexOutput {
-        /**
-         * The maximum chunk size is 8192 bytes, because {@link FileOutputStream} mallocs
-         * a native buffer outside of stack if the write buffer size is larger.
-         */
         static final int CHUNK_SIZE = 8192;
 
         private final String name;

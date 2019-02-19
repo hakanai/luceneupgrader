@@ -63,10 +63,6 @@ import static org.trypticon.luceneupgrader.lucene6.internal.lucene.codecs.compre
 import static org.trypticon.luceneupgrader.lucene6.internal.lucene.codecs.compressing.CompressingTermVectorsWriter.VERSION_CURRENT;
 import static org.trypticon.luceneupgrader.lucene6.internal.lucene.codecs.compressing.CompressingTermVectorsWriter.VERSION_START;
 
-/**
- * {@link TermVectorsReader} for {@link CompressingTermVectorsFormat}.
- * @lucene.experimental
- */
 public final class CompressingTermVectorsReader extends TermVectorsReader implements Closeable {
 
   private final FieldInfos fieldInfos;
@@ -102,7 +98,6 @@ public final class CompressingTermVectorsReader extends TermVectorsReader implem
     this.closed = false;
   }
 
-  /** Sole constructor. */
   public CompressingTermVectorsReader(Directory d, SegmentInfo si, String segmentSuffix, FieldInfos fn,
       IOContext context, String formatName, CompressionMode compressionMode) throws IOException {
     this.compressionMode = compressionMode;
@@ -216,9 +211,6 @@ public final class CompressingTermVectorsReader extends TermVectorsReader implem
     return numDirtyChunks;
   }
 
-  /**
-   * @throws AlreadyClosedException if this TermVectorsReader is closed
-   */
   private void ensureOpen() throws AlreadyClosedException {
     if (closed) {
       throw new AlreadyClosedException("this FieldsReader is closed");

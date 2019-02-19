@@ -19,21 +19,13 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import java.io.IOException;
 
-/**
- * A {@link RateLimiter rate limiting} {@link IndexOutput}
- * 
- * @lucene.internal
- */
 final class RateLimitedIndexOutput extends IndexOutput {
   
   private final IndexOutput delegate;
   private final RateLimiter rateLimiter;
 
-  /** How many bytes we've written since we last called rateLimiter.pause. */
   private long bytesSinceLastPause;
   
-  /** Cached here not not always have to call RateLimiter#getMinPauseCheckBytes()
-   * which does volatile read. */
   private long currentMinPauseCheckBytes;
 
   RateLimitedIndexOutput(final RateLimiter rateLimiter, final IndexOutput delegate) {

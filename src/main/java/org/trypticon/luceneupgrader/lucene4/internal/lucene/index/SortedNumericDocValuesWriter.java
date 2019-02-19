@@ -29,7 +29,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimat
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedLongValues;
 
-/** Buffers up pending long[] per doc, sorts, then flushes when segment flushes. */
 class SortedNumericDocValuesWriter extends DocValuesWriter {
   private PackedLongValues.Builder pending; // stream of all values
   private PackedLongValues.Builder pendingCounts; // count of values per doc

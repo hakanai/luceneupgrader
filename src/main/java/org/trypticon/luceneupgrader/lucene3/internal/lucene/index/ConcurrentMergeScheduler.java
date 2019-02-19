@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -26,23 +26,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-/** A {@link MergeScheduler} that runs each merge using a
- *  separate thread.
- *
- *  <p>Specify the max number of threads that may run at
- *  once with {@link #setMaxThreadCount}.</p>
- *
- *  <p>Separately specify the maximum number of simultaneous
- *  merges with {@link #setMaxMergeCount}.  If the number of
- *  merges exceeds the max number of threads then the
- *  largest merges are paused until one of the smaller
- *  merges completes.</p>
- *
- *  <p>If more than {@link #getMaxMergeCount} merges are
- *  requested then this class will forcefully throttle the
- *  incoming threads by pausing until one more more merges
- *  complete.</p>
- */ 
 public class ConcurrentMergeScheduler extends MergeScheduler {
 
   private int mergeThreadPriority = -1;
@@ -76,9 +59,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /** Sets the max # simultaneous merge threads that should
-   *  be running at once.  This must be <= {@link
-   *  #setMaxMergeCount}. */
+
   public void setMaxThreadCount(int count) {
     if (count < 1) {
       throw new IllegalArgumentException("count should be at least 1");
@@ -89,17 +70,11 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     maxThreadCount = count;
   }
 
-  /** @see #setMaxThreadCount(int) */
   public int getMaxThreadCount() {
     return maxThreadCount;
   }
 
-  /** Sets the max # simultaneous merges that are allowed.
-   *  If a merge is necessary yet we already have this many
-   *  threads running, the incoming thread (that is calling
-   *  add/updateDocument) will block until a merge thread
-   *  has completed.  Note that we will only run the
-   *  smallest {@link #setMaxThreadCount} merges at a time. */
+
   public void setMaxMergeCount(int count) {
     if (count < 1) {
       throw new IllegalArgumentException("count should be at least 1");
@@ -110,26 +85,17 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     maxMergeCount = count;
   }
 
-  /** See {@link #setMaxMergeCount}. */
   public int getMaxMergeCount() {
     return maxMergeCount;
   }
 
-  /** Return the priority that merge threads run at.  By
-   *  default the priority is 1 plus the priority of (ie,
-   *  slightly higher priority than) the first thread that
-   *  calls merge. */
+
   public synchronized int getMergeThreadPriority() {
     initMergeThreadPriority();
     return mergeThreadPriority;
   }
 
-  /** Set the base priority that merge threads run at.
-   *  Note that CMS may increase priority of some merge
-   *  threads beyond this base priority.  It's best not to
-   *  set this any higher than
-   *  Thread.MAX_PRIORITY-maxThreadCount, so that CMS has
-   *  room to set relative priority among threads.  */
+
   public synchronized void setMergeThreadPriority(int pri) {
     if (pri > Thread.MAX_PRIORITY || pri < Thread.MIN_PRIORITY)
       throw new IllegalArgumentException("priority must be in range " + Thread.MIN_PRIORITY + " .. " + Thread.MAX_PRIORITY + " inclusive");
@@ -150,12 +116,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   };
 
-  /**
-   * Called whenever the running merges have changed, to pause & unpause
-   * threads. This method sorts the merge threads by their merge size in
-   * descending order and then pauses/unpauses threads from first to last --
-   * that way, smaller merges are guaranteed to run before larger ones.
-   */
   protected synchronized void updateMergeThreads() {
 
     // Only look at threads that are alive & not in the
@@ -214,24 +174,10 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /**
-   * Returns true if verbosing is enabled. This method is usually used in
-   * conjunction with {@link #message(String)}, like that:
-   * 
-   * <pre>
-   * if (verbose()) {
-   *   message(&quot;your message&quot;);
-   * }
-   * </pre>
-   */
   protected boolean verbose() {
     return writer != null && writer.verbose();
   }
   
-  /**
-   * Outputs the given message - this method assumes {@link #verbose()} was
-   * called and returned true.
-   */
   protected void message(String message) {
     writer.message("CMS: " + message);
   }
@@ -252,7 +198,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     sync();
   }
 
-  /** Wait for any running merge threads to finish */
   public void sync() {
     while (true) {
       MergeThread toSync = null;
@@ -276,10 +221,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /**
-   * Returns the number of merge threads that are alive. Note that this number
-   * is &le; {@link #mergeThreads} size.
-   */
   protected synchronized int mergeThreadCount() {
     int count = 0;
     for (MergeThread mt : mergeThreads) {
@@ -383,12 +324,10 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /** Does the actual merge, by calling {@link IndexWriter#merge} */
   protected void doMerge(MergePolicy.OneMerge merge) throws IOException {
     writer.merge(merge);
   }
 
-  /** Create and return a new MergeThread */
   protected synchronized MergeThread getMergeThread(IndexWriter writer, MergePolicy.OneMerge merge) throws IOException {
     final MergeThread thread = new MergeThread(writer, merge);
     thread.setThreadPriority(mergeThreadPriority);
@@ -492,8 +431,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /** Called when an exception is hit in a background merge
-   *  thread */
   protected void handleMergeException(Throwable exc) {
     try {
       // When an exception is hit during merge, IndexWriter
@@ -511,7 +448,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
 
   static boolean anyExceptions = false;
 
-  /** Used for testing */
   public static boolean anyUnhandledExceptions() {
     if (allInstances == null) {
       throw new RuntimeException("setTestMode() was not called; often this is because your test case's setUp method fails to call super.setUp in LuceneTestCase");
@@ -534,7 +470,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /** Used for testing */
   private void addMyself() {
     synchronized(allInstances) {
       final int size = allInstances.size();
@@ -553,20 +488,16 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
 
   private boolean suppressExceptions;
 
-  /** Used for testing */
   void setSuppressExceptions() {
     suppressExceptions = true;
   }
 
-  /** Used for testing */
   void clearSuppressExceptions() {
     suppressExceptions = false;
   }
 
-  /** Used for testing */
   private static List<ConcurrentMergeScheduler> allInstances;
   
-  /** @deprecated this test mode code will be removed in a future release */
   @Deprecated
   public static void setTestMode() {
     allInstances = new ArrayList<ConcurrentMergeScheduler>();

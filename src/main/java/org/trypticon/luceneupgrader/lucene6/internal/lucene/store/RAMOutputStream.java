@@ -26,11 +26,6 @@ import java.util.zip.Checksum;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountables;
 
-/**
- * A memory-resident {@link IndexOutput} implementation.
- *
- * @lucene.internal
- */
 public class RAMOutputStream extends IndexOutput implements Accountable {
   static final int BUFFER_SIZE = 1024;
 
@@ -45,17 +40,14 @@ public class RAMOutputStream extends IndexOutput implements Accountable {
   
   private final Checksum crc;
 
-  /** Construct an empty output buffer. */
   public RAMOutputStream() {
     this("noname", new RAMFile(), false);
   }
 
-  /** Creates this, with no name. */
   public RAMOutputStream(RAMFile f, boolean checksum) {
     this("noname", f, checksum);
   }
 
-  /** Creates this, with specified name. */
   public RAMOutputStream(String name, RAMFile f, boolean checksum) {
     super("RAMOutputStream(name=\"" + name + "\")", name);
     file = f;
@@ -71,7 +63,6 @@ public class RAMOutputStream extends IndexOutput implements Accountable {
     }
   }
 
-  /** Copy the current contents of this buffer to the provided {@link DataOutput}. */
   public void writeTo(DataOutput out) throws IOException {
     flush();
     final long end = file.length;
@@ -88,8 +79,6 @@ public class RAMOutputStream extends IndexOutput implements Accountable {
     }
   }
 
-  /** Copy the current contents of this buffer to output
-   *  byte array */
   public void writeTo(byte[] bytes, int offset) throws IOException {
     flush();
     final long end = file.length;
@@ -108,7 +97,6 @@ public class RAMOutputStream extends IndexOutput implements Accountable {
     }
   }
 
-  /** Resets this to an empty file. */
   public void reset() {
     currentBuffer = null;
     currentBufferIndex = -1;
@@ -177,7 +165,6 @@ public class RAMOutputStream extends IndexOutput implements Accountable {
     }
   }
 
-  /** Forces any buffered output to be written. */
   protected void flush() throws IOException {
     setFileLength();
   }
@@ -187,7 +174,6 @@ public class RAMOutputStream extends IndexOutput implements Accountable {
     return currentBufferIndex < 0 ? 0 : bufferStart + bufferPosition;
   }
 
-  /** Returns byte usage of all buffers. */
   @Override
   public long ramBytesUsed() {
     return (long) file.numBuffers() * (long) BUFFER_SIZE;

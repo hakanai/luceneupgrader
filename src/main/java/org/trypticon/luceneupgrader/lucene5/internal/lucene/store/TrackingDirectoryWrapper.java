@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/** A delegating Directory that records which files were
- *  written to and deleted. */
 public final class TrackingDirectoryWrapper extends FilterDirectory {
 
   private final Set<String> createdFileNames = Collections.synchronizedSet(new HashSet<String>());

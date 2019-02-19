@@ -17,15 +17,9 @@
 package org.trypticon.luceneupgrader.lucene5.internal.lucene.util;
 
 
-/** Acts like forever growing T[], but internally uses a
- *  circular buffer to reuse instances of T.
- * 
- *  @lucene.internal */
+
 public abstract class RollingBuffer<T extends RollingBuffer.Resettable> {
 
-  /**
-   * Implement to reset an instance
-   */
   public static interface Resettable {
     public void reset();
   }
@@ -77,9 +71,7 @@ public abstract class RollingBuffer<T extends RollingBuffer.Resettable> {
     return index;
   }
 
-  /** Get T instance for this absolute position;
-   *  this is allowed to be arbitrarily far "in the
-   *  future" but cannot be before the last freeBefore. */
+
   public T get(int pos) {
     //System.out.println("RA.get pos=" + pos + " nextPos=" + nextPos + " nextWrite=" + nextWrite + " count=" + count);
     while (pos >= nextPos) {
@@ -109,8 +101,6 @@ public abstract class RollingBuffer<T extends RollingBuffer.Resettable> {
     return buffer[index];
   }
 
-  /** Returns the maximum position looked up, or -1 if no
-  *  position has been looked up sinc reset/init.  */
   public int getMaxPos() {
     return nextPos-1;
   }

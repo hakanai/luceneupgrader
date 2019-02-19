@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -28,11 +28,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Lock;
 
-/**
- * Class for accessing a compound stream.
- * This class implements a directory, but is limited to only read operations.
- * Directory methods that would normally modify data throw an exception.
- */
 class CompoundFileReader extends Directory {
   
   private int readBufferSize;
@@ -160,7 +155,6 @@ class CompoundFileReader extends Directory {
     return new CSIndexInput(stream, entry.offset, entry.length, readBufferSize);
   }
   
-  /** Returns an array of strings, one for each file in the directory. */
   @Override
   public String[] listAll() {
     String[] res = entries.keySet().toArray(new String[entries.size()]);
@@ -172,42 +166,32 @@ class CompoundFileReader extends Directory {
     return res;
   }
   
-  /** Returns true iff a file with the given name exists. */
   @Override
   public boolean fileExists(String name) {
     return entries.containsKey(IndexFileNames.stripSegmentName(name));
   }
   
-  /** Returns the time the compound file was last modified. */
   @Override
   public long fileModified(String name) throws IOException {
     return directory.fileModified(fileName);
   }
   
-  /** Set the modified time of the compound file to now.
-   *  @deprecated Lucene never uses this API; it will be
-   *  removed in 4.0. */
+
   @Override
   @Deprecated
   public void touchFile(String name) throws IOException {
     directory.touchFile(fileName);
   }
   
-  /** Not implemented
-   * @throws UnsupportedOperationException */
   @Override
   public void deleteFile(String name) {
     throw new UnsupportedOperationException();
   }
   
-  /** Not implemented
-   * @throws UnsupportedOperationException */
   public void renameFile(String from, String to) {
     throw new UnsupportedOperationException();
   }
   
-  /** Returns the length of a file in the directory.
-   * @throws IOException if the file does not exist */
   @Override
   public long fileLength(String name) throws IOException {
     FileEntry e = entries.get(IndexFileNames.stripSegmentName(name));
@@ -216,25 +200,17 @@ class CompoundFileReader extends Directory {
     return e.length;
   }
   
-  /** Not implemented
-   * @throws UnsupportedOperationException */
   @Override
   public IndexOutput createOutput(String name) {
     throw new UnsupportedOperationException();
   }
   
-  /** Not implemented
-   * @throws UnsupportedOperationException */
   @Override
   public Lock makeLock(String name) {
     throw new UnsupportedOperationException();
   }
   
-  /** Implementation of an IndexInput that reads from a portion of the
-   *  compound file. The visibility is left as "package" *only* because
-   *  this helps with testing since JUnit test cases in a different class
-   *  can then access package fields of this class.
-   */
+
   static final class CSIndexInput extends BufferedIndexInput {
     IndexInput base;
     long fileOffset;
@@ -260,12 +236,6 @@ class CompoundFileReader extends Directory {
       return clone;
     }
     
-    /** Expert: implements buffer refill.  Reads bytes from the current
-     *  position in the input.
-     * @param b the array to read bytes into
-     * @param offset the offset in the array to start storing bytes
-     * @param len the number of bytes to read
-     */
     @Override
     protected void readInternal(byte[] b, int offset, int len) throws IOException {
       long start = getFilePointer();
@@ -275,14 +245,9 @@ class CompoundFileReader extends Directory {
       base.readBytes(b, offset, len, false);
     }
     
-    /** Expert: implements seek.  Sets current position in this file, where
-     *  the next {@link #readInternal(byte[],int,int)} will occur.
-     * @see #readInternal(byte[],int,int)
-     */
     @Override
     protected void seekInternal(long pos) {}
     
-    /** Closes the stream to further operations. */
     @Override
     public void close() throws IOException {
       base.close();

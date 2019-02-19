@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ByteBlockPool.Allocator;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,13 +21,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ByteBlockPool.A
  * limitations under the License.
  */
 
-/**
- * A {@link ByteBlockPool.Allocator} implementation that recycles unused byte
- * blocks in a buffer and reuses them in subsequent calls to
- * {@link #getByteBlock()}.
- * 
- * @lucene.internal
- */
 public final class RecyclingByteBlockAllocator extends ByteBlockPool.Allocator {
   private byte[][] freeByteBlocks;
   private final int maxBufferedBlocks;
@@ -35,18 +28,6 @@ public final class RecyclingByteBlockAllocator extends ByteBlockPool.Allocator {
   private final AtomicLong bytesUsed;
   public static final int DEFAULT_BUFFERED_BLOCKS = 64;
 
-  /**
-   * Creates a new {@link RecyclingByteBlockAllocator}
-   * 
-   * @param blockSize
-   *          the block size in bytes
-   * @param maxBufferedBlocks
-   *          maximum number of buffered byte block
-   * @param bytesUsed
-   *          {@link AtomicLong} reference counting internally allocated bytes
-   * 
-   * @see DummyConcurrentLock
-   */
   public RecyclingByteBlockAllocator(int blockSize, int maxBufferedBlocks,
       AtomicLong bytesUsed) {
     super(blockSize);
@@ -55,26 +36,10 @@ public final class RecyclingByteBlockAllocator extends ByteBlockPool.Allocator {
     this.bytesUsed = bytesUsed;
   }
 
-  /**
-   * Creates a new {@link RecyclingByteBlockAllocator} with a
-   * {@link DummyConcurrentLock} instance.
-   * 
-   * @param blockSize
-   *          the block size in bytes
-   * @param maxBufferedBlocks
-   *          maximum number of buffered byte block
-   */
   public RecyclingByteBlockAllocator(int blockSize, int maxBufferedBlocks) {
     this(blockSize, maxBufferedBlocks, new AtomicLong());
   }
 
-  /**
-   * Creates a new {@link RecyclingByteBlockAllocator} with a block size of
-   * {@link ByteBlockPool#BYTE_BLOCK_SIZE}, upper buffered docs limit of
-   * {@link #DEFAULT_BUFFERED_BLOCKS} ({@value #DEFAULT_BUFFERED_BLOCKS}) and a
-   * {@link DummyConcurrentLock} instance.
-   * 
-   */
   public RecyclingByteBlockAllocator() {
     this(ByteBlockPool.BYTE_BLOCK_SIZE, 64, new AtomicLong());
   }
@@ -112,34 +77,18 @@ public final class RecyclingByteBlockAllocator extends ByteBlockPool.Allocator {
     assert bytesUsed.get() >= 0;
   }
 
-  /**
-   * @return the number of currently buffered blocks
-   */
   public synchronized int numBufferedBlocks() {
     return freeBlocks;
   }
 
-  /**
-   * @return the number of bytes currently allocated by this {@link Allocator}
-   */
   public long bytesUsed() {
     return bytesUsed.get();
   }
 
-  /**
-   * @return the maximum number of buffered byte blocks
-   */
   public int maxBufferedBlocks() {
     return maxBufferedBlocks;
   }
 
-  /**
-   * Removes the given number of byte blocks from the buffer if possible.
-   * 
-   * @param num
-   *          the number of byte blocks to remove
-   * @return the number of actually removed buffers
-   */
   public synchronized int freeBlocks(int num) {
     assert num >= 0;
     final int stop;

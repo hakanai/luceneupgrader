@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,14 +19,10 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 
-/**
- * Just counts the total number of hits.
- */
 
 public class TotalHitCountCollector extends Collector {
   private int totalHits;
 
-  /** Returns how many hits matched the search. */
   public int getTotalHits() {
     return totalHits;
   }

@@ -26,19 +26,6 @@ import java.util.Set;
 import java.util.HashSet;
 
 
-/**
- * Expert: A Directory instance that switches files between
- * two other Directory instances.
-
- * <p>Files with the specified extensions are placed in the
- * primary directory; others are placed in the secondary
- * directory.  The provided Set must not change once passed
- * to this class, and must allow multiple threads to call
- * contains at once.</p>
- *
- * @lucene.experimental
- */
-
 public class FileSwitchDirectory extends BaseDirectory {
   private final Directory secondaryDir;
   private final Directory primaryDir;
@@ -53,12 +40,10 @@ public class FileSwitchDirectory extends BaseDirectory {
     this.lockFactory = primaryDir.getLockFactory();
   }
 
-  /** Return the primary directory */
   public Directory getPrimaryDir() {
     return primaryDir;
   }
   
-  /** Return the secondary directory */
   public Directory getSecondaryDir() {
     return secondaryDir;
   }
@@ -114,7 +99,6 @@ public class FileSwitchDirectory extends BaseDirectory {
     return files.toArray(new String[files.size()]);
   }
 
-  /** Utility method to return a file's extension. */
   public static String getExtension(String name) {
     int i = name.lastIndexOf('.');
     if (i == -1) {

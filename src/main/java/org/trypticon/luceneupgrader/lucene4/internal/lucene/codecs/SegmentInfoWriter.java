@@ -24,20 +24,9 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentInfo;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 
-/**
- * Specifies an API for classes that can write out {@link SegmentInfo} data.
- * @lucene.experimental
- */
-
 public abstract class SegmentInfoWriter {
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected SegmentInfoWriter() {
   }
 
-  /**
-   * Write {@link SegmentInfo} data. 
-   * @throws IOException If an I/O error occurs
-   */
   public abstract void write(Directory dir, SegmentInfo info, FieldInfos fis, IOContext ioContext) throws IOException;
 }

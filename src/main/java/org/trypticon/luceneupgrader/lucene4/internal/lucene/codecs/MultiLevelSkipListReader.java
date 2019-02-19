@@ -25,20 +25,8 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.BufferedIndexI
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.MathUtil;
 
-/**
- * This abstract class reads skip lists with multiple levels.
- * 
- * See {@link MultiLevelSkipListWriter} for the information about the encoding 
- * of the multi level skip lists. 
- * 
- * Subclasses must implement the abstract method {@link #readSkipData(int, IndexInput)}
- * which defines the actual format of the skip data.
- * @lucene.experimental
- */
-
 public abstract class MultiLevelSkipListReader implements Closeable {
-  /** the maximum number of skip levels possible for this index */
-  protected int maxNumberOfSkipLevels; 
+  protected int maxNumberOfSkipLevels;
   
   // number of levels in this skip list
   private int numberOfSkipLevels;
@@ -55,35 +43,25 @@ public abstract class MultiLevelSkipListReader implements Closeable {
   private int docCount;
   private boolean haveSkipped;
 
-  /** skipStream for each level. */
   private IndexInput[] skipStream;
 
-  /** The start pointer of each skip level. */
   private long skipPointer[];
 
-  /**  skipInterval of each level. */
   private int skipInterval[];
 
-  /** Number of docs skipped per level. */
   private int[] numSkipped;
 
-  /** Doc id of current skip entry per level. */
-  protected int[] skipDoc;            
+  protected int[] skipDoc;
 
-  /** Doc id of last read skip entry with docId &lt;= target. */
   private int lastDoc;
 
-  /** Child pointer of current skip entry per level. */
   private long[] childPointer;
 
-  /** childPointer of last read skip entry with docId &lt;=
-   *  target. */
   private long lastChildPointer;
   
   private boolean inputIsBuffered;
   private final int skipMultiplier;
 
-  /** Creates a {@code MultiLevelSkipListReader}. */
   protected MultiLevelSkipListReader(IndexInput skipStream, int maxSkipLevels, int skipInterval, int skipMultiplier) {
     this.skipStream = new IndexInput[maxSkipLevels];
     this.skipPointer = new long[maxSkipLevels];
@@ -102,23 +80,17 @@ public abstract class MultiLevelSkipListReader implements Closeable {
     skipDoc = new int[maxSkipLevels];
   }
 
-  /** Creates a {@code MultiLevelSkipListReader}, where
-   *  {@code skipInterval} and {@code skipMultiplier} are
-   *  the same. */
+
   protected MultiLevelSkipListReader(IndexInput skipStream, int maxSkipLevels, int skipInterval) {
     this(skipStream, maxSkipLevels, skipInterval, skipInterval);
   }
   
-  /** Returns the id of the doc to which the last call of {@link #skipTo(int)}
-   *  has skipped.  */
   public int getDoc() {
     return lastDoc;
   }
   
   
-  /** Skips entries to the first beyond the current whose document number is
-   *  greater than or equal to <i>target</i>. Returns the current doc count. 
-   */
+
   public int skipTo(int target) throws IOException {
     if (!haveSkipped) {
       // first time, load skip levels
@@ -176,7 +148,6 @@ public abstract class MultiLevelSkipListReader implements Closeable {
 
   }
   
-  /** Seeks the skip entry on the given level */
   protected void seekChild(int level) throws IOException {
     skipStream[level].seek(lastChildPointer);
     numSkipped[level] = numSkipped[level + 1] - skipInterval[level + 1];
@@ -195,7 +166,6 @@ public abstract class MultiLevelSkipListReader implements Closeable {
     }
   }
 
-  /** Initializes the reader, for reuse on a new term. */
   public void init(long skipPointer, int df) {
     this.skipPointer[0] = skipPointer;
     this.docCount = df;
@@ -211,7 +181,6 @@ public abstract class MultiLevelSkipListReader implements Closeable {
     }
   }
   
-  /** Loads the skip levels  */
   private void loadSkipLevels() throws IOException {
     if (docCount <= skipInterval[0]) {
       numberOfSkipLevels = 1;
@@ -253,22 +222,14 @@ public abstract class MultiLevelSkipListReader implements Closeable {
     skipPointer[0] = skipStream[0].getFilePointer();
   }
   
-  /**
-   * Subclasses must implement the actual skip data encoding in this method.
-   *  
-   * @param level the level skip data shall be read from
-   * @param skipStream the skip stream to read from
-   */  
   protected abstract int readSkipData(int level, IndexInput skipStream) throws IOException;
   
-  /** Copies the values of the last read skip entry on this level */
   protected void setLastSkipData(int level) {
     lastDoc = skipDoc[level];
     lastChildPointer = childPointer[level];
   }
 
   
-  /** used to buffer the top skip levels */
   private final static class SkipBuffer extends IndexInput {
     private byte[] data;
     private long pointer;

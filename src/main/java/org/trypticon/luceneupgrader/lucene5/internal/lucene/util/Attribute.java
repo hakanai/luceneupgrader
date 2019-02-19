@@ -17,8 +17,5 @@
 package org.trypticon.luceneupgrader.lucene5.internal.lucene.util;
 
 
-/**
- * Base interface for attributes.
- */
 public interface Attribute {
 }

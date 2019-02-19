@@ -35,8 +35,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.packed.PackedLo
 
 import static org.trypticon.luceneupgrader.lucene6.internal.lucene.util.ByteBlockPool.BYTE_BLOCK_SIZE;
 
-/** Buffers up pending byte[]s per doc, deref and sorting via
- *  int ord, then flushes when segment flushes. */
 class SortedSetDocValuesWriter extends DocValuesWriter {
   final BytesRefHash hash;
   private PackedLongValues.Builder pending; // stream of all termIDs

@@ -19,13 +19,8 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.search.similarities
 
 import static org.trypticon.luceneupgrader.lucene5.internal.lucene.search.similarities.SimilarityBase.log2;
 
-/**
- * An approximation of the <em>I(n<sub>e</sub>)</em> model.
- * @lucene.experimental
- */ 
 public class BasicModelIF extends BasicModel {
   
-  /** Sole constructor: parameter-free */
   public BasicModelIF() {}
 
   @Override

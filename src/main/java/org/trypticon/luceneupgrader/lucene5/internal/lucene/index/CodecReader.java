@@ -36,43 +36,22 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.CloseableThreadLocal;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 
-/**
- * LeafReader implemented by codec APIs.
- */
 public abstract class CodecReader extends LeafReader implements Accountable {
   
-  /** Sole constructor. (For invocation by subclass 
-   * constructors, typically implicit.) */
   protected CodecReader() {}
   
-  /** 
-   * Expert: retrieve thread-private StoredFieldsReader
-   * @lucene.internal 
-   */
+
   public abstract StoredFieldsReader getFieldsReader();
   
-  /** 
-   * Expert: retrieve thread-private TermVectorsReader
-   * @lucene.internal 
-   */
+
   public abstract TermVectorsReader getTermVectorsReader();
   
-  /** 
-   * Expert: retrieve underlying NormsProducer
-   * @lucene.internal 
-   */
+
   public abstract NormsProducer getNormsReader();
   
-  /** 
-   * Expert: retrieve underlying DocValuesProducer
-   * @lucene.internal 
-   */
+
   public abstract DocValuesProducer getDocValuesReader();
   
-  /**
-   * Expert: retrieve underlying FieldsProducer
-   * @lucene.internal
-   */
   public abstract FieldsProducer getPostingsReader();
   
   @Override

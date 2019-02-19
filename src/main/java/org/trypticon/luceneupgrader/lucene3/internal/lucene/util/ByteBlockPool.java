@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -25,32 +25,12 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataOutput;
 
 import static org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator.NUM_BYTES_OBJECT_REF;
 
-/** 
- * Class that Posting and PostingVector use to write byte
- * streams into shared fixed-size byte[] arrays.  The idea
- * is to allocate slices of increasing lengths For
- * example, the first slice is 5 bytes, the next slice is
- * 14, etc.  We start by writing our bytes into the first
- * 5 bytes.  When we hit the end of the slice, we allocate
- * the next slice and then write the address of the new
- * slice into the last 4 bytes of the previous slice (the
- * "forwarding address").
- *
- * Each slice is filled with 0's initially, and we mark
- * the end with a non-zero byte.  This way the methods
- * that are writing into the slice don't need to record
- * its length and instead allocate a new slice once they
- * hit a non-zero byte. 
- * 
- * @lucene.internal
- **/
+
 public final class ByteBlockPool {
   public final static int BYTE_BLOCK_SHIFT = 15;
   public final static int BYTE_BLOCK_SIZE = 1 << BYTE_BLOCK_SHIFT;
   public final static int BYTE_BLOCK_MASK = BYTE_BLOCK_SIZE - 1;
 
-  /** Abstract class for allocating and freeing byte
-   *  blocks. */
   public abstract static class Allocator {
     protected final int blockSize;
 
@@ -70,7 +50,6 @@ public final class ByteBlockPool {
     }
   }
   
-  /** A simple {@link Allocator} that never recycles. */
   public static final class DirectAllocator extends Allocator {
     
     public DirectAllocator() {
@@ -86,8 +65,6 @@ public final class ByteBlockPool {
     }
   }
   
-  /** A simple {@link Allocator} that never recycles, but
-   *  tracks how much total RAM is in use. */
   public static class DirectTrackingAllocator extends Allocator {
     private final AtomicLong bytesUsed;
     
@@ -249,10 +226,6 @@ public final class ByteBlockPool {
     return term;
   }
   
-  /**
-   * Copies the given {@link BytesRef} at the current positions (
-   * {@link #byteUpto} across buffer boundaries
-   */
   public final void copy(final BytesRef bytes) {
     int length = bytes.length;
     int offset = bytes.offset;
@@ -273,9 +246,6 @@ public final class ByteBlockPool {
     }  while(true);
   }
   
-  /**
-   *
-   */
   public final BytesRef copyFrom(final BytesRef bytes) {
     final int length = bytes.length;
     final int offset = bytes.offset;
@@ -304,9 +274,6 @@ public final class ByteBlockPool {
     return bytes;
   }
   
-  /**
-   * Writes the pools content to the given {@link DataOutput}
-   */
   public final void writePool(final DataOutput out) throws IOException {
     int bytesOffset = byteOffset;
     int block = 0;

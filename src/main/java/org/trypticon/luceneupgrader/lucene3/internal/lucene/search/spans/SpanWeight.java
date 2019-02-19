@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -26,9 +26,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Expert-only.  Public for use by other weight implementations
- */
 public class SpanWeight extends Weight {
   protected Similarity similarity;
   protected float value;

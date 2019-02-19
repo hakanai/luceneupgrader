@@ -26,9 +26,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.LongValues;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.RamUsageEstimator;
 
-/**
- * Utility class to compress integers into a {@link LongValues} instance.
- */
 public class PackedLongValues extends LongValues implements Accountable {
 
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(PackedLongValues.class);
@@ -39,34 +36,26 @@ public class PackedLongValues extends LongValues implements Accountable {
   // since their goal is to try to have small numbers of bits per value
   static final int MAX_PAGE_SIZE = 1 << 20;
 
-  /** Return a new {@link Builder} that will compress efficiently positive integers. */
   public static PackedLongValues.Builder packedBuilder(int pageSize, float acceptableOverheadRatio) {
     return new PackedLongValues.Builder(pageSize, acceptableOverheadRatio);
   }
 
-  /** @see #packedBuilder(int, float) */
   public static PackedLongValues.Builder packedBuilder(float acceptableOverheadRatio) {
     return packedBuilder(DEFAULT_PAGE_SIZE, acceptableOverheadRatio);
   }
 
-  /** Return a new {@link Builder} that will compress efficiently integers that
-   *  are close to each other. */
   public static PackedLongValues.Builder deltaPackedBuilder(int pageSize, float acceptableOverheadRatio) {
     return new DeltaPackedLongValues.Builder(pageSize, acceptableOverheadRatio);
   }
 
-  /** @see #deltaPackedBuilder(int, float) */
   public static PackedLongValues.Builder deltaPackedBuilder(float acceptableOverheadRatio) {
     return deltaPackedBuilder(DEFAULT_PAGE_SIZE, acceptableOverheadRatio);
   }
 
-  /** Return a new {@link Builder} that will compress efficiently integers that
-   *  would be a monotonic function of their index. */
   public static PackedLongValues.Builder monotonicBuilder(int pageSize, float acceptableOverheadRatio) {
     return new MonotonicLongValues.Builder(pageSize, acceptableOverheadRatio);
   }
 
-  /** @see #monotonicBuilder(int, float) */
   public static PackedLongValues.Builder monotonicBuilder(float acceptableOverheadRatio) {
     return monotonicBuilder(DEFAULT_PAGE_SIZE, acceptableOverheadRatio);
   }
@@ -84,7 +73,6 @@ public class PackedLongValues extends LongValues implements Accountable {
     this.ramBytesUsed = ramBytesUsed;
   }
 
-  /** Get the number of values in this array. */
   public final long size() {
     return size;
   }
@@ -115,12 +103,10 @@ public class PackedLongValues extends LongValues implements Accountable {
     return ramBytesUsed;
   }
 
-  /** Return an iterator over the values of this array. */
   public Iterator iterator() {
     return new Iterator();
   }
 
-  /** An iterator over long values. */
   final public class Iterator {
 
     final long[] currentValues;
@@ -142,12 +128,10 @@ public class PackedLongValues extends LongValues implements Accountable {
       }
     }
 
-    /** Whether or not there are remaining values. */
     public final boolean hasNext() {
       return pOff < currentCount;
     }
 
-    /** Return the next long in the buffer. */
     public final long next() {
       assert hasNext();
       long result = currentValues[pOff++];
@@ -161,7 +145,6 @@ public class PackedLongValues extends LongValues implements Accountable {
 
   }
 
-  /** A Builder for a {@link PackedLongValues} instance. */
   public static class Builder implements Accountable {
 
     private static final int INITIAL_PAGE_COUNT = 16;
@@ -189,8 +172,6 @@ public class PackedLongValues extends LongValues implements Accountable {
       ramBytesUsed = baseRamBytesUsed() + RamUsageEstimator.sizeOf(pending) + RamUsageEstimator.shallowSizeOf(values);
     }
 
-    /** Build a {@link PackedLongValues} instance that contains values that
-     *  have been added to this builder. This operation is destructive. */
     public PackedLongValues build() {
       finish();
       pending = null;
@@ -208,12 +189,10 @@ public class PackedLongValues extends LongValues implements Accountable {
       return ramBytesUsed;
     }
 
-    /** Return the number of elements that have been added to this builder. */
     public final long size() {
       return size;
     }
 
-    /** Add a new element to this builder. */
     public Builder add(long l) {
       if (pending == null) {
         throw new IllegalStateException("Cannot be reused after build()");

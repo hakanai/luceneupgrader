@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,8 +21,6 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.TermDocs;
 
-/** Expert: A <code>Scorer</code> for documents matching a <code>Term</code>.
- */
 final class TermScorer extends Scorer {
   private final TermDocs termDocs;
   private final byte[] norms;
@@ -38,19 +36,6 @@ final class TermScorer extends Scorer {
   private static final int SCORE_CACHE_SIZE = 32;
   private final float[] scoreCache = new float[SCORE_CACHE_SIZE];
 
-  /**
-   * Construct a <code>TermScorer</code>.
-   * 
-   * @param weight
-   *          The weight of the <code>Term</code> in the query.
-   * @param td
-   *          An iterator over the documents matching the <code>Term</code>.
-   * @param similarity
-   *          The </code>Similarity</code> implementation to be used for score
-   *          computations.
-   * @param norms
-   *          The field norms of the document fields for the <code>Term</code>.
-   */
   TermScorer(Weight weight, TermDocs td, Similarity similarity, byte[] norms) {
     super(similarity, weight);
     
@@ -98,13 +83,6 @@ final class TermScorer extends Scorer {
     return freq;
   }
 
-  /**
-   * Advances to the next document matching the query. <br>
-   * The iterator over the matching documents is buffered using
-   * {@link TermDocs#read(int[],int[])}.
-   * 
-   * @return the document matching the query or NO_MORE_DOCS if there are no more documents.
-   */
   @Override
   public int nextDoc() throws IOException {
     pointer++;
@@ -133,15 +111,6 @@ final class TermScorer extends Scorer {
     return norms == null ? raw : raw * getSimilarity().decodeNormValue(norms[doc]); // normalize for field
   }
 
-  /**
-   * Advances to the first match beyond the current whose document number is
-   * greater than or equal to a given target. <br>
-   * The implementation uses {@link TermDocs#skipTo(int)}.
-   * 
-   * @param target
-   *          The target document number.
-   * @return the matching document or NO_MORE_DOCS if none exist.
-   */
   @Override
   public int advance(int target) throws IOException {
     // first scan in cache
@@ -165,7 +134,6 @@ final class TermScorer extends Scorer {
     return doc;
   }
   
-  /** Returns a string representation of this <code>TermScorer</code>. */
   @Override
   public String toString() { return "scorer(" + weight + ")"; }
 

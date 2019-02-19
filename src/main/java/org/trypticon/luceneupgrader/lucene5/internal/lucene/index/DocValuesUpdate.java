@@ -27,7 +27,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.document.NumericDocV
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimator;
 
-/** An in-place update to a DocValues field. */
 abstract class DocValuesUpdate {
   
   /* Rough logic: OBJ_HEADER + 3*PTR + INT
@@ -45,13 +44,6 @@ abstract class DocValuesUpdate {
   final Object value;
   int docIDUpto = -1; // unassigned until applied, and confusing that it's here, when it's just used in BufferedDeletes...
 
-  /**
-   * Constructor.
-   * 
-   * @param term the {@link Term} which determines the documents that will be updated
-   * @param field the {@link NumericDocValuesField} to update
-   * @param value the updated value
-   */
   protected DocValuesUpdate(DocValuesType type, Term term, String field, Object value) {
     this.type = type;
     this.term = term;
@@ -75,7 +67,6 @@ abstract class DocValuesUpdate {
     return "term=" + term + ",field=" + field + ",value=" + value + ",docIDUpto=" + docIDUpto;
   }
   
-  /** An in-place update to a binary DocValues field */
   static final class BinaryDocValuesUpdate extends DocValuesUpdate {
     
     /* Size of BytesRef: 2*INT + ARRAY_HEADER + PTR */
@@ -92,7 +83,6 @@ abstract class DocValuesUpdate {
     
   }
 
-  /** An in-place update to a numeric DocValues field */
   static final class NumericDocValuesUpdate extends DocValuesUpdate {
 
     NumericDocValuesUpdate(Term term, String field, Long value) {

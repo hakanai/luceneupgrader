@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,32 +21,19 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.TermEnum;
 
-/** Abstract class for enumerating a subset of all terms. 
-
-  <p>Term enumerations are always ordered by Term.compareTo().  Each term in
-  the enumeration is greater than all that precede it.  */
 public abstract class FilteredTermEnum extends TermEnum {
-    /** the current term */
     protected Term currentTerm = null;
     
-    /** the delegate enum - to set this member use {@link #setEnum} */
     protected TermEnum actualEnum = null;
     
     public FilteredTermEnum() {}
 
-    /** Equality compare on the term */
     protected abstract boolean termCompare(Term term);
     
-    /** Equality measure on the term */
     public abstract float difference();
 
-    /** Indicates the end of the enumeration has been reached */
     protected abstract boolean endEnum();
     
-    /**
-     * use this method to set the actual TermEnum (e.g. in ctor),
-     * it will be automatically positioned on the first matching term.
-     */
     protected void setEnum(TermEnum actualEnum) throws IOException {
         this.actualEnum = actualEnum;
         // Find the first term that matches
@@ -56,10 +43,6 @@ public abstract class FilteredTermEnum extends TermEnum {
         else next();
     }
     
-    /** 
-     * Returns the docFreq of the current Term in the enumeration.
-     * Returns -1 if no Term matches or all terms have been enumerated.
-     */
     @Override
     public int docFreq() {
         if (currentTerm == null) return -1;
@@ -67,7 +50,6 @@ public abstract class FilteredTermEnum extends TermEnum {
         return actualEnum.docFreq();
     }
     
-    /** Increments the enumeration to the next element.  True if one exists. */
     @Override
     public boolean next() throws IOException {
         if (actualEnum == null) return false; // the actual enumerator is not initialized!
@@ -87,14 +69,11 @@ public abstract class FilteredTermEnum extends TermEnum {
         return false;
     }
     
-    /** Returns the current Term in the enumeration.
-     * Returns null if no Term matches or all terms have been enumerated. */
     @Override
     public Term term() {
         return currentTerm;
     }
     
-    /** Closes the enumeration to further activity, freeing resources.  */
     @Override
     public void close() throws IOException {
         if (actualEnum != null) actualEnum.close();

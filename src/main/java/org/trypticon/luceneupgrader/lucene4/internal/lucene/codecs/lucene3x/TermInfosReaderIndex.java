@@ -33,13 +33,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimat
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.GrowableWriter;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
-/**
- * This stores a monotonically increasing set of <Term, TermInfo> pairs in an
- * index segment. Pairs are accessed either by Term or by ordinal position the
- * set. The Terms and TermInfo are actually serialized and stored into a byte
- * array and pointers to the position of each are stored in a int array.
- * @deprecated Only for reading existing 3.x indexes
- */
 @Deprecated
 class TermInfosReaderIndex {
 
@@ -53,19 +46,6 @@ class TermInfosReaderIndex {
   private final int skipInterval;
   private final long ramBytesUsed;
 
-  /**
-   * Loads the segment information at segment load time.
-   * 
-   * @param indexEnum
-   *          the term enum.
-   * @param indexDivisor
-   *          the index divisor.
-   * @param tiiFileLength
-   *          the size of the tii file, used to approximate the size of the
-   *          buffer.
-   * @param totalIndexInterval
-   *          the total index interval.
-   */
   TermInfosReaderIndex(SegmentTermEnum indexEnum, int indexDivisor, long tiiFileLength, int totalIndexInterval) throws IOException {
     this.totalIndexInterval = totalIndexInterval;
     indexSize = 1 + ((int) indexEnum.size - 1) / indexDivisor;
@@ -154,13 +134,6 @@ class TermInfosReaderIndex {
     enumerator.seek(pointer, ((long) indexOffset * totalIndexInterval) - 1, term, termInfo);
   }
 
-  /**
-   * Binary search for the given term.
-   * 
-   * @param term
-   *          the term to locate.
-   * @throws IOException If there is a low-level I/O error.
-   */
   int getIndexOffset(Term term) throws IOException {
     int lo = 0;
     int hi = indexSize - 1;
@@ -179,14 +152,6 @@ class TermInfosReaderIndex {
     return hi;
   }
 
-  /**
-   * Gets the term at the given position.  For testing.
-   * 
-   * @param termIndex
-   *          the position to read the term from the index.
-   * @return the term.
-   * @throws IOException If there is a low-level I/O error.
-   */
   Term getTerm(int termIndex) throws IOException {
     PagedBytesDataInput input = dataInput.clone();
     input.setPosition(indexToDataOffset.get(termIndex));
@@ -197,43 +162,14 @@ class TermInfosReaderIndex {
     return new Term(field.field(), input.readString());
   }
 
-  /**
-   * Returns the number of terms.
-   * 
-   * @return int.
-   */
   int length() {
     return indexSize;
   }
 
-  /**
-   * The compares the given term against the term in the index specified by the
-   * term index. ie It returns negative N when term is less than index term;
-   * 
-   * @param term
-   *          the given term.
-   * @param termIndex
-   *          the index of the of term to compare.
-   * @return int.
-   * @throws IOException If there is a low-level I/O error.
-   */
   int compareTo(Term term, int termIndex) throws IOException {
     return compareTo(term, termIndex, dataInput.clone(), new BytesRefBuilder());
   }
 
-  /**
-   * Compare the fields of the terms first, and if not equals return from
-   * compare. If equal compare terms.
-   * 
-   * @param term
-   *          the term to compare.
-   * @param termIndex
-   *          the position of the term in the input to compare
-   * @param input
-   *          the input buffer.
-   * @return int.
-   * @throws IOException If there is a low-level I/O error.
-   */
   private int compareTo(Term term, int termIndex, PagedBytesDataInput input, BytesRefBuilder reuse) throws IOException {
     // if term field does not equal mid's field index, then compare fields
     // else if they are equal, compare term's string values...
@@ -247,18 +183,6 @@ class TermInfosReaderIndex {
     return c;
   }
 
-  /**
-   * Compares the fields before checking the text of the terms.
-   * 
-   * @param term
-   *          the given term.
-   * @param termIndex
-   *          the term that exists in the data block.
-   * @param input
-   *          the data block.
-   * @return int.
-   * @throws IOException If there is a low-level I/O error.
-   */
   private int compareField(Term term, int termIndex, PagedBytesDataInput input) throws IOException {
     input.setPosition(indexToDataOffset.get(termIndex));
     return term.field().compareTo(fields[input.readVInt()].field());

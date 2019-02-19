@@ -27,10 +27,6 @@ import java.util.TreeMap;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ArrayUtil;
 
-/** 
- * Collection of {@link FieldInfo}s (accessible by number or by name).
- *  @lucene.experimental
- */
 public class FieldInfos implements Iterable<FieldInfo> {
   private final boolean hasFreq;
   private final boolean hasProx;
@@ -47,9 +43,6 @@ public class FieldInfos implements Iterable<FieldInfo> {
   private final HashMap<String,FieldInfo> byName = new HashMap<>();
   private final Collection<FieldInfo> values; // for an unmodifiable iterator
   
-  /**
-   * Constructs a new FieldInfos from an array of FieldInfo objects
-   */
   public FieldInfos(FieldInfo[] infos) {
     boolean hasVectors = false;
     boolean hasProx = false;
@@ -108,72 +101,48 @@ public class FieldInfos implements Iterable<FieldInfo> {
     }
   }
   
-  /** Returns true if any fields have freqs */
   public boolean hasFreq() {
     return hasFreq;
   }
   
-  /** Returns true if any fields have positions */
   public boolean hasProx() {
     return hasProx;
   }
 
-  /** Returns true if any fields have payloads */
   public boolean hasPayloads() {
     return hasPayloads;
   }
 
-  /** Returns true if any fields have offsets */
   public boolean hasOffsets() {
     return hasOffsets;
   }
   
-  /** Returns true if any fields have vectors */
   public boolean hasVectors() {
     return hasVectors;
   }
   
-  /** Returns true if any fields have norms */
   public boolean hasNorms() {
     return hasNorms;
   }
   
-  /** Returns true if any fields have DocValues */
   public boolean hasDocValues() {
     return hasDocValues;
   }
   
-  /** Returns the number of fields */
   public int size() {
     return byName.size();
   }
   
-  /**
-   * Returns an iterator over all the fieldinfo objects present,
-   * ordered by ascending field number
-   */
   // TODO: what happens if in fact a different order is used?
   @Override
   public Iterator<FieldInfo> iterator() {
     return values.iterator();
   }
 
-  /**
-   * Return the fieldinfo object referenced by the field name
-   * @return the FieldInfo object or null when the given fieldName
-   * doesn't exist.
-   */  
   public FieldInfo fieldInfo(String fieldName) {
     return byName.get(fieldName);
   }
 
-  /**
-   * Return the fieldinfo object referenced by the fieldNumber.
-   * @param fieldNumber field's number.
-   * @return the FieldInfo object or null when the given fieldNumber
-   * doesn't exist.
-   * @throws IllegalArgumentException if fieldNumber is negative
-   */
   public FieldInfo fieldInfo(int fieldNumber) {
     if (fieldNumber < 0) {
       throw new IllegalArgumentException("Illegal field number: " + fieldNumber);
@@ -208,12 +177,6 @@ public class FieldInfos implements Iterable<FieldInfo> {
       this.docValuesType = new HashMap<>();
     }
     
-    /**
-     * Returns the global field number for the given field name. If the name
-     * does not exist yet it tries to add it with the given preferred field
-     * number assigned if possible otherwise the first unassigned field number
-     * is used as the field number.
-     */
     synchronized int addOrGet(String fieldName, int preferredFieldNumber, DocValuesType dvType) {
       if (dvType != DocValuesType.NONE) {
         DocValuesType currentDVType = docValuesType.get(fieldName);
@@ -257,10 +220,6 @@ public class FieldInfos implements Iterable<FieldInfo> {
       }
     }
 
-    /**
-     * Returns true if the {@code fieldName} exists in the map and is of the
-     * same {@code dvType}.
-     */
     synchronized boolean contains(String fieldName, DocValuesType dvType) {
       // used by IndexWriter.updateNumericDocValue
       if (!nameToNumber.containsKey(fieldName)) {
@@ -291,9 +250,6 @@ public class FieldInfos implements Iterable<FieldInfo> {
       this(new FieldNumbers());
     }
     
-    /**
-     * Creates a new instance with the given {@link FieldNumbers}. 
-     */
     Builder(FieldNumbers globalFieldNumbers) {
       assert globalFieldNumbers != null;
       this.globalFieldNumbers = globalFieldNumbers;
@@ -305,7 +261,6 @@ public class FieldInfos implements Iterable<FieldInfo> {
       }
     }
 
-    /** Create a new field, or return existing one. */
     public FieldInfo getOrAdd(String name) {
       FieldInfo fi = fieldInfo(name);
       if (fi == null) {

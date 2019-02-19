@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -37,28 +37,20 @@ class ConstantScoreAutoRewrite extends TermCollectingRewrite<BooleanQuery> {
   private int termCountCutoff = DEFAULT_TERM_COUNT_CUTOFF;
   private double docCountPercent = DEFAULT_DOC_COUNT_PERCENT;
 
-  /** If the number of terms in this query is equal to or
-   *  larger than this setting then {@link
-   *  #CONSTANT_SCORE_FILTER_REWRITE} is used. */
+
   public void setTermCountCutoff(int count) {
     termCountCutoff = count;
   }
 
-  /** @see #setTermCountCutoff */
   public int getTermCountCutoff() {
     return termCountCutoff;
   }
 
-  /** If the number of documents to be visited in the
-   *  postings exceeds this specified percentage of the
-   *  maxDoc() for the index, then {@link
-   *  #CONSTANT_SCORE_FILTER_REWRITE} is used.
-   *  @param percent 0.0 to 100.0 */
+
   public void setDocCountPercent(double percent) {
     docCountPercent = percent;
   }
 
-  /** @see #setDocCountPercent */
   public double getDocCountPercent() {
     return docCountPercent;
   }

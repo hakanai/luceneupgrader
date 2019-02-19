@@ -24,7 +24,6 @@ import java.util.Comparator;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ArrayUtil;
 
-/** Scorer for conjunctions, sets of queries, all of which are required. */
 class ConjunctionScorer extends Scorer {
   protected int lastDoc = -1;
   protected final DocsAndFreqs[] docsAndFreqs;

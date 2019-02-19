@@ -1,7 +1,7 @@
 // FastCharStream.java
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.queryParser;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,11 +21,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.queryParser;
 
 import java.io.*;
 
-/** An efficient implementation of JavaCC's CharStream interface.  <p>Note that
- * this does not do line-number counting, but instead keeps track of the
- * character position of the token in the input, as required by Lucene's {@link
- * org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.Token} API.
- * */
+
 public final class FastCharStream implements CharStream {
   char[] buffer = null;
 
@@ -37,7 +33,6 @@ public final class FastCharStream implements CharStream {
 
   Reader input;					  // source of chars
 
-  /** Constructs from a Reader. */
   public FastCharStream(Reader r) {
     input = r;
   }

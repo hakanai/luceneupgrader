@@ -18,9 +18,6 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.util;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.BoostQuery;
 
-/**
- * Helper methods to ease implementing {@link Object#toString()}.
- */
 public final class ToStringUtils {
 
   private ToStringUtils() {} // no instance
@@ -45,10 +42,6 @@ public final class ToStringUtils {
     return "0x" + new String(asHex);
   }
 
-  /**
-   * for printing boost only if not 1.0
-   * @deprecated per-query boosts are deprecated in favour of {@link BoostQuery}
-   */
   @Deprecated
   public static String boost(float boost) {
     if (boost != 1.0f) {

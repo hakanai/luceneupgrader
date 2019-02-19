@@ -28,17 +28,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-/**
- * A query that wraps another query or a filter and simply returns a constant score equal to the
- * query boost for every document that matches the filter or query.
- * For queries it therefore simply strips of all scores and returns a constant one.
- */
 public class ConstantScoreQuery extends Query {
   protected final Filter filter;
   protected final Query query;
 
-  /** Strips off scores from the passed in Query. The hits will get a constant score
-   * dependent on the boost factor of this query. */
   public ConstantScoreQuery(Query query) {
     if (query == null)
       throw new NullPointerException("Query may not be null");
@@ -46,12 +39,7 @@ public class ConstantScoreQuery extends Query {
     this.query = query;
   }
 
-  /** Wraps a Filter as a Query. The hits will get a constant score
-   * dependent on the boost factor of this query.
-   * If you simply want to strip off scores from a Query, no longer use
-   * {@code new ConstantScoreQuery(new QueryWrapperFilter(query))}, instead
-   * use {@link #ConstantScoreQuery(Query)}!
-   */
+
   public ConstantScoreQuery(Filter filter) {
     if (filter == null)
       throw new NullPointerException("Filter may not be null");
@@ -59,12 +47,10 @@ public class ConstantScoreQuery extends Query {
     this.query = null;
   }
 
-  /** Returns the encapsulated filter, returns {@code null} if a query is wrapped. */
   public Filter getFilter() {
     return filter;
   }
 
-  /** Returns the encapsulated query, returns {@code null} if a filter is wrapped. */
   public Query getQuery() {
     return query;
   }
@@ -196,10 +182,7 @@ public class ConstantScoreQuery extends Query {
     }
   }
 
-  /** We return this as our {@link BulkScorer} so that if the CSQ
-   *  wraps a query with its own optimized top-level
-   *  scorer (e.g. BooleanScorer) we can use that
-   *  top-level scorer. */
+
   protected class ConstantBulkScorer extends BulkScorer {
     final BulkScorer bulkScorer;
     final Weight weight;

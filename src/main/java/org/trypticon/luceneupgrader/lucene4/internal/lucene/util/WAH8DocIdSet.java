@@ -29,51 +29,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedLongValues;
 
-/**
- * {@link DocIdSet} implementation based on word-aligned hybrid encoding on
- * words of 8 bits.
- * <p>This implementation doesn't support random-access but has a fast
- * {@link DocIdSetIterator} which can advance in logarithmic time thanks to
- * an index.</p>
- * <p>The compression scheme is simplistic and should work well with sparse and
- * very dense doc id sets while being only slightly larger than a
- * {@link FixedBitSet} for incompressible sets (overhead&lt;2% in the worst
- * case) in spite of the index.</p>
- * <p><b>Format</b>: The format is byte-aligned. An 8-bits word is either clean,
- * meaning composed only of zeros or ones, or dirty, meaning that it contains
- * between 1 and 7 bits set. The idea is to encode sequences of clean words
- * using run-length encoding and to leave sequences of dirty words as-is.</p>
- * <table>
- *   <tr><th>Token</th><th>Clean length+</th><th>Dirty length+</th><th>Dirty words</th></tr>
- *   <tr><td>1 byte</td><td>0-n bytes</td><td>0-n bytes</td><td>0-n bytes</td></tr>
- * </table>
- * <ul>
- *   <li><b>Token</b> encodes whether clean means full of zeros or ones in the
- * first bit, the number of clean words minus 2 on the next 3 bits and the
- * number of dirty words on the last 4 bits. The higher-order bit is a
- * continuation bit, meaning that the number is incomplete and needs additional
- * bytes to be read.</li>
- *   <li><b>Clean length+</b>: If clean length has its higher-order bit set,
- * you need to read a {@link DataInput#readVInt() vint}, shift it by 3 bits on
- * the left side and add it to the 3 bits which have been read in the token.</li>
- *   <li><b>Dirty length+</b> works the same way as <b>Clean length+</b> but
- * on 4 bits and for the length of dirty words.</li>
- *   <li><b>Dirty words</b> are the dirty words, there are <b>Dirty length</b>
- * of them.</li>
- * </ul>
- * <p>This format cannot encode sequences of less than 2 clean words and 0 dirty
- * word. The reason is that if you find a single clean word, you should rather
- * encode it as a dirty word. This takes the same space as starting a new
- * sequence (since you need one byte for the token) but will be lighter to
- * decode. There is however an exception for the first sequence. Since the first
- * sequence may start directly with a dirty word, the clean length is encoded
- * directly, without subtracting 2.</p>
- * <p>There is an additional restriction on the format: the sequence of dirty
- * words is not allowed to contain two consecutive clean words. This restriction
- * exists to make sure no space is wasted and to make sure iterators can read
- * the next doc ID by reading at most 2 dirty words.</p>
- * @lucene.experimental
- */
 public final class WAH8DocIdSet extends DocIdSet implements Accountable {
 
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(WAH8DocIdSet.class);
@@ -85,7 +40,6 @@ public final class WAH8DocIdSet extends DocIdSet implements Accountable {
   // index entry every 8 sequences
   private static final int MIN_INDEX_INTERVAL = 8;
 
-  /** Default index interval. */
   public static final int DEFAULT_INDEX_INTERVAL = 24;
 
   private static final PackedLongValues SINGLE_ZERO = PackedLongValues.packedBuilder(PackedInts.COMPACT).add(0L).build();
@@ -98,15 +52,10 @@ public final class WAH8DocIdSet extends DocIdSet implements Accountable {
     }
   };
 
-  /** Same as {@link #intersect(Collection, int)} with the default index interval. */
   public static WAH8DocIdSet intersect(Collection<WAH8DocIdSet> docIdSets) {
     return intersect(docIdSets, DEFAULT_INDEX_INTERVAL);
   }
 
-  /**
-   * Compute the intersection of the provided sets. This method is much faster than
-   * computing the intersection manually since it operates directly at the byte level.
-   */
   public static WAH8DocIdSet intersect(Collection<WAH8DocIdSet> docIdSets, int indexInterval) {
     switch (docIdSets.size()) {
       case 0:
@@ -158,15 +107,10 @@ public final class WAH8DocIdSet extends DocIdSet implements Accountable {
     return builder.build();
   }
 
-  /** Same as {@link #union(Collection, int)} with the default index interval. */
   public static WAH8DocIdSet union(Collection<WAH8DocIdSet> docIdSets) {
     return union(docIdSets, DEFAULT_INDEX_INTERVAL);
   }
 
-  /**
-   * Compute the union of the provided sets. This method is much faster than
-   * computing the union manually since it operates directly at the byte level.
-   */
   public static WAH8DocIdSet union(Collection<WAH8DocIdSet> docIdSets, int indexInterval) {
     switch (docIdSets.size()) {
       case 0:
@@ -218,7 +162,6 @@ public final class WAH8DocIdSet extends DocIdSet implements Accountable {
     return docID >>> 3;
   }
 
-  /** Word-based builder. */
   static class WordBuilder {
 
     final GrowableByteArrayDataOutput out;
@@ -240,13 +183,7 @@ public final class WAH8DocIdSet extends DocIdSet implements Accountable {
       cardinality = 0;
     }
 
-    /** Set the index interval. Smaller index intervals improve performance of
-     *  {@link DocIdSetIterator#advance(int)} but make the {@link DocIdSet}
-     *  larger. An index interval <code>i</code> makes the index add an overhead
-     *  which is at most <code>4/i</code>, but likely much less.The default index
-     *  interval is <code>8</code>, meaning the index has an overhead of at most
-     *  50%. To disable indexing, you can pass {@link Integer#MAX_VALUE} as an
-     *  index interval. */
+
     public WordBuilder setIndexInterval(int indexInterval) {
       if (indexInterval < MIN_INDEX_INTERVAL) {
         throw new IllegalArgumentException("indexInterval must be >= " + MIN_INDEX_INTERVAL);
@@ -361,7 +298,6 @@ public final class WAH8DocIdSet extends DocIdSet implements Accountable {
       cardinality += BitUtil.bitCount(word);
     }
 
-    /** Build a new {@link WAH8DocIdSet}. */
     public WAH8DocIdSet build() {
       if (cardinality == 0) {
         assert lastWordNum == -1;
@@ -406,13 +342,11 @@ public final class WAH8DocIdSet extends DocIdSet implements Accountable {
 
   }
 
-  /** A builder for {@link WAH8DocIdSet}s. */
   public static final class Builder extends WordBuilder {
 
     private int lastDocID;
     private int wordNum, word;
 
-    /** Sole constructor */
     public Builder() {
       super();
       lastDocID = -1;
@@ -420,7 +354,6 @@ public final class WAH8DocIdSet extends DocIdSet implements Accountable {
       word = 0;
     }
 
-    /** Add a document to this builder. Documents must be added in order. */
     public Builder add(int docID) {
       if (docID <= lastDocID) {
         throw new IllegalArgumentException("Doc ids must be added in-order, got " + docID + " which is <= lastDocID=" + lastDocID);
@@ -440,7 +373,6 @@ public final class WAH8DocIdSet extends DocIdSet implements Accountable {
       return this;
     }
 
-    /** Add the content of the provided {@link DocIdSetIterator}. */
     public Builder add(DocIdSetIterator disi) throws IOException {
       for (int doc = disi.nextDoc(); doc != DocIdSetIterator.NO_MORE_DOCS; doc = disi.nextDoc()) {
         add(doc);
@@ -725,7 +657,6 @@ public final class WAH8DocIdSet extends DocIdSet implements Accountable {
 
   }
 
-  /** Return the number of documents in this {@link DocIdSet} in constant time. */
   public int cardinality() {
     return cardinality;
   }

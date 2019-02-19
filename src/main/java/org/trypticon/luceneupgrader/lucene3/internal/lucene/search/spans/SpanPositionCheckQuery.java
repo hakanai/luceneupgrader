@@ -1,5 +1,5 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -27,9 +27,7 @@ import java.util.Collection;
 import java.util.Set;
 
 
-/**
- * Base class for filtering a SpanQuery based on the position of a match.
- **/
+
 public abstract class SpanPositionCheckQuery extends SpanQuery implements Cloneable {
   protected SpanQuery match;
 
@@ -38,10 +36,7 @@ public abstract class SpanPositionCheckQuery extends SpanQuery implements Clonea
     this.match = match;
   }
 
-  /**
-   * @return the SpanQuery whose matches are filtered.
-   *
-   * */
+
   public SpanQuery getMatch() { return match; }
 
 
@@ -56,26 +51,9 @@ public abstract class SpanPositionCheckQuery extends SpanQuery implements Clonea
 	    match.extractTerms(terms);
   }
 
-  /** Return value if the match should be accepted {@code YES}, rejected {@code NO},
-   * or rejected and enumeration should advance to the next document {@code NO_AND_ADVANCE}.
-   * @see #acceptPosition(Spans)
-   */
+
   protected static enum AcceptStatus { YES, NO, NO_AND_ADVANCE };
   
-  /**
-   * Implementing classes are required to return whether the current position is a match for the passed in
-   * "match" {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans.SpanQuery}.
-   *
-   * This is only called if the underlying {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans.Spans#next()} for the
-   * match is successful
-   *
-   *
-   * @param spans The {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans.Spans} instance, positioned at the spot to check
-   * @return whether the match is accepted, rejected, or rejected and should move to the next doc.
-   *
-   * @see org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans.Spans#next()
-   *
-   */
   protected abstract AcceptStatus acceptPosition(Spans spans) throws IOException;
 
   @Override

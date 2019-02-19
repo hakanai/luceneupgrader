@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,9 +19,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.Reader;
 
-/** Used by DocumentsWriter to implemented a StringReader
- *  that can be reset to a new string; we use this when
- *  tokenizing the string value from a Field. */
+
 final class ReusableStringReader extends Reader {
   int upto;
   int left;

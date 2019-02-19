@@ -29,55 +29,17 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.CollectionUtil;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ThreadInterruptedException;
 
-/** A {@link MergeScheduler} that runs each merge using a
- *  separate thread.
- *
- *  <p>Specify the max number of threads that may run at
- *  once, and the maximum number of simultaneous merges
- *  with {@link #setMaxMergesAndThreads}.</p>
- *
- *  <p>If the number of merges exceeds the max number of threads 
- *  then the largest merges are paused until one of the smaller
- *  merges completes.</p>
- *
- *  <p>If more than {@link #getMaxMergeCount} merges are
- *  requested then this class will forcefully throttle the
- *  incoming threads by pausing until one more more merges
- *  complete.</p>
- *
- *  <p>This class attempts to detect whether the index is
- *  on rotational storage (traditional hard drive) or not
- *  (e.g. solid-state disk) and changes the default max merge
- *  and thread count accordingly.  This detection is currently
- *  Linux-only, and relies on the OS to put the right value
- *  into /sys/block/&lt;dev&gt;/block/rotational.  For all
- *  other operating systems it currently assumes a rotational
- *  disk for backwards compatibility.  To enable default
- *  settings for spinning or solid state disks for such
- *  operating systems, use {@link #setDefaultMaxMergesAndThreads(boolean)}.
- */ 
-
 public class ConcurrentMergeScheduler extends MergeScheduler {
 
-  /** Dynamic default for {@code maxThreadCount} and {@code maxMergeCount},
-   *  used to detect whether the index is backed by an SSD or rotational disk and
-   *  set {@code maxThreadCount} accordingly.  If it's an SSD,
-   *  {@code maxThreadCount} is set to {@code max(1, min(4, cpuCoreCount/2))},
-   *  otherwise 1.  Note that detection only currently works on
-   *  Linux; other platforms will assume the index is not on an SSD. */
+
   public static final int AUTO_DETECT_MERGES_AND_THREADS = -1;
 
-  /** Used for testing.
-   *
-   * @lucene.internal */
+
   public static final String DEFAULT_CPU_CORE_COUNT_PROPERTY = "lucene.cms.override_core_count";
 
-  /** Used for testing.
-   *
-   * @lucene.internal */
+
   public static final String DEFAULT_SPINS_PROPERTY = "lucene.cms.override_spins";
 
-  /** List of currently active {@link MergeThread}s. */
   protected final List<MergeThread> mergeThreads = new ArrayList<>();
   
   // Max number of merge threads allowed to be running at
@@ -92,48 +54,25 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
   // throttling the incoming threads
   private int maxMergeCount = AUTO_DETECT_MERGES_AND_THREADS;
 
-  /** How many {@link MergeThread}s have kicked off (this is use
-   *  to name them). */
   protected int mergeThreadCount;
 
-  /** Floor for IO write rate limit (we will never go any lower than this) */
   private static final double MIN_MERGE_MB_PER_SEC = 5.0;
 
-  /** Ceiling for IO write rate limit (we will never go any higher than this) */
   private static final double MAX_MERGE_MB_PER_SEC = 10240.0;
 
-  /** Initial value for IO write rate limit when doAutoIOThrottle is true */
   private static final double START_MB_PER_SEC = 20.0;
 
-  /** Merges below this size are not counted in the maxThreadCount, i.e. they can freely run in their own thread (up until maxMergeCount). */
   private static final double MIN_BIG_MERGE_MB = 50.0;
 
-  /** Current IO writes throttle rate */
   protected double targetMBPerSec = START_MB_PER_SEC;
 
-  /** true if we should rate-limit writes for each merge */
   private boolean doAutoIOThrottle = true;
 
   private double forceMergeMBPerSec = Double.POSITIVE_INFINITY;
 
-  /** Sole constructor, with all settings set to default
-   *  values. */
   public ConcurrentMergeScheduler() {
   }
 
-  /**
-   * Expert: directly set the maximum number of merge threads and
-   * simultaneous merges allowed.
-   * 
-   * @param maxMergeCount the max # simultaneous merges that are allowed.
-   *       If a merge is necessary yet we already have this many
-   *       threads running, the incoming thread (that is calling
-   *       add/updateDocument) will block until a merge thread
-   *       has completed.  Note that we will only run the
-   *       smallest <code>maxThreadCount</code> merges at a time.
-   * @param maxThreadCount the max # simultaneous merge threads that should
-   *       be running at once.  This must be &lt;= <code>maxMergeCount</code>
-   */
   public synchronized void setMaxMergesAndThreads(int maxMergeCount, int maxThreadCount) {
     if (maxMergeCount == AUTO_DETECT_MERGES_AND_THREADS && maxThreadCount == AUTO_DETECT_MERGES_AND_THREADS) {
       // OK
@@ -158,12 +97,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /** Sets max merges and threads to proper defaults for rotational
-   *  or non-rotational storage.
-   *
-   * @param spins true to set defaults best for traditional rotatational storage (spinning disks), 
-   *        else false (e.g. for solid-state disks)
-   */
+
   public synchronized void setDefaultMaxMergesAndThreads(boolean spins) {
     if (spins) {
       maxThreadCount = 1;
@@ -186,41 +120,32 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /** Set the per-merge IO throttle rate for forced merges (default: {@code Double.POSITIVE_INFINITY}). */
   public synchronized void setForceMergeMBPerSec(double v) {
     forceMergeMBPerSec = v;
     updateMergeThreads();
   }
 
-  /** Get the per-merge IO throttle rate for forced merges. */
   public synchronized double getForceMergeMBPerSec() {
     return forceMergeMBPerSec;
   }
 
-  /** Turn on dynamic IO throttling, to adaptively rate limit writes
-   *  bytes/sec to the minimal rate necessary so merges do not fall behind.
-   *  By default this is enabled. */
+
   public synchronized void enableAutoIOThrottle() {
     doAutoIOThrottle = true;
     targetMBPerSec = START_MB_PER_SEC;
     updateMergeThreads();
   }
 
-  /** Turn off auto IO throttling.
-   *
-   * @see #enableAutoIOThrottle */
+
   public synchronized void disableAutoIOThrottle() {
     doAutoIOThrottle = false;
     updateMergeThreads();
   }
 
-  /** Returns true if auto IO throttling is currently enabled. */
   public synchronized boolean getAutoIOThrottle() {
     return doAutoIOThrottle;
   }
 
-  /** Returns the currently set per-merge IO writes rate limit, if {@link #enableAutoIOThrottle}
-   *  was called, else {@code Double.POSITIVE_INFINITY}. */
   public synchronized double getIORateLimitMBPerSec() {
     if (doAutoIOThrottle) {
       return targetMBPerSec;
@@ -229,19 +154,15 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /** Returns {@code maxThreadCount}.
-   *
-   * @see #setMaxMergesAndThreads(int, int) */
+
   public synchronized int getMaxThreadCount() {
     return maxThreadCount;
   }
 
-  /** See {@link #setMaxMergesAndThreads}. */
   public synchronized int getMaxMergeCount() {
     return maxMergeCount;
   }
 
-  /** Removes the calling thread from the active merge threads. */
   synchronized void removeMergeThread() {
     Thread currentThread = Thread.currentThread();
     // Paranoia: don't trust Thread.equals:
@@ -254,13 +175,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
       
     assert false: "merge thread " + currentThread + " was not found";
   }
-
-  /**
-   * Called whenever the running merges have changed, to set merge IO limits.
-   * This method sorts the merge threads by their merge size in
-   * descending order and then pauses/unpauses threads from first to last --
-   * that way, smaller merges are guaranteed to run before larger ones.
-   */
 
   protected synchronized void updateMergeThreads() {
 
@@ -406,7 +320,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     sync();
   }
 
-  /** Wait for any running merge threads to finish. This call is not interruptible as used by {@link #close()}. */
   public void sync() {
     boolean interrupted = false;
     try {
@@ -439,12 +352,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /**
-   * Returns the number of merge threads that are alive, ignoring the calling thread
-   * if it is a merge thread.  Note that this number is &le; {@link #mergeThreads} size.
-   *
-   * @lucene.internal
-   */
   public synchronized int mergeThreadCount() {
     Thread currentThread = Thread.currentThread();
     int count = 0;
@@ -526,17 +433,7 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /** This is invoked by {@link #merge} to possibly stall the incoming
-   *  thread when there are too many merges running or pending.  The 
-   *  default behavior is to force this thread, which is producing too
-   *  many segments for merging to keep up, to wait until merges catch
-   *  up. Applications that can take other less drastic measures, such
-   *  as limiting how many threads are allowed to index, can do nothing
-   *  here and throttle elsewhere.
-   *
-   *  If this method wants to stall but the calling thread is a merge
-   *  thread, it should return false to tell caller not to kick off
-   *  any new merges. */
+
 
   protected synchronized boolean maybeStall(IndexWriter writer) {
     long startStallTime = 0;
@@ -573,7 +470,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     return true;
   }
 
-  /** Called from {@link #maybeStall} to pause the calling thread for a bit. */
   protected synchronized void doStall() {
     try {
       // Defensively wait for only .25 seconds in case we are missing a .notify/All somewhere:
@@ -583,12 +479,10 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /** Does the actual merge, by calling {@link IndexWriter#merge} */
   protected void doMerge(IndexWriter writer, OneMerge merge) throws IOException {
     writer.merge(merge);
   }
 
-  /** Create and return a new MergeThread */
   protected synchronized MergeThread getMergeThread(IndexWriter writer, OneMerge merge) throws IOException {
     final MergeThread thread = new MergeThread(writer, merge);
     thread.setDaemon(true);
@@ -596,13 +490,11 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     return thread;
   }
 
-  /** Runs a merge thread to execute a single merge, then exits. */
   protected class MergeThread extends Thread implements Comparable<MergeThread> {
 
     final IndexWriter writer;
     final OneMerge merge;
 
-    /** Sole constructor. */
     public MergeThread(IndexWriter writer, OneMerge merge) {
       this.writer = writer;
       this.merge = merge;
@@ -662,15 +554,12 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     }
   }
 
-  /** Called when an exception is hit in a background merge
-   *  thread */
   protected void handleMergeException(Directory dir, Throwable exc) {
     throw new MergePolicy.MergeException(exc, dir);
   }
 
   private boolean suppressExceptions;
 
-  /** Used for testing */
   void setSuppressExceptions() {
     if (verbose()) {
       message("will suppress merge exceptions");
@@ -678,7 +567,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     suppressExceptions = true;
   }
 
-  /** Used for testing */
   void clearSuppressExceptions() {
     if (verbose()) {
       message("will not suppress merge exceptions");
@@ -714,7 +602,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     return false;
   }
 
-  /** Tunes IO throttle when a new merge starts. */
   private synchronized void updateIOThrottle(OneMerge newMerge) throws IOException {
     if (doAutoIOThrottle == false) {
       return;
@@ -798,7 +685,6 @@ public class ConcurrentMergeScheduler extends MergeScheduler {
     targetMBPerSecChanged();
   }
 
-  /** Subclass can override to tweak targetMBPerSec. */
   protected void targetMBPerSecChanged() {
   }
 

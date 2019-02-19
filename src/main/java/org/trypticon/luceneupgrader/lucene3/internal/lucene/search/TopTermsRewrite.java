@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,32 +23,19 @@ import java.util.PriorityQueue;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
 
-/**
- * Base rewrite method for collecting only the top terms
- * via a priority queue.
- * @lucene.internal Only public to be accessible by spans package.
- */
 public abstract class TopTermsRewrite<Q extends Query> extends TermCollectingRewrite<Q> {
 
   private final int size;
   
-  /** 
-   * Create a TopTermsBooleanQueryRewrite for 
-   * at most <code>size</code> terms.
-   * <p>
-   * NOTE: if {@link BooleanQuery#getMaxClauseCount} is smaller than 
-   * <code>size</code>, then it will be used instead. 
-   */
+
   public TopTermsRewrite(int size) {
     this.size = size;
   }
   
-  /** return the maximum priority queue size */
   public int getSize() {
     return size;
   }
   
-  /** return the maximum size of the priority queue (for boolean rewrites this is BooleanQuery#getMaxClauseCount). */
   protected abstract int getMaxSize();
   
   @Override

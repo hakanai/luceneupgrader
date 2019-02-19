@@ -17,20 +17,8 @@
 package org.trypticon.luceneupgrader.lucene5.internal.lucene.search.similarities;
 
 
-/**
- * Standardized measure of distance from independence
- * <p>
- * Described as:
- * "good at tasks that require high recall and high precision, especially 
- *  against short queries composed of a few words as in the case of Internet 
- *  searches"
- * @lucene.experimental
- */
 public class IndependenceStandardized extends Independence {
 
-  /**
-   * Sole constructor.
-   */
   public IndependenceStandardized() {}
   
   @Override

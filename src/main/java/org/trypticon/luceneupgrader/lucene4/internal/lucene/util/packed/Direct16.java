@@ -25,10 +25,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimat
 import java.io.IOException;
 import java.util.Arrays;
 
-/**
- * Direct wrapping of 16-bits values to a backing array.
- * @lucene.internal
- */
 final class Direct16 extends PackedInts.MutableImpl {
   final short[] values;
 

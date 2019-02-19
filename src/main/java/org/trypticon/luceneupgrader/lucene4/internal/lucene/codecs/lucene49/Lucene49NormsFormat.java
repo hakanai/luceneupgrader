@@ -30,76 +30,8 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.SmallFloat;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.BlockPackedWriter;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
-/**
- * Lucene 4.9 Score normalization format.
- * <p>
- * Encodes normalization values with these strategies:
- * <p>
- * <ul>
- *    <li>Uncompressed: when values fit into a single byte and would require more than 4 bits
- *        per value, they are just encoded as an uncompressed byte array.
- *    <li>Constant: when there is only one value present for the entire field, no actual data
- *        is written: this constant is encoded in the metadata
- *    <li>Table-compressed: when the number of unique values is very small (&lt; 64), and
- *        when there are unused "gaps" in the range of values used (such as {@link SmallFloat}), 
- *        a lookup table is written instead. Each per-document entry is instead the ordinal 
- *        to this table, and those ordinals are compressed with bitpacking ({@link PackedInts}). 
- *    <li>Delta-compressed: per-document integers written as deltas from the minimum value,
- *        compressed with bitpacking. For more information, see {@link BlockPackedWriter}.
- *        This is only used when norms of larger than one byte are present.
- * </ul>
- * <p>
- * Files:
- * <ol>
- *   <li><tt>.nvd</tt>: Norms data</li>
- *   <li><tt>.nvm</tt>: Norms metadata</li>
- * </ol>
- * <ol>
- *   <li><a name="nvm" id="nvm"></a>
- *   <p>The Norms metadata or .nvm file.</p>
- *   <p>For each norms field, this stores metadata, such as the offset into the 
- *      Norms data (.nvd)</p>
- *   <p>Norms metadata (.dvm) --&gt; Header,&lt;Entry&gt;<sup>NumFields</sup>,Footer</p>
- *   <ul>
- *     <li>Header --&gt; {@link CodecUtil#writeHeader CodecHeader}</li>
- *     <li>Entry --&gt; FieldNumber,Type,Offset</li>
- *     <li>FieldNumber --&gt; {@link DataOutput#writeVInt vInt}</li>
- *     <li>Type --&gt; {@link DataOutput#writeByte Byte}</li>
- *     <li>Offset --&gt; {@link DataOutput#writeLong Int64}</li>
- *     <li>Footer --&gt; {@link CodecUtil#writeFooter CodecFooter}</li>
- *   </ul>
- *   <p>FieldNumber of -1 indicates the end of metadata.</p>
- *   <p>Offset is the pointer to the start of the data in the norms data (.nvd), or the singleton value for Constant</p>
- *   <p>Type indicates how Numeric values will be compressed:
- *      <ul>
- *         <li>0 --&gt; delta-compressed. For each block of 16k integers, every integer is delta-encoded
- *             from the minimum value within the block. 
- *         <li>1 --&gt; table-compressed. When the number of unique numeric values is small and it would save space,
- *             a lookup table of unique values is written, followed by the ordinal for each document.
- *         <li>2 --&gt; constant. When there is a single value for the entire field.
- *         <li>3 --&gt; uncompressed: Values written as a simple byte[].
- *      </ul>
- *   <li><a name="nvd" id="nvd"></a>
- *   <p>The Norms data or .nvd file.</p>
- *   <p>For each Norms field, this stores the actual per-document data (the heavy-lifting)</p>
- *   <p>Norms data (.nvd) --&gt; Header,&lt;Uncompressed | TableCompressed | DeltaCompressed&gt;<sup>NumFields</sup>,Footer</p>
- *   <ul>
- *     <li>Header --&gt; {@link CodecUtil#writeHeader CodecHeader}</li>
- *     <li>Uncompressed --&gt;  {@link DataOutput#writeByte Byte}<sup>maxDoc</sup></li>
- *     <li>TableCompressed --&gt; PackedIntsVersion,Table,BitPackedData</li>
- *     <li>Table --&gt; TableSize, {@link DataOutput#writeLong int64}<sup>TableSize</sup></li>
- *     <li>BitpackedData --&gt; {@link PackedInts}</li>
- *     <li>DeltaCompressed --&gt; PackedIntsVersion,BlockSize,DeltaCompressedData</li>
- *     <li>DeltaCompressedData --&gt; {@link BlockPackedWriter BlockPackedWriter(blockSize=16k)}</li>
- *     <li>PackedIntsVersion,BlockSize,TableSize --&gt; {@link DataOutput#writeVInt vInt}</li>
- *     <li>Footer --&gt; {@link CodecUtil#writeFooter CodecFooter}</li>
- *   </ul>
- * </ol>
- * @lucene.experimental
- */
 public class Lucene49NormsFormat extends NormsFormat {
 
-  /** Sole Constructor */
   public Lucene49NormsFormat() {}
   
   @Override

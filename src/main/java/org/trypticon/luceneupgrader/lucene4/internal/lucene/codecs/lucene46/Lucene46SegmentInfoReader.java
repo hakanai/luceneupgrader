@@ -33,15 +33,8 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Version;
 
-/**
- * Lucene 4.6 implementation of {@link SegmentInfoReader}.
- * 
- * @see Lucene46SegmentInfoFormat
- * @lucene.experimental
- */
 public class Lucene46SegmentInfoReader extends SegmentInfoReader {
 
-  /** Sole constructor. */
   public Lucene46SegmentInfoReader() {
   }
 

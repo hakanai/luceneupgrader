@@ -26,21 +26,10 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.StoredFieldsR
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.TermVectorsReader;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 
-/** 
- * A <code>FilterCodecReader</code> contains another CodecReader, which it
- * uses as its basic source of data, possibly transforming the data along the
- * way or providing additional functionality.
- */
 public class FilterCodecReader extends CodecReader {
-  /** 
-   * The underlying CodecReader instance. 
-   */
+
   protected final CodecReader in;
   
-  /**
-   * Creates a new FilterCodecReader.
-   * @param in the underlying CodecReader instance.
-   */
   public FilterCodecReader(CodecReader in) {
     this.in = Objects.requireNonNull(in);
   }

@@ -24,12 +24,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataOutput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
-/**
- * LZ4 compression and decompression routines.
- *
- * http://code.google.com/p/lz4/
- * http://fastcompression.blogspot.fr/p/lz4.html
- */
 final class LZ4 {
 
   private LZ4() {}
@@ -76,12 +70,6 @@ final class LZ4 {
     return count;
   }
 
-  /**
-   * Decompress at least <code>decompressedLen</code> bytes into
-   * <code>dest[dOff:]</code>. Please note that <code>dest</code> must be large
-   * enough to be able to hold <b>all</b> decompressed data (meaning that you
-   * need to know the total decompressed length).
-   */
   public static int decompress(DataInput compressed, int decompressedLen, byte[] dest, int dOff) throws IOException {
     final int destEnd = dest.length;
 
@@ -198,11 +186,6 @@ final class LZ4 {
 
   }
 
-  /**
-   * Compress <code>bytes[off:off+len]</code> into <code>out</code> using
-   * at most 16KB of memory. <code>ht</code> shouldn't be shared across threads
-   * but can safely be reused.
-   */
   public static void compress(byte[] bytes, int off, int len, DataOutput out, HashTable ht) throws IOException {
 
     final int base = off;
@@ -401,15 +384,6 @@ final class LZ4 {
 
   }
 
-  /**
-   * Compress <code>bytes[off:off+len]</code> into <code>out</code>. Compared to
-   * {@link LZ4#compress(byte[], int, int, DataOutput, HashTable)}, this method
-   * is slower and uses more memory (~ 256KB per thread) but should provide
-   * better compression ratios (especially on large inputs) because it chooses
-   * the best match among up to 256 candidates and then performs trade-offs to
-   * fix overlapping matches. <code>ht</code> shouldn't be shared across threads
-   * but can safely be reused.
-   */
   public static void compressHC(byte[] src, int srcOff, int srcLen, DataOutput out, HCHashTable ht) throws IOException {
 
     final int srcEnd = srcOff + srcLen;

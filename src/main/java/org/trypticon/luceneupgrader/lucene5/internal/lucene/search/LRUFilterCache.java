@@ -36,53 +36,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RoaringDocIdSet;
 
-/**
- * A {@link FilterCache} that evicts filters using a LRU (least-recently-used)
- * eviction policy in order to remain under a given maximum size and number of
- * bytes used.
- *
- * This class is thread-safe.
- *
- * Note that filter eviction runs in linear time with the total number of
- * segments that have cache entries so this cache works best with
- * {@link FilterCachingPolicy caching policies} that only cache on "large"
- * segments, and it is advised to not share this cache across too many indices.
- *
- * Typical usage looks like this:
- * <pre class="prettyprint">
- *   final int maxNumberOfCachedFilters = 256;
- *   final long maxRamBytesUsed = 50 * 1024L * 1024L; // 50MB
- *   // these cache and policy instances can be shared across several filters and readers
- *   // it is fine to eg. store them into static variables
- *   final FilterCache filterCache = new LRUFilterCache(maxNumberOfCachedFilters, maxRamBytesUsed);
- *   final FilterCachingPolicy defaultCachingPolicy = new UsageTrackingFilterCachingPolicy();
- *   
- *   // ...
- *   
- *   // Then at search time
- *   Filter myFilter = ...;
- *   Filter myCacheFilter = filterCache.doCache(myFilter, defaultCachingPolicy);
- *   // myCacheFilter is now a wrapper around the original filter that will interact with the cache
- *   IndexSearcher searcher = ...;
- *   TopDocs topDocs = searcher.search(new ConstantScoreQuery(myCacheFilter), 10);
- * </pre>
- *
- * This cache exposes some global statistics ({@link #getHitCount() hit count},
- * {@link #getMissCount() miss count}, {@link #getCacheSize() number of cache
- * entries}, {@link #getCacheCount() total number of DocIdSets that have ever
- * been cached}, {@link #getEvictionCount() number of evicted entries}). In
- * case you would like to have more fine-grained statistics, such as per-index
- * or per-filter-class statistics, it is possible to override various callbacks:
- * {@link #onHit}, {@link #onMiss},
- * {@link #onFilterCache}, {@link #onFilterEviction},
- * {@link #onDocIdSetCache}, {@link #onDocIdSetEviction} and {@link #onClear}.
- * It is better to not perform heavy computations in these methods though since
- * they are called synchronously and under a lock.
- *
- * @see FilterCachingPolicy
- * @lucene.experimental
- * @deprecated Use {@link LRUQueryCache} instead
- */
 @Deprecated
 public class LRUFilterCache implements FilterCache, Accountable {
 
@@ -116,10 +69,6 @@ public class LRUFilterCache implements FilterCache, Accountable {
   private volatile long cacheCount;
   private volatile long cacheSize;
 
-  /**
-   * Create a new instance that will cache at most <code>maxSize</code> filters
-   * with at most <code>maxRamBytesUsed</code> bytes of memory.
-   */
   public LRUFilterCache(int maxSize, long maxRamBytesUsed) {
     this.maxSize = maxSize;
     this.maxRamBytesUsed = maxRamBytesUsed;
@@ -129,81 +78,39 @@ public class LRUFilterCache implements FilterCache, Accountable {
     ramBytesUsed = 0;
   }
 
-  /**
-   * Expert: callback when there is a cache hit on a given filter.
-   * Implementing this method is typically useful in order to compute more
-   * fine-grained statistics about the filter cache.
-   * @see #onMiss
-   * @lucene.experimental
-   */
   protected void onHit(Object readerCoreKey, Filter filter) {
     hitCount += 1;
   }
 
-  /**
-   * Expert: callback when there is a cache miss on a given filter.
-   * @see #onHit
-   * @lucene.experimental
-   */
   protected void onMiss(Object readerCoreKey, Filter filter) {
     assert filter != null;
     missCount += 1;
   }
 
-  /**
-   * Expert: callback when a filter is added to this cache.
-   * Implementing this method is typically useful in order to compute more
-   * fine-grained statistics about the filter cache.
-   * @see #onFilterEviction
-   * @lucene.experimental
-   */
   protected void onFilterCache(Filter filter, long ramBytesUsed) {
     this.ramBytesUsed += ramBytesUsed;
   }
 
-  /**
-   * Expert: callback when a filter is evicted from this cache.
-   * @see #onFilterCache
-   * @lucene.experimental
-   */
   protected void onFilterEviction(Filter filter, long ramBytesUsed) {
     this.ramBytesUsed -= ramBytesUsed;
   }
 
-  /**
-   * Expert: callback when a {@link DocIdSet} is added to this cache.
-   * Implementing this method is typically useful in order to compute more
-   * fine-grained statistics about the filter cache.
-   * @see #onDocIdSetEviction
-   * @lucene.experimental
-   */
   protected void onDocIdSetCache(Object readerCoreKey, long ramBytesUsed) {
     cacheSize += 1;
     cacheCount += 1;
     this.ramBytesUsed += ramBytesUsed;
   }
   
-  /**
-   * Expert: callback when one or more {@link DocIdSet}s are removed from this
-   * cache.
-   * @see #onDocIdSetCache
-   * @lucene.experimental
-   */
   protected void onDocIdSetEviction(Object readerCoreKey, int numEntries, long sumRamBytesUsed) {
     this.ramBytesUsed -= sumRamBytesUsed;
     cacheSize -= numEntries;
   }
 
-  /**
-   * Expert: callback when the cache is completely cleared.
-   * @lucene.experimental
-   */
   protected void onClear() {
     ramBytesUsed = 0;
     cacheSize = 0;
   }
 
-  /** Whether evictions are required. */
   boolean requiresEviction() {
     final int size = mostRecentlyUsedFilters.size();
     if (size == 0) {
@@ -276,9 +183,6 @@ public class LRUFilterCache implements FilterCache, Accountable {
     }
   }
 
-  /**
-   * Remove all cache entries for the given core cache key.
-   */
   public synchronized void clearCoreCacheKey(Object coreKey) {
     final LeafCache leafCache = cache.remove(coreKey);
     if (leafCache != null) {
@@ -287,9 +191,6 @@ public class LRUFilterCache implements FilterCache, Accountable {
     }
   }
 
-  /**
-   * Remove all cache entries for the given filter.
-   */
   public synchronized void clearFilter(Filter filter) {
     final Filter singleton = uniqueFilters.remove(filter);
     if (singleton != null) {
@@ -304,9 +205,6 @@ public class LRUFilterCache implements FilterCache, Accountable {
     }
   }
 
-  /**
-   * Clear the content of this cache.
-   */
   public synchronized void clear() {
     cache.clear();
     mostRecentlyUsedFilters.clear();
@@ -368,15 +266,6 @@ public class LRUFilterCache implements FilterCache, Accountable {
     return new CachingWrapperFilter(filter, policy);
   }
 
-  /**
-   *  Provide the DocIdSet to be cached, using the DocIdSet provided
-   *  by the wrapped Filter. <p>This implementation returns the given {@link DocIdSet},
-   *  if {@link DocIdSet#isCacheable} returns <code>true</code>, else it calls
-   *  {@link #cacheImpl(DocIdSetIterator, org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LeafReader)}
-   *  <p>Note: This method returns {@linkplain DocIdSet#EMPTY} if the given docIdSet
-   *  is <code>null</code> or if {@link DocIdSet#iterator()} return <code>null</code>. The empty
-   *  instance is use as a placeholder in the cache instead of the <code>null</code> value.
-   */
   protected DocIdSet docIdSetToCache(DocIdSet docIdSet, LeafReader reader) throws IOException {
     if (docIdSet == null || docIdSet.isCacheable()) {
       return docIdSet;
@@ -402,11 +291,6 @@ public class LRUFilterCache implements FilterCache, Accountable {
     }
   }
 
-  /**
-   * Return the number of bytes used by the given filter. The default
-   * implementation returns {@link Accountable#ramBytesUsed()} if the filter
-   * implements {@link Accountable} and <code>1024</code> otherwise.
-   */
   protected long ramBytesUsed(Filter filter) {
     if (filter instanceof Accountable) {
       return ((Accountable) filter).ramBytesUsed();
@@ -414,82 +298,30 @@ public class LRUFilterCache implements FilterCache, Accountable {
     return FILTER_DEFAULT_RAM_BYTES_USED;
   }
 
-  /**
-   * Default cache implementation: uses {@link RoaringDocIdSet}.
-   */
   protected DocIdSet cacheImpl(DocIdSetIterator iterator, LeafReader reader) throws IOException {
     return new RoaringDocIdSet.Builder(reader.maxDoc()).add(iterator).build();
   }
 
-  /**
-   * Return the total number of times that a {@link Filter} has been looked up
-   * in this {@link FilterCache}. Note that this number is incremented once per
-   * segment so running a cached filter only once will increment this counter
-   * by the number of segments that are wrapped by the searcher.
-   * Note that by definition, {@link #getTotalCount()} is the sum of
-   * {@link #getHitCount()} and {@link #getMissCount()}.
-   * @see #getHitCount()
-   * @see #getMissCount()
-   */
   public final long getTotalCount() {
     return getHitCount() + getMissCount();
   }
 
-  /**
-   * Over the {@link #getTotalCount() total} number of times that a filter has
-   * been looked up, return how many times a cached {@link DocIdSet} has been
-   * found and returned.
-   * @see #getTotalCount()
-   * @see #getMissCount()
-   */
   public final long getHitCount() {
     return hitCount;
   }
 
-  /**
-   * Over the {@link #getTotalCount() total} number of times that a filter has
-   * been looked up, return how many times this filter was not contained in the
-   * cache.
-   * @see #getTotalCount()
-   * @see #getHitCount()
-   */
   public final long getMissCount() {
     return missCount;
   }
 
-  /**
-   * Return the total number of {@link DocIdSet}s which are currently stored
-   * in the cache.
-   * @see #getCacheCount()
-   * @see #getEvictionCount()
-   */
   public final long getCacheSize() {
     return cacheSize;
   }
 
-  /**
-   * Return the total number of cache entries that have been generated and put
-   * in the cache. It is highly desirable to have a {@link #getHitCount() hit
-   * count} that is much higher than the {@link #getCacheCount() cache count}
-   * as the opposite would indicate that the filter cache makes efforts in order
-   * to cache filters but then they do not get reused.
-   * @see #getCacheSize()
-   * @see #getEvictionCount()
-   */
   public final long getCacheCount() {
     return cacheCount;
   }
 
-  /**
-   * Return the number of cache entries that have been removed from the cache
-   * either in order to stay under the maximum configured size/ram usage, or
-   * because a segment has been closed. High numbers of evictions might mean
-   * that filters are not reused or that the {@link FilterCachingPolicy
-   * caching policy} caches too aggressively on NRT segments which get merged
-   * early.
-   * @see #getCacheCount()
-   * @see #getCacheSize()
-   */
   public final long getEvictionCount() {
     return getCacheCount() - getCacheSize();
   }

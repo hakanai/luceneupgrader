@@ -117,7 +117,6 @@ final class BooleanScorer extends BulkScorer {
     Bucket next;             // next valid bucket
   }
   
-  /** A simple hash table of document scores within a range. */
   static final class BucketTable {
     public static final int SIZE = 1 << 11;
     public static final int MASK = SIZE - 1;

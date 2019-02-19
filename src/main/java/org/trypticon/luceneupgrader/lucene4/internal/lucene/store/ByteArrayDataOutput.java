@@ -19,12 +19,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
-/**
- * DataOutput backed by a byte array.
- * <b>WARNING:</b> This class omits most low-level checks,
- * so be sure to test heavily with assertions enabled.
- * @lucene.experimental
- */
 public class ByteArrayDataOutput extends DataOutput {
   private byte[] bytes;
 

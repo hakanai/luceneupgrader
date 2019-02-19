@@ -19,13 +19,6 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.tokenattri
 
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 
-/**
- * This attribute can be used if you have the raw term bytes to be indexed.
- * It can be used as replacement for {@link CharTermAttribute}, if binary
- * terms should be indexed.
- * @lucene.internal
- */
 public interface BytesTermAttribute extends TermToBytesRefAttribute {
-  /** Sets the {@link BytesRef} of the term */
   public void setBytesRef(BytesRef bytes);
 }

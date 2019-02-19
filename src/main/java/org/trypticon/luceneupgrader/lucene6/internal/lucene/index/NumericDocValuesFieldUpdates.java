@@ -24,12 +24,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.packed.PagedGro
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.packed.PagedMutable;
 
 
-/**
- * A {@link DocValuesFieldUpdates} which holds updates of documents, of a single
- * {@link NumericDocValuesField}.
- * 
- * @lucene.experimental
- */
 class NumericDocValuesFieldUpdates extends DocValuesFieldUpdates {
   
   final static class Iterator extends DocValuesFieldUpdates.Iterator {

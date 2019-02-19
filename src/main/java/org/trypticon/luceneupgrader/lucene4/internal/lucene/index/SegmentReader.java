@@ -43,13 +43,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Version;
 
-/**
- * IndexReader implementation over a single segment. 
- * <p>
- * Instances pointing to the same segment (but with different deletes, etc)
- * may share the same core data.
- * @lucene.experimental
- */
 public final class SegmentReader extends AtomicReader implements Accountable {
 
   private static final long BASE_RAM_BYTES_USED =
@@ -89,11 +82,6 @@ public final class SegmentReader extends AtomicReader implements Accountable {
 
   private final List<Long> dvGens = new ArrayList<>();
   
-  /**
-   * Constructs a new SegmentReader with a new core.
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
   // TODO: why is this public?
   public SegmentReader(SegmentCommitInfo si, int termInfosIndexDivisor, IOContext context) throws IOException {
     this.si = si;
@@ -136,19 +124,14 @@ public final class SegmentReader extends AtomicReader implements Accountable {
     }
   }
 
-  /** Create new SegmentReader sharing core from a previous
-   *  SegmentReader and loading new live docs from a new
-   *  deletes file.  Used by openIfChanged. */
+
   SegmentReader(SegmentCommitInfo si, SegmentReader sr) throws IOException {
     this(si, sr,
          si.info.getCodec().liveDocsFormat().readLiveDocs(si.info.dir, si, IOContext.READONCE),
          si.info.getDocCount() - si.getDelCount());
   }
 
-  /** Create new SegmentReader sharing core from a previous
-   *  SegmentReader and using the provided in-memory
-   *  liveDocs.  Used by IndexWriter to provide a new NRT
-   *  reader */
+
   SegmentReader(SegmentCommitInfo si, SegmentReader sr, Bits liveDocs, int numDocs) throws IOException {
     this.si = si;
     this.liveDocs = liveDocs;
@@ -260,11 +243,6 @@ public final class SegmentReader extends AtomicReader implements Accountable {
     }
   }
   
-  /**
-   * Reads the most recent {@link FieldInfos} of the given segment info.
-   * 
-   * @lucene.internal
-   */
   static FieldInfos readFieldInfos(SegmentCommitInfo info) throws IOException {
     final Directory dir;
     final boolean closeDir;
@@ -320,9 +298,7 @@ public final class SegmentReader extends AtomicReader implements Accountable {
     return fieldInfos;
   }
 
-  /** Expert: retrieve thread-private {@link
-   *  StoredFieldsReader}
-   *  @lucene.internal */
+
   public StoredFieldsReader getFieldsReader() {
     ensureOpen();
     return core.fieldsReaderLocal.get();
@@ -352,9 +328,7 @@ public final class SegmentReader extends AtomicReader implements Accountable {
     return si.info.getDocCount();
   }
 
-  /** Expert: retrieve thread-private {@link
-   *  TermVectorsReader}
-   *  @lucene.internal */
+
   public TermVectorsReader getTermVectorsReader() {
     ensureOpen();
     return core.termVectorsLocal.get();
@@ -383,21 +357,14 @@ public final class SegmentReader extends AtomicReader implements Accountable {
     return si.toString(si.info.dir, si.info.getDocCount() - numDocs - si.getDelCount());
   }
   
-  /**
-   * Return the name of the segment this reader is reading.
-   */
   public String getSegmentName() {
     return si.info.name;
   }
   
-  /**
-   * Return the SegmentInfoPerCommit of the segment this reader is reading.
-   */
   public SegmentCommitInfo getSegmentInfo() {
     return si;
   }
 
-  /** Returns the directory this index resides in. */
   public Directory directory() {
     // Don't ensureOpen here -- in certain cases, when a
     // cloned/reopened reader needs to commit, it may call
@@ -421,8 +388,6 @@ public final class SegmentReader extends AtomicReader implements Accountable {
     return this;
   }
 
-  /** Returns term infos index divisor originally passed to
-   *  {@link #SegmentReader(SegmentCommitInfo, int, IOContext)}. */
   public int getTermInfosIndexDivisor() {
     return core.termsIndexDivisor;
   }

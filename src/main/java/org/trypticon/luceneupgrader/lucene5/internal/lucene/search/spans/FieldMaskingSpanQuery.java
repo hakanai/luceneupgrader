@@ -25,49 +25,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.IndexSearcher
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.Query;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ToStringUtils;
 
-/**
- * <p>Wrapper to allow {@link SpanQuery} objects participate in composite 
- * single-field SpanQueries by 'lying' about their search field. That is, 
- * the masked SpanQuery will function as normal, 
- * but {@link SpanQuery#getField()} simply hands back the value supplied 
- * in this class's constructor.</p>
- * 
- * <p>This can be used to support Queries like {@link SpanNearQuery} or 
- * {@link SpanOrQuery} across different fields, which is not ordinarily 
- * permitted.</p>
- * 
- * <p>This can be useful for denormalized relational data: for example, when 
- * indexing a document with conceptually many 'children': </p>
- * 
- * <pre>
- *  teacherid: 1
- *  studentfirstname: james
- *  studentsurname: jones
- *  
- *  teacherid: 2
- *  studenfirstname: james
- *  studentsurname: smith
- *  studentfirstname: sally
- *  studentsurname: jones
- * </pre>
- * 
- * <p>a SpanNearQuery with a slop of 0 can be applied across two 
- * {@link SpanTermQuery} objects as follows:
- * <pre class="prettyprint">
- *    SpanQuery q1  = new SpanTermQuery(new Term("studentfirstname", "james"));
- *    SpanQuery q2  = new SpanTermQuery(new Term("studentsurname", "jones"));
- *    SpanQuery q2m = new FieldMaskingSpanQuery(q2, "studentfirstname");
- *    Query q = new SpanNearQuery(new SpanQuery[]{q1, q2m}, -1, false);
- * </pre>
- * to search for 'studentfirstname:james studentsurname:jones' and find 
- * teacherid 1 without matching teacherid 2 (which has a 'james' in position 0 
- * and 'jones' in position 1).
- * 
- * <p>Note: as {@link #getField()} returns the masked field, scoring will be 
- * done using the Similarity and collection statistics of the field name supplied,
- * but with the term statistics of the real field. This may lead to exceptions,
- * poor performance, and unexpected scoring behaviour.
- */
 public final class FieldMaskingSpanQuery extends SpanQuery {
   private final SpanQuery maskedQuery;
   private final String field;

@@ -32,23 +32,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.IndexOptions;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.MergeState;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.Terms;
 
-/**
- * Utility class to update the {@link MergeState} instance to be restricted to a set of fields.
- * <p>
- * Warning: the input {@linkplain MergeState} instance will be updated when calling {@link #apply(Collection)}.
- * <p>
- * It should be called within a {@code try &#123;...&#125; finally &#123;...&#125;} block to make sure that the mergeState instance is
- * restored to its original state:
- * <pre>
- * PerFieldMergeState pfMergeState = new PerFieldMergeState(mergeState);
- * try {
- *   doSomething(pfMergeState.apply(fields));
- *   ...
- * } finally {
- *   pfMergeState.reset();
- * }
- * </pre>
- */
 final class PerFieldMergeState {
   private final MergeState in;
   private final FieldInfos orgMergeFieldInfos;
@@ -65,12 +48,6 @@ final class PerFieldMergeState {
     System.arraycopy(in.fieldsProducers, 0, this.orgFieldsProducers, 0, this.orgFieldsProducers.length);
   }
 
-  /**
-   * Update the input {@link MergeState} instance to restrict the fields to the given ones.
-   *
-   * @param fields The fields to keep in the updated instance.
-   * @return The updated instance.
-   */
   MergeState apply(Collection<String> fields) {
     in.mergeFieldInfos = new FilterFieldInfos(orgMergeFieldInfos, fields);
     for (int i = 0; i < orgFieldInfos.length; i++) {
@@ -82,11 +59,6 @@ final class PerFieldMergeState {
     return in;
   }
 
-  /**
-   * Resets the input {@link MergeState} instance to its original state.
-   *
-   * @return The reset instance.
-   */
   MergeState reset() {
     in.mergeFieldInfos = orgMergeFieldInfos;
     System.arraycopy(orgFieldInfos, 0, in.fieldInfos, 0, in.fieldInfos.length);

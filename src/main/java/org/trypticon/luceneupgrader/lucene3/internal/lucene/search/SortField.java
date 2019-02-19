@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,74 +23,40 @@ import java.util.Locale;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper;
 
-/**
- * Stores information about how to sort documents by terms in an individual
- * field.  Fields must be indexed in order to sort by them.
- *
- * <p>Created: Feb 11, 2004 1:25:29 PM
- *
- * @since   lucene 1.4
- * @see Sort
- */
 public class SortField
 implements Serializable {
 
-  /** Sort by document score (relevance).  Sort values are Float and higher
-   * values are at the front. */
   public static final int SCORE = 0;
 
-  /** Sort by document number (index order).  Sort values are Integer and lower
-   * values are at the front. */
   public static final int DOC = 1;
 
   // reserved, in Lucene 2.9, there was a constant: AUTO = 2;
 
-  /** Sort using term values as Strings.  Sort values are String and lower
-   * values are at the front. */
   public static final int STRING = 3;
 
-  /** Sort using term values as encoded Integers.  Sort values are Integer and
-   * lower values are at the front. */
   public static final int INT = 4;
 
-  /** Sort using term values as encoded Floats.  Sort values are Float and
-   * lower values are at the front. */
   public static final int FLOAT = 5;
 
-  /** Sort using term values as encoded Longs.  Sort values are Long and
-   * lower values are at the front. */
   public static final int LONG = 6;
 
-  /** Sort using term values as encoded Doubles.  Sort values are Double and
-   * lower values are at the front. */
   public static final int DOUBLE = 7;
 
-  /** Sort using term values as encoded Shorts.  Sort values are Short and
-   * lower values are at the front. */
   public static final int SHORT = 8;
 
-  /** Sort using a custom Comparator.  Sort values are any Comparable and
-   * sorting is done according to natural order. */
   public static final int CUSTOM = 9;
 
-  /** Sort using term values as encoded Bytes.  Sort values are Byte and
-   * lower values are at the front. */
   public static final int BYTE = 10;
   
-  /** Sort using term values as Strings, but comparing by
-   * value (using String.compareTo) for all comparisons.
-   * This is typically slower than {@link #STRING}, which
-   * uses ordinals to do the sorting. */
+
   public static final int STRING_VAL = 11;
   
   // IMPLEMENTATION NOTE: the FieldCache.STRING_INDEX is in the same "namespace"
   // as the above static int values.  Any new values must not have the same value
   // as FieldCache.STRING_INDEX.
 
-  /** Represents sorting by document score (relevance). */
   public static final SortField FIELD_SCORE = new SortField(null, SCORE);
 
-  /** Represents sorting by document number (index order). */
   public static final SortField FIELD_DOC = new SortField(null, DOC);
 
   private String field;
@@ -104,53 +70,23 @@ implements Serializable {
 
   private Object missingValue;
 
-  /** Creates a sort by terms in the given field with the type of term
-   * values explicitly given.
-   * @param field  Name of field to sort by.  Can be <code>null</code> if
-   *               <code>type</code> is SCORE or DOC.
-   * @param type   Type of values in the terms.
-   */
+
   public SortField(String field, int type) {
     initFieldType(field, type);
   }
 
-  /** Creates a sort, possibly in reverse, by terms in the given field with the
-   * type of term values explicitly given.
-   * @param field  Name of field to sort by.  Can be <code>null</code> if
-   *               <code>type</code> is SCORE or DOC.
-   * @param type   Type of values in the terms.
-   * @param reverse True if natural order should be reversed.
-   */
+
   public SortField(String field, int type, boolean reverse) {
     initFieldType(field, type);
     this.reverse = reverse;
   }
 
-  /** Creates a sort by terms in the given field, parsed
-   * to numeric values using a custom {@link FieldCache.Parser}.
-   * @param field  Name of field to sort by.  Must not be null.
-   * @param parser Instance of a {@link FieldCache.Parser},
-   *  which must subclass one of the existing numeric
-   *  parsers from {@link FieldCache}. Sort type is inferred
-   *  by testing which numeric parser the parser subclasses.
-   * @throws IllegalArgumentException if the parser fails to
-   *  subclass an existing numeric parser, or field is null
-   */
+
   public SortField(String field, FieldCache.Parser parser) {
     this(field, parser, false);
   }
 
-  /** Creates a sort, possibly in reverse, by terms in the given field, parsed
-   * to numeric values using a custom {@link FieldCache.Parser}.
-   * @param field  Name of field to sort by.  Must not be null.
-   * @param parser Instance of a {@link FieldCache.Parser},
-   *  which must subclass one of the existing numeric
-   *  parsers from {@link FieldCache}. Sort type is inferred
-   *  by testing which numeric parser the parser subclasses.
-   * @param reverse True if natural order should be reversed.
-   * @throws IllegalArgumentException if the parser fails to
-   *  subclass an existing numeric parser, or field is null
-   */
+
   public SortField(String field, FieldCache.Parser parser, boolean reverse) {
     if (parser instanceof FieldCache.IntParser) initFieldType(field, INT);
     else if (parser instanceof FieldCache.FloatParser) initFieldType(field, FLOAT);
@@ -165,48 +101,32 @@ implements Serializable {
     this.parser = parser;
   }
 
-  /** Creates a sort by terms in the given field sorted
-   * according to the given locale.
-   * @param field  Name of field to sort by, cannot be <code>null</code>.
-   * @param locale Locale of values in the field.
-   */
+
   public SortField (String field, Locale locale) {
     initFieldType(field, STRING);
     this.locale = locale;
   }
 
-  /** Creates a sort, possibly in reverse, by terms in the given field sorted
-   * according to the given locale.
-   * @param field  Name of field to sort by, cannot be <code>null</code>.
-   * @param locale Locale of values in the field.
-   */
+
   public SortField (String field, Locale locale, boolean reverse) {
     initFieldType(field, STRING);
     this.locale = locale;
     this.reverse = reverse;
   }
 
-  /** Creates a sort with a custom comparison function.
-   * @param field Name of field to sort by; cannot be <code>null</code>.
-   * @param comparator Returns a comparator for sorting hits.
-   */
+
   public SortField(String field, FieldComparatorSource comparator) {
     initFieldType(field, CUSTOM);
     this.comparatorSource = comparator;
   }
 
-  /** Creates a sort, possibly in reverse, with a custom comparison function.
-   * @param field Name of field to sort by; cannot be <code>null</code>.
-   * @param comparator Returns a comparator for sorting hits.
-   * @param reverse True if natural order should be reversed.
-   */
+
   public SortField(String field, FieldComparatorSource comparator, boolean reverse) {
     initFieldType(field, CUSTOM);
     this.reverse = reverse;
     this.comparatorSource = comparator;
   }
 
-  /** Set a default sorting value for documents which lacks one */
   public SortField setMissingValue(Object missingValue) {
     if (type != BYTE && type != SHORT && type != INT && type != FLOAT && type != LONG && type != DOUBLE) {
       throw new IllegalArgumentException( "Missing value only works for numeric types" );
@@ -228,47 +148,32 @@ implements Serializable {
     }
   }
 
-  /** Returns the name of the field.  Could return <code>null</code>
-   * if the sort is by SCORE or DOC.
-   * @return Name of field, possibly <code>null</code>.
-   */
+
   public String getField() {
     return field;
   }
 
-  /** Returns the type of contents in the field.
-   * @return One of the constants SCORE, DOC, STRING, INT or FLOAT.
-   */
+
   public int getType() {
     return type;
   }
 
-  /** Returns the Locale by which term values are interpreted.
-   * May return <code>null</code> if no Locale was specified.
-   * @return Locale, or <code>null</code>.
-   */
+
   public Locale getLocale() {
     return locale;
   }
 
-  /** Returns the instance of a {@link FieldCache} parser that fits to the given sort type.
-   * May return <code>null</code> if no parser was specified. Sorting is using the default parser then.
-   * @return An instance of a {@link FieldCache} parser, or <code>null</code>.
-   */
+
   public FieldCache.Parser getParser() {
     return parser;
   }
 
-  /** Returns whether the sort should be reversed.
-   * @return  True if natural order should be reversed.
-   */
+
   public boolean getReverse() {
     return reverse;
   }
 
-  /** Returns the {@link FieldComparatorSource} used for
-   * custom sorting
-   */
+
   public FieldComparatorSource getComparatorSource() {
     return comparatorSource;
   }
@@ -333,10 +238,7 @@ implements Serializable {
     return buffer.toString();
   }
 
-  /** Returns true if <code>o</code> is equal to this.  If a
-   *  {@link FieldComparatorSource} or {@link
-   *  FieldCache.Parser} was provided, it must properly
-   *  implement equals (unless a singleton is always used). */
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -352,11 +254,7 @@ implements Serializable {
     );
   }
 
-  /** Returns true if <code>o</code> is equal to this.  If a
-   *  {@link FieldComparatorSource} or {@link
-   *  FieldCache.Parser} was provided, it must properly
-   *  implement hashCode (unless a singleton is always
-   *  used). */
+
   @Override
   public int hashCode() {
     int hash=type^0x346565dd + Boolean.valueOf(reverse).hashCode()^0xaf5998bb;
@@ -374,18 +272,7 @@ implements Serializable {
       field = StringHelper.intern(field);
   }
 
-  /** Returns the {@link FieldComparator} to use for
-   * sorting.
-   *
-   * @lucene.experimental
-   *
-   * @param numHits number of top hits the queue will store
-   * @param sortPos position of this SortField within {@link
-   *   Sort}.  The comparator is primary if sortPos==0,
-   *   secondary if sortPos==1, etc.  Some comparators can
-   *   optimize themselves when they are the primary sort.
-   * @return {@link FieldComparator} to use when sorting
-   */
+
   public FieldComparator<?> getComparator(final int numHits, final int sortPos) throws IOException {
 
     if (locale != null) {

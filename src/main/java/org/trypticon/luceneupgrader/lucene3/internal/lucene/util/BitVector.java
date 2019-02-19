@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,31 +17,19 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * limitations under the License.
  */
 
-import java.io.IOException;
-
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
 
-/** Optimized implementation of a vector of bits.  This is more-or-less like
- *  java.util.BitSet, but also includes the following:
- *  <ul>
- *  <li>a count() method, which efficiently computes the number of one bits;</li>
- *  <li>optimized read from and write to disk;</li>
- *  <li>inlinable get() method;</li>
- *  <li>store and load, as bit set or d-gaps, depending on sparseness;</li> 
- *  </ul>
- *
- *  @lucene.internal
- */
+import java.io.IOException;
+
 public final class BitVector implements Cloneable, Bits {
 
   private byte[] bits;
   private int size;
   private int count;
 
-  /** Constructs a vector capable of holding <code>n</code> bits. */
-  public BitVector(int n) {
+    public BitVector(int n) {
     size = n;
     bits = new byte[getNumBytes(size)];
     count = 0;
@@ -70,8 +58,7 @@ public final class BitVector implements Cloneable, Bits {
     return clone;
   }
   
-  /** Sets the value of <code>bit</code> to one. */
-  public final void set(int bit) {
+    public final void set(int bit) {
     if (bit >= size) {
       throw new ArrayIndexOutOfBoundsException("bit=" + bit + " size=" + size);
     }
@@ -79,8 +66,6 @@ public final class BitVector implements Cloneable, Bits {
     count = -1;
   }
 
-  /** Sets the value of <code>bit</code> to true, and
-   *  returns true if bit was already set */
   public final boolean getAndSet(int bit) {
     if (bit >= size) {
       throw new ArrayIndexOutOfBoundsException("bit=" + bit + " size=" + size);
@@ -98,8 +83,7 @@ public final class BitVector implements Cloneable, Bits {
     }
   }
 
-  /** Sets the value of <code>bit</code> to zero. */
-  public final void clear(int bit) {
+    public final void clear(int bit) {
     if (bit >= size) {
       throw new ArrayIndexOutOfBoundsException(bit);
     }
@@ -107,28 +91,19 @@ public final class BitVector implements Cloneable, Bits {
     count = -1;
   }
 
-  /** Returns <code>true</code> if <code>bit</code> is one and
-    <code>false</code> if it is zero. */
   public final boolean get(int bit) {
     assert bit >= 0 && bit < size: "bit " + bit + " is out of bounds 0.." + (size-1);
     return (bits[bit >> 3] & (1 << (bit & 7))) != 0;
   }
 
-  /** Returns the number of bits in this vector.  This is also one greater than
-    the number of the largest valid bit number. */
   public final int size() {
     return size;
   }
 
-  /** Returns the number of bits in this vector.  This is also one greater than
-    the number of the largest valid bit number. */
   public final int length() {
     return size;
   }
 
-  /** Returns the total number of one bits in this vector.  This is efficiently
-    computed and cached, so that, if the vector is not changed, no
-    recomputation is done for repeated calls. */
   public final int count() {
     // if the vector has been modified
     if (count == -1) {
@@ -141,8 +116,7 @@ public final class BitVector implements Cloneable, Bits {
     return count;
   }
 
-  /** For testing */
-  public final int getRecomputedCount() {
+    public final int getRecomputedCount() {
     int c = 0;
     int end = bits.length;
     for (int i = 0; i < end; i++)
@@ -180,9 +154,6 @@ public final class BitVector implements Cloneable, Bits {
   // Increment version to change it:
   private final static int VERSION_CURRENT = VERSION_START;
 
-  /** Writes this vector to the file <code>name</code> in Directory
-    <code>d</code>, in a format that can be read by the constructor {@link
-    #BitVector(Directory, String)}.  */
   public final void write(Directory d, String name) throws IOException {
     IndexOutput output = d.createOutput(name);
     try {
@@ -198,15 +169,13 @@ public final class BitVector implements Cloneable, Bits {
     }
   }
      
-  /** Write as a bit set */
-  private void writeBits(IndexOutput output) throws IOException {
+    private void writeBits(IndexOutput output) throws IOException {
     output.writeInt(size());        // write size
     output.writeInt(count());       // write count
     output.writeBytes(bits, bits.length);
   }
   
-  /** Write as a d-gaps list */
-  private void writeDgaps(IndexOutput output) throws IOException {
+    private void writeDgaps(IndexOutput output) throws IOException {
     output.writeInt(-1);            // mark using d-gaps                         
     output.writeInt(size());        // write size
     output.writeInt(count());       // write count
@@ -223,8 +192,7 @@ public final class BitVector implements Cloneable, Bits {
     }
   }
 
-  /** Indicates if the bit vector is sparse and should be saved as a d-gaps list, or dense, and should be saved as a bit set. */
-  private boolean isSparse() {
+    private boolean isSparse() {
 
     final int setCount = count();
     if (setCount == 0) {
@@ -259,9 +227,6 @@ public final class BitVector implements Cloneable, Bits {
     return factor * expectedBits < size();
   }
 
-  /** Constructs a bit vector from the file <code>name</code> in Directory
-    <code>d</code>, as written by the {@link #write} method.
-    */
   public BitVector(Directory d, String name) throws IOException {
     IndexInput input = d.openInput(name);
 
@@ -286,14 +251,12 @@ public final class BitVector implements Cloneable, Bits {
     }
   }
 
-  /** Read as a bit set */
-  private void readBits(IndexInput input) throws IOException {
+    private void readBits(IndexInput input) throws IOException {
     count = input.readInt();        // read count
     bits = new byte[getNumBytes(size)];     // allocate bits
     input.readBytes(bits, 0, bits.length);
   }
 
-  /** read as a d-gaps list */ 
   private void readDgaps(IndexInput input) throws IOException {
     size = input.readInt();       // (re)read size
     count = input.readInt();        // read count

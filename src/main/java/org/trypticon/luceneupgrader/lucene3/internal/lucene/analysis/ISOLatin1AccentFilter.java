@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,18 +19,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.CharTermAttribute;
 
-/**
- * A filter that replaces accented characters in the ISO Latin 1 character set 
- * (ISO-8859-1) by their unaccented equivalent. The case will not be altered.
- * <p>
- * For instance, '&agrave;' will be replaced by 'a'.
- * <p>
- * 
- * @deprecated If you build a new index, use {@link ASCIIFoldingFilter}
- * which covers a superset of Latin 1.
- * This class is included for use with existing
- * indexes and will be removed in a future release (possibly Lucene 4.0).
- */
+
 @Deprecated
 public final class ISOLatin1AccentFilter extends TokenFilter {
   public ISOLatin1AccentFilter(TokenStream input) {
@@ -61,9 +50,7 @@ public final class ISOLatin1AccentFilter extends TokenFilter {
       return false;
   }
 
-  /**
-   * To replace accented characters in a String by unaccented equivalents.
-   */
+
   public final void removeAccents(char[] input, int length) {
 
     // Worst-case length required:

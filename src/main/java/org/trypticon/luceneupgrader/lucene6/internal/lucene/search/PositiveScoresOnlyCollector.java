@@ -21,11 +21,6 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.LeafReaderContext;
 
-/**
- * A {@link Collector} implementation which wraps another
- * {@link Collector} and makes sure only documents with
- * scores &gt; 0 are collected.
- */
 public class PositiveScoresOnlyCollector extends FilterCollector {
 
   public PositiveScoresOnlyCollector(Collector in) {

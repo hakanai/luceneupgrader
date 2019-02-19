@@ -34,57 +34,40 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.InfoStream;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.packed.PackedInts;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.packed.PackedLongValues;
 
-/** Holds common state used during segment merging.
- *
- * @lucene.experimental */
+
 public class MergeState {
 
-  /** Maps document IDs from old segments to document IDs in the new segment */
   public final DocMap[] docMaps;
 
   // Only used by IW when it must remap deletes that arrived against the merging segments while a merge was running:
   final DocMap[] leafDocMaps;
 
-  /** {@link SegmentInfo} of the newly merged segment. */
   public final SegmentInfo segmentInfo;
 
-  /** {@link FieldInfos} of the newly merged segment. */
   public FieldInfos mergeFieldInfos;
 
-  /** Stored field producers being merged */
   public final StoredFieldsReader[] storedFieldsReaders;
 
-  /** Term vector producers being merged */
   public final TermVectorsReader[] termVectorsReaders;
 
-  /** Norms producers being merged */
   public final NormsProducer[] normsProducers;
 
-  /** DocValues producers being merged */
   public final DocValuesProducer[] docValuesProducers;
 
-  /** FieldInfos being merged */
   public final FieldInfos[] fieldInfos;
 
-  /** Live docs for each reader */
   public final Bits[] liveDocs;
 
-  /** Postings to merge */
   public final FieldsProducer[] fieldsProducers;
 
-  /** Point readers to merge */
   public final PointsReader[] pointsReaders;
 
-  /** Max docs per reader */
   public final int[] maxDocs;
 
-  /** InfoStream for debugging messages. */
   public final InfoStream infoStream;
 
-  /** Indicates if the index needs to be sorted **/
   public boolean needsIndexSort;
 
-  /** Sole constructor. */
   MergeState(List<CodecReader> originalReaders, SegmentInfo segmentInfo, InfoStream infoStream) throws IOException {
 
     this.infoStream = infoStream;
@@ -223,10 +206,6 @@ public class MergeState {
       return originalReaders;
     }
 
-    /** If an incoming reader is not sorted, because it was flushed by IW older than {@link Version.LUCENE_7_0_0}
-     * or because we add unsorted segments from another index {@link IndexWriter#addIndexes(CodecReader...)} ,
-     * we sort it here:
-     */
     final Sorter sorter = new Sorter(indexSort);
     List<CodecReader> readers = new ArrayList<>(originalReaders.size());
 
@@ -273,13 +252,10 @@ public class MergeState {
     return readers;
   }
 
-  /** A map of doc IDs. */
   public static abstract class DocMap {
-    /** Sole constructor */
     public DocMap() {
     }
 
-    /** Return the mapped docID or -1 if the given doc is not mapped. */
     public abstract int get(int docID);
   }
 

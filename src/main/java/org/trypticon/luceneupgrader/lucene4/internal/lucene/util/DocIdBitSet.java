@@ -23,7 +23,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.DocIdSet;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.DocIdSetIterator;
 
 
-/** Simple DocIdSet and DocIdSetIterator backed by a BitSet */
 public class DocIdBitSet extends DocIdSet implements Bits {
 
   private static final long BASE_RAM_BYTES_USED =
@@ -47,15 +46,11 @@ public class DocIdBitSet extends DocIdSet implements Bits {
     return this;
   }
 
-  /** This DocIdSet implementation is cacheable. */
   @Override
   public boolean isCacheable() {
     return true;
   }
   
-  /**
-   * Returns the underlying BitSet. 
-   */
   public BitSet getBitSet() {
     return this.bitSet;
   }

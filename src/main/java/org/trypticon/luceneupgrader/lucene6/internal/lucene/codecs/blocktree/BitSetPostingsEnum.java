@@ -26,8 +26,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BitSetIterator;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.FixedBitSet; // javadocs
 
-/** Takes a {@link FixedBitSet} and creates a DOCS {@link PostingsEnum} from it. */
-
 class BitSetPostingsEnum extends PostingsEnum {
   private final BitSet bits;
   private DocIdSetIterator in;

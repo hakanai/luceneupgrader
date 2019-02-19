@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -144,12 +144,7 @@ class TermVectorsReader implements Cloneable, Closeable {
     return format >= FORMAT_UTF8_LENGTH_IN_BYTES;
   }
 
-  /** Retrieve the length (in bytes) of the tvd and tvf
-   *  entries for the next numDocs starting with
-   *  startDocID.  This is used for bulk copying when
-   *  merging segments, if the field numbers are
-   *  congruent.  Once this returns, the tvf & tvd streams
-   *  are seeked to the startDocID. */
+
   final void rawDocs(int[] tvdLengths, int[] tvfLengths, int startDocID, int numDocs) throws IOException {
 
     if (tvx == null) {
@@ -207,10 +202,6 @@ class TermVectorsReader implements Cloneable, Closeable {
     IOUtils.close(tvx, tvd, tvf);
   }
 
-  /**
-   * 
-   * @return The number of documents in the reader
-   */
   int size() {
     return size;
   }
@@ -268,13 +259,6 @@ class TermVectorsReader implements Cloneable, Closeable {
 
 
 
-  /**
-   * Retrieve the term vector for the given document and field
-   * @param docNum The document number to retrieve the vector for
-   * @param field The field within the document to retrieve
-   * @return The TermFreqVector for the document and field or null if there is no termVector for this field.
-   * @throws IOException if there is an error reading the term vector files
-   */ 
   TermFreqVector get(int docNum, String field) throws IOException {
     // Check if no term vectors are available for this segment at all
     ParallelArrayTermVectorMapper mapper = new ParallelArrayTermVectorMapper();
@@ -322,13 +306,6 @@ class TermVectorsReader implements Cloneable, Closeable {
     return tvfPointers;
   }
 
-  /**
-   * Return all term vectors stored for this document or null if the could not be read in.
-   * 
-   * @param docNum The document number to retrieve the vector for
-   * @return All term frequency vectors
-   * @throws IOException if there is an error reading the term vector files 
-   */
   TermFreqVector[] get(int docNum) throws IOException {
     TermFreqVector[] result = null;
     if (tvx != null) {
@@ -395,13 +372,6 @@ class TermVectorsReader implements Cloneable, Closeable {
   }
 
 
-  /**
-   * 
-   * @param field The field to read in
-   * @param tvfPointer The pointer within the tvf file where we should start reading
-   * @param mapper The mapper used to map the TermVector
-   * @throws IOException
-   */ 
   private void readTermVector(String field, long tvfPointer, TermVectorMapper mapper)
           throws IOException {
 
@@ -529,9 +499,6 @@ class TermVectorsReader implements Cloneable, Closeable {
 }
 
 
-/**
- * Models the existing parallel array structure
- */
 class ParallelArrayTermVectorMapper extends TermVectorMapper
 {
 
@@ -572,10 +539,6 @@ class ParallelArrayTermVectorMapper extends TermVectorMapper
     currentPosition++;
   }
 
-  /**
-   * Construct the vector
-   * @return The {@link TermFreqVector} based on the mappings.
-   */
   public TermFreqVector materializeVector() {
     SegmentTermVector tv = null;
     if (field != null && terms != null) {

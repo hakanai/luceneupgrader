@@ -31,9 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-/**
- * Base class for filtering a SpanQuery based on the position of a match.
- **/
+
 public abstract class SpanPositionCheckQuery extends SpanQuery implements Cloneable {
   protected SpanQuery match;
 
@@ -42,10 +40,7 @@ public abstract class SpanPositionCheckQuery extends SpanQuery implements Clonea
     this.match = match;
   }
 
-  /**
-   * @return the SpanQuery whose matches are filtered.
-   *
-   * */
+
   public SpanQuery getMatch() { return match; }
 
 
@@ -60,37 +55,15 @@ public abstract class SpanPositionCheckQuery extends SpanQuery implements Clonea
     match.extractTerms(terms);
   }
 
-  /** 
-   * Return value for {@link SpanPositionCheckQuery#acceptPosition(Spans)}.
-   */
+
   protected static enum AcceptStatus {
-    /** Indicates the match should be accepted */
     YES,
     
-    /** Indicates the match should be rejected */
     NO,
     
-    /** 
-     * Indicates the match should be rejected, and the enumeration should advance
-     * to the next document.
-     */
-    NO_AND_ADVANCE 
+    NO_AND_ADVANCE
   };
   
-  /**
-   * Implementing classes are required to return whether the current position is a match for the passed in
-   * "match" {@link org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans.SpanQuery}.
-   *
-   * This is only called if the underlying {@link org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans.Spans#next()} for the
-   * match is successful
-   *
-   *
-   * @param spans The {@link org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans.Spans} instance, positioned at the spot to check
-   * @return whether the match is accepted, rejected, or rejected and should move to the next doc.
-   *
-   * @see org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans.Spans#next()
-   *
-   */
   protected abstract AcceptStatus acceptPosition(Spans spans) throws IOException;
 
   @Override

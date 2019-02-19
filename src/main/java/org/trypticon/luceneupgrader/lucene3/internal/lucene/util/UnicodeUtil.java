@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -85,14 +85,6 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * copyright holder.
  */
 
-/**
- * Class to encode java's UTF16 char[] into UTF8 byte[]
- * without always allocating a new byte[] as
- * String.getBytes("UTF-8") does.
- *
- * @lucene.internal
- */
-
 public final class UnicodeUtil {
 
   private UnicodeUtil() {} // no instance
@@ -113,11 +105,6 @@ public final class UnicodeUtil {
     Character.MIN_SUPPLEMENTARY_CODE_POINT - 
     (UNI_SUR_HIGH_START << HALF_SHIFT) - UNI_SUR_LOW_START;
 
-  /**
-   * Holds decoded UTF8 code units.
-   *
-   * @lucene.internal
-   */
   public static final class UTF8Result {
     public byte[] result = new byte[10];
     public int length;
@@ -130,11 +117,6 @@ public final class UnicodeUtil {
     }
   }
 
-  /**
-   * Holds decoded UTF16 code units.
-   *
-   * @lucene.internal
-   */
   public static final class UTF16Result {
     public char[] result = new char[10];
     public int[] offsets = new int[10];
@@ -153,8 +135,6 @@ public final class UnicodeUtil {
     }
   }
 
-  /** Encode characters from a char[] source, starting at
-   *  offset for length chars.  Returns a hash of the resulting bytes.  After encoding, result.offset will always be 0. */
   // TODO: broken if incoming result.offset != 0
   public static int UTF16toUTF8WithHash(final char[] source, final int offset, final int length, BytesRef result) {
     int hash = 0;
@@ -209,9 +189,7 @@ public final class UnicodeUtil {
     return hash;
   }
 
-  /** Encode characters from a char[] source, starting at
-   *  offset and stopping when the character 0xffff is seen.
-   *  Returns the number of bytes written to bytesOut. */
+
   public static void UTF16toUTF8(final char[] source, final int offset, UTF8Result result) {
 
     int upto = 0;
@@ -264,9 +242,7 @@ public final class UnicodeUtil {
     result.length = upto;
   }
 
-  /** Encode characters from a char[] source, starting at
-   *  offset for length chars.  Returns the number of bytes
-   *  written to bytesOut. */
+
   public static void UTF16toUTF8(final char[] source, final int offset, final int length, UTF8Result result) {
 
     int upto = 0;
@@ -317,9 +293,7 @@ public final class UnicodeUtil {
     result.length = upto;
   }
 
-  /** Encode characters from this String, starting at offset
-   *  for length characters.  Returns the number of bytes
-   *  written to bytesOut. */
+
   public static void UTF16toUTF8(final String s, final int offset, final int length, UTF8Result result) {
     final int end = offset + length;
 
@@ -368,9 +342,7 @@ public final class UnicodeUtil {
     result.length = upto;
   }
 
-  /** Encode characters from this String, starting at offset
-   *  for length characters. After encoding, result.offset will always be 0.
-   */
+
   // TODO: broken if incoming result.offset != 0
   public static void UTF16toUTF8(final CharSequence s, final int offset, final int length, BytesRef result) {
     final int end = offset + length;
@@ -422,9 +394,7 @@ public final class UnicodeUtil {
     result.length = upto;
   }
 
-  /** Encode characters from a char[] source, starting at
-   *  offset for length chars. After encoding, result.offset will always be 0.
-   */
+
   // TODO: broken if incoming result.offset != 0
   public static void UTF16toUTF8(final char[] source, final int offset, final int length, BytesRef result) {
 
@@ -478,10 +448,7 @@ public final class UnicodeUtil {
     result.length = upto;
   }
 
-  /** Convert UTF8 bytes into UTF16 characters.  If offset
-   *  is non-zero, conversion starts at that starting point
-   *  in utf8, re-using the results from the previous call
-   *  up until offset. */
+
   public static void UTF8toUTF16(final byte[] utf8, final int offset, final int length, final UTF16Result result) {
 
     final int end = offset + length;
@@ -645,30 +612,14 @@ public final class UnicodeUtil {
   }
   */
 
-  /** Shift value for lead surrogate to form a supplementary character. */
-  private static final int LEAD_SURROGATE_SHIFT_ = 10;
-  /** Mask to retrieve the significant value from a trail surrogate.*/
-  private static final int TRAIL_SURROGATE_MASK_ = 0x3FF;
-  /** Trail surrogate minimum value */
-  private static final int TRAIL_SURROGATE_MIN_VALUE = 0xDC00;
-  /** Lead surrogate minimum value */
-  private static final int LEAD_SURROGATE_MIN_VALUE = 0xD800;
-  /** The minimum value for Supplementary code points */
-  private static final int SUPPLEMENTARY_MIN_VALUE = 0x10000;
-  /** Value that all lead surrogate starts with */
-  private static final int LEAD_SURROGATE_OFFSET_ = LEAD_SURROGATE_MIN_VALUE
+    private static final int LEAD_SURROGATE_SHIFT_ = 10;
+    private static final int TRAIL_SURROGATE_MASK_ = 0x3FF;
+    private static final int TRAIL_SURROGATE_MIN_VALUE = 0xDC00;
+    private static final int LEAD_SURROGATE_MIN_VALUE = 0xD800;
+    private static final int SUPPLEMENTARY_MIN_VALUE = 0x10000;
+    private static final int LEAD_SURROGATE_OFFSET_ = LEAD_SURROGATE_MIN_VALUE
           - (SUPPLEMENTARY_MIN_VALUE >> LEAD_SURROGATE_SHIFT_);
 
-  /**
-   * Cover JDK 1.5 API. Create a String from an array of codePoints.
-   *
-   * @param codePoints The code array
-   * @param offset The start of the text in the code point array
-   * @param count The number of code points
-   * @return a String representing the code points between offset and count
-   * @throws IllegalArgumentException If an invalid code point is encountered
-   * @throws IndexOutOfBoundsException If the offset or count are out of bounds.
-   */
   public static String newString(int[] codePoints, int offset, int count) {
       if (count < 0) {
           throw new IllegalArgumentException();
@@ -703,14 +654,6 @@ public final class UnicodeUtil {
       return new String(chars, 0, w);
   }
   
-  /**
-   * Interprets the given byte array as UTF-8 and converts to UTF-16. The {@link CharsRef} will be extended if 
-   * it doesn't provide enough space to hold the worst case of each byte becoming a UTF-16 codepoint.
-   * <p>
-   * NOTE: Full characters are read, even if this reads past the length passed (and
-   * can result in an ArrayOutOfBoundsException if invalid UTF-8 is passed).
-   * Explicit checks for valid UTF-8 are not performed. 
-   */
   // TODO: broken if incoming result.offset != 0
   public static void UTF8toUTF16(byte[] utf8, int offset, int length, CharsRef chars) {
     int out_offset = chars.offset = 0;
@@ -742,10 +685,6 @@ public final class UnicodeUtil {
     chars.length = out_offset - chars.offset;
   }
 
-  /**
-   * Utility method for {@link #UTF8toUTF16(byte[], int, int, CharsRef)}
-   * @see #UTF8toUTF16(byte[], int, int, CharsRef)
-   */
   public static void UTF8toUTF16(BytesRef bytesRef, CharsRef chars) {
     UTF8toUTF16(bytesRef.bytes, bytesRef.offset, bytesRef.length, chars);
   }

@@ -10,23 +10,12 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 
-/**
- * Clone of {@link SimpleFSDirectory} accepting {@link Path} instead of {@link File}.
- */
 public class PathSimpleFSDirectory3 extends PathFSDirectory3 {
 
-    /** Create a new SimpleFSDirectory for the named location.
-     *
-     * @param path the path of the directory
-     * @param lockFactory the lock factory to use, or null for the default
-     * ({@code NativeFSLockFactory});
-     * @throws IOException
-     */
     public PathSimpleFSDirectory3(Path path, LockFactory lockFactory) throws IOException {
         super(path, lockFactory);
     }
 
-    /** Creates an IndexInput for the file with the given name. */
     @Override
     public IndexInput openInput(String name, int bufferSize) throws IOException {
         ensureOpen();
@@ -70,7 +59,6 @@ public class PathSimpleFSDirectory3 extends PathFSDirectory3 {
             this.chunkSize = chunkSize;
         }
 
-        /** IndexInput methods */
         @Override
         protected void readInternal(byte[] b, int offset, int len)
                 throws IOException {

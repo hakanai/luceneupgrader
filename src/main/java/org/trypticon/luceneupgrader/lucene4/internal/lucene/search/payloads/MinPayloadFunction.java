@@ -17,10 +17,7 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.payloads;
  * limitations under the License.
  */
 
-/**
- * Calculates the minimum payload seen
- *
- **/
+
 public class MinPayloadFunction extends PayloadFunction {
 
   @Override

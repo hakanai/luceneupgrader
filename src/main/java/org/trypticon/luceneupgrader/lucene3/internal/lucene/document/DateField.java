@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.document;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -27,36 +27,6 @@ import java.util.Calendar;   // for javadoc
 
 // do not remove in 3.0, needed for reading old indexes!
 
-/**
- * Provides support for converting dates to strings and vice-versa.
- * The strings are structured so that lexicographic sorting orders by date,
- * which makes them suitable for use as field values and search terms.
- *
- * <P>Note that this class saves dates with millisecond granularity,
- * which is bad for {@link TermRangeQuery} and {@link PrefixQuery}, as those
- * queries are expanded to a BooleanQuery with a potentially large number
- * of terms when searching. Thus you might want to use
- * {@link DateTools} instead.
- *
- * <P>
- * Note: dates before 1970 cannot be used, and therefore cannot be
- * indexed when using this class. See {@link DateTools} for an
- * alternative without such a limitation.
- *
- * <P>
- * Another approach is {@link NumericUtils}, which provides
- * a sortable binary representation (prefix encoded) of numeric values, which
- * date/time are.
- * For indexing a {@link Date} or {@link Calendar}, just get the unix timestamp as
- * <code>long</code> using {@link Date#getTime} or {@link Calendar#getTimeInMillis} and
- * index this as a numeric value with {@link NumericField}
- * and use {@link NumericRangeQuery} to query it.
- *
- * @deprecated If you build a new index, use {@link DateTools} or 
- * {@link NumericField} instead.
- * This class is included for use with existing
- * indices and will be removed in a future release (possibly Lucene 4.0).
- */
 @Deprecated
 public class DateField {
   
@@ -78,19 +48,9 @@ public class DateField {
     return new String(buffer);
   }
 
-  /**
-   * Converts a Date to a string suitable for indexing.
-   * @throws RuntimeException if the date specified in the
-   * method argument is before 1970
-   */
   public static String dateToString(Date date) {
     return timeToString(date.getTime());
   }
-  /**
-   * Converts a millisecond time to a string suitable for indexing.
-   * @throws RuntimeException if the time specified in the
-   * method argument is negative, that is, before 1970
-   */
   public static String timeToString(long time) {
     if (time < 0)
       throw new RuntimeException("time '" + time + "' is too early, must be >= 0");
@@ -112,11 +72,9 @@ public class DateField {
     return s;
   }
 
-  /** Converts a string-encoded date into a millisecond time. */
   public static long stringToTime(String s) {
     return Long.parseLong(s, Character.MAX_RADIX);
   }
-  /** Converts a string-encoded date into a Date object. */
   public static Date stringToDate(String s) {
     return new Date(stringToTime(s));
   }

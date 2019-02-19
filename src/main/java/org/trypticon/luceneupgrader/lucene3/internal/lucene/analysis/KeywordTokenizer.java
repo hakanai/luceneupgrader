@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,9 +24,7 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattrib
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.AttributeSource;
 
-/**
- * Emits the entire input as a single token.
- */
+
 public final class KeywordTokenizer extends Tokenizer {
   
   private static final int DEFAULT_BUFFER_SIZE = 256;

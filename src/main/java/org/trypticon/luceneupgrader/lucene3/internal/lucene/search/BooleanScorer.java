@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -147,7 +147,6 @@ final class BooleanScorer extends Scorer {
     Bucket next;             // next valid bucket
   }
   
-  /** A simple hash table of document scores within a range. */
   static final class BucketTable {
     public static final int SIZE = 1 << 11;
     public static final int MASK = SIZE - 1;

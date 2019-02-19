@@ -26,8 +26,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.Term;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 
-/** @deprecated (4.0)
- *  @lucene.experimental */
 @Deprecated
 class SegmentTermDocs {
   //protected SegmentReader parent;
@@ -146,7 +144,6 @@ class SegmentTermDocs {
     return true;
   }
 
-  /** Optimized implementation. */
   public int read(final int[] docs, final int[] freqs)
           throws IOException {
     final int length = docs.length;
@@ -193,10 +190,8 @@ class SegmentTermDocs {
   }
  
   
-  /** Overridden by SegmentTermPositions to skip in prox stream. */
   protected void skipProx(long proxPointer, int payloadLength) throws IOException {}
 
-  /** Optimized implementation. */
   public boolean skipTo(int target) throws IOException {
     // don't skip if the target is close (within skipInterval docs away)
     if ((target - skipInterval) >= doc && df >= skipInterval) {                      // optimized case

@@ -46,8 +46,6 @@ final class FreqProxTermsWriterPerField extends TermsHashPerField {
   PayloadAttribute payloadAttribute;
   OffsetAttribute offsetAttribute;
 
-  /** Set to true if any token had a payload in the current
-   *  segment. */
   boolean sawPayloads;
 
   public FreqProxTermsWriterPerField(FieldInvertState invertState, TermsHash termsHash, FieldInfo fieldInfo, TermsHashPerField nextPerField) {

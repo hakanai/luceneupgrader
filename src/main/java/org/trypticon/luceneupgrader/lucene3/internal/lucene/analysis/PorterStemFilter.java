@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,30 +22,6 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.KeywordAttribute;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.CharTermAttribute;
 
-/** Transforms the token stream as per the Porter stemming algorithm.
-    Note: the input to the stemming filter must already be in lower case,
-    so you will need to use LowerCaseFilter or LowerCaseTokenizer farther
-    down the Tokenizer chain in order for this to work properly!
-    <P>
-    To use this filter with other analyzers, you'll want to write an
-    Analyzer class that sets up the TokenStream chain as you want it.
-    To use this with LowerCaseTokenizer, for example, you'd write an
-    analyzer like this:
-    <P>
-    <PRE>
-    class MyAnalyzer extends Analyzer {
-      public final TokenStream tokenStream(String fieldName, Reader reader) {
-        return new PorterStemFilter(new LowerCaseTokenizer(reader));
-      }
-    }
-    </PRE>
-    <p>
-    Note: This filter is aware of the {@link KeywordAttribute}. To prevent
-    certain terms from being passed to the stemmer
-    {@link KeywordAttribute#isKeyword()} should be set to <code>true</code>
-    in a previous {@link TokenStream}.
-    </p>
-*/
 public final class PorterStemFilter extends TokenFilter {
   private final PorterStemmer stemmer = new PorterStemmer();
   private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);

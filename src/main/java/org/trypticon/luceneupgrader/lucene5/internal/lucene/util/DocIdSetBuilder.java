@@ -22,12 +22,6 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.DocIdSet;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.DocIdSetIterator;
 
-/**
- * A builder of {@link DocIdSet}s.  At first it uses a sparse structure to gather
- * documents, and then upgrades to a non-sparse bit set once enough hits match.
- *
- * @lucene.internal
- */
 public final class DocIdSetBuilder {
 
   private final int maxDoc;
@@ -38,9 +32,6 @@ public final class DocIdSetBuilder {
 
   private BitSet bitSet;
 
-  /**
-   * Create a builder that can contain doc IDs between {@code 0} and {@code maxDoc}.
-   */
   public DocIdSetBuilder(int maxDoc) {
     this.maxDoc = maxDoc;
     // For ridiculously small sets, we'll just use a sorted int[]
@@ -64,7 +55,6 @@ public final class DocIdSetBuilder {
     this.bufferSize = 0;
   }
 
-  /** Grows the buffer to at least minSize, but never larger than threshold. */
   private void growBuffer(int minSize) {
     assert minSize < threshold;
     if (buffer.length < minSize) {
@@ -75,11 +65,6 @@ public final class DocIdSetBuilder {
     }
   }
 
-  /**
-   * Add the content of the provided {@link DocIdSetIterator} to this builder.
-   * NOTE: if you need to build a {@link DocIdSet} out of a single
-   * {@link DocIdSetIterator}, you should rather use {@link RoaringDocIdSet.Builder}.
-   */
   public void add(DocIdSetIterator iter) throws IOException {
     grow((int) Math.min(Integer.MAX_VALUE, iter.cost()));
 
@@ -113,9 +98,6 @@ public final class DocIdSetBuilder {
     }
   }
 
-  /**
-   * Reserve space so that this builder can hold {@code numDocs} MORE documents.
-   */
   public void grow(int numDocs) {
     if (bitSet == null) {
       final long newLength = bufferSize + numDocs;
@@ -127,12 +109,6 @@ public final class DocIdSetBuilder {
     }
   }
 
-  /**
-   * Add a document to this builder.
-   * NOTE: doc IDs do not need to be provided in order.
-   * NOTE: if you plan on adding several docs at once, look into using
-   * {@link #grow(int)} to reserve space.
-   */
   public void add(int doc) {
     if (bitSet != null) {
       bitSet.set(doc);
@@ -166,17 +142,10 @@ public final class DocIdSetBuilder {
     return l;
   }
 
-  /**
-   * Build a {@link DocIdSet} from the accumulated doc IDs.
-   */
   public DocIdSet build() {
     return build(-1);
   }
 
-  /**
-   * Expert: build a {@link DocIdSet} with a hint on the cost that the resulting
-   * {@link DocIdSet} would have.
-   */
   public DocIdSet build(long costHint) {
     try {
       if (bitSet != null) {

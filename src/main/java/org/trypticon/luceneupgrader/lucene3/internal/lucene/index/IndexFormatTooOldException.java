@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,25 +19,18 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataInput;
 
-/**
- * This exception is thrown when Lucene detects
- * an index that is too old for this Lucene version
- */
 public class IndexFormatTooOldException extends CorruptIndexException {
 
-  /** @lucene.internal */
   public IndexFormatTooOldException(String resourceDesc, String version) {
     super("Format version is not supported (resource: " + resourceDesc + "): " +
         version + ". This version of Lucene only supports indexes created with release 1.9 and later.");
     assert resourceDesc != null;
   }
   
-  /** @lucene.internal */
   public IndexFormatTooOldException(DataInput in, String version) {
     this(in.toString(), version);
   }
 
-  /** @lucene.internal */
   public IndexFormatTooOldException(String resourceDesc, int version, int minVersion, int maxVersion) {
     super("Format version is not supported (resource: " + resourceDesc + "): " +
         version + " (needs to be between " + minVersion + " and " + maxVersion +
@@ -45,7 +38,6 @@ public class IndexFormatTooOldException extends CorruptIndexException {
     assert resourceDesc != null;
   }
 
-  /** @lucene.internal */
   public IndexFormatTooOldException(DataInput in, int version, int minVersion, int maxVersion) {
     this(in.toString(), version, minVersion, maxVersion);
   }

@@ -31,52 +31,8 @@ import java.util.Set;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 
-/**
- * <p>Implements {@link LockFactory} using native OS file
- * locks.  Note that because this LockFactory relies on
- * java.nio.* APIs for locking, any problems with those APIs
- * will cause locking to fail.  Specifically, on certain NFS
- * environments the java.nio.* locks will fail (the lock can
- * incorrectly be double acquired) whereas {@link
- * SimpleFSLockFactory} worked perfectly in those same
- * environments.  For NFS based access to an index, it's
- * recommended that you try {@link SimpleFSLockFactory}
- * first and work around the one limitation that a lock file
- * could be left when the JVM exits abnormally.</p>
- *
- * <p>The primary benefit of {@link NativeFSLockFactory} is
- * that locks (not the lock file itsself) will be properly
- * removed (by the OS) if the JVM has an abnormal exit.</p>
- * 
- * <p>Note that, unlike {@link SimpleFSLockFactory}, the existence of
- * leftover lock files in the filesystem is fine because the OS
- * will free the locks held against these files even though the
- * files still remain. Lucene will never actively remove the lock
- * files, so although you see them, the index may not be locked.</p>
- *
- * <p>Special care needs to be taken if you change the locking
- * implementation: First be certain that no writer is in fact
- * writing to the index otherwise you can easily corrupt
- * your index. Be sure to do the LockFactory change on all Lucene
- * instances and clean up all leftover lock files before starting
- * the new configuration for the first time. Different implementations
- * can not work together!</p>
- *
- * <p>If you suspect that this or any other LockFactory is
- * not working properly in your environment, you can easily
- * test it by using {@link VerifyingLockFactory}, {@link
- * LockVerifyServer} and {@link LockStressTest}.</p>
- * 
- * <p>This is a singleton, you have to use {@link #INSTANCE}.
- *
- * @see LockFactory
- */
-
 public final class NativeFSLockFactory extends FSLockFactory {
   
-  /**
-   * Singleton instance
-   */
   public static final NativeFSLockFactory INSTANCE = new NativeFSLockFactory();
 
   private static final Set<String> LOCK_HELD = Collections.synchronizedSet(new HashSet<String>());

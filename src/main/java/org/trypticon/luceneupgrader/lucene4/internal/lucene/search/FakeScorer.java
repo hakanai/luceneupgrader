@@ -19,8 +19,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.util.Collection;
 
-/** Used by {@link BulkScorer}s that need to pass a {@link
- *  Scorer} to {@link Collector#setScorer}. */
 final class FakeScorer extends Scorer {
   float score;
   int doc = -1;

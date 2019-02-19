@@ -42,88 +42,20 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.LongBitSet;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.LongValues;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
-/** 
- * Abstract API that consumes numeric, binary and
- * sorted docvalues.  Concrete implementations of this
- * actually do "something" with the docvalues (write it into
- * the index in a specific format).
- * <p>
- * The lifecycle is:
- * <ol>
- *   <li>DocValuesConsumer is created by 
- *       {@link DocValuesFormat#fieldsConsumer(SegmentWriteState)} or
- *       {@link NormsFormat#normsConsumer(SegmentWriteState)}.
- *   <li>{@link #addNumericField}, {@link #addBinaryField},
- *       or {@link #addSortedField} are called for each Numeric,
- *       Binary, or Sorted docvalues field. The API is a "pull" rather
- *       than "push", and the implementation is free to iterate over the 
- *       values multiple times ({@link Iterable#iterator()}).
- *   <li>After all fields are added, the consumer is {@link #close}d.
- * </ol>
- *
- * @lucene.experimental
- */
 public abstract class DocValuesConsumer implements Closeable {
   
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected DocValuesConsumer() {}
 
-  /**
-   * Writes numeric docvalues for a field.
-   * @param field field information
-   * @param values Iterable of numeric values (one for each document). {@code null} indicates
-   *               a missing value.
-   * @throws IOException if an I/O error occurred.
-   */
-  public abstract void addNumericField(FieldInfo field, Iterable<Number> values) throws IOException;    
+  public abstract void addNumericField(FieldInfo field, Iterable<Number> values) throws IOException;
 
-  /**
-   * Writes binary docvalues for a field.
-   * @param field field information
-   * @param values Iterable of binary values (one for each document). {@code null} indicates
-   *               a missing value.
-   * @throws IOException if an I/O error occurred.
-   */
   public abstract void addBinaryField(FieldInfo field, Iterable<BytesRef> values) throws IOException;
 
-  /**
-   * Writes pre-sorted binary docvalues for a field.
-   * @param field field information
-   * @param values Iterable of binary values in sorted order (deduplicated).
-   * @param docToOrd Iterable of ordinals (one for each document). {@code -1} indicates
-   *                 a missing value.
-   * @throws IOException if an I/O error occurred.
-   */
   public abstract void addSortedField(FieldInfo field, Iterable<BytesRef> values, Iterable<Number> docToOrd) throws IOException;
   
-  /**
-   * Writes pre-sorted numeric docvalues for a field
-   * @param field field information
-   * @param docToValueCount Iterable of the number of values for each document. A zero
-   *                        count indicates a missing value.
-   * @param values Iterable of numeric values in sorted order (not deduplicated).
-   * @throws IOException if an I/O error occurred.
-   */
   public abstract void addSortedNumericField(FieldInfo field, Iterable<Number> docToValueCount, Iterable<Number> values) throws IOException;
 
-  /**
-   * Writes pre-sorted set docvalues for a field
-   * @param field field information
-   * @param values Iterable of binary values in sorted order (deduplicated).
-   * @param docToOrdCount Iterable of the number of values for each document. A zero ordinal
-   *                      count indicates a missing value.
-   * @param ords Iterable of ordinal occurrences (docToOrdCount*maxDoc total).
-   * @throws IOException if an I/O error occurred.
-   */
   public abstract void addSortedSetField(FieldInfo field, Iterable<BytesRef> values, Iterable<Number> docToOrdCount, Iterable<Number> ords) throws IOException;
   
-  /**
-   * Merges the numeric docvalues from <code>toMerge</code>.
-   * <p>
-   * The default implementation calls {@link #addNumericField}, passing
-   * an Iterable that merges and filters deleted documents on the fly.
-   */
   public void mergeNumericField(final FieldInfo fieldInfo, final MergeState mergeState, final List<NumericDocValues> toMerge, final List<Bits> docsWithField) throws IOException {
 
     mergeState.checkAbort.work(mergeState.segmentInfo.getDocCount());
@@ -201,12 +133,6 @@ public abstract class DocValuesConsumer implements Closeable {
                     });
   }
   
-  /**
-   * Merges the binary docvalues from <code>toMerge</code>.
-   * <p>
-   * The default implementation calls {@link #addBinaryField}, passing
-   * an Iterable that merges and filters deleted documents on the fly.
-   */
   public void mergeBinaryField(FieldInfo fieldInfo, final MergeState mergeState, final List<BinaryDocValues> toMerge, final List<Bits> docsWithField) throws IOException {
 
     mergeState.checkAbort.work(mergeState.segmentInfo.getDocCount());
@@ -284,12 +210,6 @@ public abstract class DocValuesConsumer implements Closeable {
                    });
   }
 
-  /**
-   * Merges the sorted docvalues from <code>toMerge</code>.
-   * <p>
-   * The default implementation calls {@link #addSortedNumericField}, passing
-   * iterables that filter deleted documents.
-   */
   public void mergeSortedNumericField(FieldInfo fieldInfo, final MergeState mergeState, List<SortedNumericDocValues> toMerge) throws IOException {
 
     mergeState.checkAbort.work(mergeState.segmentInfo.getDocCount());
@@ -438,12 +358,6 @@ public abstract class DocValuesConsumer implements Closeable {
      );
   }
 
-  /**
-   * Merges the sorted docvalues from <code>toMerge</code>.
-   * <p>
-   * The default implementation calls {@link #addSortedField}, passing
-   * an Iterable that merges ordinals and values and filters deleted documents .
-   */
   public void mergeSortedField(FieldInfo fieldInfo, final MergeState mergeState, List<SortedDocValues> toMerge) throws IOException {
 
     mergeState.checkAbort.work(mergeState.segmentInfo.getDocCount());
@@ -580,12 +494,6 @@ public abstract class DocValuesConsumer implements Closeable {
     );
   }
   
-  /**
-   * Merges the sortedset docvalues from <code>toMerge</code>.
-   * <p>
-   * The default implementation calls {@link #addSortedSetField}, passing
-   * an Iterable that merges ordinals and values and filters deleted documents .
-   */
   public void mergeSortedSetField(FieldInfo fieldInfo, final MergeState mergeState, List<SortedSetDocValues> toMerge) throws IOException {
 
     mergeState.checkAbort.work(mergeState.segmentInfo.getDocCount());
@@ -829,7 +737,6 @@ public abstract class DocValuesConsumer implements Closeable {
     }
   }
   
-  /** Helper: returns true if the given docToValue count contains only at most one value */
   public static boolean isSingleValued(Iterable<Number> docToValueCount) {
     for (Number count : docToValueCount) {
       if (count.longValue() > 1) {
@@ -839,7 +746,6 @@ public abstract class DocValuesConsumer implements Closeable {
     return true;
   }
   
-  /** Helper: returns single-valued view, using {@code missingValue} when count is zero */
   public static Iterable<Number> singletonView(final Iterable<Number> docToValueCount, final Iterable<Number> values, final Number missingValue) {
     assert isSingleValued(docToValueCount);
     return new Iterable<Number>() {

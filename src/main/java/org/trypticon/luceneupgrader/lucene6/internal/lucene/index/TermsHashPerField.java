@@ -51,9 +51,6 @@ abstract class TermsHashPerField implements Comparable<TermsHashPerField> {
   ParallelPostingsArray postingsArray;
   private final Counter bytesUsed;
 
-  /** streamCount: how many streams this field stores per term.
-   * E.g. doc(+freq) is 1 stream, prox+offset is a second. */
-
   public TermsHashPerField(int streamCount, FieldInvertState fieldState, TermsHash termsHash, TermsHashPerField nextPerField, FieldInfo fieldInfo) {
     intPool = termsHash.intPool;
     bytePool = termsHash.bytePool;
@@ -89,8 +86,6 @@ abstract class TermsHashPerField implements Comparable<TermsHashPerField> {
 
   int[] sortedTermIDs;
 
-  /** Collapse the hash table and sort in-place; also sets
-   * this.sortedTermIDs to the results */
   public int[] sortPostings() {
     sortedTermIDs = bytesHash.sort();
     return sortedTermIDs;
@@ -139,9 +134,7 @@ abstract class TermsHashPerField implements Comparable<TermsHashPerField> {
     }
   }
 
-  /** Called once per inverted token.  This is the primary
-   *  entry point (for first TermsHash); postings use this
-   *  API. */
+
   void add() throws IOException {
     // We are first in the chain so we must "intern" the
     // term text into textStart address
@@ -274,17 +267,13 @@ abstract class TermsHashPerField implements Comparable<TermsHashPerField> {
     return fieldInfo.name.compareTo(other.fieldInfo.name);
   }
 
-  /** Finish adding all instances of this field to the
-   *  current document. */
   void finish() throws IOException {
     if (nextPerField != null) {
       nextPerField.finish();
     }
   }
 
-  /** Start adding a new field instance; first is true if
-   *  this is the first time this field name was seen in the
-   *  document. */
+
   boolean start(IndexableField field, boolean first) {
     termAtt = fieldState.termAttribute;
     if (nextPerField != null) {
@@ -294,16 +283,11 @@ abstract class TermsHashPerField implements Comparable<TermsHashPerField> {
     return true;
   }
 
-  /** Called when a term is seen for the first time. */
   abstract void newTerm(int termID) throws IOException;
 
-  /** Called when a previously seen term is seen again. */
   abstract void addTerm(int termID) throws IOException;
 
-  /** Called when the postings array is initialized or
-   *  resized. */
   abstract void newPostingsArray();
 
-  /** Creates a new postings array of the specified size. */
   abstract ParallelPostingsArray createPostingsArray(int size);
 }

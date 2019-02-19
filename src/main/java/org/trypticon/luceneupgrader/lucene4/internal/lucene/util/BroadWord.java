@@ -17,29 +17,12 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * limitations under the License.
  */
 
-/**
- * Methods and constants inspired by the article
- * "Broadword Implementation of Rank/Select Queries" by Sebastiano Vigna, January 30, 2012:
- * <ul>
- * <li>algorithm 1: {@link #bitCount(long)}, count of set bits in a <code>long</code>
- * <li>algorithm 2: {@link #select(long, int)}, selection of a set bit in a <code>long</code>,
- * <li>bytewise signed smaller &lt;<sub><small>8</small></sub> operator: {@link #smallerUpTo7_8(long,long)}.
- * <li>shortwise signed smaller &lt;<sub><small>16</small></sub> operator: {@link #smallerUpto15_16(long,long)}.
- * <li>some of the Lk and Hk constants that are used by the above:
- * L8 {@link #L8_L}, H8 {@link #H8_L}, L9 {@link #L9_L}, L16 {@link #L16_L}and H16 {@link #H8_L}.
- * </ul>
- * @lucene.internal
- */
 public final class BroadWord {
 
 // TBD: test smaller8 and smaller16 separately.
   private BroadWord() {} // no instance
 
-  /** Bit count of a long.
-   * Only here to compare the implementation with {@link #select(long,int)},
-   * normally {@link Long#bitCount} is preferable.
-   * @return The total number of 1 bits in x.
-   */
+
   static int bitCount(long x) {
     // Step 0 leaves in each pair of bits the number of ones originally contained in that pair:
     x = x - ((x & 0xAAAAAAAAAAAAAAAAL) >>> 1);
@@ -51,9 +34,7 @@ public final class BroadWord {
     return (int) ((x * L8_L) >>> 56);
   }
 
-  /** Select a 1-bit from a long.
-   * @return The index of the r-th 1 bit in x, or if no such bit exists, 72.
-   */
+
   public static int select(long x, int r) {
     long s = x - ((x & 0xAAAAAAAAAAAAAAAAL) >>> 1); // Step 0, pairwise bitsums
 
@@ -81,61 +62,38 @@ public final class BroadWord {
     return res;
   }
 
-  /** A signed bytewise smaller &lt;<sub><small>8</small></sub> operator, for operands 0L<= x, y <=0x7L.
-   * This uses the following numbers of basic long operations: 1 or, 2 and, 2 xor, 1 minus, 1 not.
-   * @return A long with bits set in the {@link #H8_L} positions corresponding to each input signed byte pair that compares smaller.
-   */
+
   public static long smallerUpTo7_8(long x, long y) {
     // See section 4, page 5, line 14 of the Vigna article:
     return ( ( (x | H8_L) - (y & (~H8_L)) ) ^ x ^ ~y) & H8_L;
   }
 
-  /** An unsigned bytewise smaller &lt;<sub><small>8</small></sub> operator.
-   * This uses the following numbers of basic long operations: 3 or, 2 and, 2 xor, 1 minus, 1 not.
-   * @return A long with bits set in the {@link #H8_L} positions corresponding to each input unsigned byte pair that compares smaller.
-   */
+
   public static long smalleru_8(long x, long y) {
     // See section 4, 8th line from the bottom of the page 5, of the Vigna article:
     return ( ( ( (x | H8_L) - (y & ~H8_L) ) | x ^ y) ^ (x | ~y) ) & H8_L;
   }
 
-  /** An unsigned bytewise not equals 0 operator.
-   * This uses the following numbers of basic long operations: 2 or, 1 and, 1 minus.
-   * @return A long with bits set in the {@link #H8_L} positions corresponding to each unsigned byte that does not equal 0.
-   */
+
   public static long notEquals0_8(long x) {
     // See section 4, line 6-8 on page 6, of the Vigna article:
     return (((x | H8_L) - L8_L) | x) & H8_L;
   }
 
-  /** A bytewise smaller &lt;<sub><small>16</small></sub> operator.
-   * This uses the following numbers of basic long operations: 1 or, 2 and, 2 xor, 1 minus, 1 not.
-   * @return A long with bits set in the {@link #H16_L} positions corresponding to each input signed short pair that compares smaller.
-   */
+
   public static long smallerUpto15_16(long x, long y) {
     return ( ( (x | H16_L) - (y & (~H16_L)) ) ^ x ^ ~y) & H16_L;
   }
 
-  /** Lk denotes the constant whose ones are in position 0, k, 2k, . . .
-   *  These contain the low bit of each group of k bits.
-   *  The suffix _L indicates the long implementation.
-   */
+
   public final static long L8_L = 0x0101010101010101L;
   public final static long L9_L = 0x8040201008040201L;
   public final static long L16_L = 0x0001000100010001L;
 
-  /** Hk = Lk << (k-1) .
-   *  These contain the high bit of each group of k bits.
-   *  The suffix _L indicates the long implementation.
-   */
+
   public final static long H8_L = L8_L << 7;
   public final static long H16_L = L16_L << 15;
 
-  /**
-   * Naive implementation of {@link #select(long,int)}, using {@link Long#numberOfTrailingZeros} repetitively.
-   * Works relatively fast for low ranks.
-   * @return The index of the r-th 1 bit in x, or if no such bit exists, 72.
-   */
   public static int selectNaive(long x, int r) {
     assert r >= 1;
     int s = -1;

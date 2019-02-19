@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,15 +22,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimat
 
 import java.io.IOException;
 import java.util.Arrays;
-
-/**
- * Space optimized random access capable array of values with a fixed number of
- * bits. The maximum number of bits/value is 31. Use {@link Packed64} for higher
- * numbers.
- * </p><p>
- * The implementation strives to avoid conditionals and expensive operations,
- * sacrificing code clarity to achieve better performance.
- */
 
 class Packed32 extends PackedInts.ReaderImpl implements PackedInts.Mutable {
   static final int BLOCK_SIZE = 32; // 32 = int, 64 = long
@@ -109,26 +100,11 @@ class Packed32 extends PackedInts.ReaderImpl implements PackedInts.Mutable {
   private int[] readMasks;
   private int[] writeMasks;
 
-  /**
-   * Creates an array with the internal structures adjusted for the given
-   * limits and initialized to 0.
-   * @param valueCount   the number of elements.
-   * @param bitsPerValue the number of bits available for any given value.
-   *        Note: bitsPerValue >32 is not supported by this implementation.
-   */
   public Packed32(int valueCount, int bitsPerValue) {
     this(new int[(int)(((long)valueCount) * bitsPerValue / BLOCK_SIZE + 2)],
             valueCount, bitsPerValue);
   }
 
-  /**
-   * Creates an array with content retrieved from the given DataInput.
-   * @param in       a DataInput, positioned at the start of Packed64-content.
-   * @param valueCount  the number of elements.
-   * @param bitsPerValue the number of bits available for any given value.
-   * @throws java.io.IOException if the values for the backing array could not
-   *                             be retrieved.
-   */
   public Packed32(DataInput in, int valueCount, int bitsPerValue)
                                                             throws IOException {
     super(valueCount, bitsPerValue);
@@ -150,16 +126,6 @@ class Packed32 extends PackedInts.ReaderImpl implements PackedInts.Mutable {
   }
 
 
-  /**
-   * Creates an array backed by the given blocks.
-   * </p><p>
-   * Note: The blocks are used directly, so changes to the given block will
-   * affect the Packed32-structure.
-   * @param blocks   used as the internal backing array.
-   * @param valueCount   the number of values.
-   * @param bitsPerValue the number of bits available for any given value.
-   *        Note: bitsPerValue >32 is not supported by this implementation.
-   */
   public Packed32(int[] blocks, int valueCount, int bitsPerValue) {
     // TODO: Check that blocks.length is sufficient for holding length values
     super(valueCount, bitsPerValue);
@@ -181,10 +147,6 @@ class Packed32 extends PackedInts.ReaderImpl implements PackedInts.Mutable {
     writeMasks = WRITE_MASKS[bitsPerValue];
   }
 
-  /**
-   * @param index the position of the value.
-   * @return the value at the given index.
-   */
   public long get(final int index) {
     assert index >= 0 && index < size();
     final long majorBitPos = (long)index * bitsPerValue;

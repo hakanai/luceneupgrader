@@ -22,23 +22,10 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.PostingsEnum;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.similarities.Similarity;
 
-/** Expert: A <code>Scorer</code> for documents matching a <code>Term</code>.
- */
 final class TermScorer extends Scorer {
   private final PostingsEnum postingsEnum;
   private final Similarity.SimScorer docScorer;
 
-  /**
-   * Construct a <code>TermScorer</code>.
-   *
-   * @param weight
-   *          The weight of the <code>Term</code> in the query.
-   * @param td
-   *          An iterator over the documents matching the <code>Term</code>.
-   * @param docScorer
-   *          The <code>Similarity.SimScorer</code> implementation
-   *          to be used for score computations.
-   */
   TermScorer(Weight weight, PostingsEnum td, Similarity.SimScorer docScorer) {
     super(weight);
     this.docScorer = docScorer;
@@ -66,7 +53,6 @@ final class TermScorer extends Scorer {
     return docScorer.score(postingsEnum.docID(), postingsEnum.freq());
   }
 
-  /** Returns a string representation of this <code>TermScorer</code>. */
   @Override
   public String toString() { return "scorer(" + weight + ")[" + super.toString() + "]"; }
 }

@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,10 +19,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 
-/** Used by DocumentsWriter to maintain per-thread state.
- *  We keep a separate Posting hash and other state for each
- *  thread and then merge postings hashes from all threads
- *  when writing the segment. */
+
 final class DocumentsWriterThreadState {
 
   boolean isIdle = true;                          // false if this is currently in use by a thread

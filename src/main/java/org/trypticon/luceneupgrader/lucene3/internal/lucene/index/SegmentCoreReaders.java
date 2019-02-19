@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -28,8 +28,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
 
-/** Holds core readers that are shared (unchanged) when
- * SegmentReader is cloned or reopened */
 final class SegmentCoreReaders {
 
   // Counts how many other reader share the core objects

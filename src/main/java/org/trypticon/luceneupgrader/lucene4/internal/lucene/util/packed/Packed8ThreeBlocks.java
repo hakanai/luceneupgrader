@@ -25,10 +25,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimat
 import java.io.IOException;
 import java.util.Arrays;
 
-/**
- * Packs integers into 3 bytes (24 bits per value).
- * @lucene.internal
- */
 final class Packed8ThreeBlocks extends PackedInts.MutableImpl {
   final byte[] blocks;
 

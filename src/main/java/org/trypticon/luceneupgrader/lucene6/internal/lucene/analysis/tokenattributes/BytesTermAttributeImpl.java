@@ -23,13 +23,9 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.AttributeImpl;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.AttributeReflector;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 
-/** Implementation class for {@link BytesTermAttribute}.
- * @lucene.internal
- */
 public class BytesTermAttributeImpl extends AttributeImpl implements BytesTermAttribute, TermToBytesRefAttribute {
   private BytesRef bytes;
 
-  /** Initialize this attribute with no bytes. */
   public BytesTermAttributeImpl() {}
 
   @Override

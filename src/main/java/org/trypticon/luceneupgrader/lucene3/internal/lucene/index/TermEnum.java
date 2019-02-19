@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,21 +20,12 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 import java.io.IOException;
 import java.io.Closeable;
 
-/** Abstract class for enumerating terms.
-
-  <p>Term enumerations are always ordered by Term.compareTo().  Each term in
-  the enumeration is greater than all that precede it.  */
-
 public abstract class TermEnum implements Closeable {
-  /** Increments the enumeration to the next element.  True if one exists.*/
   public abstract boolean next() throws IOException;
 
-  /** Returns the current Term in the enumeration.*/
   public abstract Term term();
 
-  /** Returns the docFreq of the current Term in the enumeration.*/
   public abstract int docFreq();
 
-  /** Closes the enumeration to further activity, freeing resources. */
   public abstract void close() throws IOException;
 }

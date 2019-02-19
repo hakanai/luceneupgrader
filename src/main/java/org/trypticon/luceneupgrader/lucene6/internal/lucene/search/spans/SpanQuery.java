@@ -27,21 +27,13 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.TermContext;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.IndexSearcher;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.Query;
 
-/** Base class for span-based queries. */
 public abstract class SpanQuery extends Query {
 
-  /**
-   * Returns the name of the field matched by this query.
-   */
   public abstract String getField();
 
   @Override
   public abstract SpanWeight createWeight(IndexSearcher searcher, boolean needsScores) throws IOException;
 
-  /**
-   * Build a map of terms to termcontexts, for use in constructing SpanWeights
-   * @lucene.internal
-   */
   public static Map<Term, TermContext> getTermContexts(SpanWeight... weights) {
     Map<Term, TermContext> terms = new TreeMap<>();
     for (SpanWeight w : weights) {
@@ -50,10 +42,6 @@ public abstract class SpanQuery extends Query {
     return terms;
   }
 
-  /**
-   * Build a map of terms to termcontexts, for use in constructing SpanWeights
-   * @lucene.internal
-   */
   public static Map<Term, TermContext> getTermContexts(Collection<SpanWeight> weights) {
     Map<Term, TermContext> terms = new TreeMap<>();
     for (SpanWeight w : weights) {

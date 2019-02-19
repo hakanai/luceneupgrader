@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,40 +23,7 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattrib
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
 
-/**
- * This class converts alphabetic, numeric, and symbolic Unicode characters
- * which are not in the first 127 ASCII characters (the "Basic Latin" Unicode
- * block) into their ASCII equivalents, if one exists.
- *
- * Characters from the following Unicode blocks are converted; however, only
- * those characters with reasonable ASCII alternatives are converted:
- *
- * <ul>
- *   <li>C1 Controls and Latin-1 Supplement: <a href="http://www.unicode.org/charts/PDF/U0080.pdf">http://www.unicode.org/charts/PDF/U0080.pdf</a>
- *   <li>Latin Extended-A: <a href="http://www.unicode.org/charts/PDF/U0100.pdf">http://www.unicode.org/charts/PDF/U0100.pdf</a>
- *   <li>Latin Extended-B: <a href="http://www.unicode.org/charts/PDF/U0180.pdf">http://www.unicode.org/charts/PDF/U0180.pdf</a>
- *   <li>Latin Extended Additional: <a href="http://www.unicode.org/charts/PDF/U1E00.pdf">http://www.unicode.org/charts/PDF/U1E00.pdf</a>
- *   <li>Latin Extended-C: <a href="http://www.unicode.org/charts/PDF/U2C60.pdf">http://www.unicode.org/charts/PDF/U2C60.pdf</a>
- *   <li>Latin Extended-D: <a href="http://www.unicode.org/charts/PDF/UA720.pdf">http://www.unicode.org/charts/PDF/UA720.pdf</a>
- *   <li>IPA Extensions: <a href="http://www.unicode.org/charts/PDF/U0250.pdf">http://www.unicode.org/charts/PDF/U0250.pdf</a>
- *   <li>Phonetic Extensions: <a href="http://www.unicode.org/charts/PDF/U1D00.pdf">http://www.unicode.org/charts/PDF/U1D00.pdf</a>
- *   <li>Phonetic Extensions Supplement: <a href="http://www.unicode.org/charts/PDF/U1D80.pdf">http://www.unicode.org/charts/PDF/U1D80.pdf</a>
- *   <li>General Punctuation: <a href="http://www.unicode.org/charts/PDF/U2000.pdf">http://www.unicode.org/charts/PDF/U2000.pdf</a>
- *   <li>Superscripts and Subscripts: <a href="http://www.unicode.org/charts/PDF/U2070.pdf">http://www.unicode.org/charts/PDF/U2070.pdf</a>
- *   <li>Enclosed Alphanumerics: <a href="http://www.unicode.org/charts/PDF/U2460.pdf">http://www.unicode.org/charts/PDF/U2460.pdf</a>
- *   <li>Dingbats: <a href="http://www.unicode.org/charts/PDF/U2700.pdf">http://www.unicode.org/charts/PDF/U2700.pdf</a>
- *   <li>Supplemental Punctuation: <a href="http://www.unicode.org/charts/PDF/U2E00.pdf">http://www.unicode.org/charts/PDF/U2E00.pdf</a>
- *   <li>Alphabetic Presentation Forms: <a href="http://www.unicode.org/charts/PDF/UFB00.pdf">http://www.unicode.org/charts/PDF/UFB00.pdf</a>
- *   <li>Halfwidth and Fullwidth Forms: <a href="http://www.unicode.org/charts/PDF/UFF00.pdf">http://www.unicode.org/charts/PDF/UFF00.pdf</a>
- * </ul>
- *  
- * See: <a href="http://en.wikipedia.org/wiki/Latin_characters_in_Unicode">http://en.wikipedia.org/wiki/Latin_characters_in_Unicode</a>
- *
- * The set of character conversions supported by this class is a superset of
- * those supported by Lucene's {@link ISOLatin1AccentFilter} which strips
- * accents from Latin1 characters.  For example, '&agrave;' will be replaced by
- * 'a'.
- */
+
 public final class ASCIIFoldingFilter extends TokenFilter {
   public ASCIIFoldingFilter(TokenStream input)
   {
@@ -90,12 +57,7 @@ public final class ASCIIFoldingFilter extends TokenFilter {
     }
   }
 
-  /**
-   * Converts characters above ASCII to their ASCII equivalents.  For example,
-   * accents are removed from accented characters.
-   * @param input The string to fold
-   * @param length The number of characters in the input string
-   */
+
   public void foldToASCII(char[] input, int length)
   {
     // Worst-case length required:
@@ -107,17 +69,7 @@ public final class ASCIIFoldingFilter extends TokenFilter {
     outputPos = foldToASCII(input, 0, output, 0, length);
   }
 
-  /**
-   * Converts characters above ASCII to their ASCII equivalents.  For example,
-   * accents are removed from accented characters.
-   * @param input     The characters to fold
-   * @param inputPos  Index of the first character to fold
-   * @param output    The result of the folding. Should be of size >= {@code length * 4}.
-   * @param outputPos Index of output where to put the result of the folding
-   * @param length    The number of characters to fold
-   * @return length of output
-   * @lucene.internal
-   */
+
   public static final int foldToASCII(char input[], int inputPos, char output[], int outputPos, int length)
   {
     final int end = inputPos + length;

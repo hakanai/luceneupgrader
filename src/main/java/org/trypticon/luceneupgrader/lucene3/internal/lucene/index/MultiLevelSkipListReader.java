@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,15 +23,6 @@ import java.util.Arrays;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.BufferedIndexInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
 
-/**
- * This abstract class reads skip lists with multiple levels.
- * 
- * See {@link MultiLevelSkipListWriter} for the information about the encoding 
- * of the multi level skip lists. 
- * 
- * Subclasses must implement the abstract method {@link #readSkipData(int, IndexInput)}
- * which defines the actual format of the skip data.
- */
 abstract class MultiLevelSkipListReader {
   // the maximum number of skip levels possible for this index
   private int maxNumberOfSkipLevels; 
@@ -81,16 +72,12 @@ abstract class MultiLevelSkipListReader {
   }
 
   
-  /** Returns the id of the doc to which the last call of {@link #skipTo(int)}
-   *  has skipped.  */
   int getDoc() {
     return lastDoc;
   }
   
   
-  /** Skips entries to the first beyond the current whose document number is
-   *  greater than or equal to <i>target</i>. Returns the current doc count. 
-   */
+
   int skipTo(int target) throws IOException {
     if (!haveSkipped) {
       // first time, load skip levels
@@ -148,7 +135,6 @@ abstract class MultiLevelSkipListReader {
 
   }
   
-  /** Seeks the skip entry on the given level */
   protected void seekChild(int level) throws IOException {
     skipStream[level].seek(lastChildPointer);
     numSkipped[level] = numSkipped[level + 1] - skipInterval[level + 1];
@@ -166,7 +152,6 @@ abstract class MultiLevelSkipListReader {
     }
   }
 
-  /** initializes the reader */
   void init(long skipPointer, int df) {
     this.skipPointer[0] = skipPointer;
     this.docCount = df;
@@ -180,7 +165,6 @@ abstract class MultiLevelSkipListReader {
     }
   }
   
-  /** Loads the skip levels  */
   private void loadSkipLevels() throws IOException {
     numberOfSkipLevels = docCount == 0 ? 0 : (int) Math.floor(Math.log(docCount) / Math.log(skipInterval[0]));
     if (numberOfSkipLevels > maxNumberOfSkipLevels) {
@@ -217,22 +201,14 @@ abstract class MultiLevelSkipListReader {
     skipPointer[0] = skipStream[0].getFilePointer();
   }
   
-  /**
-   * Subclasses must implement the actual skip data encoding in this method.
-   *  
-   * @param level the level skip data shall be read from
-   * @param skipStream the skip stream to read from
-   */  
   protected abstract int readSkipData(int level, IndexInput skipStream) throws IOException;
   
-  /** Copies the values of the last read skip entry on this level */
   protected void setLastSkipData(int level) {
     lastDoc = skipDoc[level];
     lastChildPointer = childPointer[level];
   }
 
   
-  /** used to buffer the top skip levels */
   private final static class SkipBuffer extends IndexInput {
     private byte[] data;
     private long pointer;

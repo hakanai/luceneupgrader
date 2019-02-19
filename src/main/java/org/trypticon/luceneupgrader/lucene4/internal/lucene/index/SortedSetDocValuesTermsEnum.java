@@ -24,15 +24,11 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder;
 
-/** Implements a {@link TermsEnum} wrapping a provided
- * {@link SortedSetDocValues}. */
-
 class SortedSetDocValuesTermsEnum extends TermsEnum {
   private final SortedSetDocValues values;
   private long currentOrd = -1;
   private final BytesRefBuilder scratch;
 
-  /** Creates a new TermsEnum over the provided values */
   public SortedSetDocValuesTermsEnum(SortedSetDocValues values) {
     this.values = values;
     scratch = new BytesRefBuilder();

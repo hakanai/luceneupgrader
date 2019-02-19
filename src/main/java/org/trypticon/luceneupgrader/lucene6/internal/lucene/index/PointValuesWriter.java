@@ -25,7 +25,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.ByteBlockPool;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Counter;
 
-/** Buffers up pending byte[][] value(s) per doc, then flushes when segment flushes. */
 class PointValuesWriter {
   private final FieldInfo fieldInfo;
   private final ByteBlockPool bytes;

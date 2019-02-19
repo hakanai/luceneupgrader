@@ -22,13 +22,6 @@ import java.util.Arrays;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 
-/**
- * Exposes {@link PostingsEnum}, merged from {@link PostingsEnum}
- * API of sub-segments.
- *
- * @lucene.experimental
- */
-
 public final class MultiPostingsEnum extends PostingsEnum {
   private final MultiTermsEnum parent;
   final PostingsEnum[] subPostingsEnums;
@@ -39,9 +32,7 @@ public final class MultiPostingsEnum extends PostingsEnum {
   int currentBase;
   int doc = -1;
 
-  /** Sole constructor.
-   * @param parent The {@link MultiTermsEnum} that created us.
-   * @param subReaderCount How many sub-readers are being merged. */
+
   public MultiPostingsEnum(MultiTermsEnum parent, int subReaderCount) {
     this.parent = parent;
     subPostingsEnums = new PostingsEnum[subReaderCount];
@@ -51,13 +42,10 @@ public final class MultiPostingsEnum extends PostingsEnum {
     }
   }
 
-  /** Returns {@code true} if this instance can be reused by
-   *  the provided {@link MultiTermsEnum}. */
   public boolean canReuse(MultiTermsEnum parent) {
     return this.parent == parent;
   }
 
-  /** Rre-use and reset this instance on the provided slices. */
   public MultiPostingsEnum reset(final EnumWithSlice[] subs, final int numSubs) {
     this.numSubs = numSubs;
     for(int i=0;i<numSubs;i++) {
@@ -70,13 +58,10 @@ public final class MultiPostingsEnum extends PostingsEnum {
     return this;
   }
 
-  /** How many sub-readers we are merging.
-   *  @see #getSubs */
   public int getNumSubs() {
     return numSubs;
   }
 
-  /** Returns sub-readers we are merging. */
   public EnumWithSlice[] getSubs() {
     return subs;
   }
@@ -162,17 +147,12 @@ public final class MultiPostingsEnum extends PostingsEnum {
   }
 
   // TODO: implement bulk read more efficiently than super
-  /** Holds a {@link PostingsEnum} along with the
-   *  corresponding {@link ReaderSlice}. */
   public final static class EnumWithSlice {
     EnumWithSlice() {
     }
 
-    /** {@link PostingsEnum} for this sub-reader. */
     public PostingsEnum postingsEnum;
 
-    /** {@link ReaderSlice} describing how this sub-reader
-     *  fits into the composite reader. */
     public ReaderSlice slice;
     
     @Override

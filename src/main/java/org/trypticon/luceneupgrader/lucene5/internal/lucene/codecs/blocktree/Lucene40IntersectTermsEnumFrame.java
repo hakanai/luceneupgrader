@@ -28,9 +28,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.fst.FST;
 
 
 
-/**
- * @deprecated Only for 4.x backcompat
- */
 // TODO: can we share this with the frame in STE?
 @Deprecated
 final class Lucene40IntersectTermsEnumFrame {

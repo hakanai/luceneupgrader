@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,14 +24,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
-/** This class implements {@link InvertedDocConsumer}, which
- *  is passed each token produced by the analyzer on each
- *  field.  It stores these tokens in a hash table, and
- *  allocates separate byte streams per token.  Consumers of
- *  this class, eg {@link FreqProxTermsWriter} and {@link
- *  TermVectorsTermsWriter}, write their own byte streams
- *  under each term.
- */
 final class TermsHash extends InvertedDocConsumer {
 
   final TermsHashConsumer consumer;

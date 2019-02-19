@@ -19,39 +19,27 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.util;
 
 import java.util.Comparator;
 
-/** Base class for sorting algorithms implementations.
- * @lucene.internal */
 public abstract class Sorter {
 
   static final int BINARY_SORT_THRESHOLD = 20;
 
-  /** Sole constructor, used for inheritance. */
   protected Sorter() {}
 
-  /** Compare entries found in slots <code>i</code> and <code>j</code>.
-   *  The contract for the returned value is the same as
-   *  {@link Comparator#compare(Object, Object)}. */
+
   protected abstract int compare(int i, int j);
 
-  /** Swap values at slots <code>i</code> and <code>j</code>. */
   protected abstract void swap(int i, int j);
 
   private int pivotIndex;
 
-  /** Save the value at slot <code>i</code> so that it can later be used as a
-   * pivot, see {@link #comparePivot(int)}. */
   protected void setPivot(int i) {
     pivotIndex = i;
   }
 
-  /** Compare the pivot with the slot at <code>j</code>, similarly to
-   *  {@link #compare(int, int) compare(i, j)}. */
   protected int comparePivot(int j) {
     return compare(pivotIndex, j);
   }
 
-  /** Sort the slice which starts at <code>from</code> (inclusive) and ends at
-   *  <code>to</code> (exclusive). */
   public abstract void sort(int from, int to);
 
   void checkRange(int from, int to) {
@@ -177,12 +165,6 @@ public abstract class Sorter {
     }
   }
 
-  /**
-   * A binary sort implementation. This performs {@code O(n*log(n))} comparisons
-   * and {@code O(n^2)} swaps. It is typically used by more sophisticated
-   * implementations as a fall-back when the numbers of items to sort has become
-   * less than {@value #BINARY_SORT_THRESHOLD}.
-   */
   void binarySort(int from, int to) {
     binarySort(from, to, from + 1);
   }
@@ -207,11 +189,6 @@ public abstract class Sorter {
     }
   }
 
-  /**
-   * Use heap sort to sort items between {@code from} inclusive and {@code to}
-   * exclusive. This runs in {@code O(n*log(n))} and is used as a fall-back by
-   * {@link IntroSorter}.
-   */
   void heapSort(int from, int to) {
     if (to - from <= 1) {
       return;

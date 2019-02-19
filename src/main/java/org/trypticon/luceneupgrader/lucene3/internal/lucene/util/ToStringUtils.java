@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,16 +17,10 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * limitations under the License.
  */
 
-/**
- * Helper methods to ease implementing {@link Object#toString()}.
- */
 public final class ToStringUtils {
 
   private ToStringUtils() {} // no instance
 
-  /**
-   * for printing boost only if not 1.0
-   */
   public static String boost(float boost) {
     if (boost != 1.0f) {
       return "^" + Float.toString(boost);

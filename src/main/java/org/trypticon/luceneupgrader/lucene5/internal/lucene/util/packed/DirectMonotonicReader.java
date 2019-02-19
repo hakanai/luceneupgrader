@@ -27,13 +27,8 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.LongValues;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimator;
 
-/**
- * Retrieves an instance previously written by {@link DirectMonotonicWriter}.
- * @see DirectMonotonicWriter 
- */
 public final class DirectMonotonicReader {
 
-  /** An instance that always returns {@code 0}. */
   private static final LongValues EMPTY = new LongValues() {
 
     @Override
@@ -43,8 +38,6 @@ public final class DirectMonotonicReader {
 
   };
 
-  /** In-memory metadata that needs to be kept around for
-   *  {@link DirectMonotonicReader} to read data from disk. */
   public static class Meta implements Accountable {
     private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(Meta.class);
 
@@ -85,8 +78,6 @@ public final class DirectMonotonicReader {
     }
   }
 
-  /** Load metadata from the given {@link IndexInput}.
-   *  @see DirectMonotonicReader#getInstance(Meta, RandomAccessInput) */
   public static Meta loadMeta(IndexInput metaIn, long numValues, int blockShift) throws IOException {
     Meta meta = new Meta(numValues, blockShift);
     for (int i = 0; i < meta.numBlocks; ++i) {
@@ -98,9 +89,6 @@ public final class DirectMonotonicReader {
     return meta;
   }
 
-  /**
-   * Retrieves an instance from the specified slice.
-   */
   public static LongValues getInstance(Meta meta, RandomAccessInput data) throws IOException {
     final LongValues[] readers = new LongValues[meta.numBlocks];
     for (int i = 0; i < meta.mins.length; ++i) {

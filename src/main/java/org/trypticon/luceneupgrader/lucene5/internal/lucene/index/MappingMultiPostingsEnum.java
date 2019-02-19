@@ -22,13 +22,6 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.MultiPostingsEnum.EnumWithSlice;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 
-/**
- * Exposes flex API, merged from flex API of sub-segments,
- * remapping docIDs (this is used for segment merging).
- *
- * @lucene.experimental
- */
-
 final class MappingMultiPostingsEnum extends PostingsEnum {
   private MultiPostingsEnum.EnumWithSlice[] subs;
   int numSubs;
@@ -41,7 +34,6 @@ final class MappingMultiPostingsEnum extends PostingsEnum {
   MultiPostingsEnum multiDocsAndPositionsEnum;
   final String field;
 
-  /** Sole constructor. */
   public MappingMultiPostingsEnum(String field, MergeState mergeState) {
     this.field = field;
     this.mergeState = mergeState;
@@ -57,13 +49,10 @@ final class MappingMultiPostingsEnum extends PostingsEnum {
     return this;
   }
 
-  /** How many sub-readers we are merging.
-   *  @see #getSubs */
   public int getNumSubs() {
     return numSubs;
   }
 
-  /** Returns sub-readers we are merging. */
   public EnumWithSlice[] getSubs() {
     return subs;
   }

@@ -24,54 +24,19 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.DocValues;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.NumericDocValues;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SortedNumericDocValues;
 
-/** 
- * SortField for {@link SortedNumericDocValues}.
- * <p>
- * A SortedNumericDocValues contains multiple values for a field, so sorting with
- * this technique "selects" a value as the representative sort value for the document.
- * <p>
- * By default, the minimum value in the list is selected as the sort value, but
- * this can be customized.
- * <p>
- * Like sorting by string, this also supports sorting missing values as first or last,
- * via {@link #setMissingValue(Object)}.
- * <p>
- * @see SortedNumericSelector
- */
 public class SortedNumericSortField extends SortField {
   
   private final SortedNumericSelector.Type selector;
   private final SortField.Type type;
   
-  /**
-   * Creates a sort, by the minimum value in the set 
-   * for the document.
-   * @param field Name of field to sort by.  Must not be null.
-   * @param type Type of values
-   */
   public SortedNumericSortField(String field, SortField.Type type) {
     this(field, type, false);
   }
   
-  /**
-   * Creates a sort, possibly in reverse, by the minimum value in the set 
-   * for the document.
-   * @param field Name of field to sort by.  Must not be null.
-   * @param type Type of values
-   * @param reverse True if natural order should be reversed.
-   */
   public SortedNumericSortField(String field, SortField.Type type, boolean reverse) {
     this(field, type, reverse, SortedNumericSelector.Type.MIN);
   }
 
-  /**
-   * Creates a sort, possibly in reverse, specifying how the sort value from 
-   * the document's set is selected.
-   * @param field Name of field to sort by.  Must not be null.
-   * @param type Type of values
-   * @param reverse True if natural order should be reversed.
-   * @param selector custom selector type for choosing the sort value from the set.
-   */
   public SortedNumericSortField(String field, SortField.Type type, boolean reverse, SortedNumericSelector.Type selector) {
     super(field, SortField.Type.CUSTOM, reverse);
     if (selector == null) {
@@ -84,7 +49,6 @@ public class SortedNumericSortField extends SortField {
     this.type = type;
   }
   
-  /** Returns the selector in use for this sort */
   public SortedNumericSelector.Type getSelector() {
     return selector;
   }

@@ -34,10 +34,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.automaton.Compi
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.fst.ByteSequenceOutputs;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.fst.FST;
 
-/**
- * BlockTree's implementation of {@link Terms}.
- * @deprecated Only for 4.x backcompat
- */
 @Deprecated
 final class Lucene40FieldReader extends Terms implements Accountable {
 
@@ -122,7 +118,6 @@ final class Lucene40FieldReader extends Terms implements Accountable {
     }
   }
 
-  /** For debugging -- used by CheckIndex too*/
   @Override
   public Lucene40Stats getStats() throws IOException {
     return new Lucene40SegmentTermsEnum(this).computeBlockStats();

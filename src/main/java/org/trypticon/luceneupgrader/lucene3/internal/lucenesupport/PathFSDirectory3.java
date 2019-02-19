@@ -17,16 +17,7 @@ import java.util.*;
 
 import static java.util.Collections.synchronizedSet;
 
-/**
- * Clone of {@link FSDirectory} accepting {@link Path} instead of {@link File}.
- */
 public abstract class PathFSDirectory3 extends Directory {
-    /**
-     * Default read chunk size.  This is a conditional default: on 32bit JVMs, it defaults to 100 MB.  On 64bit JVMs, it's
-     * <code>Integer.MAX_VALUE</code>.
-     *
-     *
-     */
     public static final int DEFAULT_READ_CHUNK_SIZE = Constants.JRE_IS_64BIT ? Integer.MAX_VALUE : 100 * 1024 * 1024;
 
     protected final Path directory; // The underlying filesystem directory
@@ -38,12 +29,6 @@ public abstract class PathFSDirectory3 extends Directory {
         return file.toRealPath();
     }
 
-    /** Create a new PathFSDirectory3 for the named location (ctor for subclasses).
-     * @param path the path of the directory
-     * @param lockFactory the lock factory to use, or null for the default
-     * ({@code NativeFSLockFactory});
-     * @throws IOException
-     */
     protected PathFSDirectory3(Path path, LockFactory lockFactory) throws IOException {
         // new ctors use always NativeFSLockFactory as default:
         if (lockFactory == null) {
@@ -57,32 +42,11 @@ public abstract class PathFSDirectory3 extends Directory {
         setLockFactory(lockFactory);
     }
 
-    /** Creates an PathFSDirectory3 instance, trying to pick the
-     *  best implementation given the current environment.
-     *  The directory returned uses the {@code NativeFSLockFactory}.
-     *
-     *  <p>Currently this returns {@code PathMMapDirectory3} for most Solaris
-     *  and Windows 64-bit JREs, {@code PathNIOFSDirectory3} for other
-     *  non-Windows JREs, and {@code PathSimpleFSDirectory3} for other
-     *  JREs on Windows. It is highly recommended that you consult the
-     *  implementation's documentation for your platform before
-     *  using this method.
-     *
-     * <p><b>NOTE</b>: this method may suddenly change which
-     * implementation is returned from release to release, in
-     * the event that higher performance defaults become
-     * possible; if the precise implementation is important to
-     * your application, please instantiate it directly,
-     * instead. For optimal performance you should consider using
-     * {@code MMapDirectory} on 64 bit JVMs.
-     *
-     * <p>See <a href="#subclasses">above</a> */
+
     public static PathFSDirectory3 open(Path path) throws IOException {
         return open(path, null);
     }
 
-    /** Just like {@code #open(File)}, but allows you to
-     *  also specify a custom {@code LockFactory}. */
     public static PathFSDirectory3 open(Path path, LockFactory lockFactory) throws IOException {
         if ((Constants.WINDOWS || Constants.SUN_OS || Constants.LINUX)
                 && Constants.JRE_IS_64BIT && MMapDirectory.UNMAP_SUPPORTED) {
@@ -114,14 +78,7 @@ public abstract class PathFSDirectory3 extends Directory {
 
     }
 
-    /** Lists all files (not subdirectories) in the
-     *  directory.  This method never returns null (throws
-     *  {@code IOException} instead).
-     *
-     *  @throws NoSuchDirectoryException if the directory
-     *   does not exist, or does exist but is not a
-     *   directory.
-     *  @throws IOException if list() returns null */
+
     public static String[] listAll(Path dir) throws IOException {
         List<String> entries = new ArrayList<>();
 
@@ -139,16 +96,13 @@ public abstract class PathFSDirectory3 extends Directory {
         return entries.toArray(new String[entries.size()]);
     }
 
-    /** Lists all files (not subdirectories) in the
-     * directory.
-     * */
+
     @Override
     public String[] listAll() throws IOException {
         ensureOpen();
         return listAll(directory);
     }
 
-    /** Returns true iff a file with the given name exists. */
     @Override
     public boolean fileExists(String name) {
         ensureOpen();
@@ -156,7 +110,6 @@ public abstract class PathFSDirectory3 extends Directory {
         return Files.exists(file);
     }
 
-    /** Returns the time the named file was last modified. */
     @Override
     public long fileModified(String name) {
         ensureOpen();
@@ -168,15 +121,12 @@ public abstract class PathFSDirectory3 extends Directory {
         }
     }
 
-    /** Returns the time the named file was last modified. */
     public static long fileModified(File directory, String name) {
         File file = new File(directory, name);
         return file.lastModified();
     }
 
-    /** Set the modified time of an existing file to now.
-     *  @deprecated Lucene never uses this API; it will be
-     *  removed in 4.0. */
+
     @Override
     @Deprecated
     public void touchFile(String name) {
@@ -189,21 +139,18 @@ public abstract class PathFSDirectory3 extends Directory {
         }
     }
 
-    /** Returns the length in bytes of a file in the directory. */
     @Override
     public long fileLength(String name) throws IOException {
         ensureOpen();
         return Files.size(directory.resolve(name));
     }
 
-    /** Removes an existing file in the directory. */
     @Override
     public void deleteFile(String name) throws IOException {
         ensureOpen();
         Files.delete(directory.resolve(name));
     }
 
-    /** Creates an IndexOutput for the file with the given name. */
     @Override
     public IndexOutput createOutput(String name) throws IOException {
         ensureOpen();
@@ -264,29 +211,21 @@ public abstract class PathFSDirectory3 extends Directory {
         return "lucene-" + Integer.toHexString(digest);
     }
 
-    /** Closes the store to future operations. */
     @Override
     public synchronized void close() {
         isOpen = false;
     }
 
-    /** @return the underlying filesystem directory */
     public Path getDirectory() {
         ensureOpen();
         return directory;
     }
 
-    /** For debug output. */
     @Override
     public String toString() {
         return this.getClass().getName() + "@" + directory + " lockFactory=" + getLockFactory();
     }
 
-    /**
-     * The maximum number of bytes to read at once from the
-     * underlying file during {@code IndexInput#readBytes}.
-     *
-     */
     public final int getReadChunkSize() {
         // LUCENE-1566
         return chunkSize;
@@ -305,7 +244,6 @@ public abstract class PathFSDirectory3 extends Directory {
             isOpen = true;
         }
 
-        /** output methods: */
         @Override
         public void flushBuffer(byte[] b, int offset, int size) throws IOException {
             file.write(ByteBuffer.wrap(b, offset, size));
@@ -335,7 +273,6 @@ public abstract class PathFSDirectory3 extends Directory {
             }
         }
 
-        /** Random-access methods */
         @Override
         public void seek(long pos) throws IOException {
             super.seek(pos);

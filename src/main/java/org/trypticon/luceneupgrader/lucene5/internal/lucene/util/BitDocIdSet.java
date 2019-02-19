@@ -22,10 +22,6 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.DocIdSet;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.DocIdSetIterator;
 
-/**
- * Implementation of the {@link DocIdSet} interface on top of a {@link BitSet}.
- * @lucene.internal
- */
 public class BitDocIdSet extends DocIdSet {
 
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(BitDocIdSet.class);
@@ -33,19 +29,11 @@ public class BitDocIdSet extends DocIdSet {
   private final BitSet set;
   private final long cost;
 
-  /**
-   * Wrap the given {@link BitSet} as a {@link DocIdSet}. The provided
-   * {@link BitSet} must not be modified afterwards.
-   */
   public BitDocIdSet(BitSet set, long cost) {
     this.set = set;
     this.cost = cost;
   }
 
-  /**
-   * Same as {@link #BitDocIdSet(BitSet, long)} but uses the set's
-   * {@link BitSet#approximateCardinality() approximate cardinality} as a cost.
-   */
   public BitDocIdSet(BitSet set) {
     this(set, set.approximateCardinality());
   }
@@ -60,7 +48,6 @@ public class BitDocIdSet extends DocIdSet {
     return set;
   }
 
-  /** This DocIdSet implementation is cacheable. */
   @Override
   public boolean isCacheable() {
     return true;
@@ -76,11 +63,6 @@ public class BitDocIdSet extends DocIdSet {
     return getClass().getSimpleName() + "(set=" + set + ",cost=" + cost + ")";
   }
 
-  /**
-   * A builder of {@link DocIdSet}s that supports random access. If you don't
-   * need random access, you should rather use {@link DocIdSetBuilder}.
-   * @lucene.internal
-   */
   public static final class Builder {
 
     private final int maxDoc;
@@ -92,7 +74,6 @@ public class BitDocIdSet extends DocIdSet {
     // to re-compute approximateCardinality on the sparse set every time 
     private long costUpperBound;
 
-    /** Create a new instance that can hold <code>maxDoc</code> documents and is optionally <code>full</code>. */
     public Builder(int maxDoc, boolean full) {
       this.maxDoc = maxDoc;
       threshold = maxDoc >>> 10;
@@ -102,7 +83,6 @@ public class BitDocIdSet extends DocIdSet {
       }
     }
 
-    /** Create a new empty instance. */
     public Builder(int maxDoc) {
       this(maxDoc, false);
     }
@@ -112,18 +92,10 @@ public class BitDocIdSet extends DocIdSet {
       return denseSet != null;
     }
 
-    /**
-     * Is this builder definitely empty?  If so, {@link #build()} will return null.  This is usually the same as
-     * simply being empty but if this builder was constructed with the {@code full} option or if an iterator was passed
-     * that iterated over no documents, then we're not sure.
-     */
     public boolean isDefinitelyEmpty() {
       return sparseSet == null && denseSet == null;
     }
 
-    /**
-     * Add the content of the provided {@link DocIdSetIterator} to this builder.
-     */
     public void or(DocIdSetIterator it) throws IOException {
       if (denseSet != null) {
         // already upgraded
@@ -154,9 +126,6 @@ public class BitDocIdSet extends DocIdSet {
       sparseSet.or(it);
     }
 
-    /**
-     * Removes from this builder documents that are not contained in <code>it</code>.
-     */
     @Deprecated
     public void and(DocIdSetIterator it) throws IOException {
       if (denseSet != null) {
@@ -166,9 +135,6 @@ public class BitDocIdSet extends DocIdSet {
       }
     }
 
-    /**
-     * Removes from this builder documents that are contained in <code>it</code>.
-     */
     @Deprecated
     public void andNot(DocIdSetIterator it) throws IOException {
       if (denseSet != null) {
@@ -178,13 +144,6 @@ public class BitDocIdSet extends DocIdSet {
       }
     }
 
-    /**
-     * Build a {@link DocIdSet} that contains all doc ids that have been added.
-     * This method may return <tt>null</tt> if no documents were addded to this
-     * builder.
-     * NOTE: this is a destructive operation, the builder should not be used
-     * anymore after this method has been called.
-     */
     public BitDocIdSet build() {
       final BitDocIdSet result;
       if (denseSet != null) {

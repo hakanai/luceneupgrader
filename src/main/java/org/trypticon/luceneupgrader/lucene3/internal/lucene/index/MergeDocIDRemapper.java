@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,10 +17,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
-/** Remaps docIDs after a merge has completed, where the
- *  merged segments had at least one deletion.  This is used
- *  to renumber the buffered deletes in IndexWriter when a
- *  merge of segments with deletions commits. */
+
 
 final class MergeDocIDRemapper {
   int[] starts;                                 // used for binary search of mapped docID

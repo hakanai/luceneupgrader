@@ -21,46 +21,21 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ThreadInterruptedException;
 
-/** 
- * Directory that wraps another, and that sleeps and retries
- * if obtaining the lock fails.
- * <p>
- * This is not a good idea.
- */
 public final class SleepingLockWrapper extends FilterDirectory {
  
-  /** 
-   * Pass this lockWaitTimeout to try forever to obtain the lock. 
-   */
+
   public static final long LOCK_OBTAIN_WAIT_FOREVER = -1;
   
-  /** 
-   * How long {@link #obtainLock} waits, in milliseconds,
-   * in between attempts to acquire the lock. 
-   */
+
   public static long DEFAULT_POLL_INTERVAL = 1000;
   
   private final long lockWaitTimeout;
   private final long pollInterval;
   
-  /**
-   * Create a new SleepingLockFactory
-   * @param delegate        underlying directory to wrap
-   * @param lockWaitTimeout length of time to wait in milliseconds 
-   *                        or {@link #LOCK_OBTAIN_WAIT_FOREVER} to retry forever.
-   */
   public SleepingLockWrapper(Directory delegate, long lockWaitTimeout) {
     this(delegate, lockWaitTimeout, DEFAULT_POLL_INTERVAL);
   }
   
-  /**
-   * Create a new SleepingLockFactory
-   * @param delegate        underlying directory to wrap
-   * @param lockWaitTimeout length of time to wait in milliseconds 
-   *                        or {@link #LOCK_OBTAIN_WAIT_FOREVER} to retry forever.
-   * @param pollInterval    poll once per this interval in milliseconds until
-   *                        {@code lockWaitTimeout} is exceeded.
-   */
   public SleepingLockWrapper(Directory delegate, long lockWaitTimeout, long pollInterval) {
     super(delegate);
     this.lockWaitTimeout = lockWaitTimeout;

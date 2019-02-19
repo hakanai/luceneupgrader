@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,16 +19,6 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Explanation;
 
-/**
- * Expert: represents field values as different types.
- * Normally created via a 
- * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function.ValueSource ValueSuorce}
- * for a particular field and reader.
- *
- * @lucene.experimental
- * 
- *
- */
 public abstract class DocValues {
   /*
    * DocValues is distinct from ValueSource because
@@ -39,73 +29,30 @@ public abstract class DocValues {
    *   want the Query carrying around big objects
    */
 
-  /**
-   * Return doc value as a float. 
-   * <P>Mandatory: every DocValues implementation must implement at least this method. 
-   * @param doc document whose float value is requested. 
-   */
   public abstract float floatVal(int doc);
   
-  /**
-   * Return doc value as an int. 
-   * <P>Optional: DocValues implementation can (but don't have to) override this method. 
-   * @param doc document whose int value is requested.
-   */
-  public int intVal(int doc) { 
+  public int intVal(int doc) {
     return (int) floatVal(doc);
   }
   
-  /**
-   * Return doc value as a long. 
-   * <P>Optional: DocValues implementation can (but don't have to) override this method. 
-   * @param doc document whose long value is requested.
-   */
   public long longVal(int doc) {
     return (long) floatVal(doc);
   }
 
-  /**
-   * Return doc value as a double. 
-   * <P>Optional: DocValues implementation can (but don't have to) override this method. 
-   * @param doc document whose double value is requested.
-   */
   public double doubleVal(int doc) {
     return floatVal(doc);
   }
   
-  /**
-   * Return doc value as a string. 
-   * <P>Optional: DocValues implementation can (but don't have to) override this method. 
-   * @param doc document whose string value is requested.
-   */
   public String strVal(int doc) {
     return Float.toString(floatVal(doc));
   }
   
-  /**
-   * Return a string representation of a doc value, as required for Explanations.
-   */
   public abstract String toString(int doc);
   
-  /**
-   * Explain the scoring value for the input doc.
-   */
   public Explanation explain(int doc) {
     return new Explanation(floatVal(doc), toString(doc));
   }
   
-  /**
-   * Expert: for test purposes only, return the inner array of values, or null if not applicable.
-   * <p>
-   * Allows tests to verify that loaded values are:
-   * <ol>
-   *   <li>indeed cached/reused.</li>
-   *   <li>stored in the expected size/type (byte/short/int/float).</li>
-   * </ol>
-   * Note: implementations of DocValues must override this method for 
-   * these test elements to be tested, Otherwise the test would not fail, just 
-   * print a warning.
-   */
   Object getInnerArray() {
     throw new UnsupportedOperationException("this optional method is for test purposes only");
   }
@@ -139,46 +86,16 @@ public abstract class DocValues {
     computed = true;
   }
 
-  /**
-   * Returns the minimum of all values or <code>Float.NaN</code> if this
-   * DocValues instance does not contain any value.
-   * <p>
-   * This operation is optional
-   * </p>
-   * 
-   * @return the minimum of all values or <code>Float.NaN</code> if this
-   *         DocValues instance does not contain any value.
-   */
   public float getMinValue() {
     compute();
     return minVal;
   }
 
-  /**
-   * Returns the maximum of all values or <code>Float.NaN</code> if this
-   * DocValues instance does not contain any value.
-   * <p>
-   * This operation is optional
-   * </p>
-   * 
-   * @return the maximum of all values or <code>Float.NaN</code> if this
-   *         DocValues instance does not contain any value.
-   */
   public float getMaxValue() {
     compute();
     return maxVal;
   }
 
-  /**
-   * Returns the average of all values or <code>Float.NaN</code> if this
-   * DocValues instance does not contain any value. *
-   * <p>
-   * This operation is optional
-   * </p>
-   * 
-   * @return the average of all values or <code>Float.NaN</code> if this
-   *         DocValues instance does not contain any value
-   */
   public float getAverageValue() {
     compute();
     return avgVal;

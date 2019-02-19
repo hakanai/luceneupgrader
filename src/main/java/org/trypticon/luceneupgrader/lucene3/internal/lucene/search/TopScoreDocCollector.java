@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,19 +21,6 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 
-/**
- * A {@link Collector} implementation that collects the top-scoring hits,
- * returning them as a {@link TopDocs}. This is used by {@link IndexSearcher} to
- * implement {@link TopDocs}-based search. Hits are sorted by score descending
- * and then (when the scores are tied) docID ascending. When you create an
- * instance of this collector you should know in advance whether documents are
- * going to be collected in doc Id order or not.
- *
- * <p><b>NOTE</b>: The values {@link Float#NaN} and
- * {Float#NEGATIVE_INFINITY} are not valid scores.  This
- * collector will not properly collect hits with such
- * scores.
- */
 public abstract class TopScoreDocCollector extends TopDocsCollector<ScoreDoc> {
 
   // Assumes docs are scored in order.
@@ -224,30 +211,10 @@ public abstract class TopScoreDocCollector extends TopDocsCollector<ScoreDoc> {
     }
   }
 
-  /**
-   * Creates a new {@link TopScoreDocCollector} given the number of hits to
-   * collect and whether documents are scored in order by the input
-   * {@link Scorer} to {@link #setScorer(Scorer)}.
-   *
-   * <p><b>NOTE</b>: The instances returned by this method
-   * pre-allocate a full array of length
-   * <code>numHits</code>, and fill the array with sentinel
-   * objects.
-   */
   public static TopScoreDocCollector create(int numHits, boolean docsScoredInOrder) {
     return create(numHits, null, docsScoredInOrder);
   }
   
-  /**
-   * Creates a new {@link TopScoreDocCollector} given the number of hits to
-   * collect, the bottom of the previous page, and whether documents are scored in order by the input
-   * {@link Scorer} to {@link #setScorer(Scorer)}.
-   *
-   * <p><b>NOTE</b>: The instances returned by this method
-   * pre-allocate a full array of length
-   * <code>numHits</code>, and fill the array with sentinel
-   * objects.
-   */
   public static TopScoreDocCollector create(int numHits, ScoreDoc after, boolean docsScoredInOrder) {
     
     if (numHits <= 0) {

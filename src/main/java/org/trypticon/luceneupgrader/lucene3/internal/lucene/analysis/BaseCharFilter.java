@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,45 +21,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 
 import java.util.Arrays;
 
-/**
- * <p>
- *   Base utility class for implementing a {@link CharFilter}.
- *   You subclass this, and then record mappings by calling
- *   {@link #addOffCorrectMap}, and then invoke the correct
- *   method to correct an offset.
- * </p>
- + <p>
- +   CharFilters modify an input stream via a series of substring
- +   replacements (including deletions and insertions) to produce an output
- +   stream. There are three possible replacement cases: the replacement
- +   string has the same length as the original substring; the replacement
- +   is shorter; and the replacement is longer. In the latter two cases
- +   (when the replacement has a different length than the original),
- +   one or more offset correction mappings are required.
- + </p>
- + <p>
- +   When the replacement is shorter than the original (e.g. when the
- +   replacement is the empty string), a single offset correction mapping
- +   should be added at the replacement's end offset in the output stream.
- +   The <code>cumulativeDiff</code> parameter to the
- +   <code>addOffCorrectMapping()</code> method will be the sum of all
- +   previous replacement offset adjustments, with the addition of the
- +   difference between the lengths of the original substring and the
- +   replacement string (a positive value).
- + </p>
- + <p>
- +   When the replacement is longer than the original (e.g. when the
- +   original is the empty string), you should add as many offset
- +   correction mappings as the difference between the lengths of the
- +   replacement string and the original substring, starting at the
- +   end offset the original substring would have had in the output stream.
- +   The <code>cumulativeDiff</code> parameter to the
- +   <code>addOffCorrectMapping()</code> method will be the sum of all
- +   previous replacement offset adjustments, with the addition of the
- +   difference between the lengths of the original substring and the
- +   replacement string so far (a negative value).
- + </p>
- */
 public abstract class BaseCharFilter extends CharFilter {
 
   private int offsets[];
@@ -70,7 +31,6 @@ public abstract class BaseCharFilter extends CharFilter {
     super(in);
   }
 
-  /** Retrieve the corrected offset. */
   @Override
   protected int correct(int currentOff) {
     if (offsets == null || currentOff < offsets[0]) {
@@ -105,19 +65,7 @@ public abstract class BaseCharFilter extends CharFilter {
       0 : diffs[size-1];
   }
 
-  /**
-   * <p>
-   *   Adds an offset correction mapping at the given output stream offset.
-   * </p>
-   * <p>
-   *   Assumption: the offset given with each successive call to this method
-   *   will not be smaller than the offset given at the previous invocation.
-   * </p>
-   *
-   * @param off The output stream offset at which to apply the correction
-   * @param cumulativeDiff The input offset is given by adding this
-   *                       to the output offset
-   */
+
   protected void addOffCorrectMap(int off, int cumulativeDiff) {
     if (offsets == null) {
       offsets = new int[64];

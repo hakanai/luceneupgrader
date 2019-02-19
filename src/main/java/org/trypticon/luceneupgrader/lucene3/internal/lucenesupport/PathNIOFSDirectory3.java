@@ -11,23 +11,12 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 
-/**
- * Clone of {@link NIOFSDirectory} accepting {@link Path} instead of {@link File}.
- */
 public class PathNIOFSDirectory3 extends PathFSDirectory3 {
 
-    /** Create a new NIOFSDirectory for the named location.
-     *
-     * @param path the path of the directory
-     * @param lockFactory the lock factory to use, or null for the default
-     * ({@code NativeFSLockFactory});
-     * @throws IOException
-     */
     public PathNIOFSDirectory3(Path path, LockFactory lockFactory) throws IOException {
         super(path, lockFactory);
     }
 
-    /** Creates an IndexInput for the file with the given name. */
     @Override
     public IndexInput openInput(String name, int bufferSize) throws IOException {
         ensureOpen();

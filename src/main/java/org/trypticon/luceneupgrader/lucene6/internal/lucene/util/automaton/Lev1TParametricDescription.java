@@ -22,8 +22,6 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.util.automaton;
 
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.automaton.LevenshteinAutomata.ParametricDescription;
 
-/** Parametric description for generating a Levenshtein automaton of degree 1, 
-    with transpositions as primitive edits */
 class Lev1TParametricDescription extends ParametricDescription {
   
   @Override

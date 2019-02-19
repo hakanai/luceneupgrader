@@ -16,12 +16,6 @@
  */
 package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.mutable;
 
-/**
- * {@link MutableValue} implementation of type <code>long</code>.
- * When mutating instances of this object, the caller is responsible for ensuring 
- * that any instance where <code>exists</code> is set to <code>false</code> must also 
- * <code>value</code> set to <code>0L</code> for proper operation.
- */
 public class MutableValueLong extends MutableValue {
   public long value;
 

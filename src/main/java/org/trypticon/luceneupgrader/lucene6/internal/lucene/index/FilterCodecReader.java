@@ -31,21 +31,10 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.Sort;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Bits;
 
-/** 
- * A <code>FilterCodecReader</code> contains another CodecReader, which it
- * uses as its basic source of data, possibly transforming the data along the
- * way or providing additional functionality.
- */
 public abstract class FilterCodecReader extends CodecReader {
-  /** 
-   * The underlying CodecReader instance. 
-   */
+
   protected final CodecReader in;
   
-  /**
-   * Creates a new FilterCodecReader.
-   * @param in the underlying CodecReader instance.
-   */
   public FilterCodecReader(CodecReader in) {
     this.in = Objects.requireNonNull(in);
   }

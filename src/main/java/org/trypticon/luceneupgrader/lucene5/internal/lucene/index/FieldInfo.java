@@ -20,18 +20,10 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.index;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- *  Access to the Field Info file that describes document fields and whether or
- *  not they are indexed. Each segment has a separate Field Info file. Objects
- *  of this class are thread-safe for multiple readers, but only one thread can
- *  be adding documents at a time, with no other reader or writer threads
- *  accessing this object.
- **/
+
 
 public final class FieldInfo {
-  /** Field's name */
   public final String name;
-  /** Internal field number */
   public final int number;
 
   private DocValuesType docValuesType = DocValuesType.NONE;
@@ -47,12 +39,7 @@ public final class FieldInfo {
   private final Map<String,String> attributes;
 
   private long dvGen;
-  /**
-   * Sole constructor.
-   *
-   * @lucene.experimental
-   */
-  public FieldInfo(String name, int number, boolean storeTermVector, boolean omitNorms, 
+  public FieldInfo(String name, int number, boolean storeTermVector, boolean omitNorms,
       boolean storePayloads, IndexOptions indexOptions, DocValuesType docValues,
       long dvGen, Map<String,String> attributes) {
     this.name = Objects.requireNonNull(name);
@@ -73,10 +60,7 @@ public final class FieldInfo {
     assert checkConsistency();
   }
 
-  /** 
-   * Performs internal consistency checks.
-   * Always returns true (or throws IllegalStateException) 
-   */
+
   public boolean checkConsistency() {
     if (indexOptions != IndexOptions.NONE) {
       // Cannot store payloads unless positions are indexed:
@@ -144,12 +128,10 @@ public final class FieldInfo {
     assert checkConsistency();
   }
   
-  /** Returns IndexOptions for the field, or IndexOptions.NONE if the field is not indexed */
   public IndexOptions getIndexOptions() {
     return indexOptions;
   }
 
-  /** Record the {@link IndexOptions} to use with this field. */
   public void setIndexOptions(IndexOptions newIndexOptions) {
     if (indexOptions != newIndexOptions) {
       if (indexOptions == IndexOptions.NONE) {
@@ -166,24 +148,15 @@ public final class FieldInfo {
     }
   }
   
-  /**
-   * Returns {@link DocValuesType} of the docValues; this is
-   * {@code DocValuesType.NONE} if the field has no docvalues.
-   */
   public DocValuesType getDocValuesType() {
     return docValuesType;
   }
   
-  /** Sets the docValues generation of this field. */
   void setDocValuesGen(long dvGen) {
     this.dvGen = dvGen;
     assert checkConsistency();
   }
   
-  /**
-   * Returns the docValues generation of this field, or -1 if no docValues
-   * updates exist for it.
-   */
   public long getDocValuesGen() {
     return dvGen;
   }
@@ -200,14 +173,10 @@ public final class FieldInfo {
     assert checkConsistency();
   }
 
-  /**
-   * Returns true if norms are explicitly omitted for this field
-   */
   public boolean omitsNorms() {
     return omitNorms;
   }
 
-  /** Omit norms for this field. */
   public void setOmitsNorms() {
     if (indexOptions == IndexOptions.NONE) {
       throw new IllegalStateException("cannot omit norms: this field is not indexed");
@@ -215,51 +184,26 @@ public final class FieldInfo {
     omitNorms = true;
   }
   
-  /**
-   * Returns true if this field actually has any norms.
-   */
   public boolean hasNorms() {
     return indexOptions != IndexOptions.NONE && omitNorms == false;
   }
   
-  /**
-   * Returns true if any payloads exist for this field.
-   */
   public boolean hasPayloads() {
     return storePayloads;
   }
   
-  /**
-   * Returns true if any term vectors exist for this field.
-   */
   public boolean hasVectors() {
     return storeTermVector;
   }
   
-  /**
-   * Get a codec attribute value, or null if it does not exist
-   */
   public String getAttribute(String key) {
     return attributes.get(key);
   }
   
-  /**
-   * Puts a codec attribute value.
-   * <p>
-   * This is a key-value mapping for the field that the codec can use
-   * to store additional metadata, and will be available to the codec
-   * when reading the segment via {@link #getAttribute(String)}
-   * <p>
-   * If a value already exists for the field, it will be replaced with 
-   * the new value.
-   */
   public String putAttribute(String key, String value) {
     return attributes.put(key, value);
   }
   
-  /**
-   * Returns internal codec attributes map.
-   */
   public Map<String,String> attributes() {
     return attributes;
   }

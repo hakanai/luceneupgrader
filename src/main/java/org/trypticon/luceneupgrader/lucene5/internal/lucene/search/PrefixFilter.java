@@ -18,11 +18,6 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.Term;
 
-/**
- * A Filter that restricts search results to values that have a matching prefix in a given
- * field.
- * @deprecated Use {@link PrefixQuery} and {@link BooleanClause.Occur#FILTER} clauses instead.
- */
 @Deprecated
 public class PrefixFilter extends MultiTermQueryWrapperFilter<PrefixQuery> {
 
@@ -32,7 +27,6 @@ public class PrefixFilter extends MultiTermQueryWrapperFilter<PrefixQuery> {
 
   public Term getPrefix() { return query.getPrefix(); }
 
-  /** Prints a user-readable version of this filter. */
   @Override
   public String toString(String field) {
     StringBuilder buffer = new StringBuilder();

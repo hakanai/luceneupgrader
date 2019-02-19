@@ -36,7 +36,6 @@ final class StandardDirectoryReader extends DirectoryReader {
   final SegmentInfos segmentInfos;
   private final boolean applyAllDeletes;
   
-  /** called only from static open() methods */
   StandardDirectoryReader(Directory directory, LeafReader[] readers, IndexWriter writer,
     SegmentInfos sis, boolean applyAllDeletes) throws IOException {
     super(directory, readers);
@@ -45,7 +44,6 @@ final class StandardDirectoryReader extends DirectoryReader {
     this.applyAllDeletes = applyAllDeletes;
   }
 
-  /** called from DirectoryReader.open(...) methods */
   static DirectoryReader open(final Directory directory, final IndexCommit commit) throws IOException {
     return new SegmentInfos.FindSegmentsFile<DirectoryReader>(directory) {
       @Override
@@ -73,7 +71,6 @@ final class StandardDirectoryReader extends DirectoryReader {
     }.run(commit);
   }
 
-  /** Used by near real-time search */
   static DirectoryReader open(IndexWriter writer, SegmentInfos infos, boolean applyAllDeletes) throws IOException {
     // IndexWriter synchronizes externally before calling
     // us, which ensures infos will not change; so there's
@@ -131,7 +128,6 @@ final class StandardDirectoryReader extends DirectoryReader {
     }
   }
 
-  /** This constructor is only used for {@link #doOpenIfChanged(SegmentInfos)} */
   private static DirectoryReader open(Directory directory, SegmentInfos infos, List<? extends LeafReader> oldReaders) throws IOException {
 
     // we put the old SegmentReaders in a map, that allows us

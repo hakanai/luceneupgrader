@@ -29,12 +29,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.CompoundFileDi
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 
-/**
- * Lucene3x ReadOnly TermVectorsFormat implementation
- * @deprecated (4.0) This is only used to read indexes created
- * before 4.0.
- * @lucene.experimental
- */
 @Deprecated
 class Lucene3xTermVectorsFormat extends TermVectorsFormat {
 

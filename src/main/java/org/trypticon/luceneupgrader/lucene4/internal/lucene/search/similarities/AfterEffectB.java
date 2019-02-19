@@ -19,13 +19,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.Explanation;
 
-/**
- * Model of the information gain based on the ratio of two Bernoulli processes.
- * @lucene.experimental
- */
 public class AfterEffectB extends AfterEffect {
 
-  /** Sole constructor: parameter-free */
   public AfterEffectB() {}
 
   @Override

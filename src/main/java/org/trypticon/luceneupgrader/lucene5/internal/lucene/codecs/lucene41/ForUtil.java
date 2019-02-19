@@ -28,30 +28,13 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedIn
 
 import static org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.lucene41.Lucene41PostingsFormat.BLOCK_SIZE;
 
-/**
- * Lucene 4.1 postings format.
- * @deprecated only for reading old 4.x segments
- */
 @Deprecated
 final class ForUtil {
 
-  /**
-   * Special number of bits per value used whenever all values to encode are equal.
-   */
   private static final int ALL_VALUES_EQUAL = 0;
 
-  /**
-   * Upper limit of the number of bytes that might be required to stored
-   * <code>BLOCK_SIZE</code> encoded values.
-   */
   static final int MAX_ENCODED_SIZE = BLOCK_SIZE * 4;
 
-  /**
-   * Upper limit of the number of values that might be decoded in a single call to
-   * {@link #readBlock(IndexInput, byte[], int[])}. Although values after
-   * <code>BLOCK_SIZE</code> are garbage, it is necessary to allocate value buffers
-   * whose size is >= MAX_DATA_SIZE to avoid {@link ArrayIndexOutOfBoundsException}s.
-   */
   static final int MAX_DATA_SIZE;
   static {
     int maxDataSize = 0;
@@ -70,18 +53,10 @@ final class ForUtil {
     MAX_DATA_SIZE = maxDataSize;
   }
 
-  /**
-   * Compute the number of iterations required to decode <code>BLOCK_SIZE</code>
-   * values with the provided {@link Decoder}.
-   */
   private static int computeIterations(PackedInts.Decoder decoder) {
     return (int) Math.ceil((float) BLOCK_SIZE / decoder.byteValueCount());
   }
 
-  /**
-   * Compute the number of bytes required to encode a block of values that require
-   * <code>bitsPerValue</code> bits per value with format <code>format</code>.
-   */
   private static int encodedSize(PackedInts.Format format, int packedIntsVersion, int bitsPerValue) {
     final long byteCount = format.byteCount(packedIntsVersion, BLOCK_SIZE, bitsPerValue);
     assert byteCount >= 0 && byteCount <= Integer.MAX_VALUE : byteCount;
@@ -93,9 +68,6 @@ final class ForUtil {
   private final PackedInts.Decoder[] decoders;
   private final int[] iterations;
 
-  /**
-   * Create a new {@link ForUtil} instance and save state into <code>out</code>.
-   */
   ForUtil(float acceptableOverheadRatio, DataOutput out) throws IOException {
     out.writeVInt(PackedInts.VERSION_CURRENT);
     encodedSizes = new int[33];
@@ -119,9 +91,6 @@ final class ForUtil {
     }
   }
 
-  /**
-   * Restore a {@link ForUtil} from a {@link DataInput}.
-   */
   ForUtil(DataInput in) throws IOException {
     int packedIntsVersion = in.readVInt();
     PackedInts.checkVersion(packedIntsVersion);
@@ -146,14 +115,6 @@ final class ForUtil {
     }
   }
 
-  /**
-   * Write a block of data (<code>For</code> format).
-   *
-   * @param data     the data to write
-   * @param encoded  a buffer to use to encode data
-   * @param out      the destination output
-   * @throws IOException If there is a low-level I/O error
-   */
   void writeBlock(int[] data, byte[] encoded, IndexOutput out) throws IOException {
     if (isAllEqual(data)) {
       out.writeByte((byte) ALL_VALUES_EQUAL);
@@ -175,14 +136,6 @@ final class ForUtil {
     out.writeBytes(encoded, encodedSize);
   }
 
-  /**
-   * Read the next block of data (<code>For</code> format).
-   *
-   * @param in        the input to use to read data
-   * @param encoded   a buffer that can be used to store encoded data
-   * @param decoded   where to write decoded data
-   * @throws IOException If there is a low-level I/O error
-   */
   void readBlock(IndexInput in, byte[] encoded, int[] decoded) throws IOException {
     final int numBits = in.readByte();
     assert numBits <= 32 : numBits;
@@ -203,12 +156,6 @@ final class ForUtil {
     decoder.decode(encoded, 0, decoded, 0, iters);
   }
 
-  /**
-   * Skip the next block of data.
-   *
-   * @param in      the input where to read data
-   * @throws IOException If there is a low-level I/O error
-   */
   void skipBlock(IndexInput in) throws IOException {
     final int numBits = in.readByte();
     if (numBits == ALL_VALUES_EQUAL) {
@@ -230,10 +177,6 @@ final class ForUtil {
     return true;
   }
 
-  /**
-   * Compute the number of bits required to serialize any of the longs in
-   * <code>data</code>.
-   */
   private static int bitsRequired(final int[] data) {
     long or = 0;
     for (int i = 0; i < BLOCK_SIZE; ++i) {

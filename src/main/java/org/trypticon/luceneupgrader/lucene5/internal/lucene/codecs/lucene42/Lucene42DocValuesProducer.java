@@ -65,10 +65,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.BlockPac
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.MonotonicBlockPackedReader;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 
-/**
- * Reader for 4.2 docvalues
- * @deprecated only for reading old 4.x segments
- */
 @Deprecated
 final class Lucene42DocValuesProducer extends DocValuesProducer {
   // metadata maps (just file pointers and minimal stuff)

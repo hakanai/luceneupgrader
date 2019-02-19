@@ -150,9 +150,7 @@ class BufferedUpdatesStream implements Accountable {
     }
   };
   
-  /** Resolves the buffered deleted Term/Query/docIDs, into
-   *  actual deleted docIDs in the liveDocs MutableBits for
-   *  each SegmentReader. */
+
   public synchronized ApplyDeletesResult applyDeletesAndUpdates(IndexWriter.ReaderPool readerPool, List<SegmentCommitInfo> infos) throws IOException {
     final long t0 = System.currentTimeMillis();
 

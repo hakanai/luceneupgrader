@@ -61,9 +61,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.BlockPac
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.MonotonicBlockPackedReader;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
-/**
- * Reader for {@link Lucene42DocValuesFormat}
- */
 class Lucene42DocValuesProducer extends DocValuesProducer {
   // metadata maps (just file pointers and minimal stuff)
   private final Map<Integer,NumericEntry> numerics;

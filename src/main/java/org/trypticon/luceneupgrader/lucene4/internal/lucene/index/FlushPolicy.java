@@ -22,88 +22,26 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.DocumentsWrite
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.InfoStream;
 
-/**
- * {@link FlushPolicy} controls when segments are flushed from a RAM resident
- * internal data-structure to the {@link IndexWriter}s {@link Directory}.
- * <p>
- * Segments are traditionally flushed by:
- * <ul>
- * <li>RAM consumption - configured via
- * {@link IndexWriterConfig#setRAMBufferSizeMB(double)}</li>
- * <li>Number of RAM resident documents - configured via
- * {@link IndexWriterConfig#setMaxBufferedDocs(int)}</li>
- * </ul>
- * The policy also applies pending delete operations (by term and/or query),
- * given the threshold set in
- * {@link IndexWriterConfig#setMaxBufferedDeleteTerms(int)}.
- * <p>
- * {@link IndexWriter} consults the provided {@link FlushPolicy} to control the
- * flushing process. The policy is informed for each added or updated document
- * as well as for each delete term. Based on the {@link FlushPolicy}, the
- * information provided via {@link ThreadState} and
- * {@link DocumentsWriterFlushControl}, the {@link FlushPolicy} decides if a
- * {@link DocumentsWriterPerThread} needs flushing and mark it as flush-pending
- * via {@link DocumentsWriterFlushControl#setFlushPending}, or if deletes need
- * to be applied.
- * 
- * @see ThreadState
- * @see DocumentsWriterFlushControl
- * @see DocumentsWriterPerThread
- * @see IndexWriterConfig#setFlushPolicy(FlushPolicy)
- */
 abstract class FlushPolicy {
   protected LiveIndexWriterConfig indexWriterConfig;
   protected InfoStream infoStream;
 
-  /**
-   * Called for each delete term. If this is a delete triggered due to an update
-   * the given {@link ThreadState} is non-null.
-   * <p>
-   * Note: This method is called synchronized on the given
-   * {@link DocumentsWriterFlushControl} and it is guaranteed that the calling
-   * thread holds the lock on the given {@link ThreadState}
-   */
   public abstract void onDelete(DocumentsWriterFlushControl control,
       ThreadState state);
 
-  /**
-   * Called for each document update on the given {@link ThreadState}'s
-   * {@link DocumentsWriterPerThread}.
-   * <p>
-   * Note: This method is called  synchronized on the given
-   * {@link DocumentsWriterFlushControl} and it is guaranteed that the calling
-   * thread holds the lock on the given {@link ThreadState}
-   */
   public void onUpdate(DocumentsWriterFlushControl control, ThreadState state) {
     onInsert(control, state);
     onDelete(control, state);
   }
 
-  /**
-   * Called for each document addition on the given {@link ThreadState}s
-   * {@link DocumentsWriterPerThread}.
-   * <p>
-   * Note: This method is synchronized by the given
-   * {@link DocumentsWriterFlushControl} and it is guaranteed that the calling
-   * thread holds the lock on the given {@link ThreadState}
-   */
   public abstract void onInsert(DocumentsWriterFlushControl control,
       ThreadState state);
 
-  /**
-   * Called by DocumentsWriter to initialize the FlushPolicy
-   */
   protected synchronized void init(LiveIndexWriterConfig indexWriterConfig) {
     this.indexWriterConfig = indexWriterConfig;
     infoStream = indexWriterConfig.getInfoStream();
   }
 
-  /**
-   * Returns the current most RAM consuming non-pending {@link ThreadState} with
-   * at least one indexed document.
-   * <p>
-   * This method will never return <code>null</code>
-   */
   protected ThreadState findLargestNonPendingWriter(
       DocumentsWriterFlushControl control, ThreadState perThreadState) {
     assert perThreadState.dwpt.getNumDocsInRAM() > 0;

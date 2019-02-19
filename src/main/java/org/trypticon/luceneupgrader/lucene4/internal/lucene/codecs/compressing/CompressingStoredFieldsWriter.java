@@ -48,10 +48,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.GrowableByteArr
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
-/**
- * {@link StoredFieldsWriter} impl for {@link CompressingStoredFieldsFormat}.
- * @lucene.experimental
- */
 public final class CompressingStoredFieldsWriter extends StoredFieldsWriter {
 
   // hard limit on the maximum number of documents per chunk
@@ -90,7 +86,6 @@ public final class CompressingStoredFieldsWriter extends StoredFieldsWriter {
   private int docBase; // doc ID at the beginning of the chunk
   private int numBufferedDocs; // docBase + numBufferedDocs == current doc ID
 
-  /** Sole constructor. */
   public CompressingStoredFieldsWriter(Directory directory, SegmentInfo si, String segmentSuffix, IOContext context,
       String formatName, CompressionMode compressionMode, int chunkSize) throws IOException {
     assert directory != null;

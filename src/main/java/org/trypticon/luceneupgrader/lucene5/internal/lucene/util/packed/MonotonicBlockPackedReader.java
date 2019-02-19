@@ -32,11 +32,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.LongValues;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimator;
 
-/**
- * Provides random access to a stream written with
- * {@link MonotonicBlockPackedWriter}.
- * @lucene.internal
- */
 public class MonotonicBlockPackedReader extends LongValues implements Accountable {
 
   static long expected(long origin, float average, int index) {
@@ -50,7 +45,6 @@ public class MonotonicBlockPackedReader extends LongValues implements Accountabl
   final PackedInts.Reader[] subReaders;
   final long sumBPV;
 
-  /** Sole constructor. */
   public static MonotonicBlockPackedReader of(IndexInput in, int packedIntsVersion, int blockSize, long valueCount, boolean direct) throws IOException {
     if (packedIntsVersion < PackedInts.VERSION_MONOTONIC_WITHOUT_ZIGZAG) {
       return new MonotonicBlockPackedReader(in, packedIntsVersion, blockSize, valueCount, direct) {
@@ -112,7 +106,6 @@ public class MonotonicBlockPackedReader extends LongValues implements Accountabl
     return delta;
   }
 
-  /** Returns the number of values */
   public long size() {
     return valueCount;
   }

@@ -35,30 +35,21 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.TermsEnum;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.IndexSearcher;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ToStringUtils;
 
-/** Matches spans containing a term.
- * This should not be used for terms that are indexed at position Integer.MAX_VALUE.
- */
 public class SpanTermQuery extends SpanQuery {
 
   protected final Term term;
   protected final TermContext termContext;
 
-  /** Construct a SpanTermQuery matching the named term's spans. */
   public SpanTermQuery(Term term) {
     this.term = Objects.requireNonNull(term);
     this.termContext = null;
   }
 
-  /**
-   * Expert: Construct a SpanTermQuery matching the named term's spans, using
-   * the provided TermContext
-   */
   public SpanTermQuery(Term term, TermContext context) {
     this.term = Objects.requireNonNull(term);
     this.termContext = context;
   }
 
-  /** Return the term whose spans are matched. */
   public Term getTerm() { return term; }
 
   @Override
@@ -123,27 +114,14 @@ public class SpanTermQuery extends SpanQuery {
     }
   }
 
-  /** A guess of
-   * the relative cost of dealing with the term positions
-   * when using a SpanNearQuery instead of a PhraseQuery.
-   */
+
   private static final float PHRASE_TO_SPAN_TERM_POSITIONS_COST = 4.0f;
 
   private static final int TERM_POSNS_SEEK_OPS_PER_DOC = 128;
 
   private static final int TERM_OPS_PER_POS = 7;
 
-  /** Returns an expected cost in simple operations
-   *  of processing the occurrences of a term
-   *  in a document that contains the term.
-   *  <br>This may be inaccurate when {@link TermsEnum#totalTermFreq()} is not available.
-   *  @param termsEnum The term is the term at which this TermsEnum is positioned.
-   *  <p>
-   *  This is a copy of org.trypticon.luceneupgrader.lucene5.internal.lucene.search.PhraseQuery.termPositionsCost().
-   *  <br>
-   *  TODO: keep only a single copy of this method and the constants used in it
-   *  when SpanTermQuery moves to the o.a.l.search package.
-   */
+
   static float termPositionsCost(TermsEnum termsEnum) throws IOException {
     int docFreq = termsEnum.docFreq();
     assert docFreq > 0;

@@ -44,44 +44,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.fst.ByteSequenceOutputs;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.fst.Outputs;
 
-/** A block-based terms index and dictionary that assigns
- *  terms to variable length blocks according to how they
- *  share prefixes.  The terms index is a prefix trie
- *  whose leaves are term blocks.  The advantage of this
- *  approach is that seekExact is often able to
- *  determine a term cannot exist without doing any IO, and
- *  intersection with Automata is very fast.  Note that this
- *  terms dictionary has its own fixed terms index (ie, it
- *  does not support a pluggable terms index
- *  implementation).
- *
- *  <p><b>NOTE</b>: this terms dictionary supports
- *  min/maxItemsPerBlock during indexing to control how
- *  much memory the terms index uses.</p>
- *
- *  <p>If auto-prefix terms were indexed (see
- *  {@link BlockTreeTermsWriter}), then the {@link Terms#intersect}
- *  implementation here will make use of these terms only if the
- *  automaton has a binary sink state, i.e. an accept state
- *  which has a transition to itself accepting all byte values.
- *  For example, both {@link PrefixQuery} and {@link TermRangeQuery}
- *  pass such automata to {@link Terms#intersect}.</p>
- *
- *  <p>The data structure used by this implementation is very
- *  similar to a burst trie
- *  (http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.18.3499),
- *  but with added logic to break up too-large blocks of all
- *  terms sharing a given prefix into smaller ones.</p>
- *
- *  <p>Use {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.index.CheckIndex} with the <code>-verbose</code>
- *  option to see summary statistics on the blocks in the
- *  dictionary.
- *
- *  See {@link BlockTreeTermsWriter}.
- *
- * @lucene.experimental
- */
-
 public final class BlockTreeTermsReader extends FieldsProducer {
 
   static final Outputs<BytesRef> FST_OUTPUTS = ByteSequenceOutputs.getSingleton();
@@ -93,27 +55,19 @@ public final class BlockTreeTermsReader extends FieldsProducer {
   static final int OUTPUT_FLAG_IS_FLOOR = 0x1;
   static final int OUTPUT_FLAG_HAS_TERMS = 0x2;
 
-  /** Extension of terms file */
   static final String TERMS_EXTENSION = "tim";
   final static String TERMS_CODEC_NAME = "BlockTreeTermsDict";
 
-  /** Initial terms format. */
   public static final int VERSION_START = 0;
 
-  /** Auto-prefix terms. */
   public static final int VERSION_AUTO_PREFIX_TERMS = 1;
 
-  /** Conditional auto-prefix terms: we record at write time whether
-   *  this field did write any auto-prefix terms. */
   public static final int VERSION_AUTO_PREFIX_TERMS_COND = 2;
 
-  /** Auto-prefix terms have been superseded by points. */
   public static final int VERSION_AUTO_PREFIX_TERMS_REMOVED = 3;
 
-  /** Current terms format. */
   public static final int VERSION_CURRENT = VERSION_AUTO_PREFIX_TERMS_REMOVED;
 
-  /** Extension of terms index file */
   static final String TERMS_INDEX_EXTENSION = "tip";
   final static String TERMS_INDEX_CODEC_NAME = "BlockTreeTermsIndex";
 
@@ -128,10 +82,8 @@ public final class BlockTreeTermsReader extends FieldsProducer {
 
   private final TreeMap<String,FieldReader> fields = new TreeMap<>();
 
-  /** File offset where the directory starts in the terms file. */
   private long dirOffset;
 
-  /** File offset where the directory starts in the index file. */
   private long indexDirOffset;
 
   final String segment;
@@ -140,7 +92,6 @@ public final class BlockTreeTermsReader extends FieldsProducer {
 
   final boolean anyAutoPrefixTerms;
 
-  /** Sole constructor. */
   public BlockTreeTermsReader(PostingsReaderBase postingsReader, SegmentReadState state) throws IOException {
     boolean success = false;
     IndexInput indexIn = null;
@@ -257,7 +208,6 @@ public final class BlockTreeTermsReader extends FieldsProducer {
     return bytes;
   }
 
-  /** Seek {@code input} to the directory offset. */
   private void seekDir(IndexInput input, long dirOffset)
       throws IOException {
     input.seek(input.length() - CodecUtil.footerLength() - 8);

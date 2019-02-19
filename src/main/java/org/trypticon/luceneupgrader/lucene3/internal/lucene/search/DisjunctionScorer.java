@@ -17,10 +17,6 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * limitations under the License.
  */
 
-/**
- * Base class for Scorers that score disjunctions.
- * Currently this just provides helper methods to manage the heap.
- */
 abstract class DisjunctionScorer extends Scorer {
   protected final Scorer subScorers[];
   protected int numScorers;
@@ -32,19 +28,14 @@ abstract class DisjunctionScorer extends Scorer {
     heapify();
   }
   
-  /** 
-   * Organize subScorers into a min heap with scorers generating the earliest document on top.
-   */
+
   protected final void heapify() {
     for (int i = (numScorers >> 1) - 1; i >= 0; i--) {
       heapAdjust(i);
     }
   }
   
-  /** 
-   * The subtree of subScorers at root is a min heap except possibly for its root element.
-   * Bubble the root down as required to make the subtree a heap.
-   */
+
   protected final void heapAdjust(int root) {
     Scorer scorer = subScorers[root];
     int doc = scorer.docID();
@@ -79,9 +70,7 @@ abstract class DisjunctionScorer extends Scorer {
     }
   }
 
-  /** 
-   * Remove the root Scorer from subScorers and re-establish it as a heap
-   */
+
   protected final void heapRemoveRoot() {
     if (numScorers == 1) {
       subScorers[0] = null;

@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,13 +19,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.IOException;
 
-/**
- * A DocIdSet contains a set of doc ids. Implementing classes must
- * only implement {@link #iterator} to provide access to the set. 
- */
 public abstract class DocIdSet {
 
-  /** An empty {@code DocIdSet} instance for easy use, e.g. in Filters that hit no documents. */
   public static final DocIdSet EMPTY_DOCIDSET = new DocIdSet() {
     
     private final DocIdSetIterator iterator = new DocIdSetIterator() {
@@ -48,19 +43,9 @@ public abstract class DocIdSet {
     }
   };
     
-  /** Provides a {@link DocIdSetIterator} to access the set.
-   * This implementation can return <code>null</code> or
-   * <code>{@linkplain #EMPTY_DOCIDSET}.iterator()</code> if there
-   * are no docs that match. */
+
   public abstract DocIdSetIterator iterator() throws IOException;
 
-  /**
-   * This method is a hint for {@link CachingWrapperFilter}, if this <code>DocIdSet</code>
-   * should be cached without copying it into a BitSet. The default is to return
-   * <code>false</code>. If you have an own <code>DocIdSet</code> implementation
-   * that does its iteration very effective and fast without doing disk I/O,
-   * override this method and return <code>true</here>.
-   */
   public boolean isCacheable() {
     return false;
   }

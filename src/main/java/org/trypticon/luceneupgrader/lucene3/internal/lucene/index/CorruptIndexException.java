@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,10 +19,6 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 
-/**
- * This exception is thrown when Lucene detects
- * an inconsistency in the index.
- */
 public class CorruptIndexException extends IOException {
   public CorruptIndexException(String message) {
     super(message);

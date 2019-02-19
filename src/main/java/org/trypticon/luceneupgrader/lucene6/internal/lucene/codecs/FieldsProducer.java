@@ -23,34 +23,17 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.Fields;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountable;
 
-/** Abstract API that produces terms, doc, freq, prox, offset and
- *  payloads postings.  
- *
- * @lucene.experimental
- */
-
 public abstract class FieldsProducer extends Fields implements Closeable, Accountable {
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected FieldsProducer() {
   }
 
   @Override
   public abstract void close() throws IOException;
   
-  /** 
-   * Checks consistency of this reader.
-   * <p>
-   * Note that this may be costly in terms of I/O, e.g. 
-   * may involve computing a checksum value against large data files.
-   * @lucene.internal
-   */
+
   public abstract void checkIntegrity() throws IOException;
   
-  /** 
-   * Returns an instance optimized for merging.
-   * <p>
-   * The default implementation returns {@code this} */
+
   public FieldsProducer getMergeInstance() throws IOException {
     return this;
   }

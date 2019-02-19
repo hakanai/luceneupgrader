@@ -20,21 +20,13 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.index;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * {@link IndexReaderContext} for {@link LeafReader} instances.
- */
 public final class LeafReaderContext extends IndexReaderContext {
-  /** The readers ord in the top-level's leaves array */
   public final int ord;
-  /** The readers absolute doc base */
   public final int docBase;
   
   private final LeafReader reader;
   private final List<LeafReaderContext> leaves;
   
-  /**
-   * Creates a new {@link LeafReaderContext} 
-   */    
   LeafReaderContext(CompositeReaderContext parent, LeafReader reader,
                     int ord, int docBase, int leafOrd, int leafDocBase) {
     super(parent, ord, docBase);

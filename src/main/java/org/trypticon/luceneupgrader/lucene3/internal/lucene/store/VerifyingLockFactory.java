@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,20 +21,6 @@ import java.net.Socket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-/**
- * A {@link LockFactory} that wraps another {@link
- * LockFactory} and verifies that each lock obtain/release
- * is "correct" (never results in two processes holding the
- * lock at the same time).  It does this by contacting an
- * external server ({@link LockVerifyServer}) to assert that
- * at most one process holds the lock at a time.  To use
- * this, you should also run {@link LockVerifyServer} on the
- * host & port matching what you pass to the constructor.
- *
- * @see LockVerifyServer
- * @see LockStressTest
- */
 
 public class VerifyingLockFactory extends LockFactory {
 
@@ -97,14 +83,6 @@ public class VerifyingLockFactory extends LockFactory {
     }
   }
 
-  /**
-   * @param id should be a unique id across all clients
-   * @param lf the LockFactory that we are testing
-   * @param host host or IP where {@link LockVerifyServer}
-            is running
-   * @param port the port {@link LockVerifyServer} is
-            listening on
-  */
   public VerifyingLockFactory(byte id, LockFactory lf, String host, int port) throws IOException {
     this.id = id;
     this.lf = lf;

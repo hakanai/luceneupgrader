@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,10 +17,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * limitations under the License.
  */
 
-/** A TermInfo is the record of information stored for a term.*/
-
 class TermInfo {
-  /** The number of documents which contain the term. */
   int docFreq = 0;
 
   long freqPointer = 0;

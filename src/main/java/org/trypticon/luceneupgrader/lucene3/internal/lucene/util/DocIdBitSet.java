@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,7 +23,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.DocIdSet;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.DocIdSetIterator;
 
 
-/** Simple DocIdSet and DocIdSetIterator backed by a BitSet */
 public class DocIdBitSet extends DocIdSet {
   private BitSet bitSet;
     
@@ -36,15 +35,11 @@ public class DocIdBitSet extends DocIdSet {
     return new DocIdBitSetIterator(bitSet);
   }
 
-  /** This DocIdSet implementation is cacheable. */
   @Override
   public boolean isCacheable() {
     return true;
   }
   
-  /**
-   * Returns the underlying BitSet. 
-   */
   public BitSet getBitSet() {
 	return this.bitSet;
   }

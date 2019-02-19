@@ -29,23 +29,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.ByteR
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.CompiledAutomaton;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.Transition;
 
-/**
- * A FilteredTermsEnum that enumerates terms based upon what is accepted by a
- * DFA.
- * <p>
- * The algorithm is such:
- * <ol>
- *   <li>As long as matches are successful, keep reading sequentially.
- *   <li>When a match fails, skip to the next string in lexicographic order that
- * does not enter a reject state.
- * </ol>
- * <p>
- * The algorithm does not attempt to actually skip to the next string that is
- * completely accepted. This is not possible when the language accepted by the
- * FSM is not finite (i.e. * operator).
- * </p>
- * @lucene.experimental
- */
 class AutomatonTermsEnum extends FilteredTermsEnum {
   // a tableized array-based form of the DFA
   private final ByteRunAutomaton runAutomaton;
@@ -69,14 +52,6 @@ class AutomatonTermsEnum extends FilteredTermsEnum {
   private final BytesRef linearUpperBound = new BytesRef(10);
   private final Comparator<BytesRef> termComp;
 
-  /**
-   * Construct an enumerator based upon an automaton, enumerating the specified
-   * field, working on a supplied TermsEnum
-   * <p>
-   * @lucene.experimental 
-   * <p>
-   * @param compiled CompiledAutomaton
-   */
   public AutomatonTermsEnum(TermsEnum tenum, CompiledAutomaton compiled) {
     super(tenum);
     this.finite = compiled.finite;
@@ -91,10 +66,6 @@ class AutomatonTermsEnum extends FilteredTermsEnum {
     termComp = getComparator();
   }
   
-  /**
-   * Returns true if the term matches the automaton. Also stashes away the term
-   * to assist with smart enumeration.
-   */
   @Override
   protected AcceptStatus accept(final BytesRef term) {
     if (commonSuffixRef == null || StringHelper.endsWith(term, commonSuffixRef)) {
@@ -132,11 +103,6 @@ class AutomatonTermsEnum extends FilteredTermsEnum {
 
   private Transition transition = new Transition();
 
-  /**
-   * Sets the enum to operate in linear fashion, as we have found
-   * a looping transition at position: we set an upper bound and 
-   * act like a TermRangeQuery for this portion of the term space.
-   */
   private void setLinear(int position) {
     assert linear == false;
     
@@ -173,16 +139,6 @@ class AutomatonTermsEnum extends FilteredTermsEnum {
 
   private final IntsRefBuilder savedStates = new IntsRefBuilder();
   
-  /**
-   * Increments the byte buffer to the next String in binary order after s that will not put
-   * the machine into a reject state. If such a string does not exist, returns
-   * false.
-   * 
-   * The correctness of this method depends upon the automaton being deterministic,
-   * and having no transitions to dead states.
-   * 
-   * @return true if more possible solutions exist for the DFA
-   */
   private boolean nextString() {
     int state;
     int pos = 0;
@@ -225,24 +181,6 @@ class AutomatonTermsEnum extends FilteredTermsEnum {
     }
   }
   
-  /**
-   * Returns the next String in lexicographic order that will not put
-   * the machine into a reject state. 
-   * 
-   * This method traverses the DFA from the given position in the String,
-   * starting at the given state.
-   * 
-   * If this cannot satisfy the machine, returns false. This method will
-   * walk the minimal path, in lexicographic order, as long as possible.
-   * 
-   * If this method returns false, then there might still be more solutions,
-   * it is necessary to backtrack to find out.
-   * 
-   * @param state current non-reject state
-   * @param position useful portion of the string
-   * @return true if more possible solutions exist for the DFA from this
-   *         position
-   */
   private boolean nextString(int state, int position) {
     /* 
      * the next lexicographic character must be greater than the existing
@@ -303,14 +241,6 @@ class AutomatonTermsEnum extends FilteredTermsEnum {
     return false;
   }
   
-  /**
-   * Attempts to backtrack thru the string after encountering a dead end
-   * at some given position. Returns false if no more possible strings 
-   * can match.
-   * 
-   * @param position current position in the input String
-   * @return position >=0 if more possible solutions exist for the DFA
-   */
   private int backtrack(int position) {
     while (position-- > 0) {
       int nextChar = seekBytesRef.byteAt(position) & 0xff;

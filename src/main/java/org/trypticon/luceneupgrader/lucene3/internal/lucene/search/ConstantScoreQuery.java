@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,23 +24,10 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ToStringUtils;
 import java.io.IOException;
 import java.util.Set;
 
-/**
- * A query that wraps another query or a filter and simply returns a constant score equal to the
- * query boost for every document that matches the filter or query.
- * For queries it therefore simply strips of all scores and returns a constant one.
- *
- * <p><b>NOTE</b>: if the wrapped filter is an instance of
- * {@link CachingWrapperFilter}, you'll likely want to
- * enforce deletions in the filter (using either {@link
- * CachingWrapperFilter.DeletesMode#RECACHE} or {@link
- * CachingWrapperFilter.DeletesMode#DYNAMIC}).
- */
 public class ConstantScoreQuery extends Query {
   protected final Filter filter;
   protected final Query query;
 
-  /** Strips off scores from the passed in Query. The hits will get a constant score
-   * dependent on the boost factor of this query. */
   public ConstantScoreQuery(Query query) {
     if (query == null)
       throw new NullPointerException("Query may not be null");
@@ -48,12 +35,7 @@ public class ConstantScoreQuery extends Query {
     this.query = query;
   }
 
-  /** Wraps a Filter as a Query. The hits will get a constant score
-   * dependent on the boost factor of this query.
-   * If you simply want to strip off scores from a Query, no longer use
-   * {@code new ConstantScoreQuery(new QueryWrapperFilter(query))}, instead
-   * use {@link #ConstantScoreQuery(Query)}!
-   */
+
   public ConstantScoreQuery(Filter filter) {
     if (filter == null)
       throw new NullPointerException("Filter may not be null");
@@ -61,12 +43,10 @@ public class ConstantScoreQuery extends Query {
     this.query = null;
   }
 
-  /** Returns the encapsulated filter, returns {@code null} if a query is wrapped. */
   public Filter getFilter() {
     return filter;
   }
 
-  /** Returns the encapsulated query, returns {@code null} if a filter is wrapped. */
   public Query getQuery() {
     return query;
   }

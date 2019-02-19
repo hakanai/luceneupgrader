@@ -49,10 +49,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IntsRef;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 
-/**
- * {@link StoredFieldsReader} impl for {@code Lucene41StoredFieldsFormat}.
- * @deprecated only for reading old segments
- */
 @Deprecated
 final class Lucene41StoredFieldsReader extends StoredFieldsReader {
 
@@ -77,10 +73,8 @@ final class Lucene41StoredFieldsReader extends StoredFieldsReader {
   static final int VERSION_CHECKSUM = 2;
   static final int VERSION_CURRENT = VERSION_CHECKSUM;
   
-  /** Extension of stored fields file */
   public static final String FIELDS_EXTENSION = "fdt";
   
-  /** Extension of stored fields index file */
   public static final String FIELDS_INDEX_EXTENSION = "fdx";
 
   private final int version;
@@ -114,7 +108,6 @@ final class Lucene41StoredFieldsReader extends StoredFieldsReader {
     this.closed = false;
   }
 
-  /** Sole constructor. */
   public Lucene41StoredFieldsReader(Directory d, SegmentInfo si, String segmentSuffix, FieldInfos fn,
       IOContext context, String formatName, CompressionMode compressionMode) throws IOException {
     this.compressionMode = compressionMode;
@@ -187,18 +180,13 @@ final class Lucene41StoredFieldsReader extends StoredFieldsReader {
     }
   }
 
-  /**
-   * @throws AlreadyClosedException if this FieldsReader is closed
-   */
   private void ensureOpen() throws AlreadyClosedException {
     if (closed) {
       throw new AlreadyClosedException("this FieldsReader is closed");
     }
   }
 
-  /** 
-   * Close the underlying {@link IndexInput}s.
-   */
+
   @Override
   public void close() throws IOException {
     if (!closed) {
@@ -258,10 +246,6 @@ final class Lucene41StoredFieldsReader extends StoredFieldsReader {
     }
   }
 
-  /**
-   * A serialized document, you need to decode its input in order to get an actual
-   * {@link Document}.
-   */
   static class SerializedDocument {
 
     // the serialized data
@@ -281,9 +265,6 @@ final class Lucene41StoredFieldsReader extends StoredFieldsReader {
 
   }
 
-  /**
-   * Keeps state about the current block of documents.
-   */
   private class BlockState {
 
     private int docBase, chunkDocs;
@@ -304,10 +285,6 @@ final class Lucene41StoredFieldsReader extends StoredFieldsReader {
       return docID >= docBase && docID < docBase + chunkDocs;
     }
 
-    /**
-     * Reset this block so that it stores state for the block
-     * that contains the given doc id.
-     */
     void reset(int docID) throws IOException {
       boolean success = false;
       try {
@@ -410,10 +387,6 @@ final class Lucene41StoredFieldsReader extends StoredFieldsReader {
       }
     }
 
-    /**
-     * Get the serialized representation of the given docID. This docID has
-     * to be contained in the current block.
-     */
     SerializedDocument document(int docID) throws IOException {
       if (contains(docID) == false) {
         throw new IllegalArgumentException();

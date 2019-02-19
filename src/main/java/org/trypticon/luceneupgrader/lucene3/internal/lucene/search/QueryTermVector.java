@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -32,20 +32,13 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattrib
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.TermFreqVector;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 
-/**
- *
- *
- **/
+
 public class QueryTermVector implements TermFreqVector {
   private String [] terms = new String[0];
   private int [] termFreqs = new int[0];
 
   public String getField() { return null;  }
 
-  /**
-   * 
-   * @param queryTerms The original list of terms from the query, can contain duplicates
-   */ 
   public QueryTermVector(String [] queryTerms) {
 
     processTerms(queryTerms);

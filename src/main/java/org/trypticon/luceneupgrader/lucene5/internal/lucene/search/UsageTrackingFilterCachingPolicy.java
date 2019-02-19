@@ -23,16 +23,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.FrequencyTrackingRingBuffer;
 
 
-/**
- * A {@link FilterCachingPolicy} that tracks usage statistics of recently-used
- * filters in order to decide on which filters are worth caching.
- *
- * It also uses some heuristics on segments, filters and the doc id sets that
- * they produce in order to cache more aggressively when the execution cost
- * significantly outweighs the caching overhead.
- *
- * @lucene.experimental
- */
 public final class UsageTrackingFilterCachingPolicy implements FilterCachingPolicy {
 
   // the hash code that we use as a sentinel in the ring buffer.
@@ -58,15 +48,6 @@ public final class UsageTrackingFilterCachingPolicy implements FilterCachingPoli
   private final int minFrequencyCheapFilters;
   private final int minFrequencyOtherFilters;
 
-  /**
-   * Create a new instance.
-   *
-   * @param minSizeRatio              the minimum size ratio for segments to be cached, see {@link FilterCachingPolicy.CacheOnLargeSegments}
-   * @param historySize               the number of recently used filters to track
-   * @param minFrequencyCostlyFilters how many times filters whose {@link Filter#getDocIdSet(LeafReaderContext, Bits) getDocIdSet} method is expensive should have been seen before being cached
-   * @param minFrequencyCheapFilters  how many times filters that produce {@link DocIdSet}s that are cheap to cached should have been seen before being cached
-   * @param minFrequencyOtherFilters  how many times other filters should have been seen before being cached
-   */
   public UsageTrackingFilterCachingPolicy(
       float minSizeRatio,
       int historySize,
@@ -77,7 +58,6 @@ public final class UsageTrackingFilterCachingPolicy implements FilterCachingPoli
         minFrequencyCostlyFilters, minFrequencyCheapFilters, minFrequencyOtherFilters);
   }
 
-  /** Create a new instance with sensible defaults. */
   public UsageTrackingFilterCachingPolicy() {
     // we track the most 256 recently-used filters and cache filters that are
     // expensive to build or cheap to cache after we have seen them twice, and

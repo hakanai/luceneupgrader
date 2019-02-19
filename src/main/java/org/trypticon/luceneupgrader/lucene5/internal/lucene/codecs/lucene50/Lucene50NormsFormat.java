@@ -25,14 +25,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.NormsProducer
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentReadState;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentWriteState;
 
-/**
- * Lucene 5.0 Score normalization format.
- * @deprecated Only for reading old 5.0-5.2 segments
- */
 @Deprecated
 class Lucene50NormsFormat extends NormsFormat {
 
-  /** Sole Constructor */
   public Lucene50NormsFormat() {}
   
   @Override

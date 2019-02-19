@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -25,10 +25,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ToStringUtils;
 import java.util.Set;
 import java.io.IOException;
 
-/**
- * A query that matches all documents.
- *
- */
 public class MatchAllDocsQuery extends Query {
 
   public MatchAllDocsQuery() {
@@ -37,9 +33,6 @@ public class MatchAllDocsQuery extends Query {
 
   private final String normsField;
 
-  /**
-   * @param normsField Field used for normalization factor (document boost). Null if nothing.
-   */
   public MatchAllDocsQuery(String normsField) {
     this.normsField = normsField;
   }

@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,65 +22,6 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ThreadInterruptedException;
 
-/**
- * Utility class that runs a reopen thread to periodically
- * reopen the NRT searchers in the provided {@link
- * NRTManager}.
- *
- * <p> Typical usage looks like this:
- *
- * <pre>
- *   ... open your own writer ...
- * 
- *   NRTManager manager = new NRTManager(writer);
- *
- *   // Refreshes searcher every 5 seconds when nobody is waiting, and up to 100 msec delay
- *   // when somebody is waiting:
- *   NRTManagerReopenThread reopenThread = new NRTManagerReopenThread(manager, 5.0, 0.1);
- *   reopenThread.setName("NRT Reopen Thread");
- *   reopenThread.setPriority(Math.min(Thread.currentThread().getPriority()+2, Thread.MAX_PRIORITY));
- *   reopenThread.setDaemon(true);
- *   reopenThread.start();
- * </pre>
- *
- * Then, for each incoming query, do this:
- *
- * <pre>
- *   // For each incoming query:
- *   IndexSearcher searcher = manager.get();
- *   try {
- *     // Use searcher to search...
- *   } finally {
- *     manager.release(searcher);
- *   }
- * </pre>
- *
- * You should make changes using the <code>NRTManager</code>; if you later need to obtain
- * a searcher reflecting those changes:
- *
- * <pre>
- *   // ... or updateDocument, deleteDocuments, etc:
- *   long gen = manager.addDocument(...);
- *   
- *   // Returned searcher is guaranteed to reflect the just added document
- *   IndexSearcher searcher = manager.get(gen);
- *   try {
- *     // Use searcher to search...
- *   } finally {
- *     manager.release(searcher);
- *   }
- * </pre>
- *
- *
- * When you are done be sure to close both the manager and the reopen thrad:
- * <pre> 
- *   reopenThread.close();       
- *   manager.close();
- * </pre>
- *
- * @lucene.experimental
- */
-
 public class NRTManagerReopenThread extends Thread implements NRTManager.WaitingListener, Closeable {
   
   private final NRTManager manager;
@@ -88,20 +29,6 @@ public class NRTManagerReopenThread extends Thread implements NRTManager.Waiting
   private final long targetMinStaleNS;
   private boolean finish;
   private long waitingGen;
-
-  /**
-   * Create NRTManagerReopenThread, to periodically reopen the NRT searcher.
-   *
-   * @param targetMaxStaleSec Maximum time until a new
-   *        reader must be opened; this sets the upper bound
-   *        on how slowly reopens may occur
-   *
-   * @param targetMinStaleSec Mininum time until a new
-   *        reader can be opened; this sets the lower bound
-   *        on how quickly reopens may occur, when a caller
-   *        is waiting for a specific indexing change to
-   *        become visible.
-   */
 
   public NRTManagerReopenThread(NRTManager manager, double targetMaxStaleSec, double targetMinStaleSec) {
     if (targetMaxStaleSec < targetMinStaleSec) {

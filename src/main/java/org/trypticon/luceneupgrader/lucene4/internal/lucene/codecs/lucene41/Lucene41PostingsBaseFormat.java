@@ -25,16 +25,11 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.PostingsWrite
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentReadState;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentWriteState;
 
-/** 
- * Provides a {@link PostingsReaderBase} and {@link
- * PostingsWriterBase}.
- *
- * @lucene.experimental */
+
 
 // TODO: should these also be named / looked up via SPI?
 public final class Lucene41PostingsBaseFormat extends PostingsBaseFormat {
 
-  /** Sole constructor. */
   public Lucene41PostingsBaseFormat() {
     super("Lucene41");
   }

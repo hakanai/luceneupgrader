@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,14 +24,11 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ToStringUtils;
 import java.io.IOException;
 import java.util.Set;
 
-/** Matches spans containing a term. */
 public class SpanTermQuery extends SpanQuery {
   protected Term term;
 
-  /** Construct a SpanTermQuery matching the named term's spans. */
   public SpanTermQuery(Term term) { this.term = term; }
 
-  /** Return the term whose spans are matched. */
   public Term getTerm() { return term; }
 
   @Override

@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,9 +23,7 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.AttributeSource
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.CharTermAttribute;
 
-/** This is a DocFieldConsumer that inverts each field,
- *  separately, from a Document, and accepts a
- *  InvertedTermsConsumer to process those terms. */
+
 
 final class DocInverterPerThread extends DocFieldConsumerPerThread {
   final DocInverter docInverter;

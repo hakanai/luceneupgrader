@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,30 +21,16 @@ import java.io.Serializable;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.AttributeImpl;
 
-/**
- * This attribute can be used to pass different flags down the tokenizer chain,
- * eg from one TokenFilter to another one. 
- * @lucene.experimental While we think this is here to stay, we may want to change it to be a long.
- */
+
 public class FlagsAttributeImpl extends AttributeImpl implements FlagsAttribute, Cloneable, Serializable {
   private int flags = 0;
   
-  /**
-   * <p/>
-   *
-   * Get the bitset for any bits that have been set.  This is completely distinct from {@link TypeAttribute#type()}, although they do share similar purposes.
-   * The flags can be used to encode information about the token for use by other {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.TokenFilter}s.
-   *
-   *
-   * @return The bits
-   */
+
   public int getFlags() {
     return flags;
   }
 
-  /**
-   * @see #getFlags()
-   */
+
   public void setFlags(int flags) {
     this.flags = flags;
   }

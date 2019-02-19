@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -32,53 +32,21 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Searcher;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Similarity;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ToStringUtils;
 
-/**
- * Query that sets document score as a programmatic function of several (sub) scores:
- * <ol>
- *    <li>the score of its subQuery (any query)</li>
- *    <li>(optional) the score of its ValueSourceQuery (or queries).
- *        For most simple/convenient use cases this query is likely to be a 
- *        {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function.FieldScoreQuery FieldScoreQuery}</li>
- * </ol>
- * Subclasses can modify the computation by overriding {@link #getCustomScoreProvider}.
- * 
- * @lucene.experimental
- */
 public class CustomScoreQuery extends Query {
 
   private Query subQuery;
   private ValueSourceQuery[] valSrcQueries; // never null (empty array if there are no valSrcQueries).
   private boolean strict = false; // if true, valueSource part of query does not take part in weights normalization.  
   
-  /**
-   * Create a CustomScoreQuery over input subQuery.
-   * @param subQuery the sub query whose scored is being customized. Must not be null. 
-   */
   public CustomScoreQuery(Query subQuery) {
     this(subQuery, new ValueSourceQuery[0]);
   }
 
-  /**
-   * Create a CustomScoreQuery over input subQuery and a {@link ValueSourceQuery}.
-   * @param subQuery the sub query whose score is being customized. Must not be null.
-   * @param valSrcQuery a value source query whose scores are used in the custom score
-   * computation. For most simple/convenient use case this would be a 
-   * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function.FieldScoreQuery FieldScoreQuery}.
-   * This parameter is optional - it can be null.
-   */
   public CustomScoreQuery(Query subQuery, ValueSourceQuery valSrcQuery) {
 	  this(subQuery, valSrcQuery!=null ? // don't want an array that contains a single null.. 
         new ValueSourceQuery[] {valSrcQuery} : new ValueSourceQuery[0]);
   }
 
-  /**
-   * Create a CustomScoreQuery over input subQuery and a {@link ValueSourceQuery}.
-   * @param subQuery the sub query whose score is being customized. Must not be null.
-   * @param valSrcQueries value source queries whose scores are used in the custom score
-   * computation. For most simple/convenient use case these would be 
-   * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function.FieldScoreQuery FieldScoreQueries}.
-   * This parameter is optional - it can be null or even an empty array.
-   */
   public CustomScoreQuery(Query subQuery, ValueSourceQuery... valSrcQueries) {
     this.subQuery = subQuery;
     this.valSrcQueries = valSrcQueries!=null?
@@ -142,7 +110,6 @@ public class CustomScoreQuery extends Query {
     return sb.toString() + ToStringUtils.boost(getBoost());
   }
 
-  /** Returns true if <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object o) {
     if (this == o)
@@ -162,19 +129,12 @@ public class CustomScoreQuery extends Query {
     return Arrays.equals(valSrcQueries, other.valSrcQueries);
   }
 
-  /** Returns a hash code value for this object. */
   @Override
   public int hashCode() {
     return (getClass().hashCode() + subQuery.hashCode() + Arrays.hashCode(valSrcQueries))
       ^ Float.floatToIntBits(getBoost()) ^ (strict ? 1234 : 4321);
   }
   
-  /**
-   * Returns a {@link CustomScoreProvider} that calculates the custom scores
-   * for the given {@link IndexReader}. The default implementation returns a default
-   * implementation as specified in the docs of {@link CustomScoreProvider}.
-   * @since 2.9.2
-   */
   protected CustomScoreProvider getCustomScoreProvider(IndexReader reader) throws IOException {
     return new CustomScoreProvider(reader);
   }
@@ -291,9 +251,6 @@ public class CustomScoreQuery extends Query {
 
   //=========================== S C O R E R ============================
   
-  /**
-   * A scorer that applies a (callback) function on scores of the subQuery.
-   */
   private class CustomScorer extends Scorer {
     private final float qWeight;
     private Scorer subQueryScorer;
@@ -354,31 +311,14 @@ public class CustomScoreQuery extends Query {
     return new CustomWeight(searcher);
   }
 
-  /**
-   * Checks if this is strict custom scoring.
-   * In strict custom scoring, the ValueSource part does not participate in weight normalization.
-   * This may be useful when one wants full control over how scores are modified, and does 
-   * not care about normalizing by the ValueSource part.
-   * One particular case where this is useful if for testing this query.   
-   * <P>
-   * Note: only has effect when the ValueSource part is not null.
-   */
   public boolean isStrict() {
     return strict;
   }
 
-  /**
-   * Set the strict mode of this query. 
-   * @param strict The strict mode to set.
-   * @see #isStrict()
-   */
   public void setStrict(boolean strict) {
     this.strict = strict;
   }
 
-  /**
-   * A short name of this query, used in {@link #toString(String)}.
-   */
   public String name() {
     return "custom";
   }

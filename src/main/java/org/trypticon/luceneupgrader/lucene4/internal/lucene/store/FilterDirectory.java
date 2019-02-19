@@ -20,25 +20,15 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 import java.io.IOException;
 import java.util.Collection;
 
-/** Directory implementation that delegates calls to another directory.
- *  This class can be used to add limitations on top of an existing
- *  {@link Directory} implementation such as
- *  {@link RateLimitedDirectoryWrapper rate limiting} or to add additional
- *  sanity checks for tests. However, if you plan to write your own
- *  {@link Directory} implementation, you should consider extending directly
- *  {@link Directory} or {@link BaseDirectory} rather than try to reuse
- *  functionality of existing {@link Directory}s by extending this class.
- *  @lucene.internal */
+
 public class FilterDirectory extends Directory {
 
   protected final Directory in;
 
-  /** Sole constructor, typically called from sub-classes. */
   protected FilterDirectory(Directory in) {
     this.in = in;
   }
 
-  /** Return the wrapped {@link Directory}. */
   public final Directory getDelegate() {
     return in;
   }

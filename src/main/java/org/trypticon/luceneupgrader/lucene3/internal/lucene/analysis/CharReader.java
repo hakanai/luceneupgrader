@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,12 +20,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 import java.io.IOException;
 import java.io.Reader;
 
-/**
- * CharReader is a Reader wrapper. It reads chars from
- * Reader and outputs {@link CharStream}, defining an
- * identify function {@link #correctOffset} method that
- * simply returns the provided offset.
- */
+
 public final class CharReader extends CharStream {
 
   private final Reader input;

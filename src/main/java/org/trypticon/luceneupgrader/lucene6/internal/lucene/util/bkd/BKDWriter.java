@@ -59,25 +59,7 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.StringHelper;
 //     per leaf, and you can reduce that by putting more points per leaf
 //   - we could use threads while building; the higher nodes are very parallelizable
 
-/** Recursively builds a block KD-tree to assign all incoming points in N-dim space to smaller
- *  and smaller N-dim rectangles (cells) until the number of points in a given
- *  rectangle is &lt;= <code>maxPointsInLeafNode</code>.  The tree is
- *  fully balanced, which means the leaf nodes will have between 50% and 100% of
- *  the requested <code>maxPointsInLeafNode</code>.  Values that fall exactly
- *  on a cell boundary may be in either cell.
- *
- *  <p>The number of dimensions can be 1 to 8, but every byte[] value is fixed length.
- *
- *  <p>
- *  See <a href="https://www.cs.duke.edu/~pankaj/publications/papers/bkd-sstd.pdf">this paper</a> for details.
- *
- *  <p>This consumes heap during writing: it allocates a <code>LongBitSet(numPoints)</code>,
- *  and then uses up to the specified {@code maxMBSortInHeap} heap space for writing.
- *
- *  <p>
- *  <b>NOTE</b>: This can write at most Integer.MAX_VALUE * <code>maxPointsInLeafNode</code> total points.
- *
- * @lucene.experimental */
+
 
 public class BKDWriter implements Closeable {
 
@@ -89,26 +71,19 @@ public class BKDWriter implements Closeable {
   public static final int VERSION_PACKED_INDEX = 4;
   public static final int VERSION_CURRENT = VERSION_PACKED_INDEX;
 
-  /** How many bytes each docs takes in the fixed-width offline format */
-  private final int bytesPerDoc;
+    private final int bytesPerDoc;
 
-  /** Default maximum number of point in each leaf block */
-  public static final int DEFAULT_MAX_POINTS_IN_LEAF_NODE = 1024;
+    public static final int DEFAULT_MAX_POINTS_IN_LEAF_NODE = 1024;
 
-  /** Default maximum heap to use, before spilling to (slower) disk */
-  public static final float DEFAULT_MAX_MB_SORT_IN_HEAP = 16.0f;
+    public static final float DEFAULT_MAX_MB_SORT_IN_HEAP = 16.0f;
 
-  /** Maximum number of dimensions */
-  public static final int MAX_DIMS = 8;
+    public static final int MAX_DIMS = 8;
 
-  /** How many dimensions we are indexing */
-  protected final int numDims;
+    protected final int numDims;
 
-  /** How many bytes each value in each dimension takes. */
-  protected final int bytesPerDim;
+    protected final int bytesPerDim;
 
-  /** numDims * bytesPerDim */
-  protected final int packedBytesLength;
+    protected final int packedBytesLength;
 
   final TrackingDirectoryWrapper tempDir;
   final String tempFileNamePrefix;
@@ -130,28 +105,21 @@ public class BKDWriter implements Closeable {
   protected final int maxPointsInLeafNode;
   private final int maxPointsSortInHeap;
 
-  /** Minimum per-dim values, packed */
-  protected final byte[] minPackedValue;
+    protected final byte[] minPackedValue;
 
-  /** Maximum per-dim values, packed */
-  protected final byte[] maxPackedValue;
+    protected final byte[] maxPackedValue;
 
   protected long pointCount;
 
-  /** true if we have so many values that we must write ords using long (8 bytes) instead of int (4 bytes) */
-  protected final boolean longOrds;
+    protected final boolean longOrds;
 
-  /** An upper bound on how many points the caller will add (includes deletions) */
-  private final long totalPointCount;
+    private final long totalPointCount;
 
-  /** True if every document has at most one value.  We specialize this case by not bothering to store the ord since it's redundant with docID.  */
-  protected final boolean singleValuePerDoc;
+    protected final boolean singleValuePerDoc;
 
-  /** How much heap OfflineSorter is allowed to use */
-  protected final OfflineSorter.BufferSize offlineSorterBufferMB;
+    protected final OfflineSorter.BufferSize offlineSorterBufferMB;
 
-  /** How much heap OfflineSorter is allowed to use */
-  protected final int offlineSorterMaxTempFiles;
+    protected final int offlineSorterMaxTempFiles;
 
   private final int maxDoc;
 
@@ -245,8 +213,7 @@ public class BKDWriter implements Closeable {
     }
   }
 
-  /** If the current segment has too many points then we spill over to temp files / offline sort. */
-  private void spillToOffline() throws IOException {
+    private void spillToOffline() throws IOException {
 
     // For each .add we just append to this input file, then in .finish we sort this input and resursively build the tree:
     offlinePointWriter = new OfflinePointWriter(tempDir, tempFileNamePrefix, packedBytesLength, longOrds, "spill", 0, singleValuePerDoc);
@@ -299,7 +266,6 @@ public class BKDWriter implements Closeable {
     docsSeen.set(docID);
   }
 
-  /** How many points have been added so far */
   public long getPointCount() {
     return pointCount;
   }
@@ -309,16 +275,12 @@ public class BKDWriter implements Closeable {
     final BKDReader.IntersectState state;
     final MergeState.DocMap docMap;
 
-    /** Current doc ID */
     public int docID;
 
-    /** Which doc in this block we are up to */
     private int docBlockUpto;
 
-    /** How many docs in the current block */
     private int docsInBlock;
 
-    /** Which leaf block we are up to */
     private int blockID;
 
     private final byte[] packedValues;
@@ -417,11 +379,7 @@ public class BKDWriter implements Closeable {
     }
   }
 
-  /** Write a field from a {@link MutablePointsReader}. This way of writing
-   *  points is faster than regular writes with {@link BKDWriter#add} since
-   *  there is opportunity for reordering points before writing them to
-   *  disk. This method does not use transient disk in order to reorder points.
-   */
+
   public long writeField(IndexOutput out, String fieldName, MutablePointsReader reader) throws IOException {
     if (numDims == 1) {
       return writeField1Dim(out, fieldName, reader);
@@ -519,9 +477,7 @@ public class BKDWriter implements Closeable {
     return oneDimWriter.finish();
   }
 
-  /** More efficient bulk-add for incoming {@link BKDReader}s.  This does a merge sort of the already
-   *  sorted values and currently only works when numDims==1.  This returns -1 if all documents containing
-   *  dimensional values were deleted. */
+
   public long merge(IndexOutput out, List<MergeState.DocMap> docMaps, List<BKDReader> readers) throws IOException {
     assert docMaps == null || readers.size() == docMaps.size();
 
@@ -752,7 +708,6 @@ public class BKDWriter implements Closeable {
   // TODO: if we fixed each partition step to just record the file offset at the "split point", we could probably handle variable length
   // encoding and not have our own ByteSequencesReader/Writer
 
-  /** Sort the heap writer by the specified dim */
   private void sortHeapPointWriter(final HeapPointWriter writer, int dim) {
     final int pointCount = Math.toIntExact(this.pointCount);
     // Tie-break by docID:
@@ -886,7 +841,6 @@ public class BKDWriter implements Closeable {
 
       OfflineSorter sorter = new OfflineSorter(tempDir, tempFileNamePrefix + "_bkd" + dim, cmp, offlineSorterBufferMB, offlineSorterMaxTempFiles, bytesPerDoc, null, 0) {
 
-          /** We write/read fixed-byte-width file that {@link OfflinePointReader} can read. */
           @Override
           protected ByteSequencesWriter getWriter(IndexOutput out, long count) {
             return new ByteSequencesWriter(out) {
@@ -898,7 +852,6 @@ public class BKDWriter implements Closeable {
             };
           }
 
-          /** We write/read fixed-byte-width file that {@link OfflinePointReader} can read. */
           @Override
           protected ByteSequencesReader getReader(ChecksumIndexInput in, String name) throws IOException {
             return new ByteSequencesReader(in, name) {
@@ -927,7 +880,6 @@ public class BKDWriter implements Closeable {
     }
   }
 
-  /** Writes the BKD tree to the provided {@link IndexOutput} and returns the file offset where index was written. */
   public long finish(IndexOutput out) throws IOException {
     // System.out.println("\nBKDTreeWriter.finish pointCount=" + pointCount + " out=" + out + " heapWriter=" + heapPointWriter);
 
@@ -1039,7 +991,6 @@ public class BKDWriter implements Closeable {
     return indexFP;
   }
 
-  /** Packs the two arrays, representing a balanced binary tree, into a compact byte[] structure. */
   private byte[] packIndex(long[] leafBlockFPs, byte[] splitPackedValues) throws IOException {
 
     int numLeaves = leafBlockFPs.length;
@@ -1068,7 +1019,6 @@ public class BKDWriter implements Closeable {
       }
     }
 
-    /** Reused while packing the index */
     RAMOutputStream writeBuffer = new RAMOutputStream();
 
     // This is the "file" we append the byte[] to:
@@ -1089,7 +1039,6 @@ public class BKDWriter implements Closeable {
     return index;
   }
 
-  /** Appends the current contents of writeBuffer as another block on the growing in-memory file */
   private int appendBlock(RAMOutputStream writeBuffer, List<byte[]> blocks) throws IOException {
     int pos = Math.toIntExact(writeBuffer.getFilePointer());
     byte[] bytes = new byte[pos];
@@ -1099,9 +1048,6 @@ public class BKDWriter implements Closeable {
     return pos;
   }
 
-  /**
-   * lastSplitValues is per-dimension split value previously seen; we use this to prefix-code the split byte[] on each inner node
-   */
   private int recursePackIndex(RAMOutputStream writeBuffer, long[] leafBlockFPs, byte[] splitPackedValues, long minBlockFP, List<byte[]> blocks,
                                int nodeID, byte[] lastSplitValues, boolean[] negativeDeltas, boolean isLeft) throws IOException {
     if (nodeID >= leafBlockFPs.length) {
@@ -1342,7 +1288,6 @@ public class BKDWriter implements Closeable {
     }
   }
 
-  /** Sliced reference to points in an OfflineSorter.ByteSequencesWriter file. */
   private static final class PathSlice {
     final PointWriter writer;
     final long start;
@@ -1360,8 +1305,6 @@ public class BKDWriter implements Closeable {
     }
   }
 
-  /** Called on exception, to check whether the checksum is also corrupt in this source, and add that
-   *  information (checksum matched or didn't) as a suppressed exception. */
   private Error verifyChecksum(Throwable priorException, PointWriter writer) throws IOException {
     assert priorException != null;
 
@@ -1381,7 +1324,6 @@ public class BKDWriter implements Closeable {
     throw IOUtils.rethrowAlways(priorException);
   }
 
-  /** Marks bits for the ords (points) that belong in the right sub tree (those docs that have values >= the splitValue). */
   private byte[] markRightTree(long rightCount, int splitDim, PathSlice source, LongBitSet ordBitSet) throws IOException {
 
     // Now we mark ords that fall into the right half, so we can partition on all other dims that are not the split dim:
@@ -1406,7 +1348,6 @@ public class BKDWriter implements Closeable {
     return scratch1;
   }
 
-  /** Called only in assert */
   private boolean valueInBounds(BytesRef packedValue, byte[] minPackedValue, byte[] maxPackedValue) {
     for(int dim=0;dim<numDims;dim++) {
       int offset = bytesPerDim*dim;
@@ -1421,13 +1362,6 @@ public class BKDWriter implements Closeable {
     return true;
   }
 
-  /**
-   * Pick the next dimension to split.
-   * @param minPackedValue the min values for all dimensions
-   * @param maxPackedValue the max values for all dimensions
-   * @param parentSplits how many times each dim has been split on the parent levels
-   * @return the dimension to split
-   */
   protected int split(byte[] minPackedValue, byte[] maxPackedValue, int[] parentSplits) {
     // First look at whether there is a dimension that has split less than 2x less than
     // the dim that has most splits, and return it if there is such a dimension and it
@@ -1458,7 +1392,6 @@ public class BKDWriter implements Closeable {
     return splitDim;
   }
 
-  /** Pull a partition back into heap once the point count is low enough while recursing. */
   private PathSlice switchToHeap(PathSlice source, List<Closeable> toCloseHeroically) throws IOException {
     int count = Math.toIntExact(source.count);
     // Not inside the try because we don't want to close it here:
@@ -1614,8 +1547,6 @@ public class BKDWriter implements Closeable {
     }
   }
 
-  /** The array (sized numDims) of PathSlice describe the cell we have currently recursed to.
-  /*  This method is used when we are merging previously written segments, in the numDims > 1 case. */
   private void build(int nodeID, int leafNodeOffset,
                      PathSlice[] slices,
                      LongBitSet ordBitSet,

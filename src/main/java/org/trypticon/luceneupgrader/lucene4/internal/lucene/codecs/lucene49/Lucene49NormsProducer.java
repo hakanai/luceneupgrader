@@ -49,9 +49,6 @@ import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene49.Lucene49NormsConsumer.TABLE_COMPRESSED;
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene49.Lucene49NormsConsumer.UNCOMPRESSED;
 
-/**
- * Reader for {@link Lucene49NormsFormat}
- */
 class Lucene49NormsProducer extends DocValuesProducer {
   // metadata maps (just file pointers and minimal stuff)
   private final Map<Integer,NormsEntry> norms = new HashMap<>();

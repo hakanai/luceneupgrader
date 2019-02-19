@@ -23,22 +23,11 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeSource
 import java.io.Reader;
 import java.io.IOException;
 
-/** A Tokenizer is a TokenStream whose input is a Reader.
-  <p>
-  This is an abstract class; subclasses must override {@link #incrementToken()}
-  <p>
-  NOTE: Subclasses overriding {@link #incrementToken()} must
-  call {@link AttributeSource#clearAttributes()} before
-  setting attributes.
- */
-public abstract class Tokenizer extends TokenStream {  
-  /** The text source for this Tokenizer. */
+public abstract class Tokenizer extends TokenStream {
   protected Reader input = ILLEGAL_STATE_READER;
   
-  /** Pending reader: not actually assigned to input until reset() */
   private Reader inputPending = ILLEGAL_STATE_READER;
 
-  /** Construct a token stream processing the given input. */
   protected Tokenizer(Reader input) {
     if (input == null) {
       throw new NullPointerException("input must not be null");
@@ -46,7 +35,6 @@ public abstract class Tokenizer extends TokenStream {
     this.inputPending = input;
   }
   
-  /** Construct a token stream processing the given input using the given AttributeFactory. */
   protected Tokenizer(AttributeFactory factory, Reader input) {
     super(factory);
     if (input == null) {
@@ -55,13 +43,6 @@ public abstract class Tokenizer extends TokenStream {
     this.inputPending = input;
   }
 
-  /**
-   * {@inheritDoc}
-   * <p>
-   * <b>NOTE:</b> 
-   * The default implementation closes the input Reader, so
-   * be sure to call <code>super.close()</code> when overriding this method.
-   */
   @Override
   public void close() throws IOException {
     input.close();
@@ -70,19 +51,12 @@ public abstract class Tokenizer extends TokenStream {
     inputPending = input = ILLEGAL_STATE_READER;
   }
   
-  /** Return the corrected offset. If {@link #input} is a {@link CharFilter} subclass
-   * this method calls {@link CharFilter#correctOffset}, else returns <code>currentOff</code>.
-   * @param currentOff offset as seen in the output
-   * @return corrected offset based on the input
-   * @see CharFilter#correctOffset
-   */
+
   protected final int correctOffset(int currentOff) {
     return (input instanceof CharFilter) ? ((CharFilter) input).correctOffset(currentOff) : currentOff;
   }
 
-  /** Expert: Set a new reader on the Tokenizer.  Typically, an
-   *  analyzer (in its tokenStream method) will use
-   *  this to re-use a previously created tokenizer. */
+
   public final void setReader(Reader input) throws IOException {
     if (input == null) {
       throw new NullPointerException("input must not be null");

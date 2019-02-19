@@ -10,31 +10,15 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-/**
- * Clone of {@link PathNIOFSDirectory4} accepting {@link Path} instead of {@link File}.
- */
 public class PathNIOFSDirectory4 extends PathFSDirectory4 {
-    /** Create a new PathNIOFSDirectory4 for the named location.
-     *
-     * @param path the path of the directory
-     * @param lockFactory the lock factory to use, or null for the default
-     * ({@link PathNativeFSLockFactory4});
-     * @throws IOException if there is a low-level I/O error
-     */
     public PathNIOFSDirectory4(Path path, LockFactory lockFactory) throws IOException {
         super(path, lockFactory);
     }
 
-    /** Create a new PathNIOFSDirectory4 for the named location and {@link PathNativeFSLockFactory4}.
-     *
-     * @param path the path of the directory
-     * @throws IOException if there is a low-level I/O error
-     */
     public PathNIOFSDirectory4(Path path) throws IOException {
         super(path, null);
     }
 
-    /** Creates an IndexInput for the file with the given name. */
     @Override
     public IndexInput openInput(String name, IOContext context) throws IOException {
         ensureOpen();
@@ -43,22 +27,12 @@ public class PathNIOFSDirectory4 extends PathFSDirectory4 {
         return new NIOFSIndexInput("NIOFSIndexInput(path=\"" + path + "\")", fc, context);
     }
 
-    /**
-     * Reads bytes with {@link FileChannel#read(ByteBuffer, long)}
-     */
     static final class NIOFSIndexInput extends BufferedIndexInput {
-        /**
-         * The maximum chunk size for reads of 16384 bytes.
-         */
         private static final int CHUNK_SIZE = 16384;
 
-        /** the file channel we will read from */
         protected final FileChannel channel;
-        /** is this instance a clone and hence does not own the file to close it */
         boolean isClone = false;
-        /** start offset: non-zero in the slice case */
         protected final long off;
-        /** end offset (start+length) */
         protected final long end;
 
         private ByteBuffer byteBuf; // wraps the buffer for NIO

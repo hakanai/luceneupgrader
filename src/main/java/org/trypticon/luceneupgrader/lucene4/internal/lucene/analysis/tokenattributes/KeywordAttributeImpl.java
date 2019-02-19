@@ -19,12 +19,10 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattri
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeImpl;
 
-/** Default implementation of {@link KeywordAttribute}. */
 public final class KeywordAttributeImpl extends AttributeImpl implements
     KeywordAttribute {
   private boolean keyword;
   
-  /** Initialize this attribute with the keyword value as false. */
   public KeywordAttributeImpl() {}
 
   @Override

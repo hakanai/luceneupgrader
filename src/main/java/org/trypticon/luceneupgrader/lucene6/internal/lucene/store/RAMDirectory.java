@@ -34,65 +34,20 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.IndexFileNames
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountables;
 
-/**
- * A memory-resident {@link Directory} implementation.  Locking
- * implementation is by default the {@link SingleInstanceLockFactory}.
- * 
- * <p><b>Warning:</b> This class is not intended to work with huge
- * indexes. Everything beyond several hundred megabytes will waste
- * resources (GC cycles), because it uses an internal buffer size
- * of 1024 bytes, producing millions of {@code byte[1024]} arrays.
- * This class is optimized for small memory-resident indexes.
- * It also has bad concurrency on multithreaded environments.
- * 
- * <p>It is recommended to materialize large indexes on disk and use
- * {@link MMapDirectory}, which is a high-performance directory
- * implementation working directly on the file system cache of the
- * operating system, so copying data to Java heap space is not useful.
- */
 public class RAMDirectory extends BaseDirectory implements Accountable {
   protected final Map<String,RAMFile> fileMap = new ConcurrentHashMap<>();
   protected final AtomicLong sizeInBytes = new AtomicLong();
   
-  /** Used to generate temp file names in {@link #createTempOutput}. */
   private final AtomicLong nextTempFileCounter = new AtomicLong();
 
-  /** Constructs an empty {@link Directory}. */
   public RAMDirectory() {
     this(new SingleInstanceLockFactory());
   }
 
-  /** Constructs an empty {@link Directory} with the given {@link LockFactory}. */
   public RAMDirectory(LockFactory lockFactory) {
     super(lockFactory);
   }
 
-  /**
-   * Creates a new <code>RAMDirectory</code> instance from a different
-   * <code>Directory</code> implementation.  This can be used to load
-   * a disk-based index into memory.
-   * 
-   * <p><b>Warning:</b> This class is not intended to work with huge
-   * indexes. Everything beyond several hundred megabytes will waste
-   * resources (GC cycles), because it uses an internal buffer size
-   * of 1024 bytes, producing millions of {@code byte[1024]} arrays.
-   * This class is optimized for small memory-resident indexes.
-   * It also has bad concurrency on multithreaded environments.
-   * 
-   * <p>For disk-based indexes it is recommended to use
-   * {@link MMapDirectory}, which is a high-performance directory
-   * implementation working directly on the file system cache of the
-   * operating system, so copying data to Java heap space is not useful.
-   * 
-   * <p>Note that the resulting <code>RAMDirectory</code> instance is fully
-   * independent from the original <code>Directory</code> (it is a
-   * complete copy).  Any subsequent changes to the
-   * original <code>Directory</code> will not be visible in the
-   * <code>RAMDirectory</code> instance.
-   *
-   * @param dir a <code>Directory</code> value
-   * @exception IOException if an error occurs
-   */
   public RAMDirectory(FSDirectory dir, IOContext context) throws IOException {
     this(dir, false, context);
   }
@@ -134,9 +89,7 @@ public class RAMDirectory extends BaseDirectory implements Accountable {
     return fileMap.containsKey(name);
   }
 
-  /** Returns the length in bytes of a file in the directory.
-   * @throws IOException if the file does not exist
-   */
+
   @Override
   public final long fileLength(String name) throws IOException {
     ensureOpen();
@@ -147,10 +100,6 @@ public class RAMDirectory extends BaseDirectory implements Accountable {
     return file.getLength();
   }
   
-  /**
-   * Return total size in bytes of all files in this directory. This is
-   * currently quantized to RAMOutputStream.BUFFER_SIZE.
-   */
   @Override
   public final long ramBytesUsed() {
     ensureOpen();
@@ -200,11 +149,6 @@ public class RAMDirectory extends BaseDirectory implements Accountable {
     }
   }
 
-  /**
-   * Returns a new {@link RAMFile} for storing data. This method can be
-   * overridden to return different {@link RAMFile} impls, that e.g. override
-   * {@link RAMFile#newBuffer(int)}.
-   */
   protected RAMFile newRAMFile() {
     return new RAMFile(this);
   }
@@ -234,7 +178,6 @@ public class RAMDirectory extends BaseDirectory implements Accountable {
     // we are by definition not durable!
   }
   
-  /** Returns a stream reading an existing file. */
   @Override
   public IndexInput openInput(String name, IOContext context) throws IOException {
     ensureOpen();
@@ -245,7 +188,6 @@ public class RAMDirectory extends BaseDirectory implements Accountable {
     return new RAMInputStream(name, file);
   }
 
-  /** Closes the store to future operations, releasing associated memory. */
   @Override
   public void close() {
     isOpen = false;

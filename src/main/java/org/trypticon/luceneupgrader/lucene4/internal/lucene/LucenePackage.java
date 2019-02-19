@@ -17,12 +17,10 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene;
  * limitations under the License.
  */
 
-/** Lucene's package information, including version. **/
 public final class LucenePackage {
 
   private LucenePackage() {}                      // can't construct
 
-  /** Return Lucene's package, including version information. */
   public static Package get() {
     return LucenePackage.class.getPackage();
   }

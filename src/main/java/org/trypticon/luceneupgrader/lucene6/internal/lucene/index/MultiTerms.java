@@ -25,13 +25,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.automaton.CompiledAutomaton;
 
-/**
- * Exposes flex API, merged from flex API of
- * sub-segments.
- *
- * @lucene.experimental
- */
-
 public final class MultiTerms extends Terms {
   private final Terms[] subs;
   private final ReaderSlice[] subSlices;
@@ -40,12 +33,7 @@ public final class MultiTerms extends Terms {
   private final boolean hasPositions;
   private final boolean hasPayloads;
 
-  /** Sole constructor.
-   *
-   * @param subs The {@link Terms} instances of all sub-readers. 
-   * @param subSlices A parallel array (matching {@code
-   *        subs}) describing the sub-reader slices.
-   */
+
   public MultiTerms(Terms[] subs, ReaderSlice[] subSlices) throws IOException {
     this.subs = subs;
     this.subSlices = subSlices;
@@ -68,12 +56,10 @@ public final class MultiTerms extends Terms {
     hasPayloads = hasPositions && _hasPayloads; // if all subs have pos, and at least one has payloads.
   }
 
-  /** Expert: returns the Terms being merged. */
   public Terms[] getSubTerms() {
     return subs;
   }
 
-  /** Expert: returns  pointers to the sub-readers corresponding to the Terms being merged. */
   public ReaderSlice[] getSubSlices() {
     return subSlices;
   }

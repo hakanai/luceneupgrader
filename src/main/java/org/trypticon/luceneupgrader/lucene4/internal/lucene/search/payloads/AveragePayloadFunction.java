@@ -18,12 +18,7 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.payloads;
  */
 
 
-/**
- * Calculate the final score as the average score of all payloads seen.
- * <p/>
- * Is thread safe and completely reusable. 
- *
- **/
+
 public class AveragePayloadFunction extends PayloadFunction{
 
   @Override

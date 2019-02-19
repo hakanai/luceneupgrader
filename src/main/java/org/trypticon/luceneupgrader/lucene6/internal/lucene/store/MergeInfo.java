@@ -16,11 +16,6 @@
  */
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.store;
 
-/**
- * <p>A MergeInfo provides information required for a MERGE context.
- *  It is used as part of an {@link IOContext} in case of MERGE context.</p>
- */
-
 public class MergeInfo {
   
   public final int totalMaxDoc;
@@ -31,14 +26,6 @@ public class MergeInfo {
   
   public final int mergeMaxNumSegments;
   
-
-  /**
-   * <p>Creates a new {@link MergeInfo} instance from
-   * the values required for a MERGE {@link IOContext} context.
-   * 
-   * These values are only estimates and are not the actual values.
-   * 
-   */
 
   public MergeInfo(int totalMaxDoc, long estimatedMergeBytes, boolean isExternal, int mergeMaxNumSegments) {
     this.totalMaxDoc = totalMaxDoc;

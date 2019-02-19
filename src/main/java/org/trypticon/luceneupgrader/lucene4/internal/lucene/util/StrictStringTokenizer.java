@@ -17,10 +17,7 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * limitations under the License.
  */
 
-/** Used for parsing Version strings so we don't have to
- *  use overkill String.split nor StringTokenizer (which silently
- *  skips empty tokens).  This also may sidestep a possible
- *  1.8.0_20 JVM bug in String.split. */
+
 
 final class StrictStringTokenizer {
 

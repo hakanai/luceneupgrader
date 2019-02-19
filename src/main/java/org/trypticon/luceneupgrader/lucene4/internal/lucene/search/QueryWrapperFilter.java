@@ -22,28 +22,16 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.AtomicReaderContext;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 
-/** 
- * Constrains search results to only match those which also match a provided
- * query.  
- *
- * <p> This could be used, for example, with a {@link NumericRangeQuery} on a suitably
- * formatted date field to implement date filtering.  One could re-use a single
- * CachingWrapperFilter(QueryWrapperFilter) that matches, e.g., only documents modified 
- * within the last week.  This would only need to be reconstructed once per day.
- */
 public class QueryWrapperFilter extends Filter {
   private final Query query;
 
-  /** Constructs a filter which only matches documents matching
-   * <code>query</code>.
-   */
+
   public QueryWrapperFilter(Query query) {
     if (query == null)
       throw new NullPointerException("Query may not be null");
     this.query = query;
   }
   
-  /** returns the inner Query */
   public final Query getQuery() {
     return query;
   }

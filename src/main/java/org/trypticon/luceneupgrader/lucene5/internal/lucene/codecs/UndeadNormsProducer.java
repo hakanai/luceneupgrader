@@ -27,17 +27,11 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.FieldInfos;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.NumericDocValues;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Accountable;
 
-/** 
- * Used only for backwards compatibility corner case, to provide
- * re-animated norms when all fields are undead.
- * 
- * @lucene.internal */
+
 public class UndeadNormsProducer extends NormsProducer {
 
-  /** Used to bring undead norms back to life. */
   public final static String LEGACY_UNDEAD_NORMS_KEY = UndeadNormsProducer.class.getSimpleName() + ".undeadnorms";
 
-  /** Use this instance */
   public final static NormsProducer INSTANCE = new UndeadNormsProducer();
 
   private UndeadNormsProducer() {
@@ -61,7 +55,6 @@ public class UndeadNormsProducer extends NormsProducer {
     return everythingIsUndead;
   }
 
-  /** Returns true if this field has undead norms. */
   public static boolean isUndead(FieldInfo fieldInfo) {
     String isUndead = fieldInfo.getAttribute(LEGACY_UNDEAD_NORMS_KEY);
     if (isUndead != null) {
@@ -73,7 +66,6 @@ public class UndeadNormsProducer extends NormsProducer {
     }
   }
 
-  /** Call this to note that the field with these attributes has undead norms. */
   public static void setUndead(Map<String,String> attributes) {
     attributes.put(LEGACY_UNDEAD_NORMS_KEY, "true");
   }

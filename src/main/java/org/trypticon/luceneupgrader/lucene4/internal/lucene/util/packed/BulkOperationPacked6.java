@@ -19,9 +19,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
  * limitations under the License.
  */
 
-/**
- * Efficient sequential read/write of packed integers.
- */
 final class BulkOperationPacked6 extends BulkOperationPacked {
 
   public BulkOperationPacked6() {

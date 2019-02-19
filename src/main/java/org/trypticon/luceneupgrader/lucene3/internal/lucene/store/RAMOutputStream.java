@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,11 +19,6 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
 import java.io.IOException;
 
-/**
- * A memory-resident {@link IndexOutput} implementation.
- *
- * @lucene.internal
- */
 public class RAMOutputStream extends IndexOutput {
   static final int BUFFER_SIZE = 1024;
 
@@ -36,7 +31,6 @@ public class RAMOutputStream extends IndexOutput {
   private long bufferStart;
   private int bufferLength;
 
-  /** Construct an empty output buffer. */
   public RAMOutputStream() {
     this(new RAMFile());
   }
@@ -50,7 +44,6 @@ public class RAMOutputStream extends IndexOutput {
     currentBuffer = null;
   }
 
-  /** Copy the current contents of this buffer to the named output. */
   public void writeTo(IndexOutput out) throws IOException {
     flush();
     final long end = file.length;
@@ -67,7 +60,6 @@ public class RAMOutputStream extends IndexOutput {
     }
   }
 
-  /** Resets this to an empty file. */
   public void reset() {
     currentBuffer = null;
     currentBufferIndex = -1;
@@ -156,7 +148,6 @@ public class RAMOutputStream extends IndexOutput {
     return currentBufferIndex < 0 ? 0 : bufferStart + bufferPosition;
   }
 
-  /** Returns byte usage of all buffers. */
   public long sizeInBytes() {
     return (long) file.numBuffers() * (long) BUFFER_SIZE;
   }

@@ -21,16 +21,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * Base class for Scorers that score disjunctions.
- */
 abstract class DisjunctionScorer extends Scorer {
   private final Scorer subScorers[];
   private int numScorers;
 
-  /** The document number of the current match. */
   protected int doc = -1;
-  /** Number of matching scorers for the current match. */
   protected int freq = -1;
   
   protected DisjunctionScorer(Weight weight, Scorer subScorers[]) {
@@ -43,19 +38,14 @@ abstract class DisjunctionScorer extends Scorer {
     heapify();
   }
   
-  /** 
-   * Organize subScorers into a min heap with scorers generating the earliest document on top.
-   */
+
   private void heapify() {
     for (int i = (numScorers >>> 1) - 1; i >= 0; i--) {
       heapAdjust(i);
     }
   }
   
-  /** 
-   * The subtree of subScorers at root is a min heap except possibly for its root element.
-   * Bubble the root down as required to make the subtree a heap.
-   */
+
   private void heapAdjust(int root) {
     Scorer scorer = subScorers[root];
     int doc = scorer.docID();
@@ -90,9 +80,7 @@ abstract class DisjunctionScorer extends Scorer {
     }
   }
 
-  /** 
-   * Remove the root Scorer from subScorers and re-establish it as a heap
-   */
+
   private void heapRemoveRoot() {
     if (numScorers == 1) {
       subScorers[0] = null;
@@ -201,12 +189,9 @@ abstract class DisjunctionScorer extends Scorer {
     return freq;
   }
   
-  /** Reset score state for a new match */
   protected abstract void reset();
   
-  /** Factor in sub-scorer match */
   protected abstract void accum(Scorer subScorer) throws IOException;
   
-  /** Return final score */
   protected abstract float getFinal();
 }

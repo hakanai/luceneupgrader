@@ -33,9 +33,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimat
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.fst.FST;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.fst.Util;
 
-/** Iterates through terms in this field.  This implementation skips
- *  any auto-prefix terms it encounters. */
-
 final class SegmentTermsEnum extends TermsEnum {
 
   // Lazy init:
@@ -116,8 +113,6 @@ final class SegmentTermsEnum extends TermsEnum {
     }
   }
 
-  /** Runs next() through the entire terms dict,
-   *  computing aggregate statistics. */
   public Stats computeBlockStats() throws IOException {
 
     // TODO: add total auto-prefix term count

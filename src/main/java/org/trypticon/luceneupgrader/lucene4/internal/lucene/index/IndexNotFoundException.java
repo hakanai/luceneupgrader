@@ -19,14 +19,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.io.FileNotFoundException;
 
-/**
- * Signals that no index was found in the Directory. Possibly because the
- * directory is empty, however can also indicate an index corruption.
- */
 public final class IndexNotFoundException extends FileNotFoundException {
 
-  /** Creates IndexFileNotFoundException with the
-   *  description message. */
   public IndexNotFoundException(String msg) {
     super(msg);
   }

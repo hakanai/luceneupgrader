@@ -23,10 +23,6 @@ import java.util.Arrays;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.MultiLevelSkipListReader;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
 
-/**
- * @deprecated (4.0) This is only used to read indexes created
- * before 4.0.
- */
 @Deprecated
 final class Lucene3xSkipListReader extends MultiLevelSkipListReader {
   private boolean currentFieldStoresPayloads;
@@ -56,21 +52,15 @@ final class Lucene3xSkipListReader extends MultiLevelSkipListReader {
     Arrays.fill(payloadLength, 0);
   }
 
-  /** Returns the freq pointer of the doc to which the last call of 
-   * {@link MultiLevelSkipListReader#skipTo(int)} has skipped.  */
   public long getFreqPointer() {
     return lastFreqPointer;
   }
 
-  /** Returns the prox pointer of the doc to which the last call of 
-   * {@link MultiLevelSkipListReader#skipTo(int)} has skipped.  */
   public long getProxPointer() {
     return lastProxPointer;
   }
   
-  /** Returns the payload length of the payload stored just before 
-   * the doc to which the last call of {@link MultiLevelSkipListReader#skipTo(int)} 
-   * has skipped.  */
+
   public int getPayloadLength() {
     return lastPayloadLength;
   }

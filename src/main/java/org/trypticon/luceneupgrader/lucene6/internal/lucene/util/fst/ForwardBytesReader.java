@@ -20,7 +20,6 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.util.fst;
 // TODO: can we use just ByteArrayDataInput...?  need to
 // add a .skipBytes to DataInput.. hmm and .setPosition
 
-/** Reads from a single byte[]. */
 final class ForwardBytesReader extends FST.BytesReader {
   private final byte[] bytes;
   private int pos;

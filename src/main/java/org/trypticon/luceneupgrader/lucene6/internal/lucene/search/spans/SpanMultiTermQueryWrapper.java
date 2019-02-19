@@ -32,32 +32,11 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.Query;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.ScoringRewrite;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.TopTermsRewrite;
 
-/**
- * Wraps any {@link MultiTermQuery} as a {@link SpanQuery}, 
- * so it can be nested within other SpanQuery classes.
- * <p>
- * The query is rewritten by default to a {@link SpanOrQuery} containing
- * the expanded terms, but this can be customized. 
- * <p>
- * Example:
- * <blockquote><pre class="prettyprint">
- * {@code
- * WildcardQuery wildcard = new WildcardQuery(new Term("field", "bro?n"));
- * SpanQuery spanWildcard = new SpanMultiTermQueryWrapper<WildcardQuery>(wildcard);
- * // do something with spanWildcard, such as use it in a SpanFirstQuery
- * }
- * </pre></blockquote>
- */
 public class SpanMultiTermQueryWrapper<Q extends MultiTermQuery> extends SpanQuery {
 
   protected final Q query;
   private SpanRewriteMethod rewriteMethod;
 
-  /**
-   * Create a new SpanMultiTermQueryWrapper. 
-   * 
-   * @param query Query to wrap.
-   */
   @SuppressWarnings({"rawtypes","unchecked"})
   public SpanMultiTermQueryWrapper(Q query) {
     this.query = Objects.requireNonNull(query);
@@ -74,17 +53,10 @@ public class SpanMultiTermQueryWrapper<Q extends MultiTermQuery> extends SpanQue
     }
   }
 
-  /**
-   * Expert: returns the rewriteMethod
-   */
   public final SpanRewriteMethod getRewriteMethod() {
     return rewriteMethod;
   }
 
-  /**
-   * Expert: sets the rewrite method. This only makes sense
-   * to be a span rewrite method.
-   */
   public final void setRewriteMethod(SpanRewriteMethod rewriteMethod) {
     this.rewriteMethod = rewriteMethod;
   }
@@ -99,7 +71,6 @@ public class SpanMultiTermQueryWrapper<Q extends MultiTermQuery> extends SpanQue
     throw new IllegalArgumentException("Rewrite first!");
   }
 
-  /** Returns the wrapped query */
   public Query getWrappedQuery() {
     return query;
   }
@@ -132,19 +103,11 @@ public class SpanMultiTermQueryWrapper<Q extends MultiTermQuery> extends SpanQue
            query.equals(((SpanMultiTermQueryWrapper<?>) other).query);
   }
 
-  /** Abstract class that defines how the query is rewritten. */
   public static abstract class SpanRewriteMethod extends MultiTermQuery.RewriteMethod {
     @Override
     public abstract SpanQuery rewrite(IndexReader reader, MultiTermQuery query) throws IOException;
   }
 
-  /**
-   * A rewrite method that first translates each term into a SpanTermQuery in a
-   * {@link Occur#SHOULD} clause in a BooleanQuery, and keeps the
-   * scores as computed by the query.
-   * 
-   * @see #setRewriteMethod
-   */
   public final static SpanRewriteMethod SCORING_SPAN_QUERY_REWRITE = new SpanRewriteMethod() {
     private final ScoringRewrite<List<SpanQuery>> delegate = new ScoringRewrite<List<SpanQuery>>() {
       @Override
@@ -174,24 +137,9 @@ public class SpanMultiTermQueryWrapper<Q extends MultiTermQuery> extends SpanQue
     }
   };
   
-  /**
-   * A rewrite method that first translates each term into a SpanTermQuery in a
-   * {@link Occur#SHOULD} clause in a BooleanQuery, and keeps the
-   * scores as computed by the query.
-   * 
-   * <p>
-   * This rewrite method only uses the top scoring terms so it will not overflow
-   * the boolean max clause count.
-   * 
-   * @see #setRewriteMethod
-   */
   public static final class TopTermsSpanBooleanQueryRewrite extends SpanRewriteMethod  {
     private final TopTermsRewrite<List<SpanQuery>> delegate;
   
-    /** 
-     * Create a TopTermsSpanBooleanQueryRewrite for 
-     * at most <code>size</code> terms.
-     */
     public TopTermsSpanBooleanQueryRewrite(int size) {
       delegate = new TopTermsRewrite<List<SpanQuery>>(size) {
         @Override
@@ -217,7 +165,6 @@ public class SpanMultiTermQueryWrapper<Q extends MultiTermQuery> extends SpanQue
       };
     }
     
-    /** return the maximum priority queue size */
     public int getSize() {
       return delegate.getSize();
     }

@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -31,10 +31,6 @@ class SegmentTermVector implements TermFreqVector {
     this.termFreqs = termFreqs;
   }
 
-  /**
-   * 
-   * @return The number of the field this vector is associated with
-   */
   public String getField() {
     return field;
   }

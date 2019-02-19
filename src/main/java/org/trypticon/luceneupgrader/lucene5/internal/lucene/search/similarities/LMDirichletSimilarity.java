@@ -22,42 +22,22 @@ import java.util.Locale;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.Explanation;
 
-/**
- * Bayesian smoothing using Dirichlet priors. From Chengxiang Zhai and John
- * Lafferty. 2001. A study of smoothing methods for language models applied to
- * Ad Hoc information retrieval. In Proceedings of the 24th annual international
- * ACM SIGIR conference on Research and development in information retrieval
- * (SIGIR '01). ACM, New York, NY, USA, 334-342.
- * <p>
- * The formula as defined the paper assigns a negative score to documents that
- * contain the term, but with fewer occurrences than predicted by the collection
- * language model. The Lucene implementation returns {@code 0} for such
- * documents.
- * </p>
- * 
- * @lucene.experimental
- */
 public class LMDirichletSimilarity extends LMSimilarity {
-  /** The &mu; parameter. */
   private final float mu;
   
-  /** Instantiates the similarity with the provided &mu; parameter. */
   public LMDirichletSimilarity(CollectionModel collectionModel, float mu) {
     super(collectionModel);
     this.mu = mu;
   }
   
-  /** Instantiates the similarity with the provided &mu; parameter. */
   public LMDirichletSimilarity(float mu) {
     this.mu = mu;
   }
 
-  /** Instantiates the similarity with the default &mu; value of 2000. */
   public LMDirichletSimilarity(CollectionModel collectionModel) {
     this(collectionModel, 2000);
   }
   
-  /** Instantiates the similarity with the default &mu; value of 2000. */
   public LMDirichletSimilarity() {
     this(2000);
   }
@@ -88,7 +68,6 @@ public class LMDirichletSimilarity extends LMSimilarity {
     super.explain(subs, stats, doc, freq, docLen);
   }
 
-  /** Returns the &mu; parameter. */
   public float getMu() {
     return mu;
   }

@@ -40,21 +40,9 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
 
-/**
- * Concrete class that writes docId(maybe frq,pos,offset,payloads) list
- * with postings format.
- *
- * Postings list for each term will be stored separately. 
- *
- * @see Lucene41SkipWriter for details about skipping setting and postings layout.
- * @lucene.experimental
- */
 public final class Lucene41PostingsWriter extends PostingsWriterBase {
 
-  /** 
-   * Expert: The maximum number of skip levels. Smaller values result in 
-   * slightly smaller indexes, but slower skipping in big posting lists.
-   */
+
   static final int maxSkipLevels = 10;
 
   final static String TERMS_CODEC = "Lucene41PostingsWriterTerms";
@@ -115,7 +103,6 @@ public final class Lucene41PostingsWriter extends PostingsWriterBase {
   private final ForUtil forUtil;
   private final Lucene41SkipWriter skipWriter;
   
-  /** Creates a postings writer with the specified PackedInts overhead ratio */
   // TODO: does this ctor even make sense?
   public Lucene41PostingsWriter(SegmentWriteState state, float acceptableOverheadRatio) throws IOException {
     super();
@@ -185,7 +172,6 @@ public final class Lucene41PostingsWriter extends PostingsWriterBase {
     encoded = new byte[MAX_ENCODED_SIZE];
   }
 
-  /** Creates a postings writer with <code>PackedInts.COMPACT</code> */
   public Lucene41PostingsWriter(SegmentWriteState state) throws IOException {
     this(state, PackedInts.COMPACT);
   }
@@ -327,7 +313,6 @@ public final class Lucene41PostingsWriter extends PostingsWriterBase {
     lastStartOffset = 0;
   }
 
-  /** Add a new position & payload */
   @Override
   public void addPosition(int position, BytesRef payload, int startOffset, int endOffset) throws IOException {
     // if (DEBUG) {
@@ -400,7 +385,6 @@ public final class Lucene41PostingsWriter extends PostingsWriterBase {
     }
   }
 
-  /** Called when we are done adding docs to this term */
   @Override
   public void finishTerm(BlockTermState _state) throws IOException {
     IntBlockTermState state = (IntBlockTermState) _state;

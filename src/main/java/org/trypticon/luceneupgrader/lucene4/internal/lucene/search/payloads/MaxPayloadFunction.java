@@ -18,12 +18,7 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.payloads;
  */
 
 
-/**
- * Returns the maximum payload score seen, else 1 if there are no payloads on the doc.
- * <p/>
- * Is thread safe and completely reusable.
- *
- **/
+
 public class MaxPayloadFunction extends PayloadFunction {
   @Override
   public float currentScore(int docId, String field, int start, int end, int numPayloadsSeen, float currentScore, float currentPayloadScore) {

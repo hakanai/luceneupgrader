@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,24 +20,14 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Holds a map of String input to String output, to be used
- * with {@link MappingCharFilter}.
- */
+
 public class NormalizeCharMap {
 
   Map<Character, NormalizeCharMap> submap;
   String normStr;
   int diff;
 
-  /** Records a replacement to be applied to the inputs
-   *  stream.  Whenever <code>singleMatch</code> occurs in
-   *  the input, it will be replaced with
-   *  <code>replacement</code>.
-   *
-   * @param singleMatch input String to be replaced
-   * @param replacement output String
-   */
+
   public void add(String singleMatch, String replacement) {
     NormalizeCharMap currMap = this;
     for(int i = 0; i < singleMatch.length(); i++) {

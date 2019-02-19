@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -57,14 +57,12 @@ final class FormatPostingsFieldsWriter extends FormatPostingsFieldsConsumer {
     }
   }
 
-  /** Add a new field */
   @Override
   FormatPostingsTermsConsumer addField(FieldInfo field) {
     termsWriter.setField(field);
     return termsWriter;
   }
 
-  /** Called when we are done adding everything. */
   @Override
   void finish() throws IOException {
     IOUtils.close(termsOut, termsWriter);

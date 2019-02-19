@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,13 +24,9 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Query;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Searcher;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Weight;
 
-/** Base class for span-based queries. */
 public abstract class SpanQuery extends Query {
-  /** Expert: Returns the matches for this query in an index.  Used internally
-   * to search for spans. */
   public abstract Spans getSpans(IndexReader reader) throws IOException;
 
-  /** Returns the name of the field matched by this query.*/
   public abstract String getField();
 
   @Override

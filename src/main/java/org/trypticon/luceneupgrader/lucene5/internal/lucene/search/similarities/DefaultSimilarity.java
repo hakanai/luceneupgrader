@@ -20,12 +20,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.FieldInvertSta
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.SmallFloat;
 
-/**
- * Expert: Default scoring implementation - see superclass {@link ClassicSimilarity} for 
- * implementation details.
- *
- * @deprecated Use {@link ClassicSimilarity} for equivilent behavior, or consider switching to {@link BM25Similarity} which will become the new default in Lucene 6.0
- */
 @Deprecated
 public class DefaultSimilarity extends ClassicSimilarity {
   

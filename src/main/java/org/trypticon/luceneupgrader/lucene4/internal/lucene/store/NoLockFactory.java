@@ -19,14 +19,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import java.io.IOException;
 
-/**
- * Use this {@link LockFactory} to disable locking entirely.
- * Only one instance of this lock is created.  You should call {@link
- * #getNoLockFactory()} to get the instance.
- *
- * @see LockFactory
- */
-
 public class NoLockFactory extends LockFactory {
 
   // Single instance returned whenever makeLock is called.

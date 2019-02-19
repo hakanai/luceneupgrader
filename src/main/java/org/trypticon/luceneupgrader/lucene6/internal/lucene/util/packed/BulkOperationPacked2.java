@@ -18,9 +18,6 @@
  */
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.util.packed;
 
-/**
- * Efficient sequential read/write of packed integers.
- */
 final class BulkOperationPacked2 extends BulkOperationPacked {
 
   public BulkOperationPacked2() {

@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,20 +19,10 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.IOException;
 
-/**
- * Abstract decorator class of a DocIdSetIterator
- * implementation that provides on-demand filter/validation
- * mechanism on an underlying DocIdSetIterator.  See {@link
- * FilteredDocIdSet}.
- */
 public abstract class FilteredDocIdSetIterator extends DocIdSetIterator {
   protected DocIdSetIterator _innerIter;
   private int doc;
 	
-  /**
-   * Constructor.
-   * @param innerIter Underlying DocIdSetIterator.
-   */
   public FilteredDocIdSetIterator(DocIdSetIterator innerIter) {
     if (innerIter == null) {
       throw new IllegalArgumentException("null iterator");
@@ -41,12 +31,6 @@ public abstract class FilteredDocIdSetIterator extends DocIdSetIterator {
     doc = -1;
   }
 	
-  /**
-   * Validation method to determine whether a docid should be in the result set.
-   * @param doc docid to be tested
-   * @return true if input docid should be in the result set, false otherwise.
-   * @see #FilteredDocIdSetIterator(DocIdSetIterator)
-   */
   abstract protected boolean match(int doc) throws IOException;
 	
   @Override

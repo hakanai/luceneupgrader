@@ -26,13 +26,10 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentInfo;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IOContext;
 
-/** 
- * Lucene 4.0 Stored Fields Format.
- * @deprecated only for reading 4.0 segments */
+
 @Deprecated
 public class Lucene40StoredFieldsFormat extends StoredFieldsFormat {
 
-  /** Sole constructor. */
   public Lucene40StoredFieldsFormat() {
   }
 

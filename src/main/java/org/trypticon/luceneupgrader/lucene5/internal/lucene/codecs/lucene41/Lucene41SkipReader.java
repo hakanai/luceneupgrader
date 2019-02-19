@@ -22,10 +22,6 @@ import java.util.Arrays;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.MultiLevelSkipListReader;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IndexInput;
 
-/**
- * Lucene 4.1 skiplist format.
- * @deprecated only for reading old 4.x segments
- */
 @Deprecated
 final class Lucene41SkipReader extends MultiLevelSkipListReader {
   // private boolean DEBUG = Lucene41PostingsReader.DEBUG;
@@ -65,15 +61,6 @@ final class Lucene41SkipReader extends MultiLevelSkipListReader {
     }
   }
 
-  /**
-   * Trim original docFreq to tell skipReader read proper number of skip points.
-   *
-   * Since our definition in Lucene41Skip* is a little different from MultiLevelSkip*
-   * This trimmed docFreq will prevent skipReader from:
-   * 1. silly reading a non-existed skip point after the last block boundary
-   * 2. moving into the vInt block
-   *
-   */
   protected int trim(int df) {
     return df % blockSize == 0? df - 1: df;
   }
@@ -95,8 +82,6 @@ final class Lucene41SkipReader extends MultiLevelSkipListReader {
     }
   }
 
-  /** Returns the doc pointer of the doc to which the last call of 
-   * {@link MultiLevelSkipListReader#skipTo(int)} has skipped.  */
   public long getDocPointer() {
     return lastDocPointer;
   }

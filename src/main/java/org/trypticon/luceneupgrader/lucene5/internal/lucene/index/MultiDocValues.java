@@ -36,31 +36,11 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimat
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedLongValues;
 
-/**
- * A wrapper for CompositeIndexReader providing access to DocValues.
- * 
- * <p><b>NOTE</b>: for multi readers, you'll get better
- * performance by gathering the sub readers using
- * {@link IndexReader#getContext()} to get the
- * atomic leaves and then operate per-LeafReader,
- * instead of using this class.
- * 
- * <p><b>NOTE</b>: This is very costly.
- *
- * @lucene.experimental
- * @lucene.internal
- */
 public class MultiDocValues {
   
-  /** No instantiation */
   private MultiDocValues() {}
   
-  /** Returns a NumericDocValues for a reader's norms (potentially merging on-the-fly).
-   * <p>
-   * This is a slow way to access normalization values. Instead, access them per-segment
-   * with {@link LeafReader#getNormValues(String)}
-   * </p> 
-   */
+
   public static NumericDocValues getNormValues(final IndexReader r, final String field) throws IOException {
     final List<LeafReaderContext> leaves = r.leaves();
     final int size = leaves.size();
@@ -101,12 +81,7 @@ public class MultiDocValues {
     };
   }
 
-  /** Returns a NumericDocValues for a reader's docvalues (potentially merging on-the-fly) 
-   * <p>
-   * This is a slow way to access numeric values. Instead, access them per-segment
-   * with {@link LeafReader#getNumericDocValues(String)}
-   * </p> 
-   * */
+
   public static NumericDocValues getNumericValues(final IndexReader r, final String field) throws IOException {
     final List<LeafReaderContext> leaves = r.leaves();
     final int size = leaves.size();
@@ -145,12 +120,7 @@ public class MultiDocValues {
     }
   }
   
-  /** Returns a Bits for a reader's docsWithField (potentially merging on-the-fly) 
-   * <p>
-   * This is a slow way to access this bitset. Instead, access them per-segment
-   * with {@link LeafReader#getDocsWithField(String)}
-   * </p> 
-   * */
+
   public static Bits getDocsWithField(final IndexReader r, final String field) throws IOException {
     final List<LeafReaderContext> leaves = r.leaves();
     final int size = leaves.size();
@@ -190,12 +160,7 @@ public class MultiDocValues {
     }
   }
 
-  /** Returns a BinaryDocValues for a reader's docvalues (potentially merging on-the-fly)
-   * <p>
-   * This is a slow way to access binary values. Instead, access them per-segment
-   * with {@link LeafReader#getBinaryDocValues(String)}
-   * </p>  
-   */
+
   public static BinaryDocValues getBinaryValues(final IndexReader r, final String field) throws IOException {
     final List<LeafReaderContext> leaves = r.leaves();
     final int size = leaves.size();
@@ -235,12 +200,7 @@ public class MultiDocValues {
     }
   }
   
-  /** Returns a SortedNumericDocValues for a reader's docvalues (potentially merging on-the-fly) 
-   * <p>
-   * This is a slow way to access sorted numeric values. Instead, access them per-segment
-   * with {@link LeafReader#getSortedNumericDocValues(String)}
-   * </p> 
-   * */
+
   public static SortedNumericDocValues getSortedNumericValues(final IndexReader r, final String field) throws IOException {
     final List<LeafReaderContext> leaves = r.leaves();
     final int size = leaves.size();
@@ -292,12 +252,7 @@ public class MultiDocValues {
     }
   }
   
-  /** Returns a SortedDocValues for a reader's docvalues (potentially doing extremely slow things).
-   * <p>
-   * This is an extremely slow way to access sorted values. Instead, access them per-segment
-   * with {@link LeafReader#getSortedDocValues(String)}
-   * </p>  
-   */
+
   public static SortedDocValues getSortedValues(final IndexReader r, final String field) throws IOException {
     final List<LeafReaderContext> leaves = r.leaves();
     final int size = leaves.size();
@@ -332,12 +287,7 @@ public class MultiDocValues {
     }
   }
   
-  /** Returns a SortedSetDocValues for a reader's docvalues (potentially doing extremely slow things).
-   * <p>
-   * This is an extremely slow way to access sorted values. Instead, access them per-segment
-   * with {@link LeafReader#getSortedSetDocValues(String)}
-   * </p>  
-   */
+
   public static SortedSetDocValues getSortedSetValues(final IndexReader r, final String field) throws IOException {
     final List<LeafReaderContext> leaves = r.leaves();
     final int size = leaves.size();
@@ -372,7 +322,6 @@ public class MultiDocValues {
     }
   }
 
-  /** maps per-segment ordinals to/from global ordinal space */
   // TODO: we could also have a utility method to merge Terms[] and use size() as a weight when we need it
   // TODO: use more efficient packed ints structures?
   // TODO: pull this out? it's pretty generic (maps between N ord()-enabled TermsEnums) 
@@ -381,7 +330,6 @@ public class MultiDocValues {
     private static class SegmentMap implements Accountable {
       private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(SegmentMap.class);
 
-      /** Build a map from an index into a sorted view of `weights` to an index into `weights`. */
       private static int[] map(final long[] weights) {
         final int[] newToOld = new int[weights.length];
         for (int i = 0; i < weights.length; ++i) {
@@ -403,7 +351,6 @@ public class MultiDocValues {
         return newToOld;
       }
 
-      /** Inverse the map. */
       private static int[] inverse(int[] map) {
         final int[] inverse = new int[map.length];
         for (int i = 0; i < map.length; ++i) {
@@ -439,11 +386,6 @@ public class MultiDocValues {
       }
     }
 
-    /**
-     * Create an ordinal map that uses the number of unique values of each
-     * {@link SortedDocValues} instance as a weight.
-     * @see #build(Object, TermsEnum[], long[], float)
-     */
     public static OrdinalMap build(Object owner, SortedDocValues[] values, float acceptableOverheadRatio) throws IOException {
       final TermsEnum[] subs = new TermsEnum[values.length];
       final long[] weights = new long[values.length];
@@ -454,11 +396,6 @@ public class MultiDocValues {
       return build(owner, subs, weights, acceptableOverheadRatio);
     }
 
-    /**
-     * Create an ordinal map that uses the number of unique values of each
-     * {@link SortedSetDocValues} instance as a weight.
-     * @see #build(Object, TermsEnum[], long[], float)
-     */
     public static OrdinalMap build(Object owner, SortedSetDocValues[] values, float acceptableOverheadRatio) throws IOException {
       final TermsEnum[] subs = new TermsEnum[values.length];
       final long[] weights = new long[values.length];
@@ -469,17 +406,6 @@ public class MultiDocValues {
       return build(owner, subs, weights, acceptableOverheadRatio);
     }
 
-    /** 
-     * Creates an ordinal map that allows mapping ords to/from a merged
-     * space from <code>subs</code>.
-     * @param owner a cache key
-     * @param subs TermsEnums that support {@link TermsEnum#ord()}. They need
-     *             not be dense (e.g. can be FilteredTermsEnums}.
-     * @param weights a weight for each sub. This is ideally correlated with
-     *             the number of unique terms that each sub introduces compared
-     *             to the other subs
-     * @throws IOException if an I/O error occurred.
-     */
     public static OrdinalMap build(Object owner, TermsEnum subs[], long[] weights, float acceptableOverheadRatio) throws IOException {
       if (subs.length != weights.length) {
         throw new IllegalArgumentException("subs and weights must have the same length");
@@ -607,33 +533,18 @@ public class MultiDocValues {
       this.ramBytesUsed = ramBytesUsed;
     }
 
-    /** 
-     * Given a segment number, return a {@link LongValues} instance that maps
-     * segment ordinals to global ordinals.
-     */
     public LongValues getGlobalOrds(int segmentIndex) {
       return segmentToGlobalOrds[segmentMap.oldToNew(segmentIndex)];
     }
 
-    /**
-     * Given global ordinal, returns the ordinal of the first segment which contains
-     * this ordinal (the corresponding to the segment return {@link #getFirstSegmentNumber}).
-     */
     public long getFirstSegmentOrd(long globalOrd) {
       return globalOrd - globalOrdDeltas.get(globalOrd);
     }
     
-    /** 
-     * Given a global ordinal, returns the index of the first
-     * segment that contains this term.
-     */
     public int getFirstSegmentNumber(long globalOrd) {
       return segmentMap.newToOld((int) firstSegments.get(globalOrd));
     }
     
-    /**
-     * Returns the total number of unique terms in global ord space.
-     */
     public long getValueCount() {
       return globalOrdDeltas.size();
     }
@@ -654,19 +565,12 @@ public class MultiDocValues {
     }
   }
   
-  /** 
-   * Implements SortedDocValues over n subs, using an OrdinalMap
-   * @lucene.internal
-   */
+
   public static class MultiSortedDocValues extends SortedDocValues {
-    /** docbase for each leaf: parallel with {@link #values} */
     public final int docStarts[];
-    /** leaf values */
     public final SortedDocValues values[];
-    /** ordinal map mapping ords from <code>values</code> to global ord space */
     public final OrdinalMap mapping;
   
-    /** Creates a new MultiSortedDocValues over <code>values</code> */
     MultiSortedDocValues(SortedDocValues values[], int docStarts[], OrdinalMap mapping) throws IOException {
       assert docStarts.length == values.length + 1;
       this.values = values;
@@ -694,21 +598,14 @@ public class MultiDocValues {
     }
   }
   
-  /** 
-   * Implements MultiSortedSetDocValues over n subs, using an OrdinalMap 
-   * @lucene.internal
-   */
+
   public static class MultiSortedSetDocValues extends SortedSetDocValues {
-    /** docbase for each leaf: parallel with {@link #values} */
     public final int docStarts[];
-    /** leaf values */
     public final SortedSetDocValues values[];
-    /** ordinal map mapping ords from <code>values</code> to global ord space */
     public final OrdinalMap mapping;
     int currentSubIndex;
     LongValues currentGlobalOrds;
     
-    /** Creates a new MultiSortedSetDocValues over <code>values</code> */
     MultiSortedSetDocValues(SortedSetDocValues values[], int docStarts[], OrdinalMap mapping) throws IOException {
       assert docStarts.length == values.length + 1;
       this.values = values;

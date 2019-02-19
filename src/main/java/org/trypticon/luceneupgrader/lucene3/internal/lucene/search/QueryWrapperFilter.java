@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,22 +22,10 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 
-/** 
- * Constrains search results to only match those which also match a provided
- * query.  
- *
- * <p> This could be used, for example, with a {@link TermRangeQuery} on a suitably
- * formatted date field to implement date filtering.  One could re-use a single
- * QueryFilter that matches, e.g., only documents modified within the last
- * week.  The QueryFilter and TermRangeQuery would only need to be reconstructed
- * once per day.
- */
 public class QueryWrapperFilter extends Filter {
   private Query query;
 
-  /** Constructs a filter which only matches documents matching
-   * <code>query</code>.
-   */
+
   public QueryWrapperFilter(Query query) {
     this.query = query;
   }

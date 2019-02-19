@@ -34,10 +34,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.LongValues;
 
-/**
- * Provides random access to a stream written with {@link BlockPackedWriter}.
- * @lucene.internal
- */
 public final class BlockPackedReader extends LongValues implements Accountable {
 
   private final int blockShift, blockMask;
@@ -46,7 +42,6 @@ public final class BlockPackedReader extends LongValues implements Accountable {
   private final PackedInts.Reader[] subReaders;
   private final long sumBPV;
 
-  /** Sole constructor. */
   public BlockPackedReader(IndexInput in, int packedIntsVersion, int blockSize, long valueCount, boolean direct) throws IOException {
     this.valueCount = valueCount;
     blockShift = checkBlockSize(blockSize, MIN_BLOCK_SIZE, MAX_BLOCK_SIZE);

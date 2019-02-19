@@ -19,16 +19,8 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.store;
 
 import java.io.IOException;
 
-/**
- * Use this {@link LockFactory} to disable locking entirely.
- * This is a singleton, you have to use {@link #INSTANCE}.
- *
- * @see LockFactory
- */
-
 public final class NoLockFactory extends LockFactory {
 
-  /** The singleton */
   public static final NoLockFactory INSTANCE = new NoLockFactory();
   
   // visible for AssertingLock!

@@ -20,9 +20,7 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 import java.io.IOException;
 import java.io.EOFException;
 
-/** A memory-resident {@link IndexInput} implementation. 
- *  
- *  @lucene.internal */
+
 public class RAMInputStream extends IndexInput implements Cloneable {
   static final int BUFFER_SIZE = RAMOutputStream.BUFFER_SIZE;
 

@@ -33,17 +33,9 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Version;
 
-/**
- * Lucene 4.0 implementation of {@link SegmentInfoReader}.
- * 
- * @see Lucene40SegmentInfoFormat
- * @lucene.experimental
- * @deprecated Only for reading old 4.0-4.5 segments
- */
 @Deprecated
 public class Lucene40SegmentInfoReader extends SegmentInfoReader {
 
-  /** Sole constructor. */
   public Lucene40SegmentInfoReader() {
   }
 

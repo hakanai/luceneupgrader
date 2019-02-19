@@ -19,23 +19,15 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.index;
 
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 
-/** 
- * Exposes multi-valued view over a single-valued instance.
- * <p>
- * This can be used if you want to have one multi-valued implementation
- * that works for single or multi-valued types.
- */
 final class SingletonSortedSetDocValues extends RandomAccessOrds {
   private final SortedDocValues in;
   private long currentOrd;
   private long ord;
   
-  /** Creates a multi-valued view over the provided SortedDocValues */
   public SingletonSortedSetDocValues(SortedDocValues in) {
     this.in = in;
   }
 
-  /** Return the wrapped {@link SortedDocValues} */
   public SortedDocValues getSortedDocValues() {
     return in;
   }

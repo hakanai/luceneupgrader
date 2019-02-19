@@ -21,9 +21,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.AttributeImpl;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.AttributeReflector;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 
-/** Implementation class for {@link MaxNonCompetitiveBoostAttribute}.
- * @lucene.internal
- */
 public final class MaxNonCompetitiveBoostAttributeImpl extends AttributeImpl implements MaxNonCompetitiveBoostAttribute {
   private float maxNonCompetitiveBoost = Float.NEGATIVE_INFINITY;
   private BytesRef competitiveTerm = null;

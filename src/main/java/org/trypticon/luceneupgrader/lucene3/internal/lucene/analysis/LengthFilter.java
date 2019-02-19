@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,12 +21,7 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.CharTermAttribute;
 
-/**
- * Removes words that are too long or too short from the stream.
- * <p>
- * Note: Length is calculated as the number of UTF-16 code units.
- * </p>
- */
+
 public final class LengthFilter extends FilteringTokenFilter {
 
   private final int min;
@@ -34,21 +29,14 @@ public final class LengthFilter extends FilteringTokenFilter {
   
   private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
 
-  /**
-   * Build a filter that removes words that are too long or too
-   * short from the text.
-   */
+
   public LengthFilter(boolean enablePositionIncrements, TokenStream in, int min, int max) {
     super(enablePositionIncrements, in);
     this.min = min;
     this.max = max;
   }
   
-  /**
-   * Build a filter that removes words that are too long or too
-   * short from the text.
-   * @deprecated Use {@link #LengthFilter(boolean, TokenStream, int, int)} instead.
-   */
+
   @Deprecated
   public LengthFilter(TokenStream in, int min, int max) {
     this(false, in, min, max);

@@ -23,13 +23,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataOutput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 
-/**
- * An FST {@link Outputs} implementation where each output
- * is a non-negative long value.
- *
- * @lucene.experimental
- */
-
 public final class PositiveIntOutputs extends Outputs<Long> {
   
   private final static Long NO_OUTPUT = new Long(0);

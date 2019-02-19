@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,13 +19,6 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
 import java.io.IOException;
 
-/**
- * This exception is thrown when the <code>write.lock</code>
- * could not be acquired.  This
- * happens when a writer tries to open an index
- * that another writer already has open.
- * @see Lock#obtain(long)
- */
 public class LockObtainFailedException extends IOException {
   public LockObtainFailedException(String message) {
     super(message);

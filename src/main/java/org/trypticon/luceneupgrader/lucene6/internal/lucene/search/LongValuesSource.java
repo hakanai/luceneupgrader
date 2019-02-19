@@ -25,59 +25,24 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.LeafReaderCont
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.NumericDocValues;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Bits;
 
-/**
- * Base class for producing {@link LongValues}
- *
- * To obtain a {@link LongValues} object for a leaf reader, clients should
- * call {@link #getValues(LeafReaderContext, DoubleValues)}.
- *
- * LongValuesSource objects for long and int-valued NumericDocValues fields can
- * be obtained by calling {@link #fromLongField(String)} and {@link #fromIntField(String)}.
- *
- * To obtain a LongValuesSource from a float or double-valued NumericDocValues field,
- * use {@link DoubleValuesSource#fromFloatField(String)} or {@link DoubleValuesSource#fromDoubleField(String)}
- * and then call {@link DoubleValuesSource#toLongValuesSource()}.
- */
 public abstract class LongValuesSource {
 
-  /**
-   * Returns a {@link LongValues} instance for the passed-in LeafReaderContext and scores
-   *
-   * If scores are not needed to calculate the values (ie {@link #needsScores() returns false}, callers
-   * may safely pass {@code null} for the {@code scores} parameter.
-   */
   public abstract LongValues getValues(LeafReaderContext ctx, DoubleValues scores) throws IOException;
 
-  /**
-   * Return true if document scores are needed to calculate values
-   */
   public abstract boolean needsScores();
 
-  /**
-   * Create a sort field based on the value of this producer
-   * @param reverse true if the sort should be decreasing
-   */
   public SortField getSortField(boolean reverse) {
     return new LongValuesSortField(this, reverse);
   }
 
-  /**
-   * Creates a LongValuesSource that wraps a long-valued field
-   */
   public static LongValuesSource fromLongField(String field) {
     return new FieldValuesSource(field);
   }
 
-  /**
-   * Creates a LongValuesSource that wraps an int-valued field
-   */
   public static LongValuesSource fromIntField(String field) {
     return fromLongField(field);
   }
 
-  /**
-   * Creates a LongValuesSource that always returns a constant value
-   */
   public static LongValuesSource constant(long value) {
     return new LongValuesSource() {
       @Override

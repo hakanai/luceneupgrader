@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,33 +23,18 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattrib
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.CharacterUtils;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Version;
 
-/**
- * Normalizes token text to lower case.
- * <a name="version"/>
- * <p>You must specify the required {@link Version}
- * compatibility when creating LowerCaseFilter:
- * <ul>
- *   <li> As of 3.1, supplementary characters are properly lowercased.
- * </ul>
- */
+
 public final class LowerCaseFilter extends TokenFilter {
   private final CharacterUtils charUtils;
   private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
   
-  /**
-   * Create a new LowerCaseFilter, that normalizes token text to lower case.
-   * 
-   * @param matchVersion See <a href="#version">above</a>
-   * @param in TokenStream to filter
-   */
+
   public LowerCaseFilter(Version matchVersion, TokenStream in) {
     super(in);
     charUtils = CharacterUtils.getInstance(matchVersion);
   }
   
-  /**
-   * @deprecated Use {@link #LowerCaseFilter(Version, TokenStream)} instead.
-   */
+
   @Deprecated
   public LowerCaseFilter(TokenStream in) {
     this(Version.LUCENE_30, in);

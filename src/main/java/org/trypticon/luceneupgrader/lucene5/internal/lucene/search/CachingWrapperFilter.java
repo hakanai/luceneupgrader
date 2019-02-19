@@ -33,51 +33,28 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Accountables;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RoaringDocIdSet;
 
-/**
- * Wraps another {@link Filter}'s result and caches it.  The purpose is to allow
- * filters to simply filter, and then wrap with this class
- * to add caching.
- * @deprecated Use {@link CachingWrapperQuery} and {@link BooleanClause.Occur#FILTER} clauses instead
- */
 @Deprecated
 public class CachingWrapperFilter extends Filter implements Accountable {
   private final Filter filter;
   private final FilterCachingPolicy policy;
   private final Map<Object,DocIdSet> cache = Collections.synchronizedMap(new WeakHashMap<Object,DocIdSet>());
 
-  /** Wraps another filter's result and caches it according to the provided policy.
-   * @param filter Filter to cache results of
-   * @param policy policy defining which filters should be cached on which segments
-   */
+
   public CachingWrapperFilter(Filter filter, FilterCachingPolicy policy) {
     this.filter = filter;
     this.policy = policy;
   }
 
-  /** Same as {@link CachingWrapperFilter#CachingWrapperFilter(Filter, FilterCachingPolicy)}
-   *  but enforces the use of the
-   *  {@link FilterCachingPolicy.CacheOnLargeSegments#DEFAULT} policy. */
+
   public CachingWrapperFilter(Filter filter) {
     this(filter, FilterCachingPolicy.CacheOnLargeSegments.DEFAULT);
   }
 
-  /**
-   * Gets the contained filter.
-   * @return the contained filter.
-   */
   public Filter getFilter() {
     return filter;
   }
 
-  /** 
-   *  Provide the DocIdSet to be cached, using the DocIdSet provided
-   *  by the wrapped Filter. <p>This implementation returns the given {@link DocIdSet},
-   *  if {@link DocIdSet#isCacheable} returns <code>true</code>, else it calls
-   *  {@link #cacheImpl(DocIdSetIterator, org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LeafReader)}
-   *  <p>Note: This method returns {@linkplain DocIdSet#EMPTY} if the given docIdSet
-   *  is <code>null</code> or if {@link DocIdSet#iterator()} return <code>null</code>. The empty
-   *  instance is use as a placeholder in the cache instead of the <code>null</code> value.
-   */
+
   protected DocIdSet docIdSetToCache(DocIdSet docIdSet, LeafReader reader) throws IOException {
     if (docIdSet == null || docIdSet.isCacheable()) {
       return docIdSet;
@@ -91,9 +68,6 @@ public class CachingWrapperFilter extends Filter implements Accountable {
     }
   }
   
-  /**
-   * Default cache implementation: uses {@link RoaringDocIdSet}.
-   */
   protected DocIdSet cacheImpl(DocIdSetIterator iterator, LeafReader reader) throws IOException {
     return new RoaringDocIdSet.Builder(reader.maxDoc()).add(iterator).build();
   }

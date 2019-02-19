@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -56,19 +56,7 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst.Builder.UnC
 // dead-end state (NON_FINAL_END_NODE=0), the layers above
 // (FSTEnum, Util) have problems with this!!
 
-/** Represents an finite state machine (FST), using a
- *  compact byte[] format.
- *  <p> The format is similar to what's used by Morfologik
- *  (http://sourceforge.net/projects/morfologik).
- *
- *  <p><b>NOTE</b>: the FST cannot be larger than ~2.1 GB
- *  because it uses int to address the byte[].
- *
- * @lucene.experimental
- */
 public final class FST<T> {
-  /** Specifies allowed range of each int input label for
-   *  this FST. */
   public static enum INPUT_TYPE {BYTE1, BYTE2, BYTE4};
   public final INPUT_TYPE inputType;
 
@@ -91,19 +79,10 @@ public final class FST<T> {
 
   private final static byte ARCS_AS_FIXED_ARRAY = BIT_ARC_HAS_FINAL_OUTPUT;
 
-  /**
-   * @see #shouldExpand(UnCompiledNode)
-   */
   final static int FIXED_ARRAY_SHALLOW_DISTANCE = 3; // 0 => only root node.
 
-  /**
-   * @see #shouldExpand(UnCompiledNode)
-   */
   final static int FIXED_ARRAY_NUM_ARCS_SHALLOW = 5;
 
-  /**
-   * @see #shouldExpand(UnCompiledNode)
-   */
   final static int FIXED_ARRAY_NUM_ARCS_DEEP = 10;
 
   private int[] bytesPerArc = new int[0];
@@ -112,13 +91,10 @@ public final class FST<T> {
   private final static String FILE_FORMAT_NAME = "FST";
   private final static int VERSION_START = 0;
 
-  /** Changed numBytesPerArc for array'd case from byte to int. */
   private final static int VERSION_INT_NUM_BYTES_PER_ARC = 1;
 
-  /** Write BYTE2 labels as 2-byte short, not vInt. */
   private final static int VERSION_SHORT_BYTE2_LABELS = 2;
 
-  /** Added optional packed format. */
   private final static int VERSION_PACKED = 3;
 
   private final static int VERSION_CURRENT = VERSION_PACKED;
@@ -162,7 +138,6 @@ public final class FST<T> {
 
   private Arc<T> cachedRootArcs[];
 
-  /** Represents a single arc. */
   public final static class Arc<T> {
     public int label;
     public T output;
@@ -186,7 +161,6 @@ public final class FST<T> {
     int arcIdx;
     int numArcs;
 
-    /** Returns this */
     public Arc<T> copyFrom(Arc<T> other) {
       node = other.node;
       label = other.label;
@@ -281,7 +255,6 @@ public final class FST<T> {
     nodeRefToAddress = null;
   }
 
-  /** Load a previously saved FST. */
   public FST(DataInput in, Outputs<T> outputs) throws IOException {
     this.outputs = outputs;
     writer = null;
@@ -342,7 +315,6 @@ public final class FST<T> {
     return inputType;
   }
 
-  /** Returns bytes used to represent the FST */
   public int sizeInBytes() {
     int size = bytes.length;
     if (packed) {
@@ -481,9 +453,6 @@ public final class FST<T> {
     out.writeBytes(bytes, 0, bytes.length);
   }
   
-  /**
-   * Writes an automaton to a file. 
-   */
   public void save(final File file) throws IOException {
     boolean success = false;
     OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
@@ -499,9 +468,6 @@ public final class FST<T> {
     }
   }
 
-  /**
-   * Reads an automaton from a file. 
-   */
   public static <T> FST<T> read(File file, Outputs<T> outputs) throws IOException {
     InputStream is = new BufferedInputStream(new FileInputStream(file));
     boolean success = false;
@@ -728,8 +694,6 @@ public final class FST<T> {
     return node;
   }
 
-  /** Fills virtual 'start' arc, ie, an empty incoming arc to
-   *  the FST's start node */
   public Arc<T> getFirstArc(Arc<T> arc) {
 
     if (emptyOutput != null) {
@@ -747,12 +711,7 @@ public final class FST<T> {
     return arc;
   }
 
-  /** Follows the <code>follow</code> arc and reads the last
-   *  arc of its target; this changes the provided
-   *  <code>arc</code> (2nd arg) in-place and returns it.
-   * 
-   * @return Returns the second argument
-   * (<code>arc</code>). */
+
   public Arc<T> readLastTargetArc(Arc<T> follow, Arc<T> arc) throws IOException {
     //System.out.println("readLast");
     if (!targetHasArcs(follow)) {
@@ -813,13 +772,6 @@ public final class FST<T> {
     }
   }
 
-  /**
-   * Follow the <code>follow</code> arc and read the first arc of its target;
-   * this changes the provided <code>arc</code> (2nd arg) in-place and returns
-   * it.
-   * 
-   * @return Returns the second argument (<code>arc</code>).
-   */
   public Arc<T> readFirstTargetArc(Arc<T> follow, Arc<T> arc) throws IOException {
     //int pos = address;
     //System.out.println("    readFirstTarget follow.target=" + follow.target + " isFinal=" + follow.isFinal());
@@ -873,12 +825,6 @@ public final class FST<T> {
     return readNextRealArc(arc, in);
   }
 
-  /**
-   * Checks if <code>arc</code>'s target state is in expanded (or vector) format. 
-   * 
-   * @return Returns <code>true</code> if <code>arc</code> points to a state in an
-   * expanded array format.
-   */
   boolean isExpandedTarget(Arc<T> follow) throws IOException {
     if (!targetHasArcs(follow)) {
       return false;
@@ -888,7 +834,6 @@ public final class FST<T> {
     }
   }
 
-  /** In-place read; returns the arc. */
   public Arc<T> readNextArc(Arc<T> arc) throws IOException {
     if (arc.label == END_LABEL) {
       // This was a fake inserted "final" arc
@@ -901,8 +846,6 @@ public final class FST<T> {
     }
   }
 
-  /** Peeks at next arc's label; does not alter arc.  Do
-   *  not call this if arc.isLast()! */
   public int readNextArcLabel(Arc<T> arc) throws IOException {
     assert !arc.isLast();
 
@@ -938,8 +881,6 @@ public final class FST<T> {
     return readLabel(in);
   }
 
-  /** Never returns null, but you should never call this if
-   *  arc.isLast() is true. */
   public Arc<T> readNextRealArc(Arc<T> arc, final BytesReader in) throws IOException {
     assert in.bytes == bytes;
 
@@ -1021,8 +962,6 @@ public final class FST<T> {
     return arc;
   }
 
-  /** Finds an arc leaving the incoming arc, replacing the arc in place.
-   *  This returns null if the arc was not found, else the incoming arc. */
   public Arc<T> findTargetArc(int labelToMatch, Arc<T> follow, Arc<T> arc, BytesReader in) throws IOException {
     assert cachedRootArcs != null;
     assert in.bytes == bytes;
@@ -1164,21 +1103,6 @@ public final class FST<T> {
     allowArrayArcs = v;
   }
   
-  /**
-   * Nodes will be expanded if their depth (distance from the root node) is
-   * &lt;= this value and their number of arcs is &gt;=
-   * {@link #FIXED_ARRAY_NUM_ARCS_SHALLOW}.
-   * 
-   * <p>
-   * Fixed array consumes more RAM but enables binary search on the arcs
-   * (instead of a linear scan) on lookup by arc label.
-   * 
-   * @return <code>true</code> if <code>node</code> should be stored in an
-   *         expanded (array) form.
-   * 
-   * @see #FIXED_ARRAY_NUM_ARCS_DEEP
-   * @see Builder.UnCompiledNode#depth
-   */
   private boolean shouldExpand(UnCompiledNode<T> node) {
     return allowArrayArcs &&
       ((node.depth <= FIXED_ARRAY_SHALLOW_DISTANCE && node.numArcs >= FIXED_ARRAY_NUM_ARCS_SHALLOW) || 
@@ -1230,10 +1154,7 @@ public final class FST<T> {
     }
   }
 
-  /** Reads the bytes from this FST.  Use {@link
-   *  #getBytesReader(int)} to obtain an instance for this
-   *  FST; re-use across calls (but only within a single
-   *  thread) for better performance. */
+
   public static abstract class BytesReader extends DataInput {
     protected int pos;
     protected final byte[] bytes;
@@ -1429,9 +1350,7 @@ public final class FST<T> {
     writer = new BytesWriter();
   }
 
-  /** Expert: creates an FST by packing this one.  This
-   *  process requires substantial additional RAM (currently
-   *  ~8 bytes per node), but then should produce a smaller FST. */
+
   public FST<T> pack(int minInCountDeref, int maxDerefNodes) throws IOException {
 
     // TODO: other things to try

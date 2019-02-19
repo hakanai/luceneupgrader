@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -31,12 +31,10 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.PriorityQueue;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ToStringUtils;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Query;
 
-/** Matches the union of its clauses.*/
 public class SpanOrQuery extends SpanQuery implements Cloneable {
   private List<SpanQuery> clauses;
   private String field;
 
-  /** Construct a SpanOrQuery merging the provided clauses. */
   public SpanOrQuery(SpanQuery... clauses) {
 
     // copy clauses array into an ArrayList
@@ -46,7 +44,6 @@ public class SpanOrQuery extends SpanQuery implements Cloneable {
     }
   }
 
-  /** Adds a clause to this query */
   public final void addClause(SpanQuery clause) {
     if (field == null) {
       field = clause.getField();
@@ -56,7 +53,6 @@ public class SpanOrQuery extends SpanQuery implements Cloneable {
     this.clauses.add(clause);
   }
   
-  /** Return the clauses whose spans are matched. */
   public SpanQuery[] getClauses() {
     return clauses.toArray(new SpanQuery[clauses.size()]);
   }

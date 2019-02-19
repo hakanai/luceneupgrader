@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,13 +22,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * A dummy lock as a replacement for {@link ReentrantLock} to disable locking
- * @lucene.internal
- */
 public final class DummyConcurrentLock implements Lock {
 
-  /** a default instance, can be always used, as this {@link Lock} is stateless. */
   public static final DummyConcurrentLock INSTANCE = new DummyConcurrentLock();
 
   public void lock() {}

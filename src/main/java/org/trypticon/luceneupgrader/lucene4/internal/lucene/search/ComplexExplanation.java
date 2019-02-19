@@ -17,8 +17,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * limitations under the License.
  */
 
-/** Expert: Describes the score computation for document and query, and
- * can distinguish a match independent of a positive value. */
 public class ComplexExplanation extends Explanation {
   private Boolean match;
   
@@ -33,25 +31,8 @@ public class ComplexExplanation extends Explanation {
     this.match = Boolean.valueOf(match);
   }
 
-  /**
-   * The match status of this explanation node.
-   * @return May be null if match status is unknown
-   */
   public Boolean getMatch() { return match; }
-  /**
-   * Sets the match status assigned to this explanation node.
-   * @param match May be null if match status is unknown
-   */
   public void setMatch(Boolean match) { this.match = match; }
-  /**
-   * Indicates whether or not this Explanation models a good match.
-   *
-   * <p>
-   * If the match status is explicitly set (i.e.: not null) this method
-   * uses it; otherwise it defers to the superclass.
-   * </p>
-   * @see #getMatch
-   */
   @Override
   public boolean isMatch() {
     Boolean m = getMatch();

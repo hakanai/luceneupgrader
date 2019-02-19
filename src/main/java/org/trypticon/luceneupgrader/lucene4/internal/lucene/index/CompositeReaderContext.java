@@ -22,9 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * {@link IndexReaderContext} for {@link CompositeReader} instance.
- */
 public final class CompositeReaderContext extends IndexReaderContext {
   private final List<IndexReaderContext> children;
   private final List<AtomicReaderContext> leaves;
@@ -34,18 +31,11 @@ public final class CompositeReaderContext extends IndexReaderContext {
     return new Builder(reader).build();
   }
 
-  /**
-   * Creates a {@link CompositeReaderContext} for intermediate readers that aren't
-   * not top-level readers in the current context
-   */
   CompositeReaderContext(CompositeReaderContext parent, CompositeReader reader,
       int ordInParent, int docbaseInParent, List<IndexReaderContext> children) {
     this(parent, reader, ordInParent, docbaseInParent, children, null);
   }
   
-  /**
-   * Creates a {@link CompositeReaderContext} for top-level readers with parent set to <code>null</code>
-   */
   CompositeReaderContext(CompositeReader reader, List<IndexReaderContext> children, List<AtomicReaderContext> leaves) {
     this(null, reader, 0, 0, children, leaves);
   }

@@ -22,9 +22,7 @@ import java.util.Arrays;
 
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountable;
 
-/** 
- * Represents a file in RAM as a list of byte[] buffers.
- * @lucene.internal */
+
 public class RAMFile implements Accountable {
   protected final ArrayList<byte[]> buffers = new ArrayList<>();
   long length;
@@ -68,12 +66,6 @@ public class RAMFile implements Accountable {
     return buffers.size();
   }
 
-  /**
-   * Expert: allocate a new buffer. 
-   * Subclasses can allocate differently. 
-   * @param size size of allocated buffer.
-   * @return allocated buffer.
-   */
   protected byte[] newBuffer(int size) {
     return new byte[size];
   }

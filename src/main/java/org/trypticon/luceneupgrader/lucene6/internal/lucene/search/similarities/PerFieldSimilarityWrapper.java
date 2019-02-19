@@ -24,39 +24,14 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.FieldInvertSta
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.CollectionStatistics;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.TermStatistics;
 
-/**
- * Provides the ability to use a different {@link Similarity} for different fields.
- * <p>
- * Subclasses should implement {@link #get(String)} to return an appropriate
- * Similarity (for example, using field-specific parameter values) for the field.
- * <p>
- * For Lucene 6, you should pass a default similarity that is used for all non
- * field-specific methods. From Lucene 7 on, this is no longer required.
- * 
- * @lucene.experimental
- */
 public abstract class PerFieldSimilarityWrapper extends Similarity {
   
-  /** Default similarity used for query norm and coordination factors. */
   protected final Similarity defaultSim;
   
-  /**
-   * Constructor taking a default similarity for all non-field specific calculations.
-   * @param defaultSim is used for all non field-specific calculations, like
-   * {@link #queryNorm(float)} and {@link #coord(int, int)}.
-   */
   public PerFieldSimilarityWrapper(Similarity defaultSim) {
     this.defaultSim = defaultSim;
   }
   
-  /**
-   * Backwards compatibility constructor for 6.x series that creates a per-field
-   * similarity where all non field-specific methods return a constant (1).
-   * <p>
-   * From Lucene 7 on, this will get the default again, because coordination
-   * factors and query normalization will be removed.
-   * @deprecated specify a default similarity for non field-specific calculations.
-   */
   @Deprecated
   public PerFieldSimilarityWrapper() {
     // a fake similarity that is only used to return the default of 1 for queryNorm and coord.
@@ -107,9 +82,7 @@ public abstract class PerFieldSimilarityWrapper extends Similarity {
     return defaultSim.queryNorm(valueForNormalization);
   }
 
-  /** 
-   * Returns a {@link Similarity} for scoring a field.
-   */
+
   public abstract Similarity get(String name);
   
   static class PerFieldSimWeight extends SimWeight {

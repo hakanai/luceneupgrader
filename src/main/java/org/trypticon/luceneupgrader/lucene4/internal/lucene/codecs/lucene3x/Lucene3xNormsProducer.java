@@ -43,21 +43,13 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Version;
 
-/**
- * Reads Lucene 3.x norms format and exposes it via DocValues API
- * @lucene.experimental
- * @deprecated Only for reading existing 3.x indexes
- */
 @Deprecated
 class Lucene3xNormsProducer extends DocValuesProducer {
   
-  /** norms header placeholder */
   static final byte[] NORMS_HEADER = new byte[]{'N','R','M',-1};
   
-  /** Extension of norms file */
   static final String NORMS_EXTENSION = "nrm";
   
-  /** Extension of separate norms file */
   static final String SEPARATE_NORMS_EXTENSION = "s";
   
   final Map<String,NormsDocValues> norms = new HashMap<>();

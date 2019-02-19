@@ -48,10 +48,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.StringHelper;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.BlockPackedWriter;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 
-/**
- * {@link TermVectorsWriter} for {@link CompressingTermVectorsFormat}.
- * @lucene.experimental
- */
 public final class CompressingTermVectorsWriter extends TermVectorsWriter {
 
   // hard limit on the maximum number of documents per chunk
@@ -85,7 +81,6 @@ public final class CompressingTermVectorsWriter extends TermVectorsWriter {
   private long numChunks; // number of compressed blocks written
   private long numDirtyChunks; // number of incomplete compressed blocks written
 
-  /** a pending doc */
   private class DocData {
     final int numFields;
     final Deque<FieldData> fields;
@@ -135,7 +130,6 @@ public final class CompressingTermVectorsWriter extends TermVectorsWriter {
     return doc;
   }
 
-  /** a pending field */
   private class FieldData {
     final boolean hasPositions, hasOffsets, hasPayloads;
     final int fieldNum, flags, numTerms;
@@ -202,7 +196,6 @@ public final class CompressingTermVectorsWriter extends TermVectorsWriter {
   private final GrowableByteArrayDataOutput payloadBytes; // buffered term payloads
   private final BlockPackedWriter writer;
 
-  /** Sole constructor. */
   public CompressingTermVectorsWriter(Directory directory, SegmentInfo si, String segmentSuffix, IOContext context,
       String formatName, CompressionMode compressionMode, int chunkSize, int blockSize) throws IOException {
     assert directory != null;
@@ -383,7 +376,6 @@ public final class CompressingTermVectorsWriter extends TermVectorsWriter {
     }
   }
 
-  /** Returns a sorted array containing unique field numbers */
   private int[] flushFieldNums() throws IOException {
     SortedSet<Integer> fieldNums = new TreeSet<>();
     for (DocData dd : pendingDocs) {
@@ -837,13 +829,7 @@ public final class CompressingTermVectorsWriter extends TermVectorsWriter {
     return docCount;
   }
 
-  /** 
-   * Returns true if we should recompress this reader, even though we could bulk merge compressed data 
-   * <p>
-   * The last chunk written for a segment is typically incomplete, so without recompressing,
-   * in some worst-case situations (e.g. frequent reopen with tiny flushes), over time the 
-   * compression ratio can degrade. This is a safety switch.
-   */
+
   boolean tooDirty(CompressingTermVectorsReader candidate) {
     // more than 1% dirty, or more than hard limit of 1024 dirty chunks
     return candidate.getNumDirtyChunks() > 1024 || 

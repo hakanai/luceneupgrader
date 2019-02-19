@@ -17,16 +17,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * limitations under the License.
  */
 
-/**
- * An object whose RAM usage can be computed.
- *
- * @lucene.internal
- */
 public interface Accountable {
 
-  /**
-   * Return the memory usage of this object in bytes. Negative values are illegal.
-   */
   long ramBytesUsed();
 
 }

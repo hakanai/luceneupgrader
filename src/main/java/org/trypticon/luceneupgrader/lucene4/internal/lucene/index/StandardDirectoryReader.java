@@ -37,7 +37,6 @@ final class StandardDirectoryReader extends DirectoryReader {
   private final int termInfosIndexDivisor;
   private final boolean applyAllDeletes;
   
-  /** called only from static open() methods */
   StandardDirectoryReader(Directory directory, AtomicReader[] readers, IndexWriter writer,
     SegmentInfos sis, int termInfosIndexDivisor, boolean applyAllDeletes) {
     super(directory, readers);
@@ -47,7 +46,6 @@ final class StandardDirectoryReader extends DirectoryReader {
     this.applyAllDeletes = applyAllDeletes;
   }
 
-  /** called from DirectoryReader.open(...) methods */
   static DirectoryReader open(final Directory directory, final IndexCommit commit,
                           final int termInfosIndexDivisor) throws IOException {
     return (DirectoryReader) new SegmentInfos.FindSegmentsFile(directory) {
@@ -77,7 +75,6 @@ final class StandardDirectoryReader extends DirectoryReader {
     }.run(commit);
   }
 
-  /** Used by near real-time search */
   static DirectoryReader open(IndexWriter writer, SegmentInfos infos, boolean applyAllDeletes) throws IOException {
 
     assert Thread.holdsLock(writer);
@@ -141,7 +138,6 @@ final class StandardDirectoryReader extends DirectoryReader {
     }
   }
 
-  /** This constructor is only used for {@link #doOpenIfChanged(SegmentInfos)} */
   private static DirectoryReader open(Directory directory, SegmentInfos infos, List<? extends AtomicReader> oldReaders,
     int termInfosIndexDivisor) throws IOException {
 

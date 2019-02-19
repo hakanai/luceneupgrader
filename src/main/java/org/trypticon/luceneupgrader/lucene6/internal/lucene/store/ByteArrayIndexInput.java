@@ -19,11 +19,6 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.store;
 
 import java.io.IOException;
 
-/** 
- * DataInput backed by a byte array.
- * <b>WARNING:</b> This class omits all low-level checks.
- * @lucene.experimental 
- */
 public final class ByteArrayIndexInput extends IndexInput {
 
   private byte[] bytes;

@@ -19,10 +19,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.TermsEnum; // javadocs
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
-/**
- * Contains statistics for a specific term
- * @lucene.experimental
- */
 public class TermStatistics {
   private final BytesRef term;
   private final long docFreq;
@@ -36,19 +32,14 @@ public class TermStatistics {
     this.totalTermFreq = totalTermFreq;
   }
   
-  /** returns the term text */
   public final BytesRef term() {
     return term;
   }
   
-  /** returns the number of documents this term occurs in 
-   * @see TermsEnum#docFreq() */
   public final long docFreq() {
     return docFreq;
   }
   
-  /** returns the total number of occurrences of this term
-   * @see TermsEnum#totalTermFreq() */
   public final long totalTermFreq() {
     return totalTermFreq;
   }

@@ -23,12 +23,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.FieldInfosFor
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.FieldInfosReader;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.FieldInfosWriter;
 
-/**
- * Lucene3x ReadOnly FieldInfosFromat implementation
- * @deprecated (4.0) This is only used to read indexes created
- * before 4.0.
- * @lucene.experimental
- */
 @Deprecated
 class Lucene3xFieldInfosFormat extends FieldInfosFormat {
   private final FieldInfosReader reader = new Lucene3xFieldInfosReader();

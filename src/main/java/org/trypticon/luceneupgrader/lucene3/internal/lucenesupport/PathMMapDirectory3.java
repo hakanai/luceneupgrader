@@ -20,13 +20,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Iterator;
 
-/**
- * Clone of {@link MMapDirectory} accepting {@link Path} instead of {@link File}.
- */
 public class PathMMapDirectory3 extends PathFSDirectory3 {
-    /**
-     * <code>true</code>, if this platform supports unmapping mmapped files.
-     */
     public static final boolean UNMAP_SUPPORTED;
     static {
         boolean v;
@@ -45,23 +39,11 @@ public class PathMMapDirectory3 extends PathFSDirectory3 {
     public static final int DEFAULT_MAX_BUFF = Constants.JRE_IS_64BIT ? (1 << 30) : (1 << 28);
     private int chunkSizePower;
 
-    /** Create a new MMapDirectory for the named location.
-     *
-     * @param path the path of the directory
-     * @param lockFactory the lock factory to use, or null for the default
-     * ({@code NativeFSLockFactory});
-     * @throws IOException
-     */
     public PathMMapDirectory3(Path path, LockFactory lockFactory) throws IOException {
         super(path, lockFactory);
         setMaxChunkSize(DEFAULT_MAX_BUFF);
     }
 
-    /**
-     * Try to unmap the buffer, this method silently fails if no support
-     * for that in the JVM. On Windows, this leads to the fact,
-     * that mmapped files cannot be modified or deleted.
-     */
     final void cleanMapping(final ByteBuffer buffer) throws IOException {
         if (useUnmapHack) {
             try {
@@ -86,19 +68,6 @@ public class PathMMapDirectory3 extends PathFSDirectory3 {
         }
     }
 
-    /**
-     * Sets the maximum chunk size (default is 1 GiBytes for
-     * 64 bit JVMs and 256 MiBytes for 32 bit JVMs) used for memory mapping.
-     * Especially on 32 bit platform, the address space can be very fragmented,
-     * so large index files cannot be mapped.
-     * Using a lower chunk size makes the directory implementation a little
-     * bit slower (as the correct chunk may be resolved on lots of seeks)
-     * but the chance is higher that mmap does not fail. On 64 bit
-     * Java platforms, this parameter should always be {@code 1 << 30},
-     * as the address space is big enough.
-     * <b>Please note:</b> This method always rounds down the chunk size
-     * to a power of 2.
-     */
     public final void setMaxChunkSize(final int maxChunkSize) {
         if (maxChunkSize <= 0)
             throw new IllegalArgumentException("Maximum chunk size for mmap must be >0");
@@ -108,7 +77,6 @@ public class PathMMapDirectory3 extends PathFSDirectory3 {
         //System.out.println("Got chunk size: "+getMaxChunkSize());
     }
 
-    /** Creates an IndexInput for the file with the given name. */
     @Override
     public IndexInput openInput(String name, int bufferSize) throws IOException {
         ensureOpen();

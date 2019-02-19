@@ -19,16 +19,10 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.search;
 
 import java.io.IOException;
 
-/**
- * {@link LeafCollector} delegator.
- *
- * @lucene.experimental
- */
 public class FilterLeafCollector implements LeafCollector {
 
   protected final LeafCollector in;
 
-  /** Sole constructor. */
   public FilterLeafCollector(LeafCollector in) {
     this.in = in;
   }

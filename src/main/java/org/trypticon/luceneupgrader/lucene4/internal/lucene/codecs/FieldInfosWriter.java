@@ -23,17 +23,9 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.FieldInfos;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 
-/**
- * Codec API for writing {@link FieldInfos}.
- * @lucene.experimental
- */
 public abstract class FieldInfosWriter {
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected FieldInfosWriter() {
   }
 
-  /** Writes the provided {@link FieldInfos} to the
-   *  directory. */
   public abstract void write(Directory directory, String segmentName, String segmentSuffix, FieldInfos infos, IOContext context) throws IOException;
 }

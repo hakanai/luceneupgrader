@@ -36,15 +36,8 @@ import java.util.Map;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-/**
- * Class for accessing a compound stream.
- * This class implements a directory, but is limited to only read operations.
- * Directory methods that would normally modify data throw an exception.
- * @lucene.experimental
- */
 final class Lucene50CompoundReader extends Directory {
   
-  /** Offset/Length for a slice inside of a compound file */
   public static final class FileEntry {
     long offset;
     long length;
@@ -56,9 +49,6 @@ final class Lucene50CompoundReader extends Directory {
   private final IndexInput handle;
   private int version;
   
-  /**
-   * Create a new CompoundFileDirectory.
-   */
   // TODO: we should just pre-strip "entries" and append segment name up-front like simpletext?
   // this need not be a "general purpose" directory anymore (it only writes index files)
   public Lucene50CompoundReader(Directory directory, SegmentInfo si, IOContext context) throws IOException {
@@ -99,7 +89,6 @@ final class Lucene50CompoundReader extends Directory {
     }
   }
 
-  /** Helper method that reads CFS entries from an input stream */
   private final Map<String, FileEntry> readEntries(byte[] segmentID, Directory dir, String entriesFileName) throws IOException {
     Map<String,FileEntry> mapping = null;
     try (ChecksumIndexInput entriesStream = dir.openChecksumInput(entriesFileName, IOContext.READONCE)) {
@@ -145,7 +134,6 @@ final class Lucene50CompoundReader extends Directory {
     return handle.slice(name, entry.offset, entry.length);
   }
   
-  /** Returns an array of strings, one for each file in the directory. */
   @Override
   public String[] listAll() {
     ensureOpen();
@@ -158,21 +146,15 @@ final class Lucene50CompoundReader extends Directory {
     return res;
   }
   
-  /** Not implemented
-   * @throws UnsupportedOperationException always: not supported by CFS */
   @Override
   public void deleteFile(String name) {
     throw new UnsupportedOperationException();
   }
   
-  /** Not implemented
-   * @throws UnsupportedOperationException always: not supported by CFS */
   public void renameFile(String from, String to) {
     throw new UnsupportedOperationException();
   }
   
-  /** Returns the length of a file in the directory.
-   * @throws IOException if the file does not exist */
   @Override
   public long fileLength(String name) throws IOException {
     ensureOpen();

@@ -25,17 +25,6 @@ import java.util.Iterator;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.WeakIdentityMap;
 
-/**
- * Base IndexInput implementation that uses an array
- * of ByteBuffers to represent a file.
- * <p>
- * Because Java's ByteBuffer uses an int to address the
- * values, it's necessary to access a file greater
- * Integer.MAX_VALUE in size using multiple byte buffers.
- * <p>
- * For efficiency, this class requires that the buffers
- * are a power-of-two (<code>chunkSizePower</code>).
- */
 abstract class ByteBufferIndexInput extends IndexInput implements RandomAccessInput {
   protected final BufferCleaner cleaner;  
   protected final long length;
@@ -266,9 +255,6 @@ abstract class ByteBufferIndexInput extends IndexInput implements RandomAccessIn
     return clone;
   }
   
-  /**
-   * Creates a slice of this index input, with the given description, offset, and length. The slice is seeked to the beginning.
-   */
   @Override
   public final ByteBufferIndexInput slice(String sliceDescription, long offset, long length) {    
     if (offset < 0 || length < 0 || offset+length > this.length) {
@@ -278,7 +264,6 @@ abstract class ByteBufferIndexInput extends IndexInput implements RandomAccessIn
     return buildSlice(sliceDescription, offset, length);
   }
 
-  /** Builds the actual sliced IndexInput (may apply extra offset in subclasses). **/
   protected ByteBufferIndexInput buildSlice(String sliceDescription, long offset, long length) {
     if (buffers == null) {
       throw new AlreadyClosedException("Already closed: " + this);
@@ -299,7 +284,6 @@ abstract class ByteBufferIndexInput extends IndexInput implements RandomAccessIn
     return clone;
   }
 
-  /** Factory method that creates a suitable implementation of this class for the given ByteBuffers. */
   @SuppressWarnings("resource")
   protected ByteBufferIndexInput newCloneInstance(String newResourceDescription, ByteBuffer[] newBuffers, int offset, long length) {
     if (newBuffers.length == 1) {
@@ -312,9 +296,7 @@ abstract class ByteBufferIndexInput extends IndexInput implements RandomAccessIn
     }
   }
   
-  /** Returns a sliced view from a set of already-existing buffers: 
-   *  the last buffer's limit() will be correct, but
-   *  you must deal with offset separately (the first buffer will not be adjusted) */
+
   private ByteBuffer[] buildSlice(ByteBuffer[] buffers, long offset, long length) {
     final long sliceEnd = offset + length;
     
@@ -366,33 +348,22 @@ abstract class ByteBufferIndexInput extends IndexInput implements RandomAccessIn
     }
   }
   
-  /**
-   * Called to remove all references to byte buffers, so we can throw AlreadyClosed on NPE.
-   */
   private void unsetBuffers() {
     buffers = null;
     curBuf = null;
     curBufIndex = 0;
   }
 
-  /**
-   * Called when the contents of a buffer will be no longer needed.
-   */
   private void freeBuffer(ByteBuffer b) throws IOException {
     if (cleaner != null) {
       cleaner.freeBuffer(this, b);
     }
   }
   
-  /**
-   * Pass in an implementation of this interface to cleanup ByteBuffers.
-   * MMapDirectory implements this to allow unmapping of bytebuffers with private Java APIs.
-   */
   static interface BufferCleaner {
     void freeBuffer(ByteBufferIndexInput parent, ByteBuffer b) throws IOException;
   }
   
-  /** Default implementation of ByteBufferIndexInput, supporting multiple buffers, but no offset. */
   static final class DefaultImpl extends ByteBufferIndexInput {
 
     DefaultImpl(String resourceDescription, ByteBuffer[] buffers, long length, int chunkSizePower, 
@@ -407,7 +378,6 @@ abstract class ByteBufferIndexInput extends IndexInput implements RandomAccessIn
     
   }
   
-  /** Optimization of ByteBufferIndexInput for when there is only one buffer */
   static final class SingleBufferImpl extends ByteBufferIndexInput {
 
     SingleBufferImpl(String resourceDescription, ByteBuffer buffer, long length, int chunkSizePower,
@@ -505,7 +475,6 @@ abstract class ByteBufferIndexInput extends IndexInput implements RandomAccessIn
     }
   }
   
-  /** This class adds offset support to ByteBufferIndexInput, which is needed for slices. */
   static final class WithOffsetImpl extends ByteBufferIndexInput {
     private final int offset;
     

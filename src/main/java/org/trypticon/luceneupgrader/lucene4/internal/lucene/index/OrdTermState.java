@@ -17,17 +17,9 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * limitations under the License.
  */
 
-/**
- * An ordinal based {@link TermState}
- * 
- * @lucene.experimental
- */
 public class OrdTermState extends TermState {
-  /** Term ordinal, i.e. it's position in the full list of
-   *  sorted terms. */
   public long ord;
 
-  /** Sole constructor. */
   public OrdTermState() {
   }
   

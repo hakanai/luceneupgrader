@@ -24,68 +24,32 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.InfoStream;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.MutableBits;
 
-/**
- * Holder class for common parameters used during write.
- * @lucene.experimental
- */
 public class SegmentWriteState {
 
-  /** {@link InfoStream} used for debugging messages. */
   public final InfoStream infoStream;
 
-  /** {@link Directory} where this segment will be written
-   *  to. */
   public final Directory directory;
 
-  /** {@link SegmentInfo} describing this segment. */
   public final SegmentInfo segmentInfo;
 
-  /** {@link FieldInfos} describing all fields in this
-   *  segment. */
   public final FieldInfos fieldInfos;
 
-  /** Number of deleted documents set while flushing the
-   *  segment. */
   public int delCountOnFlush;
 
-  /**
-   * Deletes and updates to apply while we are flushing the segment. A Term is
-   * enrolled in here if it was deleted/updated at one point, and it's mapped to
-   * the docIDUpto, meaning any docID &lt; docIDUpto containing this term should
-   * be deleted/updated.
-   */
   public final BufferedUpdates segUpdates;
 
-  /** {@link MutableBits} recording live documents; this is
-   *  only set if there is one or more deleted documents. */
   public MutableBits liveDocs;
 
-  /** Unique suffix for any postings files written for this
-   *  segment.  {@link PerFieldPostingsFormat} sets this for
-   *  each of the postings formats it wraps.  If you create
-   *  a new {@link PostingsFormat} then any files you
-   *  write/read must be derived using this suffix (use
-   *  {@link IndexFileNames#segmentFileName(String,String,String)}).
-   *  
-   *  Note: the suffix must be either empty, or be a textual suffix contain exactly two parts (separated by underscore), or be a base36 generation. */
+
   public final String segmentSuffix;
   
-  /** {@link IOContext} for all writes; you should pass this
-   *  to {@link Directory#createOutput(String,IOContext)}. */
   public final IOContext context;
 
-  /** Sole constructor. */
   public SegmentWriteState(InfoStream infoStream, Directory directory, SegmentInfo segmentInfo, FieldInfos fieldInfos,
       BufferedUpdates segUpdates, IOContext context) {
     this(infoStream, directory, segmentInfo, fieldInfos, segUpdates, context, "");
   }
 
-  /**
-   * Constructor which takes segment suffix.
-   * 
-   * @see #SegmentWriteState(InfoStream, Directory, SegmentInfo, FieldInfos,
-   *      BufferedUpdates, IOContext)
-   */
   public SegmentWriteState(InfoStream infoStream, Directory directory, SegmentInfo segmentInfo, FieldInfos fieldInfos,
       BufferedUpdates segUpdates, IOContext context, String segmentSuffix) {
     this.infoStream = infoStream;
@@ -98,7 +62,6 @@ public class SegmentWriteState {
     this.context = context;
   }
   
-  /** Create a shallow copy of {@link SegmentWriteState} with a new segment suffix. */
   public SegmentWriteState(SegmentWriteState state, String segmentSuffix) {
     infoStream = state.infoStream;
     directory = state.directory;

@@ -26,42 +26,17 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.MergeState;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentWriteState; // javadocs
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.Terms;
 
-/** 
- * Abstract API that consumes terms, doc, freq, prox, offset and
- * payloads postings.  Concrete implementations of this
- * actually do "something" with the postings (write it into
- * the index in a specific format).
- * <p>
- * The lifecycle is:
- * <ol>
- *   <li>FieldsConsumer is created by 
- *       {@link PostingsFormat#fieldsConsumer(SegmentWriteState)}.
- *   <li>For each field, {@link #addField(FieldInfo)} is called,
- *       returning a {@link TermsConsumer} for the field.
- *   <li>After all fields are added, the consumer is {@link #close}d.
- * </ol>
- *
- * @lucene.experimental
- */
 public abstract class FieldsConsumer implements Closeable {
 
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected FieldsConsumer() {
   }
 
-  /** Add a new field */
   public abstract TermsConsumer addField(FieldInfo field) throws IOException;
   
-  /** Called when we are done adding everything. */
   @Override
   public abstract void close() throws IOException;
 
-  /** Called during merging to merge all {@link Fields} from
-   *  sub-readers.  This must recurse to merge all postings
-   *  (terms, docs, positions, etc.).  A {@link
-   *  PostingsFormat} can override this default
-   *  implementation to do its own merging. */
+
   public void merge(MergeState mergeState, Fields fields) throws IOException {
     for (String field : fields) {
       FieldInfo info = mergeState.fieldInfos.fieldInfo(field);

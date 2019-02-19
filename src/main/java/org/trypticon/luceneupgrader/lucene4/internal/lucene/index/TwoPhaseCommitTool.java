@@ -19,43 +19,25 @@ import java.io.IOException;
  * limitations under the License.
  */
 
-/**
- * A utility for executing 2-phase commit on several objects.
- * 
- * @see TwoPhaseCommit
- * @lucene.experimental
- */
 public final class TwoPhaseCommitTool {
   
-  /** No instance */
   private TwoPhaseCommitTool() {}
 
-  /**
-   * Thrown by {@link TwoPhaseCommitTool#execute(TwoPhaseCommit...)} when an
-   * object fails to prepareCommit().
-   */
   public static class PrepareCommitFailException extends IOException {
 
-    /** Sole constructor. */
     public PrepareCommitFailException(Throwable cause, TwoPhaseCommit obj) {
       super("prepareCommit() failed on " + obj, cause);
     }
   }
 
-  /**
-   * Thrown by {@link TwoPhaseCommitTool#execute(TwoPhaseCommit...)} when an
-   * object fails to commit().
-   */
   public static class CommitFailException extends IOException {
 
-    /** Sole constructor. */
     public CommitFailException(Throwable cause, TwoPhaseCommit obj) {
       super("commit() failed on " + obj, cause);
     }
     
   }
 
-  /** rollback all objects, discarding any exceptions that occur. */
   private static void rollback(TwoPhaseCommit... objects) {
     for (TwoPhaseCommit tpc : objects) {
       // ignore any exception that occurs during rollback - we want to ensure
@@ -68,27 +50,6 @@ public final class TwoPhaseCommitTool {
     }
   }
 
-  /**
-   * Executes a 2-phase commit algorithm by first
-   * {@link TwoPhaseCommit#prepareCommit()} all objects and only if all succeed,
-   * it proceeds with {@link TwoPhaseCommit#commit()}. If any of the objects
-   * fail on either the preparation or actual commit, it terminates and
-   * {@link TwoPhaseCommit#rollback()} all of them.
-   * <p>
-   * <b>NOTE:</b> it may happen that an object fails to commit, after few have
-   * already successfully committed. This tool will still issue a rollback
-   * instruction on them as well, but depending on the implementation, it may
-   * not have any effect.
-   * <p>
-   * <b>NOTE:</b> if any of the objects are {@code null}, this method simply
-   * skips over them.
-   * 
-   * @throws PrepareCommitFailException
-   *           if any of the objects fail to
-   *           {@link TwoPhaseCommit#prepareCommit()}
-   * @throws CommitFailException
-   *           if any of the objects fail to {@link TwoPhaseCommit#commit()}
-   */
   public static void execute(TwoPhaseCommit... objects)
       throws PrepareCommitFailException, CommitFailException {
     TwoPhaseCommit tpc = null;

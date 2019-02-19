@@ -38,8 +38,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Counter;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimator;
 
-/** Default general purpose indexing chain, which handles
- *  indexing all types of fields. */
 final class DefaultIndexingChain extends DocConsumer {
   final Counter bytesUsed;
   final DocumentsWriterPerThread.DocState docState;
@@ -139,7 +137,6 @@ final class DefaultIndexingChain extends DocConsumer {
     }
   }
 
-  /** Writes all buffered doc values (called from {@link #flush}). */
   private void writeDocValues(SegmentWriteState state) throws IOException {
     int maxDoc = state.segmentInfo.maxDoc();
     DocValuesConsumer dvConsumer = null;
@@ -194,9 +191,7 @@ final class DefaultIndexingChain extends DocConsumer {
     }
   }
 
-  /** Catch up for all docs before us that had no stored
-   *  fields, or hit non-aborting exceptions before writing
-   *  stored fields. */
+
   private void fillStoredFields(int docID) throws IOException, AbortingException {
     while (lastStoredDocID < docID) {
       startStoredFields();
@@ -272,8 +267,6 @@ final class DefaultIndexingChain extends DocConsumer {
     hashMask = newHashMask;
   }
 
-  /** Calls StoredFieldsWriter.startDocument, aborting the
-   *  segment if it hits any exception. */
   private void startStoredFields() throws IOException, AbortingException {
     try {
       initStoredFieldsWriter();
@@ -284,8 +277,6 @@ final class DefaultIndexingChain extends DocConsumer {
     lastStoredDocID++;
   }
 
-  /** Calls StoredFieldsWriter.finishDocument, aborting the
-   *  segment if it hits any exception. */
   private void finishStoredFields() throws IOException, AbortingException {
     try {
       storedFieldsWriter.finishDocument();
@@ -419,8 +410,6 @@ final class DefaultIndexingChain extends DocConsumer {
     }
   }
 
-  /** Called from processDocument to index one field's doc
-   *  value */
   private void indexDocValue(PerField fp, DocValuesType dvType, IndexableField field) throws IOException {
 
     if (fp.fieldInfo.getDocValuesType() == DocValuesType.NONE) {
@@ -475,8 +464,6 @@ final class DefaultIndexingChain extends DocConsumer {
     }
   }
 
-  /** Returns a previously created {@link PerField}, or null
-   *  if this field name wasn't seen yet. */
   private PerField getPerField(String name) {
     final int hashPos = name.hashCode() & hashMask;
     PerField fp = fieldHash[hashPos];
@@ -486,10 +473,7 @@ final class DefaultIndexingChain extends DocConsumer {
     return fp;
   }
 
-  /** Returns a previously created {@link PerField},
-   *  absorbing the type information from {@link FieldType},
-   *  and creates a new {@link PerField} if this field name
-   *  wasn't seen yet. */
+
   private PerField getOrAddField(String name, IndexableFieldType fieldType, boolean invert) {
 
     // Make sure we have a PerField allocated
@@ -535,7 +519,6 @@ final class DefaultIndexingChain extends DocConsumer {
     return fp;
   }
 
-  /** NOTE: not static: accesses at least docState, termsHash. */
   private final class PerField implements Comparable<PerField> {
 
     final FieldInfo fieldInfo;
@@ -548,8 +531,6 @@ final class DefaultIndexingChain extends DocConsumer {
     // segment:
     DocValuesWriter docValuesWriter;
 
-    /** We use this to know when a PerField is seen for the
-     *  first time in the current document. */
     long fieldGen = -1;
 
     // Used by the hash table
@@ -594,9 +575,7 @@ final class DefaultIndexingChain extends DocConsumer {
       termsHashPerField.finish();
     }
 
-    /** Inverts one field for one document; first is true
-     *  if this is the first time we are seeing this field
-     *  name in this document. */
+
     public void invert(IndexableField field, boolean first) throws IOException, AbortingException {
       if (first) {
         // First time we're seeing this field (indexed) in

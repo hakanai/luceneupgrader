@@ -20,22 +20,10 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
-/**
- * A wrapping merge policy that wraps the {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.index.MergePolicy.OneMerge}
- * objects returned by the wrapped merge policy.
- *
- * @lucene.experimental
- */
 public class OneMergeWrappingMergePolicy extends MergePolicyWrapper {
 
   private final UnaryOperator<OneMerge> wrapOneMerge;
 
-  /**
-   * Constructor
-   *
-   * @param in - the wrapped merge policy
-   * @param wrapOneMerge - operator for wrapping OneMerge objects
-   */
   public OneMergeWrappingMergePolicy(MergePolicy in, UnaryOperator<OneMerge> wrapOneMerge) {
     super(in);
     this.wrapOneMerge = wrapOneMerge;

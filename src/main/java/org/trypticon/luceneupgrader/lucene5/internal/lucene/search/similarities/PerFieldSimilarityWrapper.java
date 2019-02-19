@@ -24,20 +24,8 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.FieldInvertSta
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.CollectionStatistics;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.TermStatistics;
 
-/**
- * Provides the ability to use a different {@link Similarity} for different fields.
- * <p>
- * Subclasses should implement {@link #get(String)} to return an appropriate
- * Similarity (for example, using field-specific parameter values) for the field.
- * 
- * @lucene.experimental
- */
 public abstract class PerFieldSimilarityWrapper extends Similarity {
   
-  /**
-   * Sole constructor. (For invocation by subclass 
-   * constructors, typically implicit.)
-   */
   public PerFieldSimilarityWrapper() {}
 
   @Override
@@ -59,9 +47,7 @@ public abstract class PerFieldSimilarityWrapper extends Similarity {
     return perFieldWeight.delegate.simScorer(perFieldWeight.delegateWeight, context);
   }
   
-  /** 
-   * Returns a {@link Similarity} for scoring a field.
-   */
+
   public abstract Similarity get(String name);
   
   static class PerFieldSimWeight extends SimWeight {

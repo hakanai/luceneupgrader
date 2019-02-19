@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -29,56 +29,26 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Version;
 import java.io.IOException;
 import java.io.Reader;
 
-/** A grammar-based tokenizer constructed with JFlex.
- * <p>
- * As of Lucene version 3.1, this class implements the Word Break rules from the
- * Unicode Text Segmentation algorithm, as specified in 
- * <a href="http://unicode.org/reports/tr29/">Unicode Standard Annex #29</a>.
- * <p/>
- * <p>Many applications have specific tokenizer needs.  If this tokenizer does
- * not suit your application, please consider copying this source code
- * directory to your project and maintaining your own grammar-based tokenizer.
- *
- * <a name="version"/>
- * <p>You must specify the required {@link Version}
- * compatibility when creating StandardTokenizer:
- * <ul>
- *   <li> As of 3.4, Hiragana and Han characters are no longer wrongly split
- *   from their combining characters. If you use a previous version number,
- *   you get the exact broken behavior for backwards compatibility.
- *   <li> As of 3.1, StandardTokenizer implements Unicode text segmentation.
- *   If you use a previous version number, you get the exact behavior of
- *   {@link ClassicTokenizer} for backwards compatibility.
- * </ul>
- */
+
 
 public final class StandardTokenizer extends Tokenizer {
-  /** A private instance of the JFlex-constructed scanner */
   private StandardTokenizerInterface scanner;
 
   public static final int ALPHANUM          = 0;
-  /** @deprecated */
   @Deprecated
   public static final int APOSTROPHE        = 1;
-  /** @deprecated */
   @Deprecated
   public static final int ACRONYM           = 2;
-  /** @deprecated */
   @Deprecated
   public static final int COMPANY           = 3;
   public static final int EMAIL             = 4;
-  /** @deprecated */
   @Deprecated
   public static final int HOST              = 5;
   public static final int NUM               = 6;
-  /** @deprecated */
   @Deprecated
   public static final int CJ                = 7;
 
-  /**
-   * @deprecated this solves a bug where HOSTs that end with '.' are identified
-   *             as ACRONYMs.
-   */
+
   @Deprecated
   public static final int ACRONYM_DEP       = 8;
 
@@ -88,7 +58,6 @@ public final class StandardTokenizer extends Tokenizer {
   public static final int KATAKANA = 12;
   public static final int HANGUL = 13;
   
-  /** String token types that correspond to token type int constants */
   public static final String [] TOKEN_TYPES = new String [] {
     "<ALPHANUM>",
     "<APOSTROPHE>",
@@ -110,41 +79,27 @@ public final class StandardTokenizer extends Tokenizer {
     
   private int maxTokenLength = StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH;
 
-  /** Set the max allowed token length.  Any token longer
-   *  than this is skipped. */
   public void setMaxTokenLength(int length) {
     this.maxTokenLength = length;
   }
 
-  /** @see #setMaxTokenLength */
   public int getMaxTokenLength() {
     return maxTokenLength;
   }
 
-  /**
-   * Creates a new instance of the {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.standard.StandardTokenizer}.  Attaches
-   * the <code>input</code> to the newly created JFlex scanner.
-   *
-   * @param input The input reader
-   *
-   * See http://issues.apache.org/jira/browse/LUCENE-1068
-   */
+
   public StandardTokenizer(Version matchVersion, Reader input) {
     super(input);
     init(matchVersion);
   }
 
-  /**
-   * Creates a new StandardTokenizer with a given {@link AttributeSource}. 
-   */
+
   public StandardTokenizer(Version matchVersion, AttributeSource source, Reader input) {
     super(source, input);
     init(matchVersion);
   }
 
-  /**
-   * Creates a new StandardTokenizer with a given {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.util.AttributeSource.AttributeFactory}
-   */
+
   public StandardTokenizer(Version matchVersion, AttributeFactory factory, Reader input) {
     super(factory, input);
     init(matchVersion);
@@ -228,25 +183,13 @@ public final class StandardTokenizer extends Tokenizer {
     scanner.yyreset(reader);
   }
 
-  /**
-   * Prior to https://issues.apache.org/jira/browse/LUCENE-1068, StandardTokenizer mischaracterized as acronyms tokens like www.abc.com
-   * when they should have been labeled as hosts instead.
-   * @return true if StandardTokenizer now returns these tokens as Hosts, otherwise false
-   *
-   * @deprecated Remove in 3.X and make true the only valid value
-   */
+
   @Deprecated
   public boolean isReplaceInvalidAcronym() {
     return replaceInvalidAcronym;
   }
 
-  /**
-   *
-   * @param replaceInvalidAcronym Set to true to replace mischaracterized acronyms as HOST.
-   * @deprecated Remove in 3.X and make true the only valid value
-   *
-   * See https://issues.apache.org/jira/browse/LUCENE-1068
-   */
+
   @Deprecated
   public void setReplaceInvalidAcronym(boolean replaceInvalidAcronym) {
     this.replaceInvalidAcronym = replaceInvalidAcronym;

@@ -2,7 +2,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInvertState;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,20 +19,13 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInvertSta
  * limitations under the License.
  */
 
-/** Expert: Delegating scoring implementation.  Useful in {@link
- * Query#getSimilarity(Searcher)} implementations, to override only certain
- * methods of a Searcher's Similarity implementation..
- * @deprecated this class will be removed in 4.0.  Please
- * subclass {@link Similarity} or {@link DefaultSimilarity} instead. */
+
 @Deprecated
 public class SimilarityDelegator extends Similarity {
 
   private Similarity delegee;
 
-  /** Construct a {@link Similarity} that delegates all methods to another.
-   *
-   * @param delegee the Similarity implementation to delegate to
-   */
+
   public SimilarityDelegator(Similarity delegee) {
     this.delegee = delegee;
   }

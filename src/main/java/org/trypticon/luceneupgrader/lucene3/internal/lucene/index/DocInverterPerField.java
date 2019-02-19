@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,15 +23,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Fieldable;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.TokenStream;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.PositionIncrementAttribute;
-
-/**
- * Holds state for inverting all occurrences of a single
- * field in the document.  This class doesn't do anything
- * itself; instead, it forwards the tokens produced by
- * analysis to its own consumer
- * (InvertedDocConsumerPerField).  It also interacts with an
- * endConsumer (InvertedDocEndConsumerPerField).
- */
 
 final class DocInverterPerField extends DocFieldConsumerPerField {
 

@@ -18,9 +18,7 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.util.bkd;
 
 import java.util.List;
 
-/** Utility class to read buffered points from in-heap arrays.
- *
- * @lucene.internal */
+
 public final class HeapPointReader extends PointReader {
   private int curRead;
   final List<byte[]> blocks;

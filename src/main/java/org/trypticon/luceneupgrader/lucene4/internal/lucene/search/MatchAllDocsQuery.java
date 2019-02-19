@@ -26,10 +26,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import java.util.Set;
 import java.io.IOException;
 
-/**
- * A query that matches all documents.
- *
- */
 public class MatchAllDocsQuery extends Query {
 
   private class MatchAllScorer extends Scorer {

@@ -19,13 +19,8 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.search.similarities
 
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.Explanation;
 
-/**
- * Computes lambda as {@code totalTermFreq+1 / numberOfDocuments+1}.
- * @lucene.experimental
- */
-public class LambdaTTF extends Lambda {  
+public class LambdaTTF extends Lambda {
   
-  /** Sole constructor: parameter-free */
   public LambdaTTF() {}
 
   @Override

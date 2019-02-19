@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -37,39 +37,22 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.NamedThreadFactory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ThreadInterruptedException;
 
-/** Implements parallel search over a set of <code>Searchables</code>.
- *
- * <p>Applications usually need only call the inherited {@link #search(Query,int)}
- * or {@link #search(Query,Filter,int)} methods.
- * 
- * @deprecated Please pass an ExecutorService to {@link
- * IndexSearcher}, instead.
- */
 @Deprecated
 public class ParallelMultiSearcher extends MultiSearcher {
   private final ExecutorService executor;
   private final Searchable[] searchables;
   private final int[] starts;
 
-  /** Creates a {@link Searchable} which searches <i>searchables</i> with the default 
-   * executor service (a cached thread pool). */
   public ParallelMultiSearcher(Searchable... searchables) throws IOException {
     this(Executors.newCachedThreadPool(new NamedThreadFactory(ParallelMultiSearcher.class.getSimpleName())), searchables);
   }
 
-  /**
-   * Creates a {@link Searchable} which searches <i>searchables</i> with the specified ExecutorService.
-   */
   public ParallelMultiSearcher(ExecutorService executor, Searchable... searchables) throws IOException {
     super(searchables);
     this.searchables = searchables;
     this.starts = getStarts();
     this.executor = executor;
   }
-  /**
-   * Executes each {@link Searchable}'s docFreq() in its own thread and waits for each search to complete and merge
-   * the results back together.
-   */
   @Override
   public int docFreq(final Term term) throws IOException {
     final ExecutionHelper<Integer> runner = new ExecutionHelper<Integer>(executor);
@@ -88,11 +71,6 @@ public class ParallelMultiSearcher extends MultiSearcher {
     return docFreq;
   }
 
-  /**
-   * A search implementation which executes each 
-   * {@link Searchable} in its own thread and waits for each search to complete and merge
-   * the results back together.
-   */
   @Override
   public TopDocs search(Weight weight, Filter filter, int nDocs) throws IOException {
     final HitQueue hq = new HitQueue(nDocs, false);
@@ -118,11 +96,6 @@ public class ParallelMultiSearcher extends MultiSearcher {
     return new TopDocs(totalHits, scoreDocs, maxScore);
   }
 
-  /**
-   * A search implementation allowing sorting which spans a new thread for each
-   * Searchable, waits for each search to complete and merges
-   * the results back together.
-   */
   @Override
   public TopFieldDocs search(Weight weight, Filter filter, int nDocs, Sort sort) throws IOException {
     if (sort == null) throw new NullPointerException();
@@ -147,22 +120,6 @@ public class ParallelMultiSearcher extends MultiSearcher {
     return new TopFieldDocs(totalHits, scoreDocs, hq.getFields(), maxScore);
   }
 
-  /** Lower-level search API.
-  *
-  * <p>{@link Collector#collect(int)} is called for every matching document.
-  *
-  * <p>Applications should only use this if they need <i>all</i> of the
-  * matching documents.  The high-level search API ({@link
-  * Searcher#search(Query,int)}) is usually more efficient, as it skips
-  * non-high-scoring hits.
-  * 
-  * <p>This method cannot be parallelized, because {@link Collector}
-  * supports no concurrent access.
-  *
-  * @param weight to match documents
-  * @param filter if non-null, a bitset used to eliminate some documents
-  * @param collector to receive hits
-  */
   @Override
   public void search(final Weight weight, final Filter filter, final Collector collector)
    throws IOException {
@@ -226,9 +183,6 @@ public class ParallelMultiSearcher extends MultiSearcher {
   }
 
   
-  /**
-   * A {@link Callable} to retrieve the document frequencies for a Term array  
-   */
   private static final class DocumentFrequencyCallable implements Callable<int[]> {
     private final Searchable searchable;
     private final Term[] terms;
@@ -243,13 +197,6 @@ public class ParallelMultiSearcher extends MultiSearcher {
     }
   }
   
-  /**
-   * A helper class that wraps a {@link CompletionService} and provides an
-   * iterable interface to the completed {@link Callable} instances.
-   * 
-   * @param <T>
-   *          the type of the {@link Callable} return value
-   */
   private static final class ExecutionHelper<T> implements Iterator<T>, Iterable<T> {
     private final CompletionService<T> service;
     private int numTasks;

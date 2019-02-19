@@ -35,45 +35,27 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Accountables;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RoaringDocIdSet;
 
-/**
- * Wraps another {@link Query}'s result and caches it when scores are not
- * needed.  The purpose is to allow queries to simply care about matching and
- * scoring, and then wrap with this class to add caching.
- * @deprecated Use a {@link QueryCache} instead, such as {@link LRUQueryCache}.
- */
 @Deprecated
 public class CachingWrapperQuery extends Query implements Accountable, Cloneable {
   private Query query; // not final because of clone
   private final QueryCachingPolicy policy;
   private final Map<Object,DocIdSet> cache = Collections.synchronizedMap(new WeakHashMap<Object,DocIdSet>());
 
-  /** Wraps another query's result and caches it according to the provided policy.
-   * @param query Query to cache results of
-   * @param policy policy defining which filters should be cached on which segments
-   */
+
   public CachingWrapperQuery(Query query, QueryCachingPolicy policy) {
     this.query = Objects.requireNonNull(query, "Query must not be null");
     this.policy = Objects.requireNonNull(policy, "QueryCachingPolicy must not be null");
   }
 
-  /** Same as {@link CachingWrapperQuery#CachingWrapperQuery(Query, QueryCachingPolicy)}
-   *  but enforces the use of the
-   *  {@link QueryCachingPolicy.CacheOnLargeSegments#DEFAULT} policy. */
+
   public CachingWrapperQuery(Query query) {
     this(query, QueryCachingPolicy.CacheOnLargeSegments.DEFAULT);
   }
 
-  /**
-   * Gets the contained query.
-   * @return the contained query.
-   */
   public Query getQuery() {
     return query;
   }
   
-  /**
-   * Default cache implementation: uses {@link RoaringDocIdSet}.
-   */
   protected DocIdSet cacheImpl(DocIdSetIterator iterator, LeafReader reader) throws IOException {
     return new RoaringDocIdSet.Builder(reader.maxDoc()).add(iterator).build();
   }

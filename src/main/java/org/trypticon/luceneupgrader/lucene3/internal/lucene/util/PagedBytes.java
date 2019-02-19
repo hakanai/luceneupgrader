@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,21 +17,15 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataOutput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
 
-/** Represents a logical byte[] as a series of pages.  You
- *  can write-once into the logical byte[] (append only),
- *  using copy, and then retrieve slices (BytesRef) into it
- *  using fill.
- *
- * @lucene.internal
- **/
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+
 public final class PagedBytes {
   private final List<byte[]> blocks = new ArrayList<byte[]>();
   private final List<Integer> blockEnd = new ArrayList<Integer>();
@@ -45,10 +39,7 @@ public final class PagedBytes {
 
   private static final byte[] EMPTY_BYTES = new byte[0];
 
-  /** Provides methods to read BytesRefs from a frozen
-   *  PagedBytes.
-   *
-   * @see #freeze */
+
   public final static class Reader {
     private final byte[][] blocks;
     private final int[] blockEnds;
@@ -70,15 +61,7 @@ public final class PagedBytes {
       blockSize = pagedBytes.blockSize;
     }
 
-    /**
-     * Gets a slice out of {@link PagedBytes} starting at <i>start</i> with a
-     * given length. Iff the slice spans across a block border this method will
-     * allocate sufficient resources and copy the paged data.
-     * <p>
-     * Slices spanning more than one block are not supported.
-     * </p>
-     * @lucene.internal 
-     **/
+
     public BytesRef fillSlice(BytesRef b, long start, int length) {
       assert length >= 0: "length=" + length;
       assert length <= blockSize+1;
@@ -99,17 +82,7 @@ public final class PagedBytes {
       return b;
     }
     
-    /**
-     * Reads length as 1 or 2 byte vInt prefix, starting at <i>start</i>.
-     * <p>
-     * <b>Note:</b> this method does not support slices spanning across block
-     * borders.
-     * </p>
-     * 
-     * @return the given {@link BytesRef}
-     * 
-     * @lucene.internal
-     **/
+
     public BytesRef fill(BytesRef b, long start) {
       final int index = (int) (start >> blockBits);
       final int offset = (int) (start & blockMask);
@@ -126,16 +99,7 @@ public final class PagedBytes {
       return b;
     }
 
-    /**
-     * Reads length as 1 or 2 byte vInt prefix, starting at <i>start</i>. *
-     * <p>
-     * <b>Note:</b> this method does not support slices spanning across block
-     * borders.
-     * </p>
-     * 
-     * @return the internal block number of the slice.
-     * @lucene.internal
-     **/
+
     public int fillAndGetIndex(BytesRef b, long start) {
       final int index = (int) (start >> blockBits);
       final int offset = (int) (start & blockMask);
@@ -152,20 +116,7 @@ public final class PagedBytes {
       return index;
     }
 
-    /**
-     * Reads length as 1 or 2 byte vInt prefix, starting at <i>start</i> and
-     * returns the start offset of the next part, suitable as start parameter on
-     * next call to sequentially read all {@link BytesRef}.
-     * 
-     * <p>
-     * <b>Note:</b> this method does not support slices spanning across block
-     * borders.
-     * </p>
-     * 
-     * @return the start offset of the next part, suitable as start parameter on
-     *         next call to sequentially read all {@link BytesRef}.
-     * @lucene.internal
-     **/
+
     public long fillAndGetStart(BytesRef b, long start) {
       final int index = (int) (start >> blockBits);
       final int offset = (int) (start & blockMask);
@@ -185,17 +136,7 @@ public final class PagedBytes {
     }
     
   
-    /**
-     * Gets a slice out of {@link PagedBytes} starting at <i>start</i>, the
-     * length is read as 1 or 2 byte vInt prefix. Iff the slice spans across a
-     * block border this method will allocate sufficient resources and copy the
-     * paged data.
-     * <p>
-     * Slices spanning more than one block are not supported.
-     * </p>
-     * 
-     * @lucene.internal
-     **/
+
     public BytesRef fillSliceWithPrefix(BytesRef b, long start) {
       final int index = (int) (start >> blockBits);
       int offset = (int) (start & blockMask);
@@ -230,19 +171,15 @@ public final class PagedBytes {
       return b;
     }
 
-    /** @lucene.internal */
     public byte[][] getBlocks() {
       return blocks;
     }
 
-    /** @lucene.internal */
     public int[] getBlockEnds() {
       return blockEnds;
     }
   }
 
-  /** 1<<blockBits must be bigger than biggest single
-   *  BytesRef slice that will be pulled */
   public PagedBytes(int blockBits) {
     this.blockSize = 1 << blockBits;
     this.blockBits = blockBits;
@@ -250,7 +187,6 @@ public final class PagedBytes {
     upto = blockSize;
   }
 
-  /** Read this many bytes from in */
   public void copy(IndexInput in, long byteCount) throws IOException {
     while (byteCount > 0) {
       int left = blockSize - upto;
@@ -275,7 +211,6 @@ public final class PagedBytes {
     }
   }
 
-  /** Copy BytesRef in */
   public void copy(BytesRef bytes) throws IOException {
     int byteCount = bytes.length;
     int bytesUpto = bytes.offset;
@@ -303,9 +238,7 @@ public final class PagedBytes {
     }
   }
 
-  /** Copy BytesRef in, setting BytesRef out to the result.
-   * Do not use this if you will use freeze(true).
-   * This only supports bytes.length <= blockSize */
+
   public void copy(BytesRef bytes, BytesRef out) throws IOException {
     int left = blockSize - upto;
     if (bytes.length > left || currentBlock==null) {
@@ -329,7 +262,6 @@ public final class PagedBytes {
     upto += bytes.length;
   }
 
-  /** Commits final byte[], trimming it if necessary and if trim=true */
   public Reader freeze(boolean trim) {
     if (frozen) {
       throw new IllegalStateException("already frozen");
@@ -360,8 +292,6 @@ public final class PagedBytes {
     }
   }
 
-  /** Copy bytes in, writing the length as a 1 or 2 byte
-   *  vInt prefix. */
   public long copyUsingLengthPrefix(BytesRef bytes) throws IOException {
     if (bytes.length >= 32768) {
       throw new IllegalArgumentException("max length is 32767 (got " + bytes.length + ")");
@@ -409,13 +339,10 @@ public final class PagedBytes {
       return clone;
     }
 
-    /** Returns the current byte position. */
     public long getPosition() {
       return ((long) currentBlockIndex * blockSize) + currentBlockUpto;
     }
   
-    /** Seek to a position previously obtained from
-     *  {@link #getPosition}. */
     public void setPosition(long pos) {
       currentBlockIndex = (int) (pos >> blockBits);
       currentBlock = blocks.get(currentBlockIndex);
@@ -511,7 +438,6 @@ public final class PagedBytes {
       }
     }
 
-    /** Return the current byte position. */
     public long getPosition() {
       if (currentBlock == null) {
         return 0;
@@ -521,8 +447,6 @@ public final class PagedBytes {
     }
   }
 
-  /** Returns a DataInput to read values from this
-   *  PagedBytes instance. */
   public PagedBytesDataInput getDataInput() {
     if (!frozen) {
       throw new IllegalStateException("must call freeze() before getDataInput");
@@ -530,10 +454,7 @@ public final class PagedBytes {
     return new PagedBytesDataInput();
   }
 
-  /** Returns a DataOutput that you may use to write into
-   *  this PagedBytes instance.  If you do this, you should
-   *  not call the other writing methods (eg, copy);
-   *  results are undefined. */
+
   public PagedBytesDataOutput getDataOutput() {
     if (frozen) {
       throw new IllegalStateException("cannot get DataOutput after freeze()");

@@ -32,29 +32,17 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.TrackingDirectoryWrapper;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Version;
 
-/**
- * Information about a segment such as it's name, directory, and files related
- * to the segment.
- *
- * @lucene.experimental
- */
 public final class SegmentInfo {
   
   // TODO: remove these from this class, for now this is the representation
-  /** Used by some member fields to mean not present (e.g.,
-   *  norms, deletions). */
   public static final int NO = -1;          // e.g. no norms; no deletes;
 
-  /** Used by some member fields to mean present (e.g.,
-   *  norms, deletions). */
   public static final int YES = 1;          // e.g. have norms; have deletes;
 
-  /** Unique segment name in the directory. */
   public final String name;
 
   private int docCount;         // number of docs in seg
 
-  /** Where this segment resides. */
   public final Directory dir;
 
   private boolean isCompoundFile;
@@ -63,7 +51,6 @@ public final class SegmentInfo {
 
   private Map<String,String> diagnostics;
   
-  /** @deprecated not used anymore */
   @Deprecated
   private Map<String,String> attributes;
 
@@ -78,27 +65,15 @@ public final class SegmentInfo {
     this.diagnostics = diagnostics;
   }
 
-  /** Returns diagnostics saved into the segment when it was
-   *  written. */
   public Map<String, String> getDiagnostics() {
     return diagnostics;
   }
   
-  /**
-   * Construct a new complete SegmentInfo instance from input.
-   * <p>Note: this is public only to allow access from
-   * the codecs package.</p>
-   */
   public SegmentInfo(Directory dir, Version version, String name, int docCount,
       boolean isCompoundFile, Codec codec, Map<String,String> diagnostics) {
     this(dir, version, name, docCount, isCompoundFile, codec, diagnostics, null);
   }
 
-  /**
-   * Construct a new complete SegmentInfo instance from input.
-   * <p>Note: this is public only to allow access from
-   * the codecs package.</p>
-   */
   public SegmentInfo(Directory dir, Version version, String name, int docCount,
                      boolean isCompoundFile, Codec codec, Map<String,String> diagnostics, Map<String,String> attributes) {
     assert !(dir instanceof TrackingDirectoryWrapper);
@@ -112,33 +87,19 @@ public final class SegmentInfo {
     this.attributes = attributes;
   }
 
-  /**
-   * @deprecated separate norms are not supported in >= 4.0
-   */
   @Deprecated
   boolean hasSeparateNorms() {
     return getAttribute(Lucene3xSegmentInfoFormat.NORMGEN_KEY) != null;
   }
 
-  /**
-   * Mark whether this segment is stored as a compound file.
-   *
-   * @param isCompoundFile true if this is a compound file;
-   * else, false
-   */
   void setUseCompoundFile(boolean isCompoundFile) {
     this.isCompoundFile = isCompoundFile;
   }
   
-  /**
-   * Returns true if this segment is stored as a compound
-   * file; else, false.
-   */
   public boolean getUseCompoundFile() {
     return isCompoundFile;
   }
 
-  /** Can only be called once. */
   public void setCodec(Codec codec) {
     assert this.codec == null;
     if (codec == null) {
@@ -147,13 +108,10 @@ public final class SegmentInfo {
     this.codec = codec;
   }
 
-  /** Return {@link Codec} that wrote this segment. */
   public Codec getCodec() {
     return codec;
   }
 
-  /** Returns number of documents in this segment (deletions
-   *  are not taken into account). */
   public int getDocCount() {
     if (this.docCount == -1) {
       throw new IllegalStateException("docCount isn't set yet");
@@ -169,7 +127,6 @@ public final class SegmentInfo {
     this.docCount = docCount;
   }
 
-  /** Return all files referenced by this SegmentInfo. */
   public Set<String> files() {
     if (setFiles == null) {
       throw new IllegalStateException("files were not computed yet");
@@ -182,16 +139,7 @@ public final class SegmentInfo {
     return toString(dir, 0);
   }
 
-  /** Used for debugging.  Format may suddenly change.
-   *
-   *  <p>Current format looks like
-   *  <code>_a(3.1):c45/4</code>, which means the segment's
-   *  name is <code>_a</code>; it was created with Lucene 3.1 (or
-   *  '?' if it's unknown); it's using compound file
-   *  format (would be <code>C</code> if not compound); it
-   *  has 45 documents; it has 4 deletions (this part is
-   *  left off when there are no deletions).</p>
-   */
+
   public String toString(Directory dir, int delCount) {
     StringBuilder s = new StringBuilder();
     s.append(name).append('(').append(version == null ? "?" : version).append(')').append(':');
@@ -212,8 +160,6 @@ public final class SegmentInfo {
     return s.toString();
   }
 
-  /** We consider another SegmentInfo instance equal if it
-   *  has the same dir and same name. */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) return true;
@@ -230,43 +176,26 @@ public final class SegmentInfo {
     return dir.hashCode() + name.hashCode();
   }
 
-  /**
-   * Used by DefaultSegmentInfosReader to upgrade a 3.0 segment to record its
-   * version is "3.0". This method can be removed when we're not required to
-   * support 3x indexes anymore, e.g. in 5.0.
-   * <p>
-   * <b>NOTE:</b> this method is used for internal purposes only - you should
-   * not modify the version of a SegmentInfo, or it may result in unexpected
-   * exceptions thrown when you attempt to open the index.
-   *
-   * @lucene.internal
-   */
   public void setVersion(Version version) {
     this.version = version;
   }
 
-  /** Returns the version of the code which wrote the segment. */
   public Version getVersion() {
     return version;
   }
 
   private Set<String> setFiles;
 
-  /** Sets the files written for this segment. */
   public void setFiles(Set<String> files) {
     checkFileNames(files);
     setFiles = files;
   }
 
-  /** Add these files to the set of files written for this
-   *  segment. */
   public void addFiles(Collection<String> files) {
     checkFileNames(files);
     setFiles.addAll(files);
   }
 
-  /** Add this file to the set of files written for this
-   *  segment. */
   public void addFile(String file) {
     checkFileNames(Collections.singleton(file));
     setFiles.add(file);
@@ -282,11 +211,6 @@ public final class SegmentInfo {
     }
   }
     
-  /**
-   * Get a codec attribute value, or null if it does not exist
-   * 
-   * @deprecated no longer supported
-   */
   @Deprecated
   public String getAttribute(String key) {
     if (attributes == null) {
@@ -296,18 +220,6 @@ public final class SegmentInfo {
     }
   }
   
-  /**
-   * Puts a codec attribute value.
-   * <p>
-   * This is a key-value mapping for the field that the codec can use to store
-   * additional metadata, and will be available to the codec when reading the
-   * segment via {@link #getAttribute(String)}
-   * <p>
-   * If a value already exists for the field, it will be replaced with the new
-   * value.
-   * 
-   * @deprecated no longer supported
-   */
   @Deprecated
   public String putAttribute(String key, String value) {
     if (attributes == null) {
@@ -316,13 +228,6 @@ public final class SegmentInfo {
     return attributes.put(key, value);
   }
   
-  /**
-   * Returns the internal codec attributes map.
-   *
-   * @return internal codec attributes map. May be null if no mappings exist.
-   * 
-   * @deprecated no longer supported
-   */
   @Deprecated
   public Map<String,String> attributes() {
     return attributes;

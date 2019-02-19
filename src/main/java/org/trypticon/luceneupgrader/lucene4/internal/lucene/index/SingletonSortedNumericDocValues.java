@@ -20,12 +20,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits.MatchAllBits;
 
-/** 
- * Exposes multi-valued view over a single-valued instance.
- * <p>
- * This can be used if you want to have one multi-valued implementation
- * that works for single or multi-valued types.
- */
 final class SingletonSortedNumericDocValues extends SortedNumericDocValues {
   private final NumericDocValues in;
   private final Bits docsWithField;
@@ -37,12 +31,10 @@ final class SingletonSortedNumericDocValues extends SortedNumericDocValues {
     this.docsWithField = docsWithField instanceof MatchAllBits ? null : docsWithField;
   }
 
-  /** Return the wrapped {@link NumericDocValues} */
   public NumericDocValues getNumericDocValues() {
     return in;
   }
   
-  /** Return the wrapped {@link Bits} */
   public Bits getDocsWithField() {
     return docsWithField;
   }

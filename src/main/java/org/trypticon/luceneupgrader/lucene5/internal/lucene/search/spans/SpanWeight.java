@@ -32,15 +32,8 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.Weight;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.similarities.Similarity;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.similarities.Similarity.SimScorer;
 
-/**
- * Expert-only.  Public for use by other weight implementations
- */
 public abstract class SpanWeight extends Weight {
 
-  /**
-   * Enumeration defining what postings information should be retrieved from the
-   * index for a given Spans
-   */
   public enum Postings {
     POSITIONS {
       @Override
@@ -74,14 +67,6 @@ public abstract class SpanWeight extends Weight {
   protected final Similarity.SimWeight simWeight;
   protected final String field;
 
-  /**
-   * Create a new SpanWeight
-   * @param query the parent query
-   * @param searcher the IndexSearcher to query against
-   * @param termContexts a map of terms to termcontexts for use in building the similarity.  May
-   *                     be null if scores are not required
-   * @throws IOException on error
-   */
   public SpanWeight(SpanQuery query, IndexSearcher searcher, Map<Term, TermContext> termContexts) throws IOException {
     super(query);
     this.field = query.getField();
@@ -102,19 +87,8 @@ public abstract class SpanWeight extends Weight {
     return searcher.getSimilarity(true).computeWeight(collectionStats, termStats);
   }
 
-  /**
-   * Collect all TermContexts used by this Weight
-   * @param contexts a map to add the TermContexts to
-   */
   public abstract void extractTermContexts(Map<Term, TermContext> contexts);
 
-  /**
-   * Expert: Return a Spans object iterating over matches from this Weight
-   * @param ctx a LeafReaderContext for this Spans
-   * @param requiredPostings the postings information required
-   * @return a Spans
-   * @throws IOException on error
-   */
   public abstract Spans getSpans(LeafReaderContext ctx, Postings requiredPostings) throws IOException;
 
   @Override
@@ -139,12 +113,6 @@ public abstract class SpanWeight extends Weight {
     return new SpanScorer(this, spans, docScorer);
   }
 
-  /**
-   * Return a SimScorer for this context
-   * @param context the LeafReaderContext
-   * @return a SimWeight
-   * @throws IOException on error
-   */
   public Similarity.SimScorer getSimScorer(LeafReaderContext context) throws IOException {
     return simWeight == null ? null : similarity.simScorer(simWeight, context);
   }

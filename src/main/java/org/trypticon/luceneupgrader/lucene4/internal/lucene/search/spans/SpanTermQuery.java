@@ -32,14 +32,11 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-/** Matches spans containing a term. */
 public class SpanTermQuery extends SpanQuery {
   protected Term term;
 
-  /** Construct a SpanTermQuery matching the named term's spans. */
   public SpanTermQuery(Term term) { this.term = term; }
 
-  /** Return the term whose spans are matched. */
   public Term getTerm() { return term; }
 
   @Override

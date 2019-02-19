@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,48 +21,23 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Abstract base class for performing read operations of Lucene's low-level
- * data types.
- */
 public abstract class DataInput implements Cloneable {
 
   private boolean preUTF8Strings;                 // true if we are reading old (modified UTF8) string format
 
-  /** Call this if readString should read characters stored
-   *  in the old modified UTF8 format (length in java chars
-   *  and java's modified UTF8 encoding).  This is used for
-   *  indices written pre-2.4 See LUCENE-510 for details. */
+
   public void setModifiedUTF8StringsMode() {
     preUTF8Strings = true;
   }
 
-  /** Reads and returns a single byte.
-   * @see DataOutput#writeByte(byte)
-   */
+
   public abstract byte readByte() throws IOException;
 
-  /** Reads a specified number of bytes into an array at the specified offset.
-   * @param b the array to read bytes into
-   * @param offset the offset in the array to start storing bytes
-   * @param len the number of bytes to read
-   * @see DataOutput#writeBytes(byte[],int)
-   */
+
   public abstract void readBytes(byte[] b, int offset, int len)
     throws IOException;
 
-  /** Reads a specified number of bytes into an array at the
-   * specified offset with control over whether the read
-   * should be buffered (callers who have their own buffer
-   * should pass in "false" for useBuffer).  Currently only
-   * {@link BufferedIndexInput} respects this parameter.
-   * @param b the array to read bytes into
-   * @param offset the offset in the array to start storing bytes
-   * @param len the number of bytes to read
-   * @param useBuffer set to false if the caller will handle
-   * buffering.
-   * @see DataOutput#writeBytes(byte[],int)
-   */
+
   public void readBytes(byte[] b, int offset, int len, boolean useBuffer)
     throws IOException
   {
@@ -70,26 +45,18 @@ public abstract class DataInput implements Cloneable {
     readBytes(b, offset, len);
   }
 
-  /** Reads two bytes and returns a short.
-   * @see DataOutput#writeByte(byte)
-   */
+
   public short readShort() throws IOException {
     return (short) (((readByte() & 0xFF) <<  8) |  (readByte() & 0xFF));
   }
 
-  /** Reads four bytes and returns an int.
-   * @see DataOutput#writeInt(int)
-   */
+
   public int readInt() throws IOException {
     return ((readByte() & 0xFF) << 24) | ((readByte() & 0xFF) << 16)
          | ((readByte() & 0xFF) <<  8) |  (readByte() & 0xFF);
   }
 
-  /** Reads an int stored in variable-length format.  Reads between one and
-   * five bytes.  Smaller values take fewer bytes.  Negative numbers are not
-   * supported.
-   * @see DataOutput#writeVInt(int)
-   */
+
   public int readVInt() throws IOException {
     /* This is the original code of this method,
      * but a Hotspot bug (see LUCENE-2975) corrupts the for-loop if
@@ -121,16 +88,12 @@ public abstract class DataInput implements Cloneable {
     throw new IOException("Invalid vInt detected (too many bits)");
   }
 
-  /** Reads eight bytes and returns a long.
-   * @see DataOutput#writeLong(long)
-   */
+
   public long readLong() throws IOException {
     return (((long)readInt()) << 32) | (readInt() & 0xFFFFFFFFL);
   }
 
-  /** Reads a long stored in variable-length format.  Reads between one and
-   * nine bytes.  Smaller values take fewer bytes.  Negative numbers are not
-   * supported. */
+
   public long readVLong() throws IOException {
     /* This is the original code of this method,
      * but a Hotspot bug (see LUCENE-2975) corrupts the for-loop if
@@ -173,9 +136,7 @@ public abstract class DataInput implements Cloneable {
     throw new IOException("Invalid vLong detected (negative values disallowed)");
   }
 
-  /** Reads a string.
-   * @see DataOutput#writeString(String)
-   */
+
   public String readString() throws IOException {
     if (preUTF8Strings)
       return readModifiedUTF8String();
@@ -192,16 +153,7 @@ public abstract class DataInput implements Cloneable {
     return new String(chars, 0, length);
   }
 
-  /** Reads Lucene's old "modified UTF-8" encoded
-   *  characters into an array.
-   * @param buffer the array to read characters into
-   * @param start the offset in the array to start storing characters
-   * @param length the number of characters to read
-   * @see DataOutput#writeChars(String,int,int)
-   * @deprecated -- please use readString or readBytes
-   *                instead, and construct the string
-   *                from those utf8 bytes
-   */
+
   @Deprecated
   public void readChars(char[] buffer, int start, int length)
        throws IOException {
@@ -221,15 +173,7 @@ public abstract class DataInput implements Cloneable {
     }
   }
 
-  /** Returns a clone of this stream.
-   *
-   * <p>Clones of a stream access the same data, and are positioned at the same
-   * point as the stream they were cloned from.
-   *
-   * <p>Expert: Subclasses must ensure that clones may be positioned at
-   * different points in the input from each other and from the stream they
-   * were cloned from.
-   */
+
   @Override
   public Object clone() {
     DataInput clone = null;

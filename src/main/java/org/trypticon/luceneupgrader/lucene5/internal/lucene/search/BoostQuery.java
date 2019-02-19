@@ -28,17 +28,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LeafReaderContext;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.Term;
 
-/**
- * A {@link Query} wrapper that allows to give a boost to the wrapped query.
- * Boost values that are less than one will give less importance to this
- * query compared to other ones while values that are greater than one will
- * give more importance to the scores returned by this query.
- */
 public final class BoostQuery extends Query {
 
-  /** By default we enclose the wrapped query within parenthesis, but this is
-   *  not required for all queries, so we use a whitelist of queries that don't
-   *  need parenthesis to have a better toString(). */
+
   private static final Set<Class<? extends Query>> NO_PARENS_REQUIRED_QUERIES = Collections.unmodifiableSet(
       new HashSet<>(Arrays.asList(
           MatchAllDocsQuery.class,
@@ -56,16 +48,11 @@ public final class BoostQuery extends Query {
 
   private final Query query;
 
-  /** Sole constructor: wrap {@code query} in such a way that the produced
-   *  scores will be boosted by {@code boost}. */
   public BoostQuery(Query query, float boost) {
     this.query = Objects.requireNonNull(query);
     setBoost(boost);
   }
 
-  /**
-   * Return the wrapped {@link Query}.
-   */
   public Query getQuery() {
     return query;
   }

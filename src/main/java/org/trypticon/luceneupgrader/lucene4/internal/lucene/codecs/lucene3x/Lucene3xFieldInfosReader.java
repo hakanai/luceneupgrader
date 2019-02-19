@@ -34,13 +34,8 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 
-/**
- * @lucene.experimental
- * @deprecated Only for reading existing 3.x indexes
- */
 @Deprecated
 class Lucene3xFieldInfosReader extends FieldInfosReader {
-  /** Extension of field infos */
   static final String FIELD_INFOS_EXTENSION = "fnm";
   
   // First used in 2.9; prior to 2.9 there was no format header

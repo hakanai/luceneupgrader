@@ -22,15 +22,6 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IndexOutput;
 
-/**
- * Write monotonically-increasing sequences of integers. This writer splits
- * data into blocks and then for each block, computes the average slope, the
- * minimum value and only encode the delta from the expected value using a
- * {@link DirectWriter}.
- * 
- * @see DirectMonotonicReader
- * @lucene.internal 
- */
 public final class DirectMonotonicWriter {
 
   public static final int MIN_BLOCK_SHIFT = 2;
@@ -100,9 +91,7 @@ public final class DirectMonotonicWriter {
 
   long previous = Long.MIN_VALUE;
 
-  /** Write a new value. Note that data might not make it to storage until
-   * {@link #finish()} is called.
-   *  @throws IllegalArgumentException if values don't come in order */
+
   public void add(long v) throws IOException {
     if (v < previous) {
       throw new IllegalArgumentException("Values do not come in order: " + previous + ", " + v);
@@ -115,7 +104,6 @@ public final class DirectMonotonicWriter {
     count++;
   }
 
-  /** This must be called exactly once after all values have been {@link #add(long) added}. */
   public void finish() throws IOException {
     if (count != numValues) {
       throw new IllegalStateException("Wrong number of values added, expected: " + numValues + ", got: " + count);
@@ -129,9 +117,7 @@ public final class DirectMonotonicWriter {
     finished = true;
   }
 
-  /** Returns an instance suitable for encoding {@code numValues} into monotonic
-   *  blocks of 2<sup>{@code blockShift}</sup> values. Metadata will be written
-   *  to {@code metaOut} and actual data to {@code dataOut}. */
+
   public static DirectMonotonicWriter getInstance(IndexOutput metaOut, IndexOutput dataOut, long numValues, int blockShift) {
     return new DirectMonotonicWriter(metaOut, dataOut, numValues, blockShift);
   }

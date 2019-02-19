@@ -26,12 +26,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PagedMut
  * limitations under the License.
  */
 
-/**
- * A {@link DocValuesFieldUpdates} which holds updates of documents, of a single
- * {@link BinaryDocValuesField}.
- * 
- * @lucene.experimental
- */
 class BinaryDocValuesFieldUpdates extends DocValuesFieldUpdates {
   
   final static class Iterator extends DocValuesFieldUpdates.Iterator {

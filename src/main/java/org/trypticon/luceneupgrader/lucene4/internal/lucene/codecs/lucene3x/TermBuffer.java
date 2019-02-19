@@ -28,10 +28,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.Term;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.FieldInfos;
 
-/**
- * @lucene.experimental
- * @deprecated (4.0)
- */
 @Deprecated
 final class TermBuffer implements Cloneable {
 

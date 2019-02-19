@@ -22,16 +22,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** Tracks live field values across NRT reader reopens.
- *  This holds a map for all updated ids since
- *  the last reader reopen.  Once the NRT reader is reopened,
- *  it prunes the map.  This means you must reopen your NRT
- *  reader periodically otherwise the RAM consumption of
- *  this class will grow unbounded!
- *
- *  <p>NOTE: you must ensure the same id is never updated at
- *  the same time by two threads, because in this case you
- *  cannot in general know which thread "won". */
+
 
 public abstract class LiveFieldValues<S,T> implements ReferenceManager.RefreshListener, Closeable {
 
@@ -72,27 +63,19 @@ public abstract class LiveFieldValues<S,T> implements ReferenceManager.RefreshLi
     old = new ConcurrentHashMap<>();
   }
 
-  /** Call this after you've successfully added a document
-   *  to the index, to record what value you just set the
-   *  field to. */
+
   public void add(String id, T value) {
     current.put(id, value);
   }
 
-  /** Call this after you've successfully deleted a document
-   *  from the index. */
   public void delete(String id) {
     current.put(id, missingValue);
   }
 
-  /** Returns the [approximate] number of id/value pairs
-   *  buffered in RAM. */
   public int size() {
     return current.size() + old.size();
   }
 
-  /** Returns the current value for this id, or null if the
-   *  id isn't in the index or was deleted. */
   public T get(String id) throws IOException {
     // First try to get the "live" value:
     T value = current.get(id);
@@ -124,10 +107,7 @@ public abstract class LiveFieldValues<S,T> implements ReferenceManager.RefreshLi
     }
   }
 
-  /** This is called when the id/value was already flushed & opened
-   *  in an NRT IndexSearcher.  You must implement this to
-   *  go look up the value (eg, via doc values, field cache,
-   *  stored fields, etc.). */
+
   protected abstract T lookupFromSearcher(S s, String id) throws IOException;
 }
 

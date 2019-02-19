@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -28,9 +28,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Explanation.I
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ReaderUtil;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ToStringUtils;
 
-/** A Query that matches documents containing a term.
-  This may be combined with other terms with a {@link BooleanQuery}.
-  */
 public class TermQuery extends Query {
   private Term term;
 
@@ -186,12 +183,10 @@ public class TermQuery extends Query {
     }
   }
 
-  /** Constructs a query for the term <code>t</code>. */
   public TermQuery(Term t) {
     term = t;
   }
 
-  /** Returns the term of this query. */
   public Term getTerm() { return term; }
 
   @Override
@@ -204,7 +199,6 @@ public class TermQuery extends Query {
     terms.add(getTerm());
   }
 
-  /** Prints a user-readable version of this query. */
   @Override
   public String toString(String field) {
     StringBuilder buffer = new StringBuilder();
@@ -217,7 +211,6 @@ public class TermQuery extends Query {
     return buffer.toString();
   }
 
-  /** Returns true iff <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof TermQuery))
@@ -227,7 +220,6 @@ public class TermQuery extends Query {
       && this.term.equals(other.term);
   }
 
-  /** Returns a hash code value for this object.*/
   @Override
   public int hashCode() {
     return Float.floatToIntBits(getBoost()) ^ term.hashCode();

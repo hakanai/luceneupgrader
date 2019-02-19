@@ -27,46 +27,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.Query;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
-/**
- * {@link DocumentsWriterDeleteQueue} is a non-blocking linked pending deletes
- * queue. In contrast to other queue implementation we only maintain the
- * tail of the queue. A delete queue is always used in a context of a set of
- * DWPTs and a global delete pool. Each of the DWPT and the global pool need to
- * maintain their 'own' head of the queue (as a DeleteSlice instance per DWPT).
- * The difference between the DWPT and the global pool is that the DWPT starts
- * maintaining a head once it has added its first document since for its segments
- * private deletes only the deletes after that document are relevant. The global
- * pool instead starts maintaining the head once this instance is created by
- * taking the sentinel instance as its initial head.
- * <p>
- * Since each {@link DeleteSlice} maintains its own head and the list is only
- * single linked the garbage collector takes care of pruning the list for us.
- * All nodes in the list that are still relevant should be either directly or
- * indirectly referenced by one of the DWPT's private {@link DeleteSlice} or by
- * the global {@link BufferedUpdates} slice.
- * <p>
- * Each DWPT as well as the global delete pool maintain their private
- * DeleteSlice instance. In the DWPT case updating a slice is equivalent to
- * atomically finishing the document. The slice update guarantees a "happens
- * before" relationship to all other updates in the same indexing session. When a
- * DWPT updates a document it:
- * 
- * <ol>
- * <li>consumes a document and finishes its processing</li>
- * <li>updates its private {@link DeleteSlice} either by calling
- * {@link #updateSlice(DeleteSlice)} or {@link #add(Term, DeleteSlice)} (if the
- * document has a delTerm)</li>
- * <li>applies all deletes in the slice to its private {@link BufferedUpdates}
- * and resets it</li>
- * <li>increments its internal document id</li>
- * </ol>
- * 
- * The DWPT also doesn't apply its current documents delete term until it has
- * updated its delete slice which ensures the consistency of the update. If the
- * update fails before the DeleteSlice could have been updated the deleteTerm
- * will also not be added to its private deletes neither to the global deletes.
- * 
- */
 final class DocumentsWriterDeleteQueue implements Accountable {
 
   private volatile Node<?> tail;
@@ -116,9 +76,6 @@ final class DocumentsWriterDeleteQueue implements Accountable {
     tryApplyGlobalSlice();
   }
   
-  /**
-   * invariant for document update
-   */
   void add(Term term, DeleteSlice slice) {
     final TermNode termNode = new TermNode(term);
 //    System.out.println(Thread.currentThread().getName() + ": push " + termNode + " this=" + this);
@@ -292,10 +249,6 @@ final class DocumentsWriterDeleteQueue implements Accountable {
       sliceHead = sliceTail;
     }
 
-    /**
-     * Returns <code>true</code> iff the given item is identical to the item
-     * hold by the slices tail, otherwise <code>false</code>.
-     */
     boolean isTailItem(Object item) {
       return sliceTail.item == item;
     }

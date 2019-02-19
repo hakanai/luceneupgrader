@@ -19,9 +19,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeImpl;
 
-/** Implementation class for {@link BoostAttribute}.
- * @lucene.internal
- */
 public final class BoostAttributeImpl extends AttributeImpl implements BoostAttribute {
   private float boost = 1.0f;
 

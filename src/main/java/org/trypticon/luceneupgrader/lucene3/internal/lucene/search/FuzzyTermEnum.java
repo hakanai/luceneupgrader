@@ -1,6 +1,6 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,12 +22,6 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
 
-/** Subclass of FilteredTermEnum for enumerating all terms that are similar
- * to the specified filter term.
- *
- * <p>Term enumerations are always ordered by Term.compareTo().  Each term in
- * the enumeration is greater than all that precede it.
- */
 public final class FuzzyTermEnum extends FilteredTermEnum {
 
   /* Allows us save time required to create a new array
@@ -47,51 +41,14 @@ public final class FuzzyTermEnum extends FilteredTermEnum {
   private final float minimumSimilarity;
   private final float scale_factor;
 
-  /**
-   * Creates a FuzzyTermEnum with an empty prefix and a minSimilarity of 0.5f.
-   * <p>
-   * After calling the constructor the enumeration is already pointing to the first 
-   * valid term if such a term exists. 
-   * 
-   * @param reader
-   * @param term
-   * @throws IOException
-   * @see #FuzzyTermEnum(IndexReader, Term, float, int)
-   */
   public FuzzyTermEnum(IndexReader reader, Term term) throws IOException {
     this(reader, term, FuzzyQuery.defaultMinSimilarity, FuzzyQuery.defaultPrefixLength);
   }
     
-  /**
-   * Creates a FuzzyTermEnum with an empty prefix.
-   * <p>
-   * After calling the constructor the enumeration is already pointing to the first 
-   * valid term if such a term exists. 
-   * 
-   * @param reader
-   * @param term
-   * @param minSimilarity
-   * @throws IOException
-   * @see #FuzzyTermEnum(IndexReader, Term, float, int)
-   */
   public FuzzyTermEnum(IndexReader reader, Term term, float minSimilarity) throws IOException {
     this(reader, term, minSimilarity, FuzzyQuery.defaultPrefixLength);
   }
     
-  /**
-   * Constructor for enumeration of all terms from specified <code>reader</code> which share a prefix of
-   * length <code>prefixLength</code> with <code>term</code> and which have a fuzzy similarity &gt;
-   * <code>minSimilarity</code>.
-   * <p>
-   * After calling the constructor the enumeration is already pointing to the first 
-   * valid term if such a term exists. 
-   * 
-   * @param reader Delivers terms.
-   * @param term Pattern term.
-   * @param minSimilarity Minimum required similarity for terms from the reader. Default value is 0.5f.
-   * @param prefixLength Length of required common prefix. Default value is 0.
-   * @throws IOException
-   */
   public FuzzyTermEnum(IndexReader reader, Term term, final float minSimilarity, final int prefixLength) throws IOException {
     super();
     
@@ -121,10 +78,6 @@ public final class FuzzyTermEnum extends FilteredTermEnum {
     setEnum(reader.terms(new Term(searchTerm.field(), prefix)));
   }
 
-  /**
-   * The termCompare method in FuzzyTermEnum uses Levenshtein distance to 
-   * calculate the distance between the given term and the comparing term. 
-   */
   @Override
   protected final boolean termCompare(Term term) {
     if (field == term.field() && term.text().startsWith(prefix)) {
@@ -136,59 +89,18 @@ public final class FuzzyTermEnum extends FilteredTermEnum {
     return false;
   }
   
-  /** {@inheritDoc} */
   @Override
   public final float difference() {
     return (similarity - minimumSimilarity) * scale_factor;
   }
   
-  /** {@inheritDoc} */
   @Override
   public final boolean endEnum() {
     return endEnum;
   }
   
-  /******************************
-   * Compute Levenshtein distance
-   ******************************/
+
   
-  /**
-   * <p>Similarity returns a number that is 1.0f or less (including negative numbers)
-   * based on how similar the Term is compared to a target term.  It returns
-   * exactly 0.0f when
-   * <pre>
-   *    editDistance &gt; maximumEditDistance</pre>
-   * Otherwise it returns:
-   * <pre>
-   *    1 - (editDistance / length)</pre>
-   * where length is the length of the shortest term (text or target) including a
-   * prefix that are identical and editDistance is the Levenshtein distance for
-   * the two words.</p>
-   *
-   * <p>Embedded within this algorithm is a fail-fast Levenshtein distance
-   * algorithm.  The fail-fast algorithm differs from the standard Levenshtein
-   * distance algorithm in that it is aborted if it is discovered that the
-   * minimum distance between the words is greater than some threshold.
-   *
-   * <p>To calculate the maximum distance threshold we use the following formula:
-   * <pre>
-   *     (1 - minimumSimilarity) * length</pre>
-   * where length is the shortest term including any prefix that is not part of the
-   * similarity comparison.  This formula was derived by solving for what maximum value
-   * of distance returns false for the following statements:
-   * <pre>
-   *   similarity = 1 - ((float)distance / (float) (prefixLength + Math.min(textlen, targetlen)));
-   *   return (similarity > minimumSimilarity);</pre>
-   * where distance is the Levenshtein distance for the two words.
-   * </p>
-   * <p>Levenshtein distance (also known as edit distance) is a measure of similarity
-   * between two strings where the distance is measured as the number of character
-   * deletions, insertions or substitutions required to transform one string to
-   * the other string.
-   * @param target the target word or phrase
-   * @return the similarity,  0.0 or less indicates that it matches less than the required
-   * threshold and 1.0 indicates that the text and target are identical
-   */
   private float similarity(final String target) {
     final int m = target.length();
     final int n = text.length;
@@ -262,18 +174,10 @@ public final class FuzzyTermEnum extends FilteredTermEnum {
     return 1.0f - ((float)p[n] / (float) (prefix.length() + Math.min(n, m)));
   }
 
-  /**
-   * The max Distance is the maximum Levenshtein distance for the text
-   * compared to some other value that results in score that is
-   * better than the minimum similarity.
-   * @param m the length of the "other value"
-   * @return the maximum levenshtein distance that we care about
-   */
   private int calculateMaxDistance(int m) {
     return (int) ((1-minimumSimilarity) * (Math.min(text.length, m) + prefix.length()));
   }
 
-  /** {@inheritDoc} */
   @Override
   public void close() throws IOException {
     p = d = null;
