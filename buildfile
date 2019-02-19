@@ -5,9 +5,21 @@ repositories.remote << 'https://oss.sonatype.org/content/repositories/releases'
 repositories.remote << 'https://repository.apache.org/content/repositories/releases'
 repositories.remote << 'http://mirrors.ibiblio.org/pub/mirrors/maven2/'
 
-repositories.release_to[:url] = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-repositories.release_to[:username] = ENV['USERNAME']
-repositories.release_to[:password] = ENV['PASSWORD']
+if VERSION_NUMBER =~ /SNAPSHOT/
+  if ENV['DEPLOY_USER']
+    repositories.release_to = { url: 'https://oss.sonatype.org/content/repositories/snapshots',
+                                username: ENV['DEPLOY_USER'],
+                                password: ENV['DEPLOY_PASS'] }
+  end
+  if ENV['GPG_USER']
+    require 'buildr/gpg'
+  end
+else
+  repositories.release_to = { url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2',
+                              username: ENV['DEPLOY_USER'],
+                              password: ENV['DEPLOY_PASS'] }
+  require 'buildr/gpg'
+end
 
 LUCENE_VERSION = '7.5.0'
 
@@ -26,4 +38,6 @@ define 'luceneupgrader' do
   test.with 'org.hamcrest:hamcrest-library:jar:1.3'
   test.with LUCENE_RUNTIME
   package :jar
+  package :sources
+  package :javadoc
 end
