@@ -6,4 +6,4 @@ jdk: oraclejdk8
 rvm: 2.0
 install:
   - gem install buildr
-script: buildr
+script: buildr build package
