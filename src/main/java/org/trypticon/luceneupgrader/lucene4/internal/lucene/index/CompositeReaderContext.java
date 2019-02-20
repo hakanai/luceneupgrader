@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,16 +13,14 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * {@link IndexReaderContext} for {@link CompositeReader} instance.
- */
 public final class CompositeReaderContext extends IndexReaderContext {
   private final List<IndexReaderContext> children;
   private final List<AtomicReaderContext> leaves;
@@ -34,18 +30,11 @@ public final class CompositeReaderContext extends IndexReaderContext {
     return new Builder(reader).build();
   }
 
-  /**
-   * Creates a {@link CompositeReaderContext} for intermediate readers that aren't
-   * not top-level readers in the current context
-   */
   CompositeReaderContext(CompositeReaderContext parent, CompositeReader reader,
       int ordInParent, int docbaseInParent, List<IndexReaderContext> children) {
     this(parent, reader, ordInParent, docbaseInParent, children, null);
   }
   
-  /**
-   * Creates a {@link CompositeReaderContext} for top-level readers with parent set to <code>null</code>
-   */
   CompositeReaderContext(CompositeReader reader, List<IndexReaderContext> children, List<AtomicReaderContext> leaves) {
     this(null, reader, 0, 0, children, leaves);
   }

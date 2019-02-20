@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,44 +13,21 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.TokenStream;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.CharTermAttributeImpl;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.TermAttribute;
 
 import java.lang.ref.WeakReference;
-import java.util.Collections;
-import java.util.NoSuchElementException;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.TokenStream; // for javadocs
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.TermAttribute;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.CharTermAttributeImpl;
-
-/**
- * An AttributeSource contains a list of different {@link AttributeImpl}s,
- * and methods to add and get them. There can only be a single instance
- * of an attribute in the same AttributeSource instance. This is ensured
- * by passing in the actual type of the Attribute (Class&lt;Attribute&gt;) to 
- * the {@link #addAttribute(Class)}, which then checks if an instance of
- * that type is already present. If yes, it returns the instance, otherwise
- * it creates a new instance and returns it.
- */
 public class AttributeSource {
-  /**
-   * An AttributeFactory creates instances of {@link AttributeImpl}s.
-   */
   public static abstract class AttributeFactory {
-    /**
-     * returns an {@link AttributeImpl} for the supplied {@link Attribute} interface class.
-     */
     public abstract AttributeImpl createAttributeInstance(Class<? extends Attribute> attClass);
     
-    /**
-     * This is the default factory that creates {@link AttributeImpl}s using the
-     * class name of the supplied {@link Attribute} interface class by appending <code>Impl</code> to it.
-     */
     public static final AttributeFactory DEFAULT_ATTRIBUTE_FACTORY = new DefaultAttributeFactory();
     
     private static final class DefaultAttributeFactory extends AttributeFactory {
@@ -99,11 +74,6 @@ public class AttributeSource {
     }
   }
       
-  /**
-   * This class holds the state of an AttributeSource.
-   * @see #captureState
-   * @see #restoreState
-   */
   public static final class State implements Cloneable {
     AttributeImpl attribute;
     State next;
@@ -129,16 +99,10 @@ public class AttributeSource {
 
   private final AttributeFactory factory;
   
-  /**
-   * An AttributeSource using the default attribute factory {@link AttributeSource.AttributeFactory#DEFAULT_ATTRIBUTE_FACTORY}.
-   */
   public AttributeSource() {
     this(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
   }
   
-  /**
-   * An AttributeSource that uses the same attributes as the supplied one.
-   */
   public AttributeSource(AttributeSource input) {
     if (input == null) {
       throw new IllegalArgumentException("input AttributeSource must not be null");
@@ -149,9 +113,6 @@ public class AttributeSource {
     this.factory = input.factory;
   }
   
-  /**
-   * An AttributeSource using the supplied {@link AttributeFactory} for creating new {@link Attribute} instances.
-   */
   public AttributeSource(AttributeFactory factory) {
     this.attributes = new LinkedHashMap<Class<? extends Attribute>, AttributeImpl>();
     this.attributeImpls = new LinkedHashMap<Class<? extends AttributeImpl>, AttributeImpl>();
@@ -159,24 +120,16 @@ public class AttributeSource {
     this.factory = factory;
   }
   
-  /**
-   * returns the used AttributeFactory.
-   */
   public AttributeFactory getAttributeFactory() {
     return this.factory;
   }
   
-  /** Returns a new iterator that iterates the attribute classes
-   * in the same order they were added in.
-   */
+
   public Iterator<Class<? extends Attribute>> getAttributeClassesIterator() {
     return Collections.unmodifiableSet(attributes.keySet()).iterator();
   }
   
-  /** Returns a new iterator that iterates all unique Attribute implementations.
-   * This iterator may contain less entries that {@link #getAttributeClassesIterator},
-   * if one instance implements more than one Attribute interface.
-   */
+
   public Iterator<AttributeImpl> getAttributeImplsIterator() {
     final State initState = getCurrentState();
     if (initState != null) {
@@ -204,8 +157,7 @@ public class AttributeSource {
     }
   }
   
-  /** a cache that stores all interfaces for known implementation classes for performance (slow reflection) */
-  private static final WeakIdentityMap<Class<? extends AttributeImpl>,LinkedList<WeakReference<Class<? extends Attribute>>>> knownImplClasses =
+    private static final WeakIdentityMap<Class<? extends AttributeImpl>,LinkedList<WeakReference<Class<? extends Attribute>>>> knownImplClasses =
     WeakIdentityMap.newConcurrentHashMap();
   
   static LinkedList<WeakReference<Class<? extends Attribute>>> getAttributeInterfaces(final Class<? extends AttributeImpl> clazz) {
@@ -229,14 +181,7 @@ public class AttributeSource {
     return foundInterfaces;
   }
   
-  /** <b>Expert:</b> Adds a custom AttributeImpl instance with one or more Attribute interfaces.
-   * <p><font color="red"><b>Please note:</b> It is not guaranteed, that <code>att</code> is added to
-   * the <code>AttributeSource</code>, because the provided attributes may already exist.
-   * You should always retrieve the wanted attributes using {@link #getAttribute} after adding
-   * with this method and cast to your class.
-   * The recommended way to use custom implementations is using an {@link AttributeFactory}.
-   * </font></p>
-   */
+
   public void addAttributeImpl(final AttributeImpl att) {
     final Class<? extends AttributeImpl> clazz = att.getClass();
     if (attributeImpls.containsKey(clazz)) return;
@@ -258,12 +203,6 @@ public class AttributeSource {
     }
   }
   
-  /**
-   * The caller must pass in a Class&lt;? extends Attribute&gt; value.
-   * This method first checks if an instance of that class is 
-   * already in this AttributeSource and returns it. Otherwise a
-   * new instance is created, added to this AttributeSource and returned. 
-   */
   public <A extends Attribute> A addAttribute(Class<A> attClass) {
     AttributeImpl attImpl = attributes.get(attClass);
     if (attImpl == null) {
@@ -278,30 +217,14 @@ public class AttributeSource {
     return attClass.cast(attImpl);
   }
   
-  /** Returns true, iff this AttributeSource has any attributes */
-  public boolean hasAttributes() {
+    public boolean hasAttributes() {
     return !this.attributes.isEmpty();
   }
 
-  /**
-   * The caller must pass in a Class&lt;? extends Attribute&gt; value. 
-   * Returns true, iff this AttributeSource contains the passed-in Attribute.
-   */
   public boolean hasAttribute(Class<? extends Attribute> attClass) {
     return this.attributes.containsKey(attClass);
   }
 
-  /**
-   * The caller must pass in a Class&lt;? extends Attribute&gt; value. 
-   * Returns the instance of the passed in Attribute contained in this AttributeSource
-   * 
-   * @throws IllegalArgumentException if this AttributeSource does not contain the
-   *         Attribute. It is recommended to always use {@link #addAttribute} even in consumers
-   *         of TokenStreams, because you cannot know if a specific TokenStream really uses
-   *         a specific Attribute. {@link #addAttribute} will automatically make the attribute
-   *         available. If you want to only use the attribute, if it is available (to optimize
-   *         consuming), use {@link #hasAttribute}.
-   */
   public <A extends Attribute> A getAttribute(Class<A> attClass) {
     AttributeImpl attImpl = attributes.get(attClass);
     if (attImpl == null) {
@@ -326,40 +249,17 @@ public class AttributeSource {
     return s;
   }
   
-  /**
-   * Resets all Attributes in this AttributeSource by calling
-   * {@link AttributeImpl#clear()} on each Attribute implementation.
-   */
   public void clearAttributes() {
     for (State state = getCurrentState(); state != null; state = state.next) {
       state.attribute.clear();
     }
   }
   
-  /**
-   * Captures the state of all Attributes. The return value can be passed to
-   * {@link #restoreState} to restore the state of this or another AttributeSource.
-   */
   public State captureState() {
     final State state = this.getCurrentState();
     return (state == null) ? null : (State) state.clone();
   }
   
-  /**
-   * Restores this state by copying the values of all attribute implementations
-   * that this state contains into the attributes implementations of the targetStream.
-   * The targetStream must contain a corresponding instance for each argument
-   * contained in this state (e.g. it is not possible to restore the state of
-   * an AttributeSource containing a TermAttribute into a AttributeSource using
-   * a Token instance as implementation).
-   * <p>
-   * Note that this method does not affect attributes of the targetStream
-   * that are not contained in this state. In other words, if for example
-   * the targetStream contains an OffsetAttribute, but this state doesn't, then
-   * the value of the OffsetAttribute remains unchanged. It might be desirable to
-   * reset its value to the default, in which case the caller should first
-   * call {@link TokenStream#clearAttributes()} on the targetStream.   
-   */
   public void restoreState(State state) {
     if (state == null)  return;
     
@@ -419,17 +319,6 @@ public class AttributeSource {
       return false;
   }
   
-  /**
-   * Returns a string representation of the object. In general, the {@code toString} method
-   * returns a string that &quot;textually represents&quot; this object.
-   *
-   * <p><b>WARNING:</b> For backwards compatibility this method is implemented as
-   * in Lucene 2.9/3.0. In Lucene 4.0 this default implementation
-   * will be removed.
-   *
-   * <p>It is recommeneded to use {@link #reflectAsString} or {@link #reflectWith}
-   * to get a well-defined output of AttributeSource's internals.
-   */
   // TODO: @deprecated remove this method in 4.0
   @Override
   public String toString() {
@@ -443,17 +332,6 @@ public class AttributeSource {
     return sb.append(')').toString();
   }
   
-  /**
-   * This method returns the current attribute values as a string in the following format
-   * by calling the {@link #reflectWith(AttributeReflector)} method:
-   * 
-   * <ul>
-   * <li><em>iff {@code prependAttClass=true}:</em> {@code "AttributeClass#key=value,AttributeClass#key=value"}
-   * <li><em>iff {@code prependAttClass=false}:</em> {@code "key=value,key=value"}
-   * </ul>
-   *
-   * @see #reflectWith(AttributeReflector)
-   */
   public final String reflectAsString(final boolean prependAttClass) {
     final StringBuilder buffer = new StringBuilder();
     reflectWith(new AttributeReflector() {
@@ -470,28 +348,12 @@ public class AttributeSource {
     return buffer.toString();
   }
   
-  /**
-   * This method is for introspection of attributes, it should simply
-   * add the key/values this AttributeSource holds to the given {@link AttributeReflector}.
-   *
-   * <p>This method iterates over all Attribute implementations and calls the
-   * corresponding {@link AttributeImpl#reflectWith} method.</p>
-   *
-   * @see AttributeImpl#reflectWith
-   */
   public final void reflectWith(AttributeReflector reflector) {
     for (State state = getCurrentState(); state != null; state = state.next) {
       state.attribute.reflectWith(reflector);
     }
   }
 
-  /**
-   * Performs a clone of all {@link AttributeImpl} instances returned in a new
-   * {@code AttributeSource} instance. This method can be used to e.g. create another TokenStream
-   * with exactly the same attributes (using {@link #AttributeSource(AttributeSource)}).
-   * You can also use it as a (non-performant) replacement for {@link #captureState}, if you need to look
-   * into / modify the captured state.
-   */
   public AttributeSource cloneAttributes() {
     final AttributeSource clone = new AttributeSource(this.factory);
     
@@ -510,14 +372,6 @@ public class AttributeSource {
     return clone;
   }
   
-  /**
-   * Copies the contents of this {@code AttributeSource} to the given target {@code AttributeSource}.
-   * The given instance has to provide all {@link Attribute}s this instance contains. 
-   * The actual attribute implementations must be identical in both {@code AttributeSource} instances;
-   * ideally both AttributeSource instances should use the same {@link AttributeFactory}.
-   * You can use this method as a replacement for {@link #restoreState}, if you use
-   * {@link #cloneAttributes} instead of {@link #captureState}.
-   */
   public final void copyTo(AttributeSource target) {
     for (State state = getCurrentState(); state != null; state = state.next) {
       final AttributeImpl targetImpl = target.attributeImpls.get(state.attribute.getClass());

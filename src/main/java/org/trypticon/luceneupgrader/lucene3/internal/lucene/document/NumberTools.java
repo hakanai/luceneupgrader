@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.document;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,34 +13,14 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.document;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.document;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.NumericRangeQuery; // for javadocs
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.NumericUtils; // for javadocs
 
 // do not remove this class in 3.0, it may be needed to decode old indexes!
 
-/**
- * Provides support for converting longs to Strings, and back again. The strings
- * are structured so that lexicographic sorting order is preserved.
- * 
- * <p>
- * That is, if l1 is less than l2 for any two longs l1 and l2, then
- * NumberTools.longToString(l1) is lexicographically less than
- * NumberTools.longToString(l2). (Similarly for "greater than" and "equals".)
- * 
- * <p>
- * This class handles <b>all</b> long values (unlike
- * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.document.DateField}).
- * 
- * @deprecated For new indexes use {@link NumericUtils} instead, which
- * provides a sortable binary representation (prefix encoded) of numeric
- * values.
- * To index and efficiently query numeric values use {@link NumericField}
- * and {@link NumericRangeQuery}.
- * This class is included for use with existing
- * indices and will be removed in a future release (possibly Lucene 4.0).
- */
 @Deprecated
 public class NumberTools {
 
@@ -54,26 +32,14 @@ public class NumberTools {
     private static final char POSITIVE_PREFIX = '0';
 
     //NB: this must be less than
-    /**
-     * Equivalent to longToString(Long.MIN_VALUE)
-     */
     public static final String MIN_STRING_VALUE = NEGATIVE_PREFIX
             + "0000000000000";
 
-    /**
-     * Equivalent to longToString(Long.MAX_VALUE)
-     */
     public static final String MAX_STRING_VALUE = POSITIVE_PREFIX
             + "1y2p0ij32e8e7";
 
-    /**
-     * The length of (all) strings returned by {@link #longToString}
-     */
     public static final int STR_SIZE = MIN_STRING_VALUE.length();
 
-    /**
-     * Converts a long to a String suitable for indexing.
-     */
     public static String longToString(long l) {
 
         if (l == Long.MIN_VALUE) {
@@ -100,16 +66,6 @@ public class NumberTools {
         return buf.toString();
     }
 
-    /**
-     * Converts a String that was returned by {@link #longToString} back to a
-     * long.
-     * 
-     * @throws IllegalArgumentException
-     *             if the input is null
-     * @throws NumberFormatException
-     *             if the input does not parse (it was not a String returned by
-     *             longToString()).
-     */
     public static long stringToLong(String str) {
         if (str == null) {
             throw new NullPointerException("string cannot be null");

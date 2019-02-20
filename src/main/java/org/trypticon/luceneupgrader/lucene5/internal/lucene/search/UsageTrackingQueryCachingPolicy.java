@@ -23,16 +23,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LeafReaderCont
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.FrequencyTrackingRingBuffer;
 
 
-/**
- * A {@link QueryCachingPolicy} that tracks usage statistics of recently-used
- * filters in order to decide on which filters are worth caching.
- *
- * It also uses some heuristics on segments, filters and the doc id sets that
- * they produce in order to cache more aggressively when the execution cost
- * significantly outweighs the caching overhead.
- *
- * @lucene.experimental
- */
 public final class UsageTrackingQueryCachingPolicy implements QueryCachingPolicy {
 
   // the hash code that we use as a sentinel in the ring buffer.
@@ -55,13 +45,6 @@ public final class UsageTrackingQueryCachingPolicy implements QueryCachingPolicy
   private final QueryCachingPolicy.CacheOnLargeSegments segmentPolicy;
   private final FrequencyTrackingRingBuffer recentlyUsedFilters;
 
-  /**
-   * Create a new instance.
-   *
-   * @param minIndexSize              the minimum size of the top-level index
-   * @param minSizeRatio              the minimum size ratio for segments to be cached, see {@link QueryCachingPolicy.CacheOnLargeSegments}
-   * @param historySize               the number of recently used filters to track
-   */
   public UsageTrackingQueryCachingPolicy(
       int minIndexSize,
       float minSizeRatio,
@@ -69,7 +52,6 @@ public final class UsageTrackingQueryCachingPolicy implements QueryCachingPolicy
     this(new QueryCachingPolicy.CacheOnLargeSegments(minIndexSize, minSizeRatio), historySize);
   }
 
-  /** Create a new instance with an history size of 256. */
   public UsageTrackingQueryCachingPolicy() {
     this(QueryCachingPolicy.CacheOnLargeSegments.DEFAULT, 256);
   }
@@ -81,10 +63,6 @@ public final class UsageTrackingQueryCachingPolicy implements QueryCachingPolicy
     this.recentlyUsedFilters = new FrequencyTrackingRingBuffer(historySize, SENTINEL);
   }
 
-  /**
-   * For a given query, return how many times it should appear in the history
-   * before being cached.
-   */
   protected int minFrequencyToCache(Query query) {
     if (isCostly(query)) {
       return 2;

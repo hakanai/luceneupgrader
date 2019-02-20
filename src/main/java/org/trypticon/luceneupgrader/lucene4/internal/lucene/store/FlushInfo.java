@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,27 +13,14 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
-/**
- * <p>A FlushInfo provides information required for a FLUSH context.
- *  It is used as part of an {@link IOContext} in case of FLUSH context.</p>
- */
-
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 public class FlushInfo {
   
   public final int numDocs;
   
   public final long estimatedSegmentSize;
-  
-  /**
-   * <p>Creates a new {@link FlushInfo} instance from
-   * the values required for a FLUSH {@link IOContext} context.
-   * 
-   * These values are only estimates and are not the actual values.
-   * 
-   */
   
   public FlushInfo(int numDocs, long estimatedSegmentSize) {
     this.numDocs = numDocs;

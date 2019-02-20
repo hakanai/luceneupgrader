@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,24 +13,15 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
-/**
- * {@link Sorter} implementation based on a variant of the quicksort algorithm
- * called <a href="http://en.wikipedia.org/wiki/Introsort">introsort</a>: when
- * the recursion level exceeds the log of the length of the array to sort, it
- * falls back to heapsort. This prevents quicksort from running into its
- * worst-case quadratic runtime. Small arrays are sorted with
- * insertion sort.
- * @lucene.internal
- */
 public abstract class IntroSorter extends Sorter {
 
   static int ceilLog2(int n) {
     return Integer.SIZE - Integer.numberOfLeadingZeros(n - 1);
   }
 
-  /** Create a new {@link IntroSorter}. */
   public IntroSorter() {}
 
   @Override
@@ -88,11 +77,7 @@ public abstract class IntroSorter extends Sorter {
     quicksort(left + 1, to, maxDepth);
   }
 
-  /** Save the value at slot <code>i</code> so that it can later be used as a
-   * pivot, see {@link #comparePivot(int)}. */
   protected abstract void setPivot(int i);
 
-  /** Compare the pivot with the slot at <code>j</code>, similarly to
-   *  {@link #compare(int, int) compare(i, j)}. */
   protected abstract int comparePivot(int j);
 }

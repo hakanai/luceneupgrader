@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,15 +13,14 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import java.util.ArrayList;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Accountable;
 
-/** 
- * Represents a file in RAM as a list of byte[] buffers.
- * @lucene.internal */
+
 public class RAMFile implements Accountable {
   protected ArrayList<byte[]> buffers = new ArrayList<>();
   long length;
@@ -67,12 +64,6 @@ public class RAMFile implements Accountable {
     return buffers.size();
   }
 
-  /**
-   * Expert: allocate a new buffer. 
-   * Subclasses can allocate differently. 
-   * @param size size of allocated buffer.
-   * @return allocated buffer.
-   */
   protected byte[] newBuffer(int size) {
     return new byte[size];
   }

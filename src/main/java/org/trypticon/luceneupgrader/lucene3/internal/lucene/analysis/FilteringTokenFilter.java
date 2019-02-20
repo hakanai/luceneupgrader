@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,19 +13,15 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.queryParser.QueryParser; // for javadoc
 
-/**
- * Abstract base class for TokenFilters that may remove tokens.
- * You have to implement {@link #accept} and return a boolean if the current
- * token should be preserved. {@link #incrementToken} uses this method
- * to decide if a token should be passed to the caller.
- */
+
 public abstract class FilteringTokenFilter extends TokenFilter {
 
   private final PositionIncrementAttribute posIncrAtt = addAttribute(PositionIncrementAttribute.class);
@@ -39,7 +33,6 @@ public abstract class FilteringTokenFilter extends TokenFilter {
     this.enablePositionIncrements = enablePositionIncrements;
   }
 
-  /** Override this method and return if the current input token should be returned by {@link #incrementToken}. */
   protected abstract boolean accept() throws IOException;
 
   @Override
@@ -79,29 +72,12 @@ public abstract class FilteringTokenFilter extends TokenFilter {
     first = true;
   }
 
-  /**
-   * @see #setEnablePositionIncrements(boolean)
-   */
+
   public boolean getEnablePositionIncrements() {
     return enablePositionIncrements;
   }
 
-  /**
-   * If <code>true</code>, this TokenFilter will preserve
-   * positions of the incoming tokens (ie, accumulate and
-   * set position increments of the removed tokens).
-   * Generally, <code>true</code> is best as it does not
-   * lose information (positions of the original tokens)
-   * during indexing.
-   * 
-   * <p> When set, when a token is stopped
-   * (omitted), the position increment of the following
-   * token is incremented.
-   *
-   * <p> <b>NOTE</b>: be sure to also
-   * set {@link QueryParser#setEnablePositionIncrements} if
-   * you use QueryParser to create queries.
-   */
+
   public void setEnablePositionIncrements(boolean enable) {
     this.enablePositionIncrements = enable;
   }

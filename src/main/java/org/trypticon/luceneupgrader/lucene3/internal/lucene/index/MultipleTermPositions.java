@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -25,11 +24,6 @@ import java.util.List;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.PriorityQueue;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 
-/**
- * Allows you to iterate over the {@link TermPositions} for multiple {@link Term}s as
- * a single {@link TermPositions}.
- *
- */
 public class MultipleTermPositions implements TermPositions {
 
   private static final class TermPositionsQueue extends PriorityQueue<TermPositions> {
@@ -93,11 +87,6 @@ public class MultipleTermPositions implements TermPositions {
   private TermPositionsQueue _termPositionsQueue;
   private IntQueue _posList;
 
-  /**
-   * Creates a new <code>MultipleTermPositions</code> instance.
-   * 
-   * @exception IOException
-   */
   public MultipleTermPositions(IndexReader indexReader, Term[] terms) throws IOException {
     List<TermPositions> termPositions = new LinkedList<TermPositions>();
 
@@ -168,51 +157,27 @@ public class MultipleTermPositions implements TermPositions {
       _termPositionsQueue.pop().close();
   }
 
-  /**
-   * Not implemented.
-   * @throws UnsupportedOperationException
-   */
   public void seek(Term arg0) throws IOException {
     throw new UnsupportedOperationException();
   }
 
-  /**
-   * Not implemented.
-   * @throws UnsupportedOperationException
-   */
   public void seek(TermEnum termEnum) throws IOException {
     throw new UnsupportedOperationException();
   }
 
-  /**
-   * Not implemented.
-   * @throws UnsupportedOperationException
-   */
   public int read(int[] arg0, int[] arg1) throws IOException {
     throw new UnsupportedOperationException();
   }
   
   
-  /**
-   * Not implemented.
-   * @throws UnsupportedOperationException
-   */
   public int getPayloadLength() {
     throw new UnsupportedOperationException();
   }
    
-  /**
-   * Not implemented.
-   * @throws UnsupportedOperationException
-   */
   public byte[] getPayload(byte[] data, int offset) throws IOException {
     throw new UnsupportedOperationException();
   }
 
-  /**
-   *
-   * @return false
-   */
   // TODO: Remove warning after API has been finalized
   public boolean isPayloadAvailable() {
     return false;

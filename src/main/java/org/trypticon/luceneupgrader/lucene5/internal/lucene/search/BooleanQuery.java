@@ -35,36 +35,21 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.BooleanClause
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.similarities.Similarity;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ToStringUtils;
 
-/** A Query that matches documents matching boolean combinations of other
-  * queries, e.g. {@link TermQuery}s, {@link PhraseQuery}s or other
-  * BooleanQuerys.
-  */
 public class BooleanQuery extends Query implements Iterable<BooleanClause> {
 
   private static int maxClauseCount = 1024;
 
-  /** Thrown when an attempt is made to add more than {@link
-   * #getMaxClauseCount()} clauses. This typically happens if
-   * a PrefixQuery, FuzzyQuery, WildcardQuery, or TermRangeQuery 
-   * is expanded to many terms during search. 
-   */
+
   public static class TooManyClauses extends RuntimeException {
     public TooManyClauses() {
       super("maxClauseCount is set to " + maxClauseCount);
     }
   }
 
-  /** Return the maximum number of clauses permitted, 1024 by default.
-   * Attempts to add more than the permitted number of clauses cause {@link
-   * TooManyClauses} to be thrown.
-   * @see #setMaxClauseCount(int)
-   */
+
   public static int getMaxClauseCount() { return maxClauseCount; }
 
-  /** 
-   * Set the maximum number of clauses permitted per BooleanQuery.
-   * Default value is 1024.
-   */
+
   public static void setMaxClauseCount(int maxClauseCount) {
     if (maxClauseCount < 1) {
       throw new IllegalArgumentException("maxClauseCount must be >= 1");
@@ -72,66 +57,29 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
     BooleanQuery.maxClauseCount = maxClauseCount;
   }
 
-  /** A builder for boolean queries. */
   public static class Builder {
 
     private boolean disableCoord;
     private int minimumNumberShouldMatch;
     private final List<BooleanClause> clauses = new ArrayList<>();
 
-    /** Sole constructor. */
     public Builder() {}
 
-    /**
-     * {@link Similarity#coord(int,int)} may be disabled in scoring, as
-     * appropriate. For example, this score factor does not make sense for most
-     * automatically generated queries, like {@link WildcardQuery} and {@link
-     * FuzzyQuery}.
-     */
     public Builder setDisableCoord(boolean disableCoord) {
       this.disableCoord = disableCoord;
       return this;
     }
 
-    /**
-     * Specifies a minimum number of the optional BooleanClauses
-     * which must be satisfied.
-     *
-     * <p>
-     * By default no optional clauses are necessary for a match
-     * (unless there are no required clauses).  If this method is used,
-     * then the specified number of clauses is required.
-     * </p>
-     * <p>
-     * Use of this method is totally independent of specifying that
-     * any specific clauses are required (or prohibited).  This number will
-     * only be compared against the number of matching optional clauses.
-     * </p>
-     *
-     * @param min the number of optional clauses that must match
-     */
     public Builder setMinimumNumberShouldMatch(int min) {
       this.minimumNumberShouldMatch = min;
       return this;
     }
 
-    /**
-     * Add a new clause to this {@link Builder}. Note that the order in which
-     * clauses are added does not have any impact on matching documents or query
-     * performance.
-     * @throws TooManyClauses if the new number of clauses exceeds the maximum clause number
-     */
     public Builder add(BooleanClause clause) {
       add(clause.getQuery(), clause.getOccur());
       return this;
     }
 
-    /**
-     * Add a new clause to this {@link Builder}. Note that the order in which
-     * clauses are added does not have any impact on matching documents or query
-     * performance.
-     * @throws TooManyClauses if the new number of clauses exceeds the maximum clause number
-     */
     public Builder add(Query query, Occur occur) {
       if (clauses.size() >= maxClauseCount) {
         throw new TooManyClauses();
@@ -140,8 +88,6 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
       return this;
     }
 
-    /** Create a new {@link BooleanQuery} based on the parameters that have
-     *  been set on this builder. */
     public BooleanQuery build() {
       return new BooleanQuery(disableCoord, minimumNumberShouldMatch, clauses.toArray(new BooleanClause[0]));
     }
@@ -172,27 +118,18 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
     }
   }
 
-  /**
-   * Return whether the coord factor is disabled.
-   */
   public boolean isCoordDisabled() {
     return disableCoord;
   }
 
-  /**
-   * Gets the minimum number of the optional BooleanClauses
-   * which must be satisfied.
-   */
   public int getMinimumNumberShouldMatch() {
     return minimumNumberShouldMatch;
   }
 
-  /** Return a list of the clauses of this {@link BooleanQuery}. */
   public List<BooleanClause> clauses() {
     return clauses;
   }
 
-  /** Return the collection of queries for the given {@link Occur}. */
   Collection<Query> getClauses(Occur occur) {
     if (mutable) {
       List<Query> queries = new ArrayList<>();
@@ -207,10 +144,7 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
     }
   }
 
-  /** Returns an iterator on the clauses in this query. It implements the {@link Iterable} interface to
-   * make it possible to do:
-   * <pre class="prettyprint">for (BooleanClause clause : booleanQuery) {}</pre>
-   */
+
   @Override
   public final Iterator<BooleanClause> iterator() {
     return clauses.iterator();
@@ -383,7 +317,6 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
     return super.rewrite(reader);
   }
 
-  /** Prints a user-readable version of this query. */
   @Override
   public String toString(String field) {
     StringBuilder buffer = new StringBuilder();
@@ -424,19 +357,6 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
     return buffer.toString();
   }
 
-  /**
-   * Compares the specified object with this boolean query for equality.
-   * Returns true if and only if the provided object<ul>
-   * <li>is also a {@link BooleanQuery},</li>
-   * <li>has the same value of {@link #isCoordDisabled()}</li>
-   * <li>has the same value of {@link #getMinimumNumberShouldMatch()}</li>
-   * <li>has the same {@link Occur#SHOULD} clauses, regardless of the order</li>
-   * <li>has the same {@link Occur#MUST} clauses, regardless of the order</li>
-   * <li>has the same set of {@link Occur#FILTER} clauses, regardless of the
-   * order and regardless of duplicates</li>
-   * <li>has the same set of {@link Occur#MUST_NOT} clauses, regardless of
-   * the order and regardless of duplicates</li></ul>
-   */
   @Override
   public boolean equals(Object o) {
     if (super.equals(o) == false) {
@@ -490,9 +410,7 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
 
   // Backward compatibility for pre-5.3 BooleanQuery APIs
 
-  /** Returns the set of clauses in this query.
-   * @deprecated Use {@link #clauses()}.
-   */
+
   @Deprecated
   public BooleanClause[] getClauses() {
     return clauses.toArray(new BooleanClause[clauses.size()]);
@@ -505,25 +423,13 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
     return clone;
   }
 
-  /** Constructs an empty boolean query.
-   * @deprecated Use the {@link Builder} class to build boolean queries.
-   */
+
   @Deprecated
   public BooleanQuery() {
     this(false);
   }
 
-  /** Constructs an empty boolean query.
-   *
-   * {@link Similarity#coord(int,int)} may be disabled in scoring, as
-   * appropriate. For example, this score factor does not make sense for most
-   * automatically generated queries, like {@link WildcardQuery} and {@link
-   * FuzzyQuery}.
-   *
-   * @param disableCoord disables {@link Similarity#coord(int,int)} in scoring.
-   * @deprecated Use the {@link Builder} class to build boolean queries.
-   * @see Builder#setDisableCoord(boolean)
-   */
+
   @Deprecated
   public BooleanQuery(boolean disableCoord) {
     this.clauses = new ArrayList<>();
@@ -541,36 +447,19 @@ public class BooleanQuery extends Query implements Iterable<BooleanClause> {
     }
   }
 
-  /**
-   * Set the minimum number of matching SHOULD clauses.
-   * @see #getMinimumNumberShouldMatch
-   * @deprecated Boolean queries should be created once with {@link Builder}
-   *             and then considered immutable. See {@link Builder#setMinimumNumberShouldMatch}.
-   */
   @Deprecated
   public void setMinimumNumberShouldMatch(int min) {
     ensureMutable("setMinimumNumberShouldMatch");
     this.minimumNumberShouldMatch = min;
   }
 
-  /** Adds a clause to a boolean query.
-   *
-   * @throws TooManyClauses if the new number of clauses exceeds the maximum clause number
-   * @see #getMaxClauseCount()
-   * @deprecated Boolean queries should be created once with {@link Builder}
-   *             and then considered immutable. See {@link Builder#add}.
-   */
+
   @Deprecated
   public void add(Query query, BooleanClause.Occur occur) {
     add(new BooleanClause(query, occur));
   }
 
-  /** Adds a clause to a boolean query.
-   * @throws TooManyClauses if the new number of clauses exceeds the maximum clause number
-   * @see #getMaxClauseCount()
-   * @deprecated Boolean queries should be created once with {@link Builder}
-   *             and then considered immutable. See {@link Builder#add}.
-   */
+
   @Deprecated
   public void add(BooleanClause clause) {
     ensureMutable("add");

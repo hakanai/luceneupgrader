@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
@@ -26,26 +25,9 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ToStringUtils;
 import java.io.IOException;
 import java.util.Set;
 
-/**
- * Expert: A Query that sets the scores of document to the
- * values obtained from a {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function.ValueSource ValueSource}.
- * <p>
- * This query provides a score for <em>each and every</em> undeleted document in the index.    
- * <p>
- * The value source can be based on a (cached) value of an indexed field, but it
- * can also be based on an external source, e.g. values read from an external database. 
- * <p>
- * Score is set as: Score(doc,query) = query.getBoost()<sup>2</sup> * valueSource(doc).  
- *
- * @lucene.experimental
- */
 public class ValueSourceQuery extends Query {
   ValueSource valSrc;
 
-  /**
-   * Create a value source query
-   * @param valSrc provides the values defines the function to be used for scoring
-   */
   public ValueSourceQuery(ValueSource valSrc) {
     this.valSrc=valSrc;
   }
@@ -118,12 +100,6 @@ public class ValueSourceQuery extends Query {
     }
   }
 
-  /**
-   * A scorer that (simply) matches all documents, and scores each document with 
-   * the value of the value source in effect. As an example, if the value source 
-   * is a (cached) field source, then value of that field in that document will 
-   * be used. (assuming field is indexed for this doc, with a single token.)   
-   */
   private class ValueSourceScorer extends Scorer {
     private final float qWeight;
     private final DocValues vals;
@@ -171,7 +147,6 @@ public class ValueSourceQuery extends Query {
     return valSrc.toString() + ToStringUtils.boost(getBoost());
   }
 
-  /** Returns true if <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object o) {
     if (this == o)
@@ -186,7 +161,6 @@ public class ValueSourceQuery extends Query {
            && this.valSrc.equals(other.valSrc);
   }
 
-  /** Returns a hash code value for this object. */
   @Override
   public int hashCode() {
     return (getClass().hashCode() + valSrc.hashCode()) ^ Float.floatToIntBits(getBoost());

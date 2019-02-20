@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,17 +13,13 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 
-/**
- * A {@link Collector} implementation which wraps another
- * {@link Collector} and makes sure only documents with
- * scores &gt; 0 are collected.
- */
 public class PositiveScoresOnlyCollector extends Collector {
 
   final private Collector c;

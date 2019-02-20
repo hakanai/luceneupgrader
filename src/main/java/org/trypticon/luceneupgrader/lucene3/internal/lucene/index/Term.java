@@ -1,8 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,33 +14,21 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
-  A Term represents a word from text.  This is the unit of search.  It is
-  composed of two elements, the text of the word, as a string, and the name of
-  the field that the text occurred in, an interned string.
-
-  Note that terms may represent more than words from text fields, but also
-  things like dates, email addresses, urls, etc.  */
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper;
 
 public final class Term implements Comparable<Term>, java.io.Serializable {
   String field;
   String text;
 
-  /** Constructs a Term with the given field and text.
-   * <p>Note that a null field or null text value results in undefined
-   * behavior for most Lucene APIs that accept a Term parameter. */
+
   public Term(String fld, String txt) {
     field = StringHelper.intern(fld);
     text = txt;
   }
 
-  /** Constructs a Term with the given field and empty text.
-   * This serves two purposes: 1) reuse of a Term with the same field.
-   * 2) pattern for a query.
-   * 
-   * @param fld
-   */
+
   public Term(String fld) {
     this(fld, "", true);
   }
@@ -54,21 +38,10 @@ public final class Term implements Comparable<Term>, java.io.Serializable {
     text = txt;					          // unless already known to be
   }
 
-  /** Returns the field of this term, an interned string.   The field indicates
-    the part of a document which this term came from. */
   public final String field() { return field; }
 
-  /** Returns the text of this term.  In the case of words, this is simply the
-    text of the word.  In the case of dates and other types, this is an
-    encoding of the object as a string.  */
   public final String text() { return text; }
   
-  /**
-   * Optimized construction of new Terms by reusing same field as this Term
-   * - avoids field.intern() overhead 
-   * @param text The text of the new term (field is implicitly same as this Term instance)
-   * @return A new Term
-   */
   public Term createTerm(String text)
   {
       return new Term(field,text,false);
@@ -105,11 +78,6 @@ public final class Term implements Comparable<Term>, java.io.Serializable {
     return result;
   }
 
-  /** Compares two terms, returning a negative integer if this
-    term belongs before the argument, zero if this term is equal to the
-    argument, and a positive integer if this term belongs after the argument.
-
-    The ordering of terms is first by field, then by text.*/
   public final int compareTo(Term other) {
     if (field == other.field)			  // fields are interned
       return text.compareTo(other.text);
@@ -117,7 +85,6 @@ public final class Term implements Comparable<Term>, java.io.Serializable {
       return field.compareTo(other.field);
   }
 
-  /** Resets the field and text of a Term. */
   final void set(String fld, String txt) {
     field = fld;
     text = txt;

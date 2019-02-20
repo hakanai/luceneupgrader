@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 
@@ -28,27 +27,10 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.TermsEnum;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.FixedBitSet;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 
-/**
- * A wrapper for {@link MultiTermQuery}, that exposes its
- * functionality as a {@link Filter}.
- * <P>
- * <code>MultiTermQueryWrapperFilter</code> is not designed to
- * be used by itself. Normally you subclass it to provide a Filter
- * counterpart for a {@link MultiTermQuery} subclass.
- * <P>
- * For example, {@link TermRangeFilter} and {@link PrefixFilter} extend
- * <code>MultiTermQueryWrapperFilter</code>.
- * This class also provides the functionality behind
- * {@link MultiTermQuery#CONSTANT_SCORE_FILTER_REWRITE};
- * this is why it is not abstract.
- */
 public class MultiTermQueryWrapperFilter<Q extends MultiTermQuery> extends Filter {
     
   protected final Q query;
 
-  /**
-   * Wrap a {@link MultiTermQuery} as a Filter.
-   */
   protected MultiTermQueryWrapperFilter(Q query) {
       this.query = query;
   }
@@ -75,13 +57,8 @@ public class MultiTermQueryWrapperFilter<Q extends MultiTermQuery> extends Filte
     return query.hashCode();
   }
 
-  /** Returns the field name for this query */
   public final String getField() { return query.getField(); }
   
-  /**
-   * Returns a DocIdSet with documents that should be permitted in search
-   * results.
-   */
   @Override
   public DocIdSet getDocIdSet(AtomicReaderContext context, Bits acceptDocs) throws IOException {
     final AtomicReader reader = context.reader();

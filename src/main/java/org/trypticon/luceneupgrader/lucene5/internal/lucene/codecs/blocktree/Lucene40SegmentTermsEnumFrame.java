@@ -26,9 +26,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.fst.FST;
 
-/**
- * @deprecated Only for 4.x backcompat
- */
 @Deprecated
 final class Lucene40SegmentTermsEnumFrame {
   // Our index in stack[]:

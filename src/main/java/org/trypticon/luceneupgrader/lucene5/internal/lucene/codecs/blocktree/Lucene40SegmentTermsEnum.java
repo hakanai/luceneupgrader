@@ -35,10 +35,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimat
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.fst.FST;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.fst.Util;
 
-/**
- * Iterates through terms in this field
- * @deprecated Only for 4.x backcompat
- */
 @Deprecated
 final class Lucene40SegmentTermsEnum extends TermsEnum {
 
@@ -120,8 +116,6 @@ final class Lucene40SegmentTermsEnum extends TermsEnum {
     }
   }
 
-  /** Runs next() through the entire terms dict,
-   *  computing aggregate statistics. */
   public Lucene40Stats computeBlockStats() throws IOException {
 
     Lucene40Stats stats = new Lucene40Stats(fr.parent.segment, fr.fieldInfo.name);

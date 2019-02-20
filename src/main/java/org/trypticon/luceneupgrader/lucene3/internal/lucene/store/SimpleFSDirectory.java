@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,42 +13,27 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-/** A straightforward implementation of {@link FSDirectory}
- *  using java.io.RandomAccessFile.  However, this class has
- *  poor concurrent performance (multiple threads will
- *  bottleneck) as it synchronizes when multiple threads
- *  read from the same file.  It's usually better to use
- *  {@link NIOFSDirectory} or {@link MMapDirectory} instead. */
+
 public class SimpleFSDirectory extends FSDirectory {
     
-  /** Create a new SimpleFSDirectory for the named location.
-   *
-   * @param path the path of the directory
-   * @param lockFactory the lock factory to use, or null for the default
-   * ({@link NativeFSLockFactory});
-   * @throws IOException
-   */
+
   public SimpleFSDirectory(File path, LockFactory lockFactory) throws IOException {
     super(path, lockFactory);
   }
   
-  /** Create a new SimpleFSDirectory for the named location and {@link NativeFSLockFactory}.
-   *
-   * @param path the path of the directory
-   * @throws IOException
-   */
+
   public SimpleFSDirectory(File path) throws IOException {
     super(path, null);
   }
 
-  /** Creates an IndexInput for the file with the given name. */
   @Override
   public IndexInput openInput(String name, int bufferSize) throws IOException {
     ensureOpen();
@@ -87,7 +70,6 @@ public class SimpleFSDirectory extends FSDirectory {
     //  LUCENE-1566 - maximum read length on a 32bit JVM to prevent incorrect OOM 
     protected final int chunkSize;
 
-    /** @deprecated please pass resourceDesc */
     @Deprecated
     public SimpleFSIndexInput(File path, int bufferSize, int chunkSize) throws IOException {
       this("anonymous SimpleFSIndexInput", path, bufferSize, chunkSize);
@@ -99,7 +81,6 @@ public class SimpleFSDirectory extends FSDirectory {
       this.chunkSize = chunkSize;
     }
   
-    /** IndexInput methods */
     @Override
     protected void readInternal(byte[] b, int offset, int len)
          throws IOException {
@@ -166,9 +147,6 @@ public class SimpleFSDirectory extends FSDirectory {
       return clone;
     }
   
-    /** Method used for testing. Returns true if the underlying
-     *  file descriptor is valid.
-     */
     boolean isFDValid() throws IOException {
       return file.getFD().valid();
     }

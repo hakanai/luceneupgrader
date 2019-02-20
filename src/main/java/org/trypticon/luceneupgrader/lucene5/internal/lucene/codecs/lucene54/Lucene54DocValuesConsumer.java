@@ -52,20 +52,16 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedIn
 
 import static org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.lucene54.Lucene54DocValuesFormat.*;
 
-/** writer for {@link Lucene54DocValuesFormat} */
 final class Lucene54DocValuesConsumer extends DocValuesConsumer implements Closeable {
 
   enum NumberType {
-    /** Dense ordinals */
     ORDINAL,
-    /** Random long values */
     VALUE;
   }
 
   IndexOutput data, meta;
   final int maxDoc;
   
-  /** expert: Creates a new writer */
   public Lucene54DocValuesConsumer(SegmentWriteState state, String dataCodec, String dataExtension, String metaCodec, String metaExtension) throws IOException {
     boolean success = false;
     try {
@@ -459,7 +455,6 @@ final class Lucene54DocValuesConsumer extends DocValuesConsumer implements Close
     }
   }
   
-  /** expert: writes a value dictionary for a sorted/sortedset field */
   private void addTermsDict(FieldInfo field, final Iterable<BytesRef> values) throws IOException {
     // first check if it's a "fixed-length" terms dict
     int minLength = Integer.MAX_VALUE;

@@ -25,26 +25,12 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton;
 
 import java.io.IOException;
 
-/**
- * Automaton provider for <code>RegExp.</code>
- * {@link RegExp#toAutomaton(AutomatonProvider,int)}
- * 
- * @lucene.experimental
- */
 public interface AutomatonProvider {
   
-  /**
-   * Returns automaton of the given name.
-   * 
-   * @param name automaton name
-   * @return automaton
-   * @throws IOException if errors occur
-   */
   public Automaton getAutomaton(String name) throws IOException;
 }

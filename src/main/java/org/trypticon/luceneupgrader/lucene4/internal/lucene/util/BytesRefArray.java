@@ -20,16 +20,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 import java.util.Arrays;
 import java.util.Comparator;
 
-/**
- * A simple append only random-access {@link BytesRef} array that stores full
- * copies of the appended bytes in a {@link ByteBlockPool}.
- * 
- * 
- * <b>Note: This class is not Thread-Safe!</b>
- * 
- * @lucene.internal
- * @lucene.experimental
- */
 public final class BytesRefArray {
   private final ByteBlockPool pool;
   private int[] offsets = new int[1];
@@ -37,9 +27,6 @@ public final class BytesRefArray {
   private int currentOffset = 0;
   private final Counter bytesUsed;
   
-  /**
-   * Creates a new {@link BytesRefArray} with a counter to track allocated bytes
-   */
   public BytesRefArray(Counter bytesUsed) {
     this.pool = new ByteBlockPool(new ByteBlockPool.DirectTrackingAllocator(
         bytesUsed));
@@ -49,9 +36,6 @@ public final class BytesRefArray {
     this.bytesUsed = bytesUsed;
   }
  
-  /**
-   * Clears this {@link BytesRefArray}
-   */
   public void clear() {
     lastElement = 0;
     currentOffset = 0;
@@ -59,11 +43,6 @@ public final class BytesRefArray {
     pool.reset(false, true); // no need to 0 fill the buffers we control the allocator
   }
   
-  /**
-   * Appends a copy of the given {@link BytesRef} to this {@link BytesRefArray}.
-   * @param bytes the bytes to append
-   * @return the index of the appended bytes
-   */
   public int append(BytesRef bytes) {
     if (lastElement >= offsets.length) {
       int oldLen = offsets.length;
@@ -77,20 +56,10 @@ public final class BytesRefArray {
     return lastElement-1;
   }
   
-  /**
-   * Returns the current size of this {@link BytesRefArray}
-   * @return the current size of this {@link BytesRefArray}
-   */
   public int size() {
     return lastElement;
   }
   
-  /**
-   * Returns the <i>n'th</i> element of this {@link BytesRefArray}
-   * @param spare a spare {@link BytesRef} instance
-   * @param index the elements index to retrieve 
-   * @return the <i>n'th</i> element of this {@link BytesRefArray}
-   */
   public BytesRef get(BytesRefBuilder spare, int index) {
     if (lastElement > index) {
       int offset = offsets[index];
@@ -145,27 +114,10 @@ public final class BytesRefArray {
     return orderedEntries;
   }
   
-  /**
-   * sugar for {@link #iterator(Comparator)} with a <code>null</code> comparator
-   */
   public BytesRefIterator iterator() {
     return iterator(null);
   }
   
-  /**
-   * <p>
-   * Returns a {@link BytesRefIterator} with point in time semantics. The
-   * iterator provides access to all so far appended {@link BytesRef} instances.
-   * </p>
-   * <p>
-   * If a non <code>null</code> {@link Comparator} is provided the iterator will
-   * iterate the byte values in the order specified by the comparator. Otherwise
-   * the order is the same as the values were appended.
-   * </p>
-   * <p>
-   * This is a non-destructive operation.
-   * </p>
-   */
   public BytesRefIterator iterator(final Comparator<BytesRef> comp) {
     final BytesRefBuilder spare = new BytesRefBuilder();
     final int size = size();

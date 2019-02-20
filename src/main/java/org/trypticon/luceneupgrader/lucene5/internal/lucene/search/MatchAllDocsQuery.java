@@ -23,10 +23,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LeafReaderCont
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ToStringUtils;
 
-/**
- * A query that matches all documents.
- *
- */
 public final class MatchAllDocsQuery extends Query {
 
   @Override

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -38,10 +37,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentInfo;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentReadState;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentWriteState;
 
-/**
- * Supports the Lucene 3.x index format (readonly)
- * @deprecated Only for reading existing 3.x indexes
- */
 @Deprecated
 public class Lucene3xCodec extends Codec {
   public Lucene3xCodec() {
@@ -60,7 +55,6 @@ public class Lucene3xCodec extends Codec {
   
   private final Lucene3xNormsFormat normsFormat = new Lucene3xNormsFormat();
   
-  /** Extension of compound file for doc store files*/
   static final String COMPOUND_FILE_STORE_EXTENSION = "cfx";
   
   // TODO: this should really be a different impl
@@ -119,8 +113,6 @@ public class Lucene3xCodec extends Codec {
     return liveDocsFormat;
   }
 
-  /** Returns file names for shared doc stores, if any, else
-   * null. */
   public static Set<String> getDocStoreFiles(SegmentInfo info) {
     if (Lucene3xSegmentInfoFormat.getDocStoreOffset(info) != -1) {
       final String dsName = Lucene3xSegmentInfoFormat.getDocStoreSegment(info);

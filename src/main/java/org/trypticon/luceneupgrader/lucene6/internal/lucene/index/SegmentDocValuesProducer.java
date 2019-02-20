@@ -34,7 +34,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountables;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.RamUsageEstimator;
 
-/** Encapsulates multiple producers when there are docvalues updates as one producer */
 // TODO: try to clean up close? no-op?
 // TODO: add shared base class (also used by per-field-pf?) to allow "punching thru" to low level producer?
 class SegmentDocValuesProducer extends DocValuesProducer {
@@ -47,14 +46,6 @@ class SegmentDocValuesProducer extends DocValuesProducer {
   final Set<DocValuesProducer> dvProducers = Collections.newSetFromMap(new IdentityHashMap<DocValuesProducer,Boolean>());
   final List<Long> dvGens = new ArrayList<>();
   
-  /**
-   * Creates a new producer that handles updated docvalues fields
-   * @param si commit point
-   * @param dir directory
-   * @param coreInfos fieldinfos for the segment
-   * @param allInfos all fieldinfos including updated ones
-   * @param segDocValues producer map
-   */
   SegmentDocValuesProducer(SegmentCommitInfo si, Directory dir, FieldInfos coreInfos, FieldInfos allInfos, SegmentDocValues segDocValues) throws IOException {
     boolean success = false;
     try {

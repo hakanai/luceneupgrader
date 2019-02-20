@@ -26,15 +26,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.blocktree.Luc
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentReadState;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentWriteState;
 
-/** 
- * Lucene 4.0 Postings format.
- * @deprecated Only for reading old 4.0 segments 
- */
 @Deprecated
 public class Lucene40PostingsFormat extends PostingsFormat {
 
-  /** Creates {@code Lucene40PostingsFormat} with default
-   *  settings. */
   public Lucene40PostingsFormat() {
     super("Lucene40");
   }
@@ -60,10 +54,8 @@ public class Lucene40PostingsFormat extends PostingsFormat {
     }
   }
 
-  /** Extension of freq postings file */
   static final String FREQ_EXTENSION = "frq";
 
-  /** Extension of prox postings file */
   static final String PROX_EXTENSION = "prx";
 
   @Override

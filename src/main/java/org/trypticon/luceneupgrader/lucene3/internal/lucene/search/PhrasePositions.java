@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,14 +13,12 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.*;
 
-/**
- * Position of a term in a document that takes into account the term offset within the phrase. 
- */
 final class PhrasePositions {
   int doc;					  // current doc
   int position;					  // position in doc
@@ -70,12 +66,6 @@ final class PhrasePositions {
     nextPosition();
   }
 
-  /**
-   * Go to next location of this term current document, and set 
-   * <code>position</code> as <code>location - offset</code>, so that a 
-   * matching exact phrase is easily identified when all PhrasePositions 
-   * have exactly the same <code>position</code>.
-   */
   final boolean nextPosition() throws IOException {
     if (count-- > 0) {				  // read subsequent pos's
       position = tp.nextPosition() - offset;
@@ -84,7 +74,6 @@ final class PhrasePositions {
       return false;
   }
   
-  /** for debug purposes */
   @Override
   public String toString() {
     String s = "d:"+doc+" o:"+offset+" p:"+position+" c:"+count;

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,32 +13,20 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataOutput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 
-/**     
- * Implements {@link PackedInts.Mutable}, but grows the
- * bit count of the underlying packed ints on-demand.
- * <p>Beware that this class will accept to set negative values but in order
- * to do this, it will grow the number of bits per value to 64.
- *
- * <p>@lucene.internal</p>
- */
 public class GrowableWriter extends PackedInts.Mutable {
 
   private long currentMask;
   private PackedInts.Mutable current;
   private final float acceptableOverheadRatio;
 
-  /**
-   * @param startBitsPerValue       the initial number of bits per value, may grow depending on the data
-   * @param valueCount              the number of values
-   * @param acceptableOverheadRatio an acceptable overhead ratio
-   */
   public GrowableWriter(int startBitsPerValue, int valueCount, float acceptableOverheadRatio) {
     this.acceptableOverheadRatio = acceptableOverheadRatio;
     current = PackedInts.getMutable(valueCount, startBitsPerValue, this.acceptableOverheadRatio);

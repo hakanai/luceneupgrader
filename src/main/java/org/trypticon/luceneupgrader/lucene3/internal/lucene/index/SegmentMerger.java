@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,14 +31,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ReaderUtil;
 
-/**
- * The SegmentMerger class combines two or more Segments, represented by an IndexReader ({@link #add},
- * into a single Segment.  After adding the appropriate readers, call the merge method to combine the 
- * segments.
- * 
- * @see #merge
- * @see #add
- */
 final class SegmentMerger {
   private Directory directory;
   private String segment;
@@ -52,8 +43,6 @@ final class SegmentMerger {
 
   private final CheckAbort checkAbort;
 
-  /** Maximum number of contiguous documents to bulk-copy
-      when merging stored fields */
   private final static int MAX_RAW_MERGE_DOCS = 4192;
 
   private SegmentWriteState segmentWriteState;
@@ -82,20 +71,10 @@ final class SegmentMerger {
     return fieldInfos;
   }
 
-  /**
-   * Add an IndexReader to the collection of readers that are to be merged
-   * @param reader
-   */
   final void add(IndexReader reader) {
     ReaderUtil.gatherSubReaders(readers, reader);
   }
 
-  /**
-   * Merges the readers specified by the {@link #add} method into the directory passed to the constructor
-   * @return The number of documents that were merged
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
   final int merge() throws CorruptIndexException, IOException {
     // NOTE: it's important to add calls to
     // checkAbort.work(...) if you make any changes to this
@@ -114,12 +93,6 @@ final class SegmentMerger {
     return mergedDocs;
   }
 
-  /**
-   * NOTE: this method creates a compound file for all files returned by
-   * info.files(). While, generally, this may include separate norms and
-   * deletion files, this SegmentInfo must not reference such files when this
-   * method is called, because they are not allowed within a compound file.
-   */
   final Collection<String> createCompoundFile(String fileName, final SegmentInfo info)
           throws IOException {
     // Now merge all added files
@@ -189,12 +162,6 @@ final class SegmentMerger {
     rawDocLengths2 = new int[MAX_RAW_MERGE_DOCS];
   }
 
-  /**
-   * 
-   * @return The number of documents in all of the readers
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
   private int mergeFields() throws CorruptIndexException, IOException {
 
     for (IndexReader reader : readers) {
@@ -310,10 +277,6 @@ final class SegmentMerger {
     return docCount;
   }
 
-  /**
-   * Merge the TermVectors from each of the segments into the new one.
-   * @throws IOException
-   */
   private final void mergeVectors() throws IOException {
     TermVectorsWriter termVectorsWriter = 
       new TermVectorsWriter(directory, segment, fieldInfos);
@@ -509,16 +472,7 @@ final class SegmentMerger {
   private byte[] payloadBuffer;
   private int[][] docMaps;
 
-  /** Process postings from multiple segments all positioned on the
-   *  same term. Writes out merged entries into freqOutput and
-   *  the proxOutput streams.
-   *
-   * @param smis array of segments
-   * @param n number of cells in the array actually occupied
-   * @return number of documents across all segments where this term was found
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
+
   private final int appendPostings(final FormatPostingsTermsConsumer termsConsumer, SegmentMergeInfo[] smis, int n)
         throws CorruptIndexException, IOException {
 
@@ -636,14 +590,6 @@ final class SegmentMerger {
       this.dir = dir;
     }
 
-    /**
-     * Records the fact that roughly units amount of work
-     * have been done since this method was last called.
-     * When adding time-consuming code into SegmentMerger,
-     * you should test different values for units to ensure
-     * that the time in between calls to merge.checkAborted
-     * is up to ~ 1 second.
-     */
     public void work(double units) throws MergePolicy.MergeAbortedException {
       workCount += units;
       if (workCount >= 10000.0) {

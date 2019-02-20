@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,24 +13,17 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.IndexWriter.IndexReaderWarmer;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.InfoStream;
 
-/** 
- * A very simple merged segment warmer that just ensures 
- * data structures are initialized.
- */
 public class SimpleMergedSegmentWarmer extends IndexReaderWarmer {
   private final InfoStream infoStream;
   
-  /**
-   * Creates a new SimpleMergedSegmentWarmer
-   * @param infoStream InfoStream to log statistics about warming.
-   */
   public SimpleMergedSegmentWarmer(InfoStream infoStream) {
     this.infoStream = infoStream;
   }

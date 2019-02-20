@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -39,73 +38,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BitVector;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ThreadInterruptedException;
 
-
-/**
- * This class accepts multiple added documents and directly
- * writes a single segment file.  It does this more
- * efficiently than creating a single segment per document
- * (with DocumentWriter) and doing standard merges on those
- * segments.
- *
- * Each added document is passed to the {@link DocConsumer},
- * which in turn processes the document and interacts with
- * other consumers in the indexing chain.  Certain
- * consumers, like {@link StoredFieldsWriter} and {@link
- * TermVectorsTermsWriter}, digest a document and
- * immediately write bytes to the "doc store" files (ie,
- * they do not consume RAM per document, except while they
- * are processing the document).
- *
- * Other consumers, eg {@link FreqProxTermsWriter} and
- * {@link NormsWriter}, buffer bytes in RAM and flush only
- * when a new segment is produced.
-
- * Once we have used our allowed RAM buffer, or the number
- * of added docs is large enough (in the case we are
- * flushing by doc count instead of RAM usage), we create a
- * real segment and flush it to the Directory.
- *
- * Threads:
- *
- * Multiple threads are allowed into addDocument at once.
- * There is an initial synchronized call to getThreadState
- * which allocates a ThreadState for this thread.  The same
- * thread will get the same ThreadState over time (thread
- * affinity) so that if there are consistent patterns (for
- * example each thread is indexing a different content
- * source) then we make better use of RAM.  Then
- * processDocument is called on that ThreadState without
- * synchronization (most of the "heavy lifting" is in this
- * call).  Finally the synchronized "finishDocument" is
- * called to flush changes to the directory.
- *
- * When flush is called by IndexWriter we forcefully idle
- * all threads and flush only once they are all idle.  This
- * means you can call flush with a given thread even while
- * other threads are actively adding/deleting documents.
- *
- *
- * Exceptions:
- *
- * Because this class directly updates in-memory posting
- * lists, and flushes stored fields and term vectors
- * directly to files in the directory, there are certain
- * limited times when an exception can corrupt this state.
- * For example, a disk full while flushing stored fields
- * leaves this file in a corrupt state.  Or, an OOM
- * exception while appending to the in-memory posting lists
- * can corrupt that posting list.  We call such exceptions
- * "aborting exceptions".  In these cases we must call
- * abort() to discard all docs added since the last flush.
- *
- * All other exceptions ("non-aborting exceptions") can
- * still partially update the index structures.  These
- * updates are consistent, but, they represent only a part
- * of the document seen up until the exception was hit.
- * When this happens, we immediately mark the document as
- * deleted so that the document is always atomically ("all
- * or none") added to the index.
- */
 
 final class DocumentsWriter {
   final AtomicLong bytesUsed = new AtomicLong(0);
@@ -159,9 +91,7 @@ final class DocumentsWriter {
     }
   }
 
-  /** Consumer returns this on each doc.  This holds any
-   *  state that must be flushed synchronized "in docID
-   *  order".  We gather these and flush them in order. */
+
   abstract static class DocWriter {
     DocWriter next;
     int docID;
@@ -174,30 +104,18 @@ final class DocumentsWriter {
     }
   }
 
-  /**
-   * Create and return a new DocWriterBuffer.
-   */
   PerDocBuffer newPerDocBuffer() {
     return new PerDocBuffer();
   }
 
-  /**
-   * RAMFile buffer for DocWriters.
-   */
   class PerDocBuffer extends RAMFile {
     
-    /**
-     * Allocate bytes used from shared pool.
-     */
     @Override
     protected byte[] newBuffer(int size) {
       assert size == PER_DOC_BLOCK_SIZE;
       return perDocAllocator.getByteBlock();
     }
     
-    /**
-     * Recycle the bytes used.
-     */
     synchronized void recycle() {
       if (buffers.size() > 0) {
         setLength(0);
@@ -212,11 +130,6 @@ final class DocumentsWriter {
     }
   }
   
-  /**
-   * The IndexingChain must define the {@link #getChain(DocumentsWriter)} method
-   * which returns the DocConsumer that the DocumentsWriter calls to process the
-   * documents. 
-   */
   abstract static class IndexingChain {
     abstract DocConsumer getChain(DocumentsWriter documentsWriter);
   }
@@ -340,8 +253,6 @@ final class DocumentsWriter {
     return fieldInfos;
   }
 
-  /** If non-null, various details of indexing are printed
-   *  here. */
   synchronized void setInfoStream(PrintStream infoStream) {
     this.infoStream = infoStream;
     for(int i=0;i<threadStates.length;i++) {
@@ -363,12 +274,10 @@ final class DocumentsWriter {
     }
   }
 
-  /** Get current segment name we are writing. */
   synchronized String getSegment() {
     return segment;
   }
 
-  /** Returns how many docs are currently buffered in RAM. */
   synchronized int getNumDocs() {
     return numDocs;
   }
@@ -386,10 +295,7 @@ final class DocumentsWriter {
     aborting = true;
   }
 
-  /** Called if we hit an exception at a bad time (when
-   *  updating the index files) and must discard all
-   *  currently buffered docs.  This resets our state,
-   *  discarding any docs added since last flush. */
+
   synchronized void abort() throws IOException {
     if (infoStream != null) {
       message("docWriter: abort");
@@ -445,7 +351,6 @@ final class DocumentsWriter {
     }
   }
 
-  /** Reset after a flush */
   private void doAfterFlush() throws IOException {
     // All ThreadStates should be idle when we are called
     assert allThreadsIdle();
@@ -512,7 +417,6 @@ final class DocumentsWriter {
     return pendingDeletes.any();
   }
 
-  /** Flush all pending docs to a new segment */
   // Lock order: IW -> DW
   synchronized SegmentInfo flush(IndexWriter writer, IndexFileDeleter deleter, MergePolicy mergePolicy, SegmentInfos segmentInfos) throws IOException {
 
@@ -676,11 +580,7 @@ final class DocumentsWriter {
     notifyAll();
   }
 
-  /** Returns a free (idle) ThreadState that may be used for
-   * indexing this one document.  This call also pauses if a
-   * flush is pending.  If delTerm is non-null then we
-   * buffer this deleted term after the thread state has
-   * been acquired. */
+
   synchronized DocumentsWriterThreadState getThreadState(Term delTerm, int docCount) throws IOException {
 
     final Thread currentThread = Thread.currentThread();
@@ -1004,8 +904,6 @@ final class DocumentsWriter {
     }
   }
 
-  /** Does the synchronized work to finish/flush the
-   *  inverted document. */
   private void finishDocument(DocumentsWriterThreadState perThread, DocWriter docWriter) throws IOException {
 
     // Must call this w/o holding synchronized(this) else

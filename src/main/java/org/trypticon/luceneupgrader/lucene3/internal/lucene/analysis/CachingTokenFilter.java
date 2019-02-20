@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -24,15 +23,7 @@ import java.util.List;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.AttributeSource;
 
-/**
- * This class can be used if the token attributes of a TokenStream
- * are intended to be consumed more than once. It caches
- * all token attribute states locally in a List.
- * 
- * <P>CachingTokenFilter implements the optional method
- * {@link TokenStream#reset()}, which repositions the
- * stream to the first Token. 
- */
+
 public final class CachingTokenFilter extends TokenFilter {
   private List<AttributeSource.State> cache = null;
   private Iterator<AttributeSource.State> iterator = null; 

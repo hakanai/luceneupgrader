@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,13 +33,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.InfoStream;
 
-/**
- * The SegmentMerger class combines two or more Segments, represented by an
- * IndexReader, into a single Segment.  Call the merge method to combine the
- * segments.
- *
- * @see #merge
- */
 final class SegmentMerger {
   private final Directory directory;
   private final int termIndexInterval;
@@ -70,17 +62,10 @@ final class SegmentMerger {
     mergeState.segmentInfo.setDocCount(setDocMaps());
   }
   
-  /** True if any merging should happen */
   boolean shouldMerge() {
     return mergeState.segmentInfo.getDocCount() > 0;
   }
 
-  /**
-   * Merges the readers into the directory passed to the constructor
-   * @return The number of documents that were merged
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
   MergeState merge() throws IOException {
     if (!shouldMerge()) {
       throw new IllegalStateException("Merge would result in 0 document segment");
@@ -319,12 +304,6 @@ final class SegmentMerger {
     mergeState.fieldInfos = fieldInfosBuilder.finish();
   }
 
-  /**
-   *
-   * @return The number of documents in all of the readers
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
   private int mergeFields() throws IOException {
     final StoredFieldsWriter fieldsWriter = codec.storedFieldsFormat().fieldsWriter(directory, mergeState.segmentInfo, context);
     
@@ -335,10 +314,6 @@ final class SegmentMerger {
     }
   }
 
-  /**
-   * Merge the TermVectors from each of the segments into the new one.
-   * @throws IOException if there is a low-level IO error
-   */
   private int mergeVectors() throws IOException {
     final TermVectorsWriter termVectorsWriter = codec.termVectorsFormat().vectorsWriter(directory, mergeState.segmentInfo, context);
     

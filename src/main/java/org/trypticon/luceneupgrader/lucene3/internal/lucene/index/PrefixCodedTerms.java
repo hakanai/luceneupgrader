@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -27,10 +26,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.RAMOutputStrea
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper;
 
-/**
- * Prefix codes term instances (prefixes are shared)
- * @lucene.experimental
- */
 class PrefixCodedTerms implements Iterable<Term> {
   final RAMFile buffer;
   
@@ -38,12 +33,10 @@ class PrefixCodedTerms implements Iterable<Term> {
     this.buffer = buffer;
   }
   
-  /** @return size in bytes */
   public long getSizeInBytes() {
     return buffer.getSizeInBytes();
   }
   
-  /** @return iterator over the bytes */
   public Iterator<Term> iterator() {
     return new PrefixCodedTermsIterator();
   }
@@ -91,7 +84,6 @@ class PrefixCodedTerms implements Iterable<Term> {
     }
   }
   
-  /** Builds a PrefixCodedTerms: call add repeatedly, then finish. */
   public static class Builder {
     private RAMFile buffer = new RAMFile();
     private RAMOutputStream output = new RAMOutputStream(buffer);
@@ -99,7 +91,6 @@ class PrefixCodedTerms implements Iterable<Term> {
     private BytesRef lastBytes = new BytesRef();
     private BytesRef scratch = new BytesRef();
 
-    /** add a term */
     public void add(Term term) {
       assert lastTerm.equals(new Term("")) || term.compareTo(lastTerm) > 0;
 
@@ -123,7 +114,6 @@ class PrefixCodedTerms implements Iterable<Term> {
       }
     }
     
-    /** return finalized form */
     public PrefixCodedTerms finish() {
       try {
         output.close();

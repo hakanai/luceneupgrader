@@ -50,36 +50,8 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ThreadInterruptedException;
 
-/** Implements search over a single IndexReader.
- *
- * <p>Applications usually need only call the inherited
- * {@link #search(Query,int)}
- * or {@link #search(Query,Filter,int)} methods. For
- * performance reasons, if your index is unchanging, you
- * should share a single IndexSearcher instance across
- * multiple searches instead of creating a new one
- * per-search.  If your index has changed and you wish to
- * see the changes reflected in searching, you should
- * use {@link DirectoryReader#openIfChanged(DirectoryReader)}
- * to obtain a new reader and
- * then create a new IndexSearcher from that.  Also, for
- * low-latency turnaround it's best to use a near-real-time
- * reader ({@link DirectoryReader#open(IndexWriter)}).
- * Once you have a new {@link IndexReader}, it's relatively
- * cheap to create a new IndexSearcher from it.
- * 
- * <a name="thread-safety"></a><p><b>NOTE</b>: <code>{@link
- * IndexSearcher}</code> instances are completely
- * thread safe, meaning multiple threads can call any of its
- * methods, concurrently.  If your application requires
- * external synchronization, you should <b>not</b>
- * synchronize on the <code>IndexSearcher</code> instance;
- * use your own (non-Lucene) objects instead.</p>
- */
 public class IndexSearcher {
 
-  /** A search-time {@link Similarity} that does not make use of scoring factors
-   *  and may be used when scores are not needed. */
   private static final Similarity NON_SCORING_SIMILARITY = new Similarity() {
 
     @Override
@@ -141,7 +113,6 @@ public class IndexSearcher {
   // in the next release
   protected final IndexReaderContext readerContext;
   protected final List<LeafReaderContext> leafContexts;
-  /** used with executor - each slice holds a set of leafs executed within one thread */
   protected final LeafSlice[] leafSlices;
 
   // These are only used for multi-threaded search
@@ -153,88 +124,37 @@ public class IndexSearcher {
   private QueryCache queryCache = DEFAULT_QUERY_CACHE;
   private QueryCachingPolicy queryCachingPolicy = DEFAULT_CACHING_POLICY;
 
-  /**
-   * Expert: returns a default Similarity instance.
-   * In general, this method is only called to initialize searchers and writers.
-   * User code and query implementations should respect
-   * {@link IndexSearcher#getSimilarity(boolean)}.
-   * @lucene.internal
-   */
   public static Similarity getDefaultSimilarity() {
     return defaultSimilarity;
   }
 
-  /**
-   * Expert: Get the default {@link QueryCache} or {@code null} if the cache is disabled.
-   * @lucene.internal
-   */
   public static QueryCache getDefaultQueryCache() {
     return DEFAULT_QUERY_CACHE;
   }
 
-  /**
-   * Expert: set the default {@link QueryCache} instance.
-   * @lucene.internal
-   */
   public static void setDefaultQueryCache(QueryCache defaultQueryCache) {
     DEFAULT_QUERY_CACHE = defaultQueryCache;
   }
 
-  /**
-   * Expert: Get the default {@link QueryCachingPolicy}.
-   * @lucene.internal
-   */
   public static QueryCachingPolicy getDefaultQueryCachingPolicy() {
     return DEFAULT_CACHING_POLICY;
   }
 
-  /**
-   * Expert: set the default {@link QueryCachingPolicy} instance.
-   * @lucene.internal
-   */
   public static void setDefaultQueryCachingPolicy(QueryCachingPolicy defaultQueryCachingPolicy) {
     DEFAULT_CACHING_POLICY = defaultQueryCachingPolicy;
   }
 
-  /** The Similarity implementation used by this searcher. */
   private Similarity similarity = defaultSimilarity;
 
-  /** Creates a searcher searching the provided index. */
   public IndexSearcher(IndexReader r) {
     this(r, null);
   }
 
-  /** Runs searches for each segment separately, using the
-   *  provided ExecutorService.  IndexSearcher will not
-   *  close/awaitTermination this ExecutorService on
-   *  close; you must do so, eventually, on your own.  NOTE:
-   *  if you are using {@link NIOFSDirectory}, do not use
-   *  the shutdownNow method of ExecutorService as this uses
-   *  Thread.interrupt under-the-hood which can silently
-   *  close file descriptors (see <a
-   *  href="https://issues.apache.org/jira/browse/LUCENE-2239">LUCENE-2239</a>).
-   * 
-   * @lucene.experimental */
+
   public IndexSearcher(IndexReader r, ExecutorService executor) {
     this(r.getContext(), executor);
   }
 
-  /**
-   * Creates a searcher searching the provided top-level {@link IndexReaderContext}.
-   * <p>
-   * Given a non-<code>null</code> {@link ExecutorService} this method runs
-   * searches for each segment separately, using the provided ExecutorService.
-   * IndexSearcher will not close/awaitTermination this ExecutorService on
-   * close; you must do so, eventually, on your own. NOTE: if you are using
-   * {@link NIOFSDirectory}, do not use the shutdownNow method of
-   * ExecutorService as this uses Thread.interrupt under-the-hood which can
-   * silently close file descriptors (see <a
-   * href="https://issues.apache.org/jira/browse/LUCENE-2239">LUCENE-2239</a>).
-   * 
-   * @see IndexReaderContext
-   * @see IndexReader#getContext()
-   * @lucene.experimental
-   */
   public IndexSearcher(IndexReaderContext context, ExecutorService executor) {
     assert context.isTopLevel: "IndexSearcher's ReaderContext must be topLevel for reader" + context.reader();
     reader = context.reader();
@@ -244,68 +164,26 @@ public class IndexSearcher {
     this.leafSlices = executor == null ? null : slices(leafContexts);
   }
 
-  /**
-   * Creates a searcher searching the provided top-level {@link IndexReaderContext}.
-   *
-   * @see IndexReaderContext
-   * @see IndexReader#getContext()
-   * @lucene.experimental
-   */
   public IndexSearcher(IndexReaderContext context) {
     this(context, null);
   }
 
-  /**
-   * Set the {@link QueryCache} to use when scores are not needed.
-   * A value of {@code null} indicates that query matches should never be
-   * cached. This method should be called <b>before</b> starting using this
-   * {@link IndexSearcher}.
-   * <p>NOTE: When using a query cache, queries should not be modified after
-   * they have been passed to IndexSearcher.
-   * @see QueryCache
-   * @lucene.experimental
-   */
   public void setQueryCache(QueryCache queryCache) {
     this.queryCache = queryCache;
   }
 
-  /**
-   * Return the query cache of this {@link IndexSearcher}. This will be either
-   * the {@link #getDefaultQueryCache() default query cache} or the query cache
-   * that was last set through {@link #setQueryCache(QueryCache)}. A return
-   * value of {@code null} indicates that caching is disabled.
-   * @lucene.experimental
-   */
   public QueryCache getQueryCache() {
     return queryCache;
   }
 
-  /**
-   * Set the {@link QueryCachingPolicy} to use for query caching.
-   * This method should be called <b>before</b> starting using this
-   * {@link IndexSearcher}.
-   * @see QueryCachingPolicy
-   * @lucene.experimental
-   */
   public void setQueryCachingPolicy(QueryCachingPolicy queryCachingPolicy) {
     this.queryCachingPolicy = Objects.requireNonNull(queryCachingPolicy);
   }
 
-  /**
-   * Return the query cache of this {@link IndexSearcher}. This will be either
-   * the {@link #getDefaultQueryCachingPolicy() default policy} or the policy
-   * that was last set through {@link #setQueryCachingPolicy(QueryCachingPolicy)}.
-   * @lucene.experimental
-   */
   public QueryCachingPolicy getQueryCachingPolicy() {
     return queryCachingPolicy;
   }
 
-  /**
-   * Expert: Creates an array of leaf slices each holding a subset of the given leaves.
-   * Each {@link LeafSlice} is executed in a single thread. By default there
-   * will be one {@link LeafSlice} per leaf ({@link org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LeafReaderContext}).
-   */
   protected LeafSlice[] slices(List<LeafReaderContext> leaves) {
     LeafSlice[] slices = new LeafSlice[leaves.size()];
     for (int i = 0; i < slices.length; i++) {
@@ -315,64 +193,41 @@ public class IndexSearcher {
   }
 
   
-  /** Return the {@link IndexReader} this searches. */
   public IndexReader getIndexReader() {
     return reader;
   }
 
-  /** 
-   * Sugar for <code>.getIndexReader().document(docID)</code> 
-   * @see IndexReader#document(int) 
-   */
+
   public Document doc(int docID) throws IOException {
     return reader.document(docID);
   }
 
-  /** 
-   * Sugar for <code>.getIndexReader().document(docID, fieldVisitor)</code>
-   * @see IndexReader#document(int, StoredFieldVisitor) 
-   */
+
   public void doc(int docID, StoredFieldVisitor fieldVisitor) throws IOException {
     reader.document(docID, fieldVisitor);
   }
 
-  /** 
-   * Sugar for <code>.getIndexReader().document(docID, fieldsToLoad)</code>
-   * @see IndexReader#document(int, Set) 
-   */
+
   public Document doc(int docID, Set<String> fieldsToLoad) throws IOException {
     return reader.document(docID, fieldsToLoad);
   }
 
-  /** Expert: Set the Similarity implementation used by this IndexSearcher.
-   *
-   */
+
   public void setSimilarity(Similarity similarity) {
     this.similarity = similarity;
   }
 
-  /** Expert: Get the {@link Similarity} to use to compute scores. When
-   *  {@code needsScores} is {@code false}, this method will return a simple
-   *  {@link Similarity} that does not leverage scoring factors such as norms.
-   *  When {@code needsScores} is {@code true}, this returns the
-   *  {@link Similarity} that has been set through {@link #setSimilarity(Similarity)}
-   *  or the {@link #getDefaultSimilarity()} default {@link Similarity} if none
-   *  has been set explicitely. */
+
   public Similarity getSimilarity(boolean needsScores) {
     return needsScores ? similarity : NON_SCORING_SIMILARITY;
   }
   
-  /** @lucene.internal
-   *  @deprecated Use {@link BooleanQuery boolean queries} with
-   *              {@link BooleanClause.Occur#FILTER} clauses instead */
+
   @Deprecated
   protected Query wrapFilter(Query query, Filter filter) {
     return (filter == null) ? query : new FilteredQuery(query, filter);
   }
 
-  /**
-   * Count how many documents match the given query.
-   */
   public int count(Query query) throws IOException {
     query = rewrite(query);
     while (true) {
@@ -417,17 +272,7 @@ public class IndexSearcher {
     return search(query, collectorManager);
   }
 
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code> where all results are after a previous 
-   * result (<code>after</code>).
-   * <p>
-   * By passing the bottom result from a previous page as <code>after</code>,
-   * this method can be used for efficient 'deep-paging' across potentially
-   * large result sets.
-   *
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   */
+
   public TopDocs searchAfter(final ScoreDoc after, Query query, int numHits) throws IOException {
     final int limit = Math.max(1, reader.maxDoc());
     if (after != null && after.doc >= limit) {
@@ -460,206 +305,76 @@ public class IndexSearcher {
     return search(query, manager);
   }
 
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code>, applying <code>filter</code> if non-null,
-   * where all results are after a previous result (<code>after</code>).
-   * <p>
-   * By passing the bottom result from a previous page as <code>after</code>,
-   * this method can be used for efficient 'deep-paging' across potentially
-   * large result sets.
-   *
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   * @deprecated Use {@link BooleanQuery boolean queries} with
-   *              {@link BooleanClause.Occur#FILTER} clauses instead
-   */
+
   @Deprecated
   public final TopDocs searchAfter(ScoreDoc after, Query query, Filter filter, int n) throws IOException {
     return searchAfter(after, wrapFilter(query, filter), n);
   }
   
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code>.
-   *
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   */
+
   public TopDocs search(Query query, int n)
     throws IOException {
     return searchAfter(null, query, n);
   }
 
 
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code>, applying <code>filter</code> if non-null.
-   *
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   * @deprecated Use {@link BooleanQuery boolean queries} with
-   *              {@link BooleanClause.Occur#FILTER} clauses instead
-   */
+
   @Deprecated
   public final TopDocs search(Query query, Filter filter, int n)
     throws IOException {
     return search(wrapFilter(query, filter), n);
   }
 
-  /** Lower-level search API.
-   *
-   * <p>{@link LeafCollector#collect(int)} is called for every matching
-   * document.
-   *
-   * @param query to match documents
-   * @param filter if non-null, used to permit documents to be collected.
-   * @param results to receive hits
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   * @deprecated Use {@link BooleanQuery boolean queries} with
-   *              {@link BooleanClause.Occur#FILTER} clauses instead
-   */
+
   @Deprecated
   public final void search(Query query, Filter filter, Collector results)
     throws IOException {
     search(wrapFilter(query, filter), results);
   }
 
-  /** Lower-level search API.
-   *
-   * <p>{@link LeafCollector#collect(int)} is called for every matching document.
-   *
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   */
+
   public void search(Query query, Collector results)
     throws IOException {
     search(leafContexts, createNormalizedWeight(query, results.needsScores()), results);
   }
   
-  /** Search implementation with arbitrary sorting.  Finds
-   * the top <code>n</code> hits for <code>query</code>, applying
-   * <code>filter</code> if non-null, and sorting the hits by the criteria in
-   * <code>sort</code>.
-   * 
-   * <p>NOTE: this does not compute scores by default; use
-   * {@link IndexSearcher#search(Query,Filter,int,Sort,boolean,boolean)} to
-   * control scoring.
-   *
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   * @deprecated Use {@link BooleanQuery boolean queries} with
-   *              {@link BooleanClause.Occur#FILTER} clauses instead
-   */
+
   @Deprecated
   public final TopFieldDocs search(Query query, Filter filter, int n,
                              Sort sort) throws IOException {
     return search(query, filter, n, sort, false, false);
   }
 
-  /** Search implementation with arbitrary sorting, plus
-   * control over whether hit scores and max score
-   * should be computed.  Finds
-   * the top <code>n</code> hits for <code>query</code>, applying
-   * <code>filter</code> if non-null, and sorting the hits by the criteria in
-   * <code>sort</code>.  If <code>doDocScores</code> is <code>true</code>
-   * then the score of each hit will be computed and
-   * returned.  If <code>doMaxScore</code> is
-   * <code>true</code> then the maximum score over all
-   * collected hits will be computed.
-   * 
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   * @deprecated Use {@link BooleanQuery boolean queries} with
-   *              {@link BooleanClause.Occur#FILTER} clauses instead
-   */
+
   @Deprecated
   public final TopFieldDocs search(Query query, Filter filter, int n,
                              Sort sort, boolean doDocScores, boolean doMaxScore) throws IOException {
     return searchAfter(null, query, filter, n, sort, doDocScores, doMaxScore);
   }
 
-  /** Search implementation with arbitrary sorting, plus
-   * control over whether hit scores and max score
-   * should be computed.  Finds
-   * the top <code>n</code> hits for <code>query</code>, applying
-   * <code>filter</code> if non-null, and sorting the hits by the criteria in
-   * <code>sort</code>.  If <code>doDocScores</code> is <code>true</code>
-   * then the score of each hit will be computed and
-   * returned.  If <code>doMaxScore</code> is
-   * <code>true</code> then the maximum score over all
-   * collected hits will be computed.
-   * 
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   */
+
   public final TopFieldDocs search(Query query, int n,
                              Sort sort, boolean doDocScores, boolean doMaxScore) throws IOException {
     return searchAfter(null, query, n, sort, doDocScores, doMaxScore);
   }
 
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code>, applying <code>filter</code> if non-null,
-   * where all results are after a previous result (<code>after</code>).
-   * <p>
-   * By passing the bottom result from a previous page as <code>after</code>,
-   * this method can be used for efficient 'deep-paging' across potentially
-   * large result sets.
-   *
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   * @deprecated Use {@link BooleanQuery boolean queries} with
-   *              {@link BooleanClause.Occur#FILTER} clauses instead
-   */
+
   @Deprecated
   public final TopFieldDocs searchAfter(ScoreDoc after, Query query, Filter filter, int n, Sort sort) throws IOException {
     return searchAfter(after, query, filter, n, sort, false, false);
   }
 
-  /**
-   * Search implementation with arbitrary sorting and no filter.
-   * @param query The query to search for
-   * @param n Return only the top n results
-   * @param sort The {@link org.trypticon.luceneupgrader.lucene5.internal.lucene.search.Sort} object
-   * @return The top docs, sorted according to the supplied {@link org.trypticon.luceneupgrader.lucene5.internal.lucene.search.Sort} instance
-   * @throws IOException if there is a low-level I/O error
-   */
   public TopFieldDocs search(Query query, int n,
                              Sort sort) throws IOException {
     return search(query, null, n, sort, false, false);
   }
 
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code> where all results are after a previous
-   * result (<code>after</code>).
-   * <p>
-   * By passing the bottom result from a previous page as <code>after</code>,
-   * this method can be used for efficient 'deep-paging' across potentially
-   * large result sets.
-   *
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   */
+
   public TopDocs searchAfter(ScoreDoc after, Query query, int n, Sort sort) throws IOException {
     return searchAfter(after, query, null, n, sort, false, false);
   }
 
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code> where all results are after a previous
-   * result (<code>after</code>), allowing control over
-   * whether hit scores and max score should be computed.
-   * <p>
-   * By passing the bottom result from a previous page as <code>after</code>,
-   * this method can be used for efficient 'deep-paging' across potentially
-   * large result sets.  If <code>doDocScores</code> is <code>true</code>
-   * then the score of each hit will be computed and
-   * returned.  If <code>doMaxScore</code> is
-   * <code>true</code> then the maximum score over all
-   * collected hits will be computed.
-   *
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   * @deprecated Use {@link BooleanQuery boolean queries} with
-   *              {@link BooleanClause.Occur#FILTER} clauses instead
-   */
+
   @Deprecated
   public final TopFieldDocs searchAfter(ScoreDoc after, Query query, Filter filter, int numHits, Sort sort,
       boolean doDocScores, boolean doMaxScore) throws IOException {
@@ -671,22 +386,7 @@ public class IndexSearcher {
     return searchAfter((FieldDoc) after, wrapFilter(query, filter), numHits, sort, doDocScores, doMaxScore);
   }
 
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code> where all results are after a previous 
-   * result (<code>after</code>), allowing control over
-   * whether hit scores and max score should be computed.
-   * <p>
-   * By passing the bottom result from a previous page as <code>after</code>,
-   * this method can be used for efficient 'deep-paging' across potentially
-   * large result sets.  If <code>doDocScores</code> is <code>true</code>
-   * then the score of each hit will be computed and
-   * returned.  If <code>doMaxScore</code> is
-   * <code>true</code> then the maximum score over all
-   * collected hits will be computed.
-   *
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   */
+
   public final TopFieldDocs searchAfter(ScoreDoc after, Query query, int numHits, Sort sort,
       boolean doDocScores, boolean doMaxScore) throws IOException {
     if (after != null && !(after instanceof FieldDoc)) {
@@ -729,15 +429,6 @@ public class IndexSearcher {
     return search(query, manager);
   }
 
- /**
-  * Lower-level search API.
-  * Search all leaves using the given {@link CollectorManager}. In contrast
-  * to {@link #search(Query, Collector)}, this method will use the searcher's
-  * {@link ExecutorService} in order to parallelize execution of the collection
-  * on the configured {@link #leafSlices}.
-  * @see CollectorManager
-  * @lucene.experimental
-  */
   public <C extends Collector, T> T search(Query query, CollectorManager<C, T> collectorManager) throws IOException {
     if (executor == null) {
       final C collector = collectorManager.newCollector();
@@ -781,25 +472,6 @@ public class IndexSearcher {
     }
   }
 
-  /**
-   * Lower-level search API.
-   * 
-   * <p>
-   * {@link LeafCollector#collect(int)} is called for every document. <br>
-   * 
-   * <p>
-   * NOTE: this method executes the searches on all given leaves exclusively.
-   * To search across all the searchers leaves use {@link #leafContexts}.
-   * 
-   * @param leaves 
-   *          the searchers leaves to execute the searches on
-   * @param weight
-   *          to match documents
-   * @param collector
-   *          to receive hits
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   */
   protected void search(List<LeafReaderContext> leaves, Weight weight, Collector collector)
       throws IOException {
 
@@ -827,10 +499,7 @@ public class IndexSearcher {
     }
   }
 
-  /** Expert: called to re-write queries into primitive queries.
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   */
+
   public Query rewrite(Query original) throws IOException {
     Query query = original;
     for (Query rewrittenQuery = query.rewrite(reader); rewrittenQuery != query;
@@ -840,30 +509,12 @@ public class IndexSearcher {
     return query;
   }
 
-  /** Returns an Explanation that describes how <code>doc</code> scored against
-   * <code>query</code>.
-   *
-   * <p>This is intended to be used in developing Similarity implementations,
-   * and, for good performance, should not be displayed with every hit.
-   * Computing an explanation is as expensive as executing the query over the
-   * entire index.
-   */
+
   public Explanation explain(Query query, int doc) throws IOException {
     return explain(createNormalizedWeight(query, true), doc);
   }
 
-  /** Expert: low-level implementation method
-   * Returns an Explanation that describes how <code>doc</code> scored against
-   * <code>weight</code>.
-   *
-   * <p>This is intended to be used in developing Similarity implementations,
-   * and, for good performance, should not be displayed with every hit.
-   * Computing an explanation is as expensive as executing the query over the
-   * entire index.
-   * <p>Applications should call {@link IndexSearcher#explain(Query, int)}.
-   * @throws BooleanQuery.TooManyClauses If a query would exceed 
-   *         {@link BooleanQuery#getMaxClauseCount()} clauses.
-   */
+
   protected Explanation explain(Weight weight, int doc) throws IOException {
     int n = ReaderUtil.subIndex(doc, leafContexts);
     final LeafReaderContext ctx = leafContexts.get(n);
@@ -875,13 +526,6 @@ public class IndexSearcher {
     return weight.explain(ctx, deBasedDoc);
   }
 
-  /**
-   * Creates a normalized weight for a top-level {@link Query}.
-   * The query is rewritten by this method and {@link Query#createWeight} called,
-   * afterwards the {@link Weight} is normalized. The returned {@code Weight}
-   * can then directly be used to get a {@link Scorer}.
-   * @lucene.internal
-   */
   public Weight createNormalizedWeight(Query query, boolean needsScores) throws IOException {
     query = rewrite(query);
     Weight weight = createWeight(query, needsScores);
@@ -894,11 +538,6 @@ public class IndexSearcher {
     return weight;
   }
 
-  /**
-   * Creates a {@link Weight} for the given query, potentially adding caching
-   * if possible and configured.
-   * @lucene.experimental
-   */
   public Weight createWeight(Query query, boolean needsScores) throws IOException {
     final QueryCache queryCache = this.queryCache;
     Weight weight = query.createWeight(this, needsScores);
@@ -908,21 +547,11 @@ public class IndexSearcher {
     return weight;
   }
 
-  /**
-   * Returns this searchers the top-level {@link IndexReaderContext}.
-   * @see IndexReader#getContext()
-   */
   /* sugar for #getReader().getTopReaderContext() */
   public IndexReaderContext getTopReaderContext() {
     return readerContext;
   }
 
-  /**
-   * A class holding a subset of the {@link IndexSearcher}s leaf contexts to be
-   * executed within a single thread.
-   * 
-   * @lucene.experimental
-   */
   public static class LeafSlice {
     final LeafReaderContext[] leaves;
     
@@ -936,24 +565,10 @@ public class IndexSearcher {
     return "IndexSearcher(" + reader + "; executor=" + executor + ")";
   }
   
-  /**
-   * Returns {@link TermStatistics} for a term.
-   * 
-   * This can be overridden for example, to return a term's statistics
-   * across a distributed collection.
-   * @lucene.experimental
-   */
   public TermStatistics termStatistics(Term term, TermContext context) throws IOException {
     return new TermStatistics(term.bytes(), context.docFreq(), context.totalTermFreq());
   }
   
-  /**
-   * Returns {@link CollectionStatistics} for a field.
-   * 
-   * This can be overridden for example, to return a field's statistics
-   * across a distributed collection.
-   * @lucene.experimental
-   */
   public CollectionStatistics collectionStatistics(String field) throws IOException {
     final int docCount;
     final long sumTotalTermFreq;

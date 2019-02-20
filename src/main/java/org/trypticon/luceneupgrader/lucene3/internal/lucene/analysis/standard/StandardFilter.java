@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.standard;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.standard;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.standard;
 
 import java.io.IOException;
 
@@ -25,13 +24,10 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattrib
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.TypeAttribute;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Version;
 
-/**
- * Normalizes tokens extracted with {@link StandardTokenizer}.
- */
+
 public class StandardFilter extends TokenFilter {
   private final Version matchVersion;
   
-  /** @deprecated Use {@link #StandardFilter(Version, TokenStream)} instead. */
   @Deprecated
   public StandardFilter(TokenStream in) {
     this(Version.LUCENE_30, in);

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
 
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ByteBlockPool.BYTE_BLOCK_SIZE;
 
@@ -28,10 +27,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.Term;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.FieldInfos;
 
-/**
- * @lucene.experimental
- * @deprecated (4.0)
- */
 @Deprecated
 final class TermBuffer implements Cloneable {
 

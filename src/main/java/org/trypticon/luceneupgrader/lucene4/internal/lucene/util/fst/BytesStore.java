@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,7 +50,6 @@ class BytesStore extends DataOutput implements Accountable {
     nextWrite = blockSize;
   }
 
-  /** Pulls bytes from the provided IndexInput.  */
   public BytesStore(DataInput in, long numBytes, int maxBlockSize) throws IOException {
     int blockSize = 2;
     int blockBits = 1;
@@ -75,8 +73,6 @@ class BytesStore extends DataOutput implements Accountable {
     nextWrite = blocks.get(blocks.size()-1).length;
   }
 
-  /** Absolute write byte; you must ensure dest is < max
-   *  position written so far. */
   public void writeByte(int dest, byte b) {
     int blockIndex = dest >> blockBits;
     byte[] block = blocks.get(blockIndex);
@@ -118,9 +114,7 @@ class BytesStore extends DataOutput implements Accountable {
     return blockBits;
   }
 
-  /** Absolute writeBytes without changing the current
-   *  position.  Note: this cannot "grow" the bytes, so you
-   *  must only call it on already written parts. */
+
   void writeBytes(long dest, byte[] b, int offset, int len) {
     //System.out.println("  BS.writeBytes dest=" + dest + " offset=" + offset + " len=" + len);
     assert dest + len <= getPosition(): "dest=" + dest + " pos=" + getPosition() + " len=" + len;
@@ -177,9 +171,7 @@ class BytesStore extends DataOutput implements Accountable {
     }
   }
 
-  /** Absolute copy bytes self to self, without changing the
-   *  position. Note: this cannot "grow" the bytes, so must
-   *  only call it on already written parts. */
+
   public void copyBytes(long src, long dest, int len) {
     //System.out.println("BS.copyBytes src=" + src + " dest=" + dest + " len=" + len);
     assert src < dest;
@@ -237,8 +229,6 @@ class BytesStore extends DataOutput implements Accountable {
     }
   }
 
-  /** Writes an int at the absolute position without
-   *  changing the current pointer. */
   public void writeInt(long pos, int value) {
     int blockIndex = (int) (pos >> blockBits);
     int upto = (int) (pos & blockMask);
@@ -255,7 +245,6 @@ class BytesStore extends DataOutput implements Accountable {
     }
   }
 
-  /** Reverse from srcPos, inclusive, to destPos, inclusive. */
   public void reverse(long srcPos, long destPos) {
     assert srcPos < destPos;
     assert destPos < getPosition();
@@ -313,8 +302,6 @@ class BytesStore extends DataOutput implements Accountable {
     return ((long) blocks.size()-1) * blockSize + nextWrite;
   }
 
-  /** Pos must be less than the max position written so far!
-   *  Ie, you cannot "grow" the file with this! */
   public void truncate(long newLen) {
     assert newLen <= getPosition();
     assert newLen >= 0;
@@ -342,7 +329,6 @@ class BytesStore extends DataOutput implements Accountable {
     }
   }
 
-  /** Writes all of our bytes to the target {@link DataOutput}. */
   public void writeTo(DataOutput out) throws IOException {
     for(byte[] block : blocks) {
       out.writeBytes(block, 0, block.length);

@@ -37,17 +37,7 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRefIterato
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.DocIdSetBuilder;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.StringHelper;
 
-/**
- * Abstract query class to find all documents whose single or multi-dimensional point values, previously indexed with e.g. {@link IntPoint},
- * is contained in the specified set.
- *
- * <p>
- * This is for subclasses and works on the underlying binary encoding: to
- * create range queries for lucene's standard {@code Point} types, refer to factory
- * methods on those classes, e.g. {@link IntPoint#newSetQuery IntPoint.newSetQuery()} for 
- * fields indexed with {@link IntPoint}.
- * @see PointValues
- * @lucene.experimental */
+
 
 public abstract class PointInSetQuery extends Query {
   // A little bit overkill for us, since all of our "terms" are always in the same field:
@@ -57,16 +47,13 @@ public abstract class PointInSetQuery extends Query {
   final int numDims;
   final int bytesPerDim;
   
-  /** 
-   * Iterator of encoded point values.
-   */
+
   // TODO: if we want to stream, maybe we should use jdk stream class?
   public static abstract class Stream implements BytesRefIterator {
     @Override
     public abstract BytesRef next();
   };
 
-  /** The {@code packedPoints} iterator must be in sorted order. */
   protected PointInSetQuery(String field, int numDims, int bytesPerDim, Stream packedPoints) {
     this.field = field;
     if (bytesPerDim < 1 || bytesPerDim > PointValues.MAX_NUM_BYTES) {
@@ -157,8 +144,6 @@ public abstract class PointInSetQuery extends Query {
     };
   }
 
-  /** Essentially does a merge sort, only collecting hits when the indexed point and query point are the same.  This is an optimization,
-   *  used in the 1D case. */
   private class MergePointVisitor implements IntersectVisitor {
 
     private final DocIdSetBuilder result;
@@ -236,7 +221,6 @@ public abstract class PointInSetQuery extends Query {
     }
   }
 
-  /** IntersectVisitor that queries against a highly degenerate shape: a single point.  This is used in the > 1D case. */
   private class SinglePointVisitor implements IntersectVisitor {
 
     private final DocIdSetBuilder result;
@@ -403,14 +387,5 @@ public abstract class PointInSetQuery extends Query {
     return sb.toString();
   }
 
-  /**
-   * Returns a string of a single value in a human-readable format for debugging.
-   * This is used by {@link #toString()}.
-   *
-   * The default implementation encodes the individual byte values.
-   *
-   * @param value single value, never null
-   * @return human readable value for debugging
-   */
   protected abstract String toString(byte[] value);
 }

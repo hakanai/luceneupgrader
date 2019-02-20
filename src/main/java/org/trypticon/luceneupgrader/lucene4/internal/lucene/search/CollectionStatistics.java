@@ -1,8 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.IndexReader; // javadocs
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.Terms;       // javadocs
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -19,11 +14,8 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.Terms;       /
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
-/**
- * Contains statistics for a collection (field)
- * @lucene.experimental
- */
 public class CollectionStatistics {
   private final String field;
   private final long maxDoc;
@@ -43,33 +35,24 @@ public class CollectionStatistics {
     this.sumDocFreq = sumDocFreq;
   }
   
-  /** returns the field name */
   public final String field() {
     return field;
   }
   
-  /** returns the total number of documents, regardless of 
-   * whether they all contain values for this field. 
-   * @see IndexReader#maxDoc() */
+
   public final long maxDoc() {
     return maxDoc;
   }
   
-  /** returns the total number of documents that
-   * have at least one term for this field. 
-   * @see Terms#getDocCount() */
+
   public final long docCount() {
     return docCount;
   }
   
-  /** returns the total number of tokens for this field
-   * @see Terms#getSumTotalTermFreq() */
   public final long sumTotalTermFreq() {
     return sumTotalTermFreq;
   }
   
-  /** returns the total number of postings for this field 
-   * @see Terms#getSumDocFreq() */
   public final long sumDocFreq() {
     return sumDocFreq;
   }

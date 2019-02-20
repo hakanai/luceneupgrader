@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
 
 import java.io.IOException;
 
@@ -38,21 +37,12 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import java.io.Closeable;
 import java.nio.charset.StandardCharsets;
 
-/**
- * Class responsible for access to stored document fields.
- * <p/>
- * It uses &lt;segment&gt;.fdt and &lt;segment&gt;.fdx; files.
- * 
- * @deprecated Only for reading existing 3.x indexes
- */
 @Deprecated
 final class Lucene3xStoredFieldsReader extends StoredFieldsReader implements Cloneable, Closeable {
   private final static int FORMAT_SIZE = 4;
 
-  /** Extension of stored fields file */
   public static final String FIELDS_EXTENSION = "fdt";
   
-  /** Extension of stored fields index file */
   public static final String FIELDS_INDEX_EXTENSION = "fdx";
   
   // Lucene 3.0: Removal of compressed fields
@@ -98,18 +88,13 @@ final class Lucene3xStoredFieldsReader extends StoredFieldsReader implements Clo
   // (lucene 3.0 indexes only), we privately open our own fd.
   private final CompoundFileDirectory storeCFSReader;
 
-  /** Returns a cloned FieldsReader that shares open
-   *  IndexInputs with the original one.  It is the caller's
-   *  job not to close the original FieldsReader until all
-   *  clones are called (eg, currently SegmentReader manages
-   *  this logic). */
+
   @Override
   public Lucene3xStoredFieldsReader clone() {
     ensureOpen();
     return new Lucene3xStoredFieldsReader(fieldInfos, numTotalDocs, size, format, docStoreOffset, fieldsStream.clone(), indexStream.clone());
   }
 
-  /** Verifies that the code version which wrote the segment is supported. */
   public static void checkCodeVersion(Directory dir, String segment) throws IOException {
     final String indexStreamFN = IndexFileNames.segmentFileName(segment, "", FIELDS_INDEX_EXTENSION);
     IndexInput idxStream = dir.openInput(indexStreamFN, IOContext.DEFAULT);
@@ -196,21 +181,12 @@ final class Lucene3xStoredFieldsReader extends StoredFieldsReader implements Clo
     }
   }
 
-  /**
-   * @throws AlreadyClosedException if this FieldsReader is closed
-   */
   private void ensureOpen() throws AlreadyClosedException {
     if (closed) {
       throw new AlreadyClosedException("this FieldsReader is closed");
     }
   }
 
-  /**
-   * Closes the underlying {@link org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput} streams.
-   * This means that the Fields values will not be accessible.
-   *
-   * @throws IOException If there is a low-level I/O error.
-   */
   public final void close() throws IOException {
     if (!closed) {
       IOUtils.close(fieldsStream, indexStream, storeCFSReader);

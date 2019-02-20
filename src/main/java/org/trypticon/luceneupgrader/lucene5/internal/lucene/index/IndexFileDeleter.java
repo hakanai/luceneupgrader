@@ -110,8 +110,6 @@ final class IndexFileDeleter implements Closeable {
   final boolean startingCommitDeleted;
   private SegmentInfos lastSegmentInfos;
 
-  /** Change to true to see details of reference counts when
-   *  infoStream is enabled */
   public static boolean VERBOSE_REF_COUNTS = false;
 
   private final IndexWriter writer;
@@ -121,13 +119,6 @@ final class IndexFileDeleter implements Closeable {
     return writer == null || Thread.holdsLock(writer);
   }
 
-  /**
-   * Initialize the deleter: find all previous commits in
-   * the Directory, incref the files they reference, call
-   * the policy to let it delete commits.  This will remove
-   * any files not referenced by any of the commits.
-   * @throws IOException if there is a low-level IO error
-   */
   public IndexFileDeleter(String[] files, Directory directoryOrig, Directory directory, IndexDeletionPolicy policy, SegmentInfos segmentInfos,
                           InfoStream infoStream, IndexWriter writer, boolean initialIndexExists,
                           boolean isReaderInit) throws IOException {
@@ -253,8 +244,6 @@ final class IndexFileDeleter implements Closeable {
     deleteCommits();
   }
 
-  /** Set all gens beyond what we currently see in the directory, to avoid double-write in cases where the previous IndexWriter did not
-   *  gracefully close/rollback (e.g. os/machine crashed or lost power). */
   static void inflateGens(SegmentInfos infos, Collection<String> files, InfoStream infoStream) {
 
     long maxSegmentGen = Long.MIN_VALUE;
@@ -358,10 +347,6 @@ final class IndexFileDeleter implements Closeable {
     return lastSegmentInfos;
   }
 
-  /**
-   * Remove the CommitPoints in the commitsToDelete List by
-   * DecRef'ing all files from each SegmentInfos.
-   */
   private void deleteCommits() {
 
     int size = commitsToDelete.size();
@@ -411,14 +396,6 @@ final class IndexFileDeleter implements Closeable {
     }
   }
 
-  /**
-   * Writer calls this when it has hit an error and had to
-   * roll back, to tell us that there may now be
-   * unreferenced files in the filesystem.  So we re-list
-   * the filesystem and delete such files.  If segmentName
-   * is non-null, we will only delete files corresponding to
-   * that segment.
-   */
   void refresh() throws IOException {
     assert locked();
     deletable.clear();
@@ -464,15 +441,6 @@ final class IndexFileDeleter implements Closeable {
     deletePendingFiles();
   }
 
-  /**
-   * Revisits the {@link IndexDeletionPolicy} by calling its
-   * {@link IndexDeletionPolicy#onCommit(List)} again with the known commits.
-   * This is useful in cases where a deletion policy which holds onto index
-   * commits is used. The application may know that some commits are not held by
-   * the deletion policy anymore and call
-   * {@link IndexWriter#deleteUnusedFiles()}, which will attempt to delete the
-   * unused commits again.
-   */
   void revisitPolicy() throws IOException {
     assert locked();
     if (infoStream.isEnabled("IFD")) {
@@ -518,26 +486,6 @@ final class IndexFileDeleter implements Closeable {
     }
   }
 
-  /**
-   * For definition of "check point" see IndexWriter comments:
-   * "Clarification: Check Points (and commits)".
-   *
-   * Writer calls this when it has made a "consistent
-   * change" to the index, meaning new files are written to
-   * the index and the in-memory SegmentInfos have been
-   * modified to point to those files.
-   *
-   * This may or may not be a commit (segments_N may or may
-   * not have been written).
-   *
-   * We simply incref the files referenced by the new
-   * SegmentInfos and decref the files we had previously
-   * seen (if any).
-   *
-   * If this is a commit, we also call the policy to give it
-   * a chance to remove other commits.  If any commits are
-   * removed, we decref their files as well.
-   */
   public void checkpoint(SegmentInfos segmentInfos, boolean isCommit) throws IOException {
     assert locked();
 
@@ -605,7 +553,6 @@ final class IndexFileDeleter implements Closeable {
     rc.IncRef();
   }
 
-  /** Decrefs all provided files, even on exception; throws first exception hit, if any. */
   void decRef(Collection<String> files) {
     assert locked();
     Throwable firstThrowable = null;
@@ -633,8 +580,6 @@ final class IndexFileDeleter implements Closeable {
     IOUtils.reThrowUnchecked(firstThrowable);
   }
 
-  /** Decrefs all provided files, ignoring any exceptions hit; call this if
-   *  you are already handling an exception. */
   void decRefWhileHandlingException(Collection<String> files) {
     assert locked();
     for(final String file : files) {
@@ -697,8 +642,6 @@ final class IndexFileDeleter implements Closeable {
     return rc;
   }
 
-  /** Deletes the specified files, but only if they are new
-   *  (have not yet been incref'd). */
   void deleteNewFiles(Collection<String> files) throws IOException {
     assert locked();
     for (final String fileName: files) {
@@ -719,9 +662,7 @@ final class IndexFileDeleter implements Closeable {
     deletePendingFiles();
   }
 
-  /** Returns true if the delete succeeded. Otherwise, the fileName is
-   *  added to the deletable set so we will retry the delete later, and
-   *  we return false. */
+
   private boolean deleteFile(String fileName) {
     assert locked();
     ensureOpen();
@@ -754,9 +695,6 @@ final class IndexFileDeleter implements Closeable {
     }
   }
 
-  /**
-   * Tracks the reference count for a single index file:
-   */
   final private static class RefCount {
 
     // fileName used only for better assert error messages
@@ -782,13 +720,6 @@ final class IndexFileDeleter implements Closeable {
       return --count;
     }
   }
-
-  /**
-   * Holds details for each commit point.  This class is
-   * also passed to the deletion policy.  Note: this class
-   * has a natural ordering that is inconsistent with
-   * equals.
-   */
 
   final private static class CommitPoint extends IndexCommit {
 
@@ -846,10 +777,6 @@ final class IndexFileDeleter implements Closeable {
       return userData;
     }
 
-    /**
-     * Called only be the deletion policy, to remove this
-     * commit point from the index.
-     */
     @Override
     public void delete() {
       if (!deleted) {

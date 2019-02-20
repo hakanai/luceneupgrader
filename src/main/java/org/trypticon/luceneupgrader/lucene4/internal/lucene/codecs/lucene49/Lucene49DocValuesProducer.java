@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene49;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene49;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene49;
 
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene49.Lucene49DocValuesConsumer.BINARY_FIXED_UNCOMPRESSED;
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene49.Lucene49DocValuesConsumer.BINARY_PREFIX_COMPRESSED;
@@ -63,7 +62,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimat
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.DirectReader;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.MonotonicBlockPackedReader;
 
-/** reader for {@link Lucene49DocValuesFormat} */
 class Lucene49DocValuesProducer extends DocValuesProducer implements Closeable {
   private final Map<Integer,NumericEntry> numerics;
   private final Map<Integer,BinaryEntry> binaries;
@@ -80,7 +78,6 @@ class Lucene49DocValuesProducer extends DocValuesProducer implements Closeable {
   private final Map<Integer,MonotonicBlockPackedReader> addressInstances = new HashMap<>();
   private final Map<Integer,MonotonicBlockPackedReader> ordIndexInstances = new HashMap<>();
   
-  /** expert: instantiates a new reader */
   Lucene49DocValuesProducer(SegmentReadState state, String dataCodec, String dataExtension, String metaCodec, String metaExtension) throws IOException {
     String metaName = IndexFileNames.segmentFileName(state.segmentInfo.name, state.segmentSuffix, metaExtension);
     // read in the entries from the metadata file.
@@ -415,7 +412,6 @@ class Lucene49DocValuesProducer extends DocValuesProducer implements Closeable {
     };
   }
   
-  /** returns an address instance for variable-length binary values. */
   private MonotonicBlockPackedReader getAddressInstance(IndexInput data, FieldInfo field, BinaryEntry bytes) throws IOException {
     final MonotonicBlockPackedReader addresses;
     synchronized (addressInstances) {
@@ -456,7 +452,6 @@ class Lucene49DocValuesProducer extends DocValuesProducer implements Closeable {
     };
   }
   
-  /** returns an address instance for prefix-compressed binary values. */
   private MonotonicBlockPackedReader getIntervalInstance(IndexInput data, FieldInfo field, BinaryEntry bytes) throws IOException {
     final MonotonicBlockPackedReader addresses;
     final long interval = bytes.addressInterval;
@@ -532,7 +527,6 @@ class Lucene49DocValuesProducer extends DocValuesProducer implements Closeable {
     };
   }
   
-  /** returns an address instance for sortedset ordinal lists */
   private MonotonicBlockPackedReader getOrdIndexInstance(IndexInput data, FieldInfo field, NumericEntry entry) throws IOException {
     final MonotonicBlockPackedReader ordIndex;
     synchronized (ordIndexInstances) {
@@ -714,24 +708,16 @@ class Lucene49DocValuesProducer extends DocValuesProducer implements Closeable {
     data.close();
   }
   
-  /** metadata entry for a numeric docvalues field */
   static class NumericEntry {
     private NumericEntry() {}
-    /** offset to the bitset representing docsWithField, or -1 if no documents have missing values */
     long missingOffset;
-    /** offset to the actual numeric values */
     public long offset;
-    /** end offset to the actual numeric values */
     public long endOffset;
-    /** bits per value used to pack the numeric values */
     public int bitsPerValue;
 
     int format;
-    /** packed ints version used to encode these numerics */
     public int packedIntsVersion;
-    /** count of values written */
     public long count;
-    /** packed ints blocksize */
     public int blockSize;
     
     long minValue;
@@ -739,30 +725,21 @@ class Lucene49DocValuesProducer extends DocValuesProducer implements Closeable {
     long table[];
   }
   
-  /** metadata entry for a binary docvalues field */
   static class BinaryEntry {
     private BinaryEntry() {}
-    /** offset to the bitset representing docsWithField, or -1 if no documents have missing values */
     long missingOffset;
-    /** offset to the actual binary values */
     long offset;
 
     int format;
-    /** count of values written */
     public long count;
     int minLength;
     int maxLength;
-    /** offset to the addressing data that maps a value to its slice of the byte[] */
     public long addressesOffset;
-    /** interval of shared prefix chunks (when using prefix-compressed binary) */
     public long addressInterval;
-    /** packed ints version used to encode addressing information */
     public int packedIntsVersion;
-    /** packed ints blocksize */
     public int blockSize;
   }
 
-  /** metadata entry for a sorted-set docvalues field */
   static class SortedSetEntry {
     private SortedSetEntry() {}
     int format;

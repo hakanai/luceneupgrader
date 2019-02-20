@@ -23,16 +23,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LeafReaderCont
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Counter;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ThreadInterruptedException;
 
-/**
- * The {@link TimeLimitingCollector} is used to timeout search requests that
- * take longer than the maximum allowed search time limit. After this time is
- * exceeded, the search thread is stopped by throwing a
- * {@link TimeExceededException}.
- */
 public class TimeLimitingCollector implements Collector {
 
 
-  /** Thrown when elapsed search time exceeds allowed search time. */
   @SuppressWarnings("serial")
   public static class TimeExceededException extends RuntimeException {
     private long timeAllowed;
@@ -44,15 +37,12 @@ public class TimeLimitingCollector implements Collector {
       this.timeElapsed = timeElapsed;
       this.lastDocCollected = lastDocCollected;
     }
-    /** Returns allowed time (milliseconds). */
     public long getTimeAllowed() {
       return timeAllowed;
     }
-    /** Returns elapsed time (milliseconds). */
     public long getTimeElapsed() {
       return timeElapsed;
     }
-    /** Returns last doc (absolute doc id) that was collected when the search time exceeded. */
     public int getLastDocCollected() {
       return lastDocCollected;
     }
@@ -66,67 +56,25 @@ public class TimeLimitingCollector implements Collector {
   private boolean greedy = false;
   private int docBase;
 
-  /**
-   * Create a TimeLimitedCollector wrapper over another {@link Collector} with a specified timeout.
-   * @param collector the wrapped {@link Collector}
-   * @param clock the timer clock
-   * @param ticksAllowed max time allowed for collecting
-   * hits after which {@link TimeExceededException} is thrown
-   */
   public TimeLimitingCollector(final Collector collector, Counter clock, final long ticksAllowed ) {
     this.collector = collector;
     this.clock = clock;
     this.ticksAllowed = ticksAllowed;
   }
   
-  /**
-   * Sets the baseline for this collector. By default the collectors baseline is 
-   * initialized once the first reader is passed to the collector. 
-   * To include operations executed in prior to the actual document collection
-   * set the baseline through this method in your prelude.
-   * <p>
-   * Example usage:
-   * <pre class="prettyprint">
-   *   Counter clock = ...;
-   *   long baseline = clock.get();
-   *   // ... prepare search
-   *   TimeLimitingCollector collector = new TimeLimitingCollector(c, clock, numTicks);
-   *   collector.setBaseline(baseline);
-   *   indexSearcher.search(query, collector);
-   * </pre>
-   * @see #setBaseline() 
-   */
   public void setBaseline(long clockTime) {
     t0 = clockTime;
     timeout = t0 + ticksAllowed;
   }
   
-  /**
-   * Syntactic sugar for {@link #setBaseline(long)} using {@link Counter#get()}
-   * on the clock passed to the constructor.
-   */
   public void setBaseline() {
     setBaseline(clock.get());
   }
   
-  /**
-   * Checks if this time limited collector is greedy in collecting the last hit.
-   * A non greedy collector, upon a timeout, would throw a {@link TimeExceededException} 
-   * without allowing the wrapped collector to collect current doc. A greedy one would 
-   * first allow the wrapped hit collector to collect current doc and only then 
-   * throw a {@link TimeExceededException}.  However, if the timeout is detected in
-   * {@link #getLeafCollector} then no current document is collected.
-   * @see #setGreedy(boolean)
-   */
   public boolean isGreedy() {
     return greedy;
   }
 
-  /**
-   * Sets whether this time limited collector is greedy.
-   * @param greedy true to make this time limited greedy
-   * @see #isGreedy()
-   */
   public void setGreedy(boolean greedy) {
     this.greedy = greedy;
   }
@@ -166,45 +114,15 @@ public class TimeLimitingCollector implements Collector {
     return collector.needsScores();
   }
 
-  /**
-   * This is so the same timer can be used with a multi-phase search process such as grouping. 
-   * We don't want to create a new TimeLimitingCollector for each phase because that would 
-   * reset the timer for each phase.  Once time is up subsequent phases need to timeout quickly.
-   *
-   * @param collector The actual collector performing search functionality
-   */
   public void setCollector(Collector collector) {
     this.collector = collector;
   }
 
 
-  /**
-   * Returns the global TimerThreads {@link Counter}
-   * <p>
-   * Invoking this creates may create a new instance of {@link TimerThread} iff
-   * the global {@link TimerThread} has never been accessed before. The thread
-   * returned from this method is started on creation and will be alive unless
-   * you stop the {@link TimerThread} via {@link TimerThread#stopTimer()}.
-   * </p>
-   * @return the global TimerThreads {@link Counter}
-   * @lucene.experimental
-   */
   public static Counter getGlobalCounter() {
     return TimerThreadHolder.THREAD.counter;
   }
   
-  /**
-   * Returns the global {@link TimerThread}.
-   * <p>
-   * Invoking this creates may create a new instance of {@link TimerThread} iff
-   * the global {@link TimerThread} has never been accessed before. The thread
-   * returned from this method is started on creation and will be alive unless
-   * you stop the {@link TimerThread} via {@link TimerThread#stopTimer()}.
-   * </p>
-   * 
-   * @return the global {@link TimerThread}
-   * @lucene.experimental
-   */
   public static TimerThread getGlobalTimerThread() {
     return TimerThreadHolder.THREAD;
   }
@@ -217,11 +135,6 @@ public class TimeLimitingCollector implements Collector {
     }
   }
 
-  /**
-   * Thread used to timeout search requests.
-   * Can be stopped completely with {@link TimerThread#stopTimer()}
-   * @lucene.experimental
-   */
   public static final class TimerThread extends Thread  {
     
     public static final String THREAD_NAME = "TimeLimitedCollector timer thread";
@@ -265,42 +178,18 @@ public class TimeLimitingCollector implements Collector {
       }
     }
 
-    /**
-     * Get the timer value in milliseconds.
-     */
     public long getMilliseconds() {
       return time;
     }
     
-    /**
-     * Stops the timer thread 
-     */
     public void stopTimer() {
       stop = true;
     }
     
-    /** 
-     * Return the timer resolution.
-     * @see #setResolution(long)
-     */
     public long getResolution() {
       return resolution;
     }
     
-    /**
-     * Set the timer resolution.
-     * The default timer resolution is 20 milliseconds. 
-     * This means that a search required to take no longer than 
-     * 800 milliseconds may be stopped after 780 to 820 milliseconds.
-     * <br>Note that: 
-     * <ul>
-     * <li>Finer (smaller) resolution is more accurate but less efficient.</li>
-     * <li>Setting resolution to less than 5 milliseconds will be silently modified to 5 milliseconds.</li>
-     * <li>Setting resolution smaller than current resolution might take effect only after current 
-     * resolution. (Assume current resolution of 20 milliseconds is modified to 5 milliseconds, 
-     * then it can take up to 20 milliseconds for the change to have effect.</li>
-     * </ul>      
-     */
     public void setResolution(long resolution) {
       this.resolution = Math.max(resolution, 5); // 5 milliseconds is about the minimum reasonable time for a Object.wait(long) call.
     }

@@ -27,34 +27,15 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentReadSta
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentWriteState;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 
-/**
- * Lucene 4.1 postings format.
- * @deprecated only for reading old 4.x segments
- */
 @Deprecated
 public class Lucene41PostingsFormat extends PostingsFormat {
-  /**
-   * Filename extension for document number, frequencies, and skip data.
-   * See chapter: <a href="#Frequencies">Frequencies and Skip Data</a>
-   */
   public static final String DOC_EXTENSION = "doc";
 
-  /**
-   * Filename extension for positions. 
-   * See chapter: <a href="#Positions">Positions</a>
-   */
   public static final String POS_EXTENSION = "pos";
 
-  /**
-   * Filename extension for payloads and offsets.
-   * See chapter: <a href="#Payloads">Payloads and Offsets</a>
-   */
   public static final String PAY_EXTENSION = "pay";
   
-  /** 
-   * Expert: The maximum number of skip levels. Smaller values result in 
-   * slightly smaller indexes, but slower skipping in big posting lists.
-   */
+
   static final int maxSkipLevels = 10;
 
   final static String TERMS_CODEC = "Lucene41PostingsWriterTerms";
@@ -68,15 +49,9 @@ public class Lucene41PostingsFormat extends PostingsFormat {
   final static int VERSION_CHECKSUM = 2;
   final static int VERSION_CURRENT = VERSION_CHECKSUM;
 
-  /**
-   * Fixed packed block size, number of integers encoded in 
-   * a single packed block.
-   */
   // NOTE: must be multiple of 64 because of PackedInts long-aligned encoding/decoding
   public final static int BLOCK_SIZE = 128;
 
-  /** Creates {@code Lucene41PostingsFormat} with default
-   *  settings. */
   public Lucene41PostingsFormat() {
     super("Lucene41");
   }

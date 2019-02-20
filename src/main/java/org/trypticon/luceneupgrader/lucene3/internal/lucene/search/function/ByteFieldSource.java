@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,44 +13,21 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.FieldCache;
 
 import java.io.IOException;
 
-/**
- * Expert: obtains single byte field values from the 
- * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.FieldCache FieldCache}
- * using <code>getBytes()</code> and makes those values 
- * available as other numeric types, casting as needed.
- * 
- * @lucene.experimental
- * 
- * @see org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function.FieldCacheSource for requirements
- * on the field. 
- *
- * <p><b>NOTE</b>: with the switch in 2.9 to segment-based
- * searching, if {@link #getValues} is invoked with a
- * composite (multi-segment) reader, this can easily cause
- * double RAM usage for the values in the FieldCache.  It's
- * best to switch your application to pass only atomic
- * (single segment) readers to this API.</p>
- */
 public class ByteFieldSource extends FieldCacheSource {
   private FieldCache.ByteParser parser;
 
-  /**
-   * Create a cached byte field source with default string-to-byte parser. 
-   */
   public ByteFieldSource(String field) {
     this(field, null);
   }
 
-  /**
-   * Create a cached byte field source with a specific string-to-byte parser. 
-   */
   public ByteFieldSource(String field, FieldCache.ByteParser parser) {
     super(field);
     this.parser = parser;

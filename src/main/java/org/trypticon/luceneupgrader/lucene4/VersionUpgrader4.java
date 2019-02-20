@@ -10,6 +10,7 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Version;
 import org.trypticon.luceneupgrader.lucene4.internal.lucenesupport.PathFSDirectory4;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -17,10 +18,14 @@ import java.nio.file.Path;
  * Upgrades an index to Lucene 4 format.
  */
 public class VersionUpgrader4 implements VersionUpgrader {
+
+    @Nonnull
     private final Path path;
+
+    @Nonnull
     private final InfoStream infoStream;
 
-    public VersionUpgrader4(Path path, InfoStream infoStream) {
+    public VersionUpgrader4(@Nonnull Path path, @Nonnull InfoStream infoStream) {
         this.path = path;
         this.infoStream = infoStream;
     }
@@ -29,8 +34,7 @@ public class VersionUpgrader4 implements VersionUpgrader {
     public void upgrade() throws IOException {
         try (Directory directory = PathFSDirectory4.open(path)) {
             org.trypticon.luceneupgrader.lucene4.internal.lucene.util.InfoStream adaptedInfoStream =
-                infoStream == null ? org.trypticon.luceneupgrader.lucene4.internal.lucene.util.InfoStream.NO_OUTPUT
-                                   : new AdaptedInfoStream(infoStream);
+                    new AdaptedInfoStream(infoStream);
             IndexWriterConfig indexWriterConfig = new IndexWriterConfig(Version.LUCENE_4_10_4, null);
             indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
             indexWriterConfig.setMergeScheduler(new SerialMergeScheduler());

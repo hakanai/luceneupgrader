@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattri
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes;
 
 import java.io.Serializable;
 import java.nio.CharBuffer;
@@ -25,9 +24,7 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.AttributeImpl;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.AttributeReflector;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
 
-/**
- * The term text of a Token.
- */
+
 public class CharTermAttributeImpl extends AttributeImpl implements CharTermAttribute, TermAttribute, Cloneable, Serializable {
   private static int MIN_BUFFER_SIZE = 10;
   
@@ -271,15 +268,7 @@ public class CharTermAttributeImpl extends AttributeImpl implements CharTermAttr
     return false;
   }
 
-  /** 
-   * Returns solely the term text as specified by the
-   * {@link CharSequence} interface.
-   * <p>This method changed the behavior with Lucene 3.1,
-   * before it returned a String representation of the whole
-   * term with all attributes.
-   * This affects especially the
-   * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.Token} subclass.
-   */
+
   @Override
   public String toString() {
     // CharSequence requires that only the contents are returned, but this is orginal code: "term=" + new String(termBuffer, 0, termLength)

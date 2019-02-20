@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.document;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,30 +13,15 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.document;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.document;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.AtomicReader; // javadocs
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.FieldCache; // javadocs
 
-/**
- * Syntactic sugar for encoding floats as NumericDocValues
- * via {@link Float#floatToRawIntBits(float)}.
- * <p>
- * Per-document floating point values can be retrieved via
- * {@link FieldCache#getFloats(AtomicReader, String, boolean)}.
- * <p>
- * <b>NOTE</b>: In most all cases this will be rather inefficient,
- * requiring four bytes per document. Consider encoding floating
- * point values yourself with only as much precision as you require.
- */
 public class FloatDocValuesField extends NumericDocValuesField {
 
-  /** 
-   * Creates a new DocValues field with the specified 32-bit float value 
-   * @param name field name
-   * @param value 32-bit float value
-   * @throws IllegalArgumentException if the field name is null
-   */
+
   public FloatDocValuesField(String name, float value) {
     super(name, Float.floatToRawIntBits(value));
   }

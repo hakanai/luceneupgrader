@@ -82,135 +82,12 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedIn
       we seek a particular term.
 */
 
-/**
- * Block-based terms index and dictionary writer.
- * <p>
- * Writes terms dict and index, block-encoding (column
- * stride) each term's metadata for each set of terms
- * between two index terms.
- * <p>
- *
- * If {@code minItemsInAutoPrefix} is not zero, then for
- * {@link IndexOptions#DOCS} fields we detect prefixes that match
- * "enough" terms and insert auto-prefix terms into the index, which are
- * used by {@link Terms#intersect}  at search time to speed up prefix
- * and range queries.  Besides {@link Terms#intersect}, these
- * auto-prefix terms are invisible to all other APIs (don't change terms
- * stats, don't show up in normal {@link TermsEnum}s, etc.).
- * <p>
- *
- * Files:
- * <ul>
- *   <li><tt>.tim</tt>: <a href="#Termdictionary">Term Dictionary</a></li>
- *   <li><tt>.tip</tt>: <a href="#Termindex">Term Index</a></li>
- * </ul>
- * <p>
- * <a name="Termdictionary"></a>
- * <h3>Term Dictionary</h3>
- *
- * <p>The .tim file contains the list of terms in each
- * field along with per-term statistics (such as docfreq)
- * and per-term metadata (typically pointers to the postings list
- * for that term in the inverted index).
- * </p>
- *
- * <p>The .tim is arranged in blocks: with blocks containing
- * a variable number of entries (by default 25-48), where
- * each entry is either a term or a reference to a
- * sub-block.</p>
- *
- * <p>NOTE: The term dictionary can plug into different postings implementations:
- * the postings writer/reader are actually responsible for encoding 
- * and decoding the Postings Metadata and Term Metadata sections.</p>
- *
- * <ul>
- *    <li>TermsDict (.tim) --&gt; Header, HasAutoPrefixTerms, <i>PostingsHeader</i>, NodeBlock<sup>NumBlocks</sup>,
- *                               FieldSummary, DirOffset, Footer</li>
- *    <li>NodeBlock --&gt; (OuterNode | InnerNode)</li>
- *    <li>OuterNode --&gt; EntryCount, SuffixLength, Byte<sup>SuffixLength</sup>, StatsLength, &lt; TermStats &gt;<sup>EntryCount</sup>, MetaLength, &lt;<i>TermMetadata</i>&gt;<sup>EntryCount</sup></li>
- *    <li>InnerNode --&gt; EntryCount, SuffixLength[,Sub?], Byte<sup>SuffixLength</sup>, StatsLength, &lt; TermStats ? &gt;<sup>EntryCount</sup>, MetaLength, &lt;<i>TermMetadata ? </i>&gt;<sup>EntryCount</sup></li>
- *    <li>TermStats --&gt; DocFreq, TotalTermFreq </li>
- *    <li>FieldSummary --&gt; NumFields, &lt;FieldNumber, NumTerms, RootCodeLength, Byte<sup>RootCodeLength</sup>,
- *                            SumTotalTermFreq?, SumDocFreq, DocCount, LongsSize, MinTerm, MaxTerm&gt;<sup>NumFields</sup></li>
- *    <li>Header --&gt; {@link CodecUtil#writeHeader CodecHeader}</li>
- *    <li>DirOffset --&gt; {@link DataOutput#writeLong Uint64}</li>
- *    <li>MinTerm,MaxTerm --&gt; {@link DataOutput#writeVInt VInt} length followed by the byte[]</li>
- *    <li>EntryCount,SuffixLength,StatsLength,DocFreq,MetaLength,NumFields,
- *        FieldNumber,RootCodeLength,DocCount,LongsSize --&gt; {@link DataOutput#writeVInt VInt}</li>
- *    <li>TotalTermFreq,NumTerms,SumTotalTermFreq,SumDocFreq --&gt; 
- *        {@link DataOutput#writeVLong VLong}</li>
- *    <li>Footer --&gt; {@link CodecUtil#writeFooter CodecFooter}</li>
- * </ul>
- * <p>Notes:</p>
- * <ul>
- *    <li>Header is a {@link CodecUtil#writeHeader CodecHeader} storing the version information
- *        for the BlockTree implementation.</li>
- *    <li>HasAutoPrefixTerms is a single byte; 1 means there may be auto-prefix terms and 0 means there are none.
- *    <li>DirOffset is a pointer to the FieldSummary section.</li>
- *    <li>DocFreq is the count of documents which contain the term.</li>
- *    <li>TotalTermFreq is the total number of occurrences of the term. This is encoded
- *        as the difference between the total number of occurrences and the DocFreq.</li>
- *    <li>FieldNumber is the fields number from {@link FieldInfos}. (.fnm)</li>
- *    <li>NumTerms is the number of unique terms for the field.</li>
- *    <li>RootCode points to the root block for the field.</li>
- *    <li>SumDocFreq is the total number of postings, the number of term-document pairs across
- *        the entire field.</li>
- *    <li>DocCount is the number of documents that have at least one posting for this field.</li>
- *    <li>LongsSize records how many long values the postings writer/reader record per term
- *        (e.g., to hold freq/prox/doc file offsets).
- *    <li>MinTerm, MaxTerm are the lowest and highest term in this field.</li>
- *    <li>PostingsHeader and TermMetadata are plugged into by the specific postings implementation:
- *        these contain arbitrary per-file data (such as parameters or versioning information) 
- *        and per-term data (such as pointers to inverted files).</li>
- *    <li>For inner nodes of the tree, every entry will steal one bit to mark whether it points
- *        to child nodes(sub-block). If so, the corresponding TermStats and TermMetaData are omitted </li>
- * </ul>
- * <a name="Termindex"></a>
- * <h3>Term Index</h3>
- * <p>The .tip file contains an index into the term dictionary, so that it can be 
- * accessed randomly.  The index is also used to determine
- * when a given term cannot exist on disk (in the .tim file), saving a disk seek.</p>
- * <ul>
- *   <li>TermsIndex (.tip) --&gt; Header, FSTIndex<sup>NumFields</sup>
- *                                &lt;IndexStartFP&gt;<sup>NumFields</sup>, DirOffset, Footer</li>
- *   <li>Header --&gt; {@link CodecUtil#writeHeader CodecHeader}</li>
- *   <li>DirOffset --&gt; {@link DataOutput#writeLong Uint64}</li>
- *   <li>IndexStartFP --&gt; {@link DataOutput#writeVLong VLong}</li>
- *   <!-- TODO: better describe FST output here -->
- *   <li>FSTIndex --&gt; {@link FST FST&lt;byte[]&gt;}</li>
- *   <li>Footer --&gt; {@link CodecUtil#writeFooter CodecFooter}</li>
- * </ul>
- * <p>Notes:</p>
- * <ul>
- *   <li>The .tip file contains a separate FST for each
- *       field.  The FST maps a term prefix to the on-disk
- *       block that holds all terms starting with that
- *       prefix.  Each field's IndexStartFP points to its
- *       FST.</li>
- *   <li>DirOffset is a pointer to the start of the IndexStartFPs
- *       for all fields</li>
- *   <li>It's possible that an on-disk block would contain
- *       too many terms (more than the allowed maximum
- *       (default: 48)).  When this happens, the block is
- *       sub-divided into new blocks (called "floor
- *       blocks"), and then the output in the FST for the
- *       block's prefix encodes the leading byte of each
- *       sub-block, and its file pointer.
- * </ul>
- *
- * @see BlockTreeTermsReader
- * @lucene.experimental
- */
 public final class BlockTreeTermsWriter extends FieldsConsumer {
 
-  /** Suggested default value for the {@code
-   *  minItemsInBlock} parameter to {@link
-   *  #BlockTreeTermsWriter(SegmentWriteState,PostingsWriterBase,int,int)}. */
+
   public final static int DEFAULT_MIN_BLOCK_SIZE = 25;
 
-  /** Suggested default value for the {@code
-   *  maxItemsInBlock} parameter to {@link
-   *  #BlockTreeTermsWriter(SegmentWriteState,PostingsWriterBase,int,int)}. */
+
   public final static int DEFAULT_MAX_BLOCK_SIZE = 48;
 
   //public static boolean DEBUG = false;
@@ -263,16 +140,12 @@ public final class BlockTreeTermsWriter extends FieldsConsumer {
   // private final String segment;
   final FixedBitSet prefixDocs;
 
-  /** Reused in getAutoPrefixTermsEnum: */
   final BitSetTermsEnum prefixFixedBitsTermsEnum;
 
-  /** Reused in getAutoPrefixTermsEnum: */
   private TermsEnum prefixTermsEnum;
 
-  /** Reused in getAutoPrefixTermsEnum: */
   private PostingsEnum prefixDocsEnum;
 
-  /** Create a new writer, using default values for auto-prefix terms. */
   public BlockTreeTermsWriter(SegmentWriteState state,
                               PostingsWriterBase postingsWriter,
                               int minItemsInBlock,
@@ -280,17 +153,7 @@ public final class BlockTreeTermsWriter extends FieldsConsumer {
     this(state, postingsWriter, minItemsInBlock, maxItemsInBlock, 0, 0);
   }
 
-  /** Create a new writer.  The number of items (terms or
-   *  sub-blocks) per block will aim to be between
-   *  minItemsPerBlock and maxItemsPerBlock, though in some
-   *  cases the blocks may be smaller than the min.
-   *  For DOCS_ONLY fields, this terms dictionary will
-   *  insert automatically generated prefix terms for common
-   *  prefixes, as long as each prefix matches at least
-   *  {@code minItemsInAutoPrefix} other terms or prefixes,
-   *  and at most {@code maxItemsInAutoPrefix} other terms
-   *  or prefixes.  Set {@code minItemsInAutoPrefix} to 0
-   *  to disable auto-prefix terms. */
+
   public BlockTreeTermsWriter(SegmentWriteState state,
                               PostingsWriterBase postingsWriter,
                               int minItemsInBlock,
@@ -356,18 +219,14 @@ public final class BlockTreeTermsWriter extends FieldsConsumer {
     }
   }
 
-  /** Writes the terms file trailer. */
   private void writeTrailer(IndexOutput out, long dirStart) throws IOException {
     out.writeLong(dirStart);    
   }
 
-  /** Writes the index file trailer. */
   private void writeIndexTrailer(IndexOutput indexOut, long dirStart) throws IOException {
     indexOut.writeLong(dirStart);    
   }
 
-  /** Throws {@code IllegalArgumentException} if any of these settings
-   *  is invalid. */
   public static void validateSettings(int minItemsInBlock, int maxItemsInBlock) {
     if (minItemsInBlock <= 1) {
       throw new IllegalArgumentException("minItemsInBlock must be >= 2; got " + minItemsInBlock);
@@ -380,8 +239,6 @@ public final class BlockTreeTermsWriter extends FieldsConsumer {
     }
   }
 
-  /** Throws {@code IllegalArgumentException} if any of these settings
-   *  is invalid. */
   public static void validateAutoPrefixSettings(int minItemsInAutoPrefix,
                                                 int maxItemsInAutoPrefix) {
     if (minItemsInAutoPrefix != 0) {
@@ -678,7 +535,6 @@ public final class BlockTreeTermsWriter extends FieldsConsumer {
     private PendingTerm firstPendingTerm;
     private PendingTerm lastPendingTerm;
 
-    /** Writes the top count entries in pending, using prevTerm to compute the prefix. */
     void writeBlocks(int prefixLength, int count) throws IOException {
 
       assert count > 0;
@@ -783,11 +639,7 @@ public final class BlockTreeTermsWriter extends FieldsConsumer {
       newBlocks.clear();
     }
 
-    /** Writes the specified slice (start is inclusive, end is exclusive)
-     *  from pending stack as a new block.  If isFloor is true, there
-     *  were too many (more than maxItemsInBlock) entries sharing the
-     *  same prefix, and so we broke it into multiple floor blocks where
-     *  we record the starting label of the suffix of each floor block. */
+
     private PendingBlock writeBlock(int prefixLength, boolean isFloor, int floorLeadLabel, int start, int end,
                                     boolean hasTerms, boolean hasPrefixTerms, boolean hasSubBlocks) throws IOException {
 
@@ -1028,7 +880,6 @@ public final class BlockTreeTermsWriter extends FieldsConsumer {
       this.longs = new long[longsSize];
     }
     
-    /** Writes one term's worth of postings. */
     public void write(BytesRef text, TermsEnum termsEnum, PrefixTerm prefixTerm) throws IOException {
       /*
       if (DEBUG) {
@@ -1062,7 +913,6 @@ public final class BlockTreeTermsWriter extends FieldsConsumer {
       }
     }
 
-    /** Pushes the new term to the top of the stack, and writes new blocks. */
     private void pushTerm(BytesRef text) throws IOException {
       int limit = Math.min(lastTerm.length(), text.length);
 

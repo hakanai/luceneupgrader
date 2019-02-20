@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,25 +13,18 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import java.io.IOException;
 
-/**
- * A {@link RateLimiter rate limiting} {@link IndexOutput}
- * 
- * @lucene.internal
- */
 final class RateLimitedIndexOutput extends IndexOutput {
   
   private final IndexOutput delegate;
   private final RateLimiter rateLimiter;
 
-  /** How many bytes we've written since we last called rateLimiter.pause. */
   private long bytesSinceLastPause;
   
-  /** Cached here not not always have to call RateLimiter#getMinPauseCheckBytes()
-   * which does volatile read. */
   private long currentMinPauseCheckBytes;
 
   RateLimitedIndexOutput(final RateLimiter rateLimiter, final IndexOutput delegate) {

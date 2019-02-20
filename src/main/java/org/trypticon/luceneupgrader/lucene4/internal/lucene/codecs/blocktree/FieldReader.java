@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.blocktree;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.blocktree;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.blocktree;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -33,7 +32,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.Compi
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst.ByteSequenceOutputs;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst.FST;
 
-/** BlockTree's implementation of {@link Terms}. */
 // public for CheckIndex:
 public final class FieldReader extends Terms implements Accountable {
 
@@ -118,7 +116,6 @@ public final class FieldReader extends Terms implements Accountable {
     }
   }
 
-  /** For debugging -- used by CheckIndex too*/
   // TODO: maybe push this into Terms?
   public Stats computeStats() throws IOException {
     return new SegmentTermsEnum(this).computeBlockStats();

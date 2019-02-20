@@ -22,28 +22,18 @@ import java.util.Objects;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.TwoPhaseIterator;
 
-/**
- * A {@link Spans} implementation wrapping another spans instance,
- * allowing to filter spans matches easily by implementing {@link #accept}
- */
 public abstract class FilterSpans extends Spans {
  
-  /** The wrapped spans instance. */
   protected final Spans in;
   
   private boolean atFirstInCurrentDoc = false;
   private int startPos = -1;
   
-  /** Wrap the given {@link Spans}. */
   protected FilterSpans(Spans in) {
     this.in = Objects.requireNonNull(in);
   }
   
-  /** 
-   * Returns YES if the candidate should be an accepted match,
-   * NO if it should not, and NO_MORE_IN_CURRENT_DOC if iteration
-   * should move on to the next document.
-   */
+
   protected abstract AcceptStatus accept(Spans candidate) throws IOException;
   
   @Override
@@ -178,11 +168,6 @@ public abstract class FilterSpans extends Spans {
     throw new UnsupportedOperationException(); // asTwoPhaseIterator never returns null
   }
 
-  /**
-   * Returns true if the current document matches.
-   * <p>
-   * This is called during two-phase processing.
-   */
   // return true if the current document matches
   @SuppressWarnings("fallthrough")
   private final boolean twoPhaseCurrentDocMatches() throws IOException {
@@ -207,22 +192,11 @@ public abstract class FilterSpans extends Spans {
     }
   }
 
-  /**
-   * Status returned from {@link FilterSpans#accept(Spans)} that indicates
-   * whether a candidate match should be accepted, rejected, or rejected
-   * and move on to the next document.
-   */
   public static enum AcceptStatus {
-    /** Indicates the match should be accepted */
     YES,
 
-    /** Indicates the match should be rejected */
     NO,
 
-    /**
-     * Indicates the match should be rejected, and the enumeration may continue
-     * with the next document.
-     */
     NO_MORE_IN_CURRENT_DOC
   };
 }

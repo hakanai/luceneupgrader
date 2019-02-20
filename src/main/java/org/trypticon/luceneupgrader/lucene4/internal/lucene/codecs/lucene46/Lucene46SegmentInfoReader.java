@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene46;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene46;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene46;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -33,15 +32,8 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Version;
 
-/**
- * Lucene 4.6 implementation of {@link SegmentInfoReader}.
- * 
- * @see Lucene46SegmentInfoFormat
- * @lucene.experimental
- */
 public class Lucene46SegmentInfoReader extends SegmentInfoReader {
 
-  /** Sole constructor. */
   public Lucene46SegmentInfoReader() {
   }
 

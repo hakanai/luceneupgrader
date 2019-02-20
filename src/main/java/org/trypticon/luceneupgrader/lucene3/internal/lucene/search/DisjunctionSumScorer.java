@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,37 +13,22 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.util.List;
 import java.io.IOException;
 
-/** A Scorer for OR like queries, counterpart of <code>ConjunctionScorer</code>.
- * This Scorer implements {@link Scorer#skipTo(int)} and uses skipTo() on the given Scorers. 
- */
-class DisjunctionSumScorer extends DisjunctionScorer { 
-  /** The minimum number of scorers that should match. */
+class DisjunctionSumScorer extends DisjunctionScorer {
   private final int minimumNrMatchers;
   
-  /** The document number of the current match. */
   private int doc = -1;
 
-  /** The number of subscorers that provide the current match. */
   protected int nrMatchers = -1;
 
   private double score = Float.NaN;
   
-  /** Construct a <code>DisjunctionScorer</code>.
-   * @param weight The weight to be used.
-   * @param subScorers A collection of at least two subscorers.
-   * @param minimumNrMatchers The positive minimum number of subscorers that should
-   * match to match this query.
-   * <br>When <code>minimumNrMatchers</code> is bigger than
-   * the number of <code>subScorers</code>,
-   * no matches will be produced.
-   * <br>When minimumNrMatchers equals the number of subScorers,
-   * it more efficient to use <code>ConjunctionScorer</code>.
-   */
+
   public DisjunctionSumScorer(Weight weight, List<Scorer> subScorers, int minimumNrMatchers) throws IOException {
     super(null, weight, subScorers.toArray(new Scorer[subScorers.size()]), subScorers.size());
 
@@ -59,9 +42,7 @@ class DisjunctionSumScorer extends DisjunctionScorer {
     this.minimumNrMatchers = minimumNrMatchers;
   }
   
-  /** Construct a <code>DisjunctionScorer</code>, using one as the minimum number
-   * of matching subscorers.
-   */
+
   public DisjunctionSumScorer(Weight weight, List<Scorer> subScorers) throws IOException {
     this(weight, subScorers, 1);
   }
@@ -116,9 +97,7 @@ class DisjunctionSumScorer extends DisjunctionScorer {
     }
   }
   
-  /** Returns the score of the current document matching the query.
-   * Initially invalid, until {@link #nextDoc()} is called the first time.
-   */
+
   @Override
   public float score() throws IOException { 
     return (float)score; 
@@ -134,16 +113,6 @@ class DisjunctionSumScorer extends DisjunctionScorer {
     return nrMatchers;
   }
 
-  /**
-   * Advances to the first match beyond the current whose document number is
-   * greater than or equal to a given target. <br>
-   * The implementation uses the advance() method on the subscorers.
-   * 
-   * @param target
-   *          The target document number.
-   * @return the document whose number is greater than or equal to the given
-   *         target, or -1 if none exist.
-   */
   @Override
   public int advance(int target) throws IOException {
     if (numScorers == 0) return doc = NO_MORE_DOCS;

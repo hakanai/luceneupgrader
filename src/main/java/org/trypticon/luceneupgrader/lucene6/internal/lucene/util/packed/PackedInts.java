@@ -29,39 +29,16 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.LongsRef;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.RamUsageEstimator;
 
-/**
- * Simplistic compression for array of unsigned long values.
- * Each value is {@code >= 0} and {@code <=} a specified maximum value.  The
- * values are stored as packed ints, with each value
- * consuming a fixed number of bits.
- *
- * @lucene.internal
- */
 public class PackedInts {
 
-  /**
-   * At most 700% memory overhead, always select a direct implementation.
-   */
   public static final float FASTEST = 7f;
 
-  /**
-   * At most 50% memory overhead, always select a reasonably fast implementation.
-   */
   public static final float FAST = 0.5f;
 
-  /**
-   * At most 25% memory overhead.
-   */
   public static final float DEFAULT = 0.25f;
 
-  /**
-   * No memory overhead at all, but the returned implementation may be slow.
-   */
   public static final float COMPACT = 0f;
 
-  /**
-   * Default amount of memory to use for bulk operations.
-   */
   public static final int DEFAULT_BUFFER_SIZE = 1024; // 1K
 
   public final static String CODEC_NAME = "PackedInts";
@@ -69,9 +46,6 @@ public class PackedInts {
   public final static int VERSION_START = VERSION_MONOTONIC_WITHOUT_ZIGZAG;
   public final static int VERSION_CURRENT = VERSION_MONOTONIC_WITHOUT_ZIGZAG;
 
-  /**
-   * Check the validity of a version number.
-   */
   public static void checkVersion(int version) {
     if (version < VERSION_START) {
       throw new IllegalArgumentException("Version is too old, should be at least " + VERSION_START + " (got " + version + ")");
@@ -80,15 +54,7 @@ public class PackedInts {
     }
   }
 
-  /**
-   * A format to write packed ints.
-   *
-   * @lucene.internal
-   */
   public enum Format {
-    /**
-     * Compact format, all bits are written contiguously.
-     */
     PACKED(0) {
 
       @Override
@@ -98,13 +64,6 @@ public class PackedInts {
 
     },
 
-    /**
-     * A format that may insert padding bits to improve encoding and decoding
-     * speed. Since this format doesn't support all possible bits per value, you
-     * should never use it directly, but rather use
-     * {@link PackedInts#fastestFormatAndBits(int, int, float)} to find the
-     * format that best suits your needs.
-     */
     PACKED_SINGLE_BLOCK(1) {
 
       @Override
@@ -128,9 +87,6 @@ public class PackedInts {
 
     };
 
-    /**
-     * Get a format according to its ID.
-     */
     public static Format byId(int id) {
       for (Format format : Format.values()) {
         if (format.getId() == id) {
@@ -146,27 +102,16 @@ public class PackedInts {
 
     public int id;
 
-    /**
-     * Returns the ID of the format.
-     */
     public int getId() {
       return id;
     }
 
-    /**
-     * Computes how many byte blocks are needed to store <code>values</code>
-     * values of size <code>bitsPerValue</code>.
-     */
     public long byteCount(int packedIntsVersion, int valueCount, int bitsPerValue) {
       assert bitsPerValue >= 0 && bitsPerValue <= 64 : bitsPerValue;
       // assume long-aligned
       return 8L * longCount(packedIntsVersion, valueCount, bitsPerValue);
     }
 
-    /**
-     * Computes how many long blocks are needed to store <code>values</code>
-     * values of size <code>bitsPerValue</code>.
-     */
     public int longCount(int packedIntsVersion, int valueCount, int bitsPerValue) {
       assert bitsPerValue >= 0 && bitsPerValue <= 64 : bitsPerValue;
       final long byteCount = byteCount(packedIntsVersion, valueCount, bitsPerValue);
@@ -178,34 +123,21 @@ public class PackedInts {
       }
     }
 
-    /**
-     * Tests whether the provided number of bits per value is supported by the
-     * format.
-     */
     public boolean isSupported(int bitsPerValue) {
       return bitsPerValue >= 1 && bitsPerValue <= 64;
     }
 
-    /**
-     * Returns the overhead per value, in bits.
-     */
     public float overheadPerValue(int bitsPerValue) {
       assert isSupported(bitsPerValue);
       return 0f;
     }
 
-    /**
-     * Returns the overhead ratio (<code>overhead per value / bits per value</code>).
-     */
     public final float overheadRatio(int bitsPerValue) {
       assert isSupported(bitsPerValue);
       return overheadPerValue(bitsPerValue) / bitsPerValue;
     }
   }
 
-  /**
-   * Simple class that holds a format and a number of bits per value.
-   */
   public static class FormatAndBits {
     public final Format format;
     public final int bitsPerValue;
@@ -220,19 +152,6 @@ public class PackedInts {
     }
   }
 
-  /**
-   * Try to find the {@link Format} and number of bits per value that would
-   * restore from disk the fastest reader whose overhead is less than
-   * <code>acceptableOverheadRatio</code>.
-   * <p>
-   * The <code>acceptableOverheadRatio</code> parameter makes sense for
-   * random-access {@link Reader}s. In case you only plan to perform
-   * sequential access on this stream later on, you should probably use
-   * {@link PackedInts#COMPACT}.
-   * <p>
-   * If you don't know how many values you are going to write, use
-   * <code>valueCount = -1</code>.
-   */
   public static FormatAndBits fastestFormatAndBits(int valueCount, int bitsPerValue, float acceptableOverheadRatio) {
     if (valueCount == -1) {
       valueCount = Integer.MAX_VALUE;
@@ -279,183 +198,48 @@ public class PackedInts {
     return new FormatAndBits(format, actualBitsPerValue);
   }
 
-  /**
-   * A decoder for packed integers.
-   */
   public static interface Decoder {
 
-    /**
-     * The minimum number of long blocks to encode in a single iteration, when
-     * using long encoding.
-     */
     int longBlockCount();
 
-    /**
-     * The number of values that can be stored in {@link #longBlockCount()} long
-     * blocks.
-     */
     int longValueCount();
 
-    /**
-     * The minimum number of byte blocks to encode in a single iteration, when
-     * using byte encoding.
-     */
     int byteBlockCount();
 
-    /**
-     * The number of values that can be stored in {@link #byteBlockCount()} byte
-     * blocks.
-     */
     int byteValueCount();
 
-    /**
-     * Read <code>iterations * blockCount()</code> blocks from <code>blocks</code>,
-     * decode them and write <code>iterations * valueCount()</code> values into
-     * <code>values</code>.
-     *
-     * @param blocks       the long blocks that hold packed integer values
-     * @param blocksOffset the offset where to start reading blocks
-     * @param values       the values buffer
-     * @param valuesOffset the offset where to start writing values
-     * @param iterations   controls how much data to decode
-     */
     void decode(long[] blocks, int blocksOffset, long[] values, int valuesOffset, int iterations);
 
-    /**
-     * Read <code>8 * iterations * blockCount()</code> blocks from <code>blocks</code>,
-     * decode them and write <code>iterations * valueCount()</code> values into
-     * <code>values</code>.
-     *
-     * @param blocks       the long blocks that hold packed integer values
-     * @param blocksOffset the offset where to start reading blocks
-     * @param values       the values buffer
-     * @param valuesOffset the offset where to start writing values
-     * @param iterations   controls how much data to decode
-     */
     void decode(byte[] blocks, int blocksOffset, long[] values, int valuesOffset, int iterations);
 
-    /**
-     * Read <code>iterations * blockCount()</code> blocks from <code>blocks</code>,
-     * decode them and write <code>iterations * valueCount()</code> values into
-     * <code>values</code>.
-     *
-     * @param blocks       the long blocks that hold packed integer values
-     * @param blocksOffset the offset where to start reading blocks
-     * @param values       the values buffer
-     * @param valuesOffset the offset where to start writing values
-     * @param iterations   controls how much data to decode
-     */
     void decode(long[] blocks, int blocksOffset, int[] values, int valuesOffset, int iterations);
 
-    /**
-     * Read <code>8 * iterations * blockCount()</code> blocks from <code>blocks</code>,
-     * decode them and write <code>iterations * valueCount()</code> values into
-     * <code>values</code>.
-     *
-     * @param blocks       the long blocks that hold packed integer values
-     * @param blocksOffset the offset where to start reading blocks
-     * @param values       the values buffer
-     * @param valuesOffset the offset where to start writing values
-     * @param iterations   controls how much data to decode
-     */
     void decode(byte[] blocks, int blocksOffset, int[] values, int valuesOffset, int iterations);
 
   }
 
-  /**
-   * An encoder for packed integers.
-   */
   public static interface Encoder {
 
-    /**
-     * The minimum number of long blocks to encode in a single iteration, when
-     * using long encoding.
-     */
     int longBlockCount();
 
-    /**
-     * The number of values that can be stored in {@link #longBlockCount()} long
-     * blocks.
-     */
     int longValueCount();
 
-    /**
-     * The minimum number of byte blocks to encode in a single iteration, when
-     * using byte encoding.
-     */
     int byteBlockCount();
 
-    /**
-     * The number of values that can be stored in {@link #byteBlockCount()} byte
-     * blocks.
-     */
     int byteValueCount();
 
-    /**
-     * Read <code>iterations * valueCount()</code> values from <code>values</code>,
-     * encode them and write <code>iterations * blockCount()</code> blocks into
-     * <code>blocks</code>.
-     *
-     * @param blocks       the long blocks that hold packed integer values
-     * @param blocksOffset the offset where to start writing blocks
-     * @param values       the values buffer
-     * @param valuesOffset the offset where to start reading values
-     * @param iterations   controls how much data to encode
-     */
     void encode(long[] values, int valuesOffset, long[] blocks, int blocksOffset, int iterations);
 
-    /**
-     * Read <code>iterations * valueCount()</code> values from <code>values</code>,
-     * encode them and write <code>8 * iterations * blockCount()</code> blocks into
-     * <code>blocks</code>.
-     *
-     * @param blocks       the long blocks that hold packed integer values
-     * @param blocksOffset the offset where to start writing blocks
-     * @param values       the values buffer
-     * @param valuesOffset the offset where to start reading values
-     * @param iterations   controls how much data to encode
-     */
     void encode(long[] values, int valuesOffset, byte[] blocks, int blocksOffset, int iterations);
 
-    /**
-     * Read <code>iterations * valueCount()</code> values from <code>values</code>,
-     * encode them and write <code>iterations * blockCount()</code> blocks into
-     * <code>blocks</code>.
-     *
-     * @param blocks       the long blocks that hold packed integer values
-     * @param blocksOffset the offset where to start writing blocks
-     * @param values       the values buffer
-     * @param valuesOffset the offset where to start reading values
-     * @param iterations   controls how much data to encode
-     */
     void encode(int[] values, int valuesOffset, long[] blocks, int blocksOffset, int iterations);
 
-    /**
-     * Read <code>iterations * valueCount()</code> values from <code>values</code>,
-     * encode them and write <code>8 * iterations * blockCount()</code> blocks into
-     * <code>blocks</code>.
-     *
-     * @param blocks       the long blocks that hold packed integer values
-     * @param blocksOffset the offset where to start writing blocks
-     * @param values       the values buffer
-     * @param valuesOffset the offset where to start reading values
-     * @param iterations   controls how much data to encode
-     */
     void encode(int[] values, int valuesOffset, byte[] blocks, int blocksOffset, int iterations);
 
   }
 
-  /**
-   * A read-only random access array of positive integers.
-   * @lucene.internal
-   */
   public static abstract class Reader extends NumericDocValues implements Accountable {
 
-    /**
-     * Bulk get: read at least one and at most <code>len</code> longs starting
-     * from <code>index</code> into <code>arr[off:off+len]</code> and return
-     * the actual number of values that have been read.
-     */
     public int get(int index, long[] arr, int off, int len) {
       assert len > 0 : "len must be > 0 (got " + len + ")";
       assert index >= 0 && index < size();
@@ -468,26 +252,14 @@ public class PackedInts {
       return gets;
     }
 
-    /**
-     * @return the number of values.
-     */
     public abstract int size();
   }
 
-  /**
-   * Run-once iterator interface, to decode previously saved PackedInts.
-   */
   public static interface ReaderIterator {
-    /** Returns next value */
     long next() throws IOException;
-    /** Returns at least 1 and at most <code>count</code> next values,
-     * the returned ref MUST NOT be modified */
     LongsRef next(int count) throws IOException;
-    /** Returns number of bits per value */
     int getBitsPerValue();
-    /** Returns number of values */
     int size();
-    /** Returns the current position */
     int ord();
   }
 
@@ -524,33 +296,12 @@ public class PackedInts {
     }
   }
 
-  /**
-   * A packed integer array that can be modified.
-   * @lucene.internal
-   */
   public static abstract class Mutable extends Reader {
 
-    /**
-     * @return the number of bits used to store any given value.
-     *         Note: This does not imply that memory usage is
-     *         {@code bitsPerValue * #values} as implementations are free to
-     *         use non-space-optimal packing of bits.
-     */
     public abstract int getBitsPerValue();
 
-    /**
-     * Set the value at the given index in the array.
-     * @param index where the value should be positioned.
-     * @param value a value conforming to the constraints set by the array.
-     */
     public abstract void set(int index, long value);
 
-    /**
-     * Bulk set: set at least one and at most <code>len</code> longs starting
-     * at <code>off</code> in <code>arr</code> into this mutable, starting at
-     * <code>index</code>. Returns the actual number of values that have been
-     * set.
-     */
     public int set(int index, long[] arr, int off, int len) {
       assert len > 0 : "len must be > 0 (got " + len + ")";
       assert index >= 0 && index < size();
@@ -563,10 +314,6 @@ public class PackedInts {
       return len;
     }
 
-    /**
-     * Fill the mutable from <code>fromIndex</code> (inclusive) to
-     * <code>toIndex</code> (exclusive) with <code>val</code>.
-     */
     public void fill(int fromIndex, int toIndex, long val) {
       assert val <= maxValue(getBitsPerValue());
       assert fromIndex <= toIndex;
@@ -575,18 +322,10 @@ public class PackedInts {
       }
     }
 
-    /**
-     * Sets all values to 0.
-     */
     public void clear() {
       fill(0, size(), 0);
     }
 
-    /**
-     * Save this mutable into <code>out</code>. Instantiating a reader from
-     * the generated data will return a reader with the same number of bits
-     * per value.
-     */
     public void save(DataOutput out) throws IOException {
       Writer writer = getWriterNoHeader(out, getFormat(), size(), getBitsPerValue(), DEFAULT_BUFFER_SIZE);
       writer.writeHeader();
@@ -596,17 +335,12 @@ public class PackedInts {
       writer.finish();
     }
 
-    /** The underlying format. */
     Format getFormat() {
       return Format.PACKED;
     }
 
   }
 
-  /**
-   * A simple base for Readers that keeps track of valueCount and bitsPerValue.
-   * @lucene.internal
-   */
   static abstract class ReaderImpl extends Reader {
     protected final int valueCount;
 
@@ -650,12 +384,10 @@ public class PackedInts {
     }
   }
 
-  /** A {@link Reader} which has all its values equal to 0 (bitsPerValue = 0). */
   public static final class NullReader extends Reader {
 
     private final int valueCount;
 
-    /** Sole constructor. */
     public NullReader(int valueCount) {
       this.valueCount = valueCount;
     }
@@ -685,9 +417,7 @@ public class PackedInts {
     }
   }
 
-  /** A write-once Writer.
-   * @lucene.internal
-   */
+
   public static abstract class Writer {
     protected final DataOutput out;
     protected final int valueCount;
@@ -709,69 +439,29 @@ public class PackedInts {
       out.writeVInt(getFormat().getId());
     }
 
-    /** The format used to serialize values. */
     protected abstract PackedInts.Format getFormat();
 
-    /** Add a value to the stream. */
     public abstract void add(long v) throws IOException;
 
-    /** The number of bits per value. */
     public final int bitsPerValue() {
       return bitsPerValue;
     }
 
-    /** Perform end-of-stream operations. */
     public abstract void finish() throws IOException;
 
-    /**
-     * Returns the current ord in the stream (number of values that have been
-     * written so far minus one).
-     */
     public abstract int ord();
   }
 
-  /**
-   * Get a {@link Decoder}.
-   *
-   * @param format         the format used to store packed ints
-   * @param version        the compatibility version
-   * @param bitsPerValue   the number of bits per value
-   * @return a decoder
-   */
   public static Decoder getDecoder(Format format, int version, int bitsPerValue) {
     checkVersion(version);
     return BulkOperation.of(format, bitsPerValue);
   }
 
-  /**
-   * Get an {@link Encoder}.
-   *
-   * @param format         the format used to store packed ints
-   * @param version        the compatibility version
-   * @param bitsPerValue   the number of bits per value
-   * @return an encoder
-   */
   public static Encoder getEncoder(Format format, int version, int bitsPerValue) {
     checkVersion(version);
     return BulkOperation.of(format, bitsPerValue);
   }
 
-  /**
-   * Expert: Restore a {@link Reader} from a stream without reading metadata at
-   * the beginning of the stream. This method is useful to restore data from
-   * streams which have been created using
-   * {@link PackedInts#getWriterNoHeader(DataOutput, Format, int, int, int)}.
-   *
-   * @param in           the stream to read data from, positioned at the beginning of the packed values
-   * @param format       the format used to serialize
-   * @param version      the version used to serialize the data
-   * @param valueCount   how many values the stream holds
-   * @param bitsPerValue the number of bits per value
-   * @return             a Reader
-   * @throws IOException If there is a low-level I/O error
-   * @see PackedInts#getWriterNoHeader(DataOutput, Format, int, int, int)
-   * @lucene.internal
-   */
   public static Reader getReaderNoHeader(DataInput in, Format format, int version,
       int valueCount, int bitsPerValue) throws IOException {
     checkVersion(version);
@@ -805,14 +495,6 @@ public class PackedInts {
     }
   }
 
-  /**
-   * Restore a {@link Reader} from a stream.
-   *
-   * @param in           the stream to read data from
-   * @return             a Reader
-   * @throws IOException If there is a low-level I/O error
-   * @lucene.internal
-   */
   public static Reader getReader(DataInput in) throws IOException {
     final int version = CodecUtil.checkHeader(in, CODEC_NAME, VERSION_START, VERSION_CURRENT);
     final int bitsPerValue = in.readVInt();
@@ -823,36 +505,12 @@ public class PackedInts {
     return getReaderNoHeader(in, format, version, valueCount, bitsPerValue);
   }
 
-  /**
-   * Expert: Restore a {@link ReaderIterator} from a stream without reading
-   * metadata at the beginning of the stream. This method is useful to restore
-   * data from streams which have been created using
-   * {@link PackedInts#getWriterNoHeader(DataOutput, Format, int, int, int)}.
-   *
-   * @param in           the stream to read data from, positioned at the beginning of the packed values
-   * @param format       the format used to serialize
-   * @param version      the version used to serialize the data
-   * @param valueCount   how many values the stream holds
-   * @param bitsPerValue the number of bits per value
-   * @param mem          how much memory the iterator is allowed to use to read-ahead (likely to speed up iteration)
-   * @return             a ReaderIterator
-   * @see PackedInts#getWriterNoHeader(DataOutput, Format, int, int, int)
-   * @lucene.internal
-   */
   public static ReaderIterator getReaderIteratorNoHeader(DataInput in, Format format, int version,
       int valueCount, int bitsPerValue, int mem) {
     checkVersion(version);
     return new PackedReaderIterator(format, version, valueCount, bitsPerValue, in, mem);
   }
 
-  /**
-   * Retrieve PackedInts as a {@link ReaderIterator}
-   * @param in positioned at the beginning of a stored packed int structure.
-   * @param mem how much memory the iterator is allowed to use to read-ahead (likely to speed up iteration)
-   * @return an iterator to access the values
-   * @throws IOException if the structure could not be retrieved.
-   * @lucene.internal
-   */
   public static ReaderIterator getReaderIterator(DataInput in, int mem) throws IOException {
     final int version = CodecUtil.checkHeader(in, CODEC_NAME, VERSION_START, VERSION_CURRENT);
     final int bitsPerValue = in.readVInt();
@@ -862,23 +520,6 @@ public class PackedInts {
     return getReaderIteratorNoHeader(in, format, version, valueCount, bitsPerValue, mem);
   }
 
-  /**
-   * Expert: Construct a direct {@link Reader} from a stream without reading
-   * metadata at the beginning of the stream. This method is useful to restore
-   * data from streams which have been created using
-   * {@link PackedInts#getWriterNoHeader(DataOutput, Format, int, int, int)}.
-   * <p>
-   * The returned reader will have very little memory overhead, but every call
-   * to {@link Reader#get(int)} is likely to perform a disk seek.
-   *
-   * @param in           the stream to read data from
-   * @param format       the format used to serialize
-   * @param version      the version used to serialize the data
-   * @param valueCount   how many values the stream holds
-   * @param bitsPerValue the number of bits per value
-   * @return a direct Reader
-   * @lucene.internal
-   */
   public static Reader getDirectReaderNoHeader(final IndexInput in, Format format,
       int version, int valueCount, int bitsPerValue) {
     checkVersion(version);
@@ -892,19 +533,6 @@ public class PackedInts {
     }
   }
 
-  /**
-   * Construct a direct {@link Reader} from an {@link IndexInput}. This method
-   * is useful to restore data from streams which have been created using
-   * {@link PackedInts#getWriter(DataOutput, int, int, float)}.
-   * <p>
-   * The returned reader will have very little memory overhead, but every call
-   * to {@link Reader#get(int)} is likely to perform a disk seek.
-   *
-   * @param in           the stream to read data from
-   * @return a direct Reader
-   * @throws IOException If there is a low-level I/O error
-   * @lucene.internal
-   */
   public static Reader getDirectReader(IndexInput in) throws IOException {
     final int version = CodecUtil.checkHeader(in, CODEC_NAME, VERSION_START, VERSION_CURRENT);
     final int bitsPerValue = in.readVInt();
@@ -914,34 +542,13 @@ public class PackedInts {
     return getDirectReaderNoHeader(in, format, version, valueCount, bitsPerValue);
   }
   
-  /**
-   * Create a packed integer array with the given amount of values initialized
-   * to 0. the valueCount and the bitsPerValue cannot be changed after creation.
-   * All Mutables known by this factory are kept fully in RAM.
-   * <p>
-   * Positive values of <code>acceptableOverheadRatio</code> will trade space
-   * for speed by selecting a faster but potentially less memory-efficient
-   * implementation. An <code>acceptableOverheadRatio</code> of
-   * {@link PackedInts#COMPACT} will make sure that the most memory-efficient
-   * implementation is selected whereas {@link PackedInts#FASTEST} will make sure
-   * that the fastest implementation is selected.
-   *
-   * @param valueCount   the number of elements
-   * @param bitsPerValue the number of bits available for any given value
-   * @param acceptableOverheadRatio an acceptable overhead
-   *        ratio per value
-   * @return a mutable packed integer array
-   * @lucene.internal
-   */
   public static Mutable getMutable(int valueCount,
       int bitsPerValue, float acceptableOverheadRatio) {
     final FormatAndBits formatAndBits = fastestFormatAndBits(valueCount, bitsPerValue, acceptableOverheadRatio);
     return getMutable(valueCount, formatAndBits.bitsPerValue, formatAndBits.format);
   }
 
-  /** Same as {@link #getMutable(int, int, float)} with a pre-computed number
-   *  of bits per value and format.
-   *  @lucene.internal */
+
   public static Mutable getMutable(int valueCount,
       int bitsPerValue, PackedInts.Format format) {
     assert valueCount >= 0;
@@ -975,87 +582,11 @@ public class PackedInts {
     }
   }
 
-  /**
-   * Expert: Create a packed integer array writer for the given output, format,
-   * value count, and number of bits per value.
-   * <p>
-   * The resulting stream will be long-aligned. This means that depending on
-   * the format which is used, up to 63 bits will be wasted. An easy way to
-   * make sure that no space is lost is to always use a <code>valueCount</code>
-   * that is a multiple of 64.
-   * <p>
-   * This method does not write any metadata to the stream, meaning that it is
-   * your responsibility to store it somewhere else in order to be able to
-   * recover data from the stream later on:
-   * <ul>
-   *   <li><code>format</code> (using {@link Format#getId()}),</li>
-   *   <li><code>valueCount</code>,</li>
-   *   <li><code>bitsPerValue</code>,</li>
-   *   <li>{@link #VERSION_CURRENT}.</li>
-   * </ul>
-   * <p>
-   * It is possible to start writing values without knowing how many of them you
-   * are actually going to write. To do this, just pass <code>-1</code> as
-   * <code>valueCount</code>. On the other hand, for any positive value of
-   * <code>valueCount</code>, the returned writer will make sure that you don't
-   * write more values than expected and pad the end of stream with zeros in
-   * case you have written less than <code>valueCount</code> when calling
-   * {@link Writer#finish()}.
-   * <p>
-   * The <code>mem</code> parameter lets you control how much memory can be used
-   * to buffer changes in memory before flushing to disk. High values of
-   * <code>mem</code> are likely to improve throughput. On the other hand, if
-   * speed is not that important to you, a value of <code>0</code> will use as
-   * little memory as possible and should already offer reasonable throughput.
-   *
-   * @param out          the data output
-   * @param format       the format to use to serialize the values
-   * @param valueCount   the number of values
-   * @param bitsPerValue the number of bits per value
-   * @param mem          how much memory (in bytes) can be used to speed up serialization
-   * @return             a Writer
-   * @see PackedInts#getReaderIteratorNoHeader(DataInput, Format, int, int, int, int)
-   * @see PackedInts#getReaderNoHeader(DataInput, Format, int, int, int)
-   * @lucene.internal
-   */
   public static Writer getWriterNoHeader(
       DataOutput out, Format format, int valueCount, int bitsPerValue, int mem) {
     return new PackedWriter(format, out, valueCount, bitsPerValue, mem);
   }
 
-  /**
-   * Create a packed integer array writer for the given output, format, value
-   * count, and number of bits per value.
-   * <p>
-   * The resulting stream will be long-aligned. This means that depending on
-   * the format which is used under the hoods, up to 63 bits will be wasted.
-   * An easy way to make sure that no space is lost is to always use a
-   * <code>valueCount</code> that is a multiple of 64.
-   * <p>
-   * This method writes metadata to the stream, so that the resulting stream is
-   * sufficient to restore a {@link Reader} from it. You don't need to track
-   * <code>valueCount</code> or <code>bitsPerValue</code> by yourself. In case
-   * this is a problem, you should probably look at
-   * {@link #getWriterNoHeader(DataOutput, Format, int, int, int)}.
-   * <p>
-   * The <code>acceptableOverheadRatio</code> parameter controls how
-   * readers that will be restored from this stream trade space
-   * for speed by selecting a faster but potentially less memory-efficient
-   * implementation. An <code>acceptableOverheadRatio</code> of
-   * {@link PackedInts#COMPACT} will make sure that the most memory-efficient
-   * implementation is selected whereas {@link PackedInts#FASTEST} will make sure
-   * that the fastest implementation is selected. In case you are only interested
-   * in reading this stream sequentially later on, you should probably use
-   * {@link PackedInts#COMPACT}.
-   *
-   * @param out          the data output
-   * @param valueCount   the number of values
-   * @param bitsPerValue the number of bits per value
-   * @param acceptableOverheadRatio an acceptable overhead ratio per value
-   * @return             a Writer
-   * @throws IOException If there is a low-level I/O error
-   * @lucene.internal
-   */
   public static Writer getWriter(DataOutput out,
       int valueCount, int bitsPerValue, float acceptableOverheadRatio)
     throws IOException {
@@ -1067,13 +598,7 @@ public class PackedInts {
     return writer;
   }
 
-  /** Returns how many bits are required to hold values up
-   *  to and including maxValue
-   *  NOTE: This method returns at least 1.
-   * @param maxValue the maximum value that should be representable.
-   * @return the amount of bits needed to represent values from 0 to maxValue.
-   * @lucene.internal
-   */
+
   public static int bitsRequired(long maxValue) {
     if (maxValue < 0) {
       throw new IllegalArgumentException("maxValue must be non-negative (got: " + maxValue + ")");
@@ -1081,31 +606,15 @@ public class PackedInts {
     return unsignedBitsRequired(maxValue);
   }
 
-  /** Returns how many bits are required to store <code>bits</code>,
-   * interpreted as an unsigned value.
-   * NOTE: This method returns at least 1.
-   * @lucene.internal
-   */
+
   public static int unsignedBitsRequired(long bits) {
     return Math.max(1, 64 - Long.numberOfLeadingZeros(bits));
   }
 
-  /**
-   * Calculates the maximum unsigned long that can be expressed with the given
-   * number of bits.
-   * @param bitsPerValue the number of bits available for any given value.
-   * @return the maximum value for the given bits.
-   * @lucene.internal
-   */
   public static long maxValue(int bitsPerValue) {
     return bitsPerValue == 64 ? Long.MAX_VALUE : ~(~0L << bitsPerValue);
   }
 
-  /**
-   * Copy <code>src[srcPos:srcPos+len]</code> into
-   * <code>dest[destPos:destPos+len]</code> using at most <code>mem</code>
-   * bytes.
-   */
   public static void copy(Reader src, int srcPos, Mutable dest, int destPos, int len, int mem) {
     assert srcPos + len <= src.size();
     assert destPos + len <= dest.size();
@@ -1121,7 +630,6 @@ public class PackedInts {
     }
   }
 
-  /** Same as {@link #copy(Reader, int, Mutable, int, int, int)} but using a pre-allocated buffer. */
   static void copy(Reader src, int srcPos, Mutable dest, int destPos, int len, long[] buf) {
     assert buf.length > 0;
     int remaining = 0;
@@ -1147,8 +655,6 @@ public class PackedInts {
     }
   }
 
-  /** Check that the block size is a power of 2, in the right bounds, and return
-   *  its log in base 2. */
   static int checkBlockSize(int blockSize, int minBlockSize, int maxBlockSize) {
     if (blockSize < minBlockSize || blockSize > maxBlockSize) {
       throw new IllegalArgumentException("blockSize must be >= " + minBlockSize + " and <= " + maxBlockSize + ", got " + blockSize);
@@ -1159,8 +665,6 @@ public class PackedInts {
     return Integer.numberOfTrailingZeros(blockSize);
   }
 
-  /** Return the number of blocks required to store <code>size</code> values on
-   *  <code>blockSize</code>. */
   static int numBlocks(long size, int blockSize) {
     final int numBlocks = (int) (size / blockSize) + (size % blockSize == 0 ? 0 : 1);
     if ((long) numBlocks * blockSize < size) {

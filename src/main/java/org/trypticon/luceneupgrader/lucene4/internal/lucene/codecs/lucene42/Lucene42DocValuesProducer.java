@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene42;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene42;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene42;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -61,9 +60,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.BlockPac
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.MonotonicBlockPackedReader;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
-/**
- * Reader for {@link Lucene42DocValuesFormat}
- */
 class Lucene42DocValuesProducer extends DocValuesProducer {
   // metadata maps (just file pointers and minimal stuff)
   private final Map<Integer,NumericEntry> numerics;

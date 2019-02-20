@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,40 +13,24 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.DocValues;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.NumericDocValues;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SortedNumericDocValues;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.NumericUtils;
 
-/** 
- * Selects a value from the document's list to use as the representative value 
- * <p>
- * This provides a NumericDocValues view over the SortedNumeric, for use with sorting,
- * expressions, function queries, etc.
- */
 public class SortedNumericSelector {
   
-  /** 
-   * Type of selection to perform.
-   */
+
   public enum Type {
-    /** 
-     * Selects the minimum value in the set 
-     */
     MIN,
-    /** 
-     * Selects the maximum value in the set 
-     */
     MAX,
     // TODO: we could do MEDIAN in constant time (at most 2 lookups)
   }
   
-  /** 
-   * Wraps a multi-valued SortedNumericDocValues as a single-valued view, using the specified selector 
-   * and numericType.
-   */
+
   public static NumericDocValues wrap(SortedNumericDocValues sortedNumeric, Type selector, SortField.Type numericType) {
     if (numericType != SortField.Type.INT &&
         numericType != SortField.Type.LONG && 
@@ -96,7 +78,6 @@ public class SortedNumericSelector {
     }
   }
   
-  /** Wraps a SortedNumericDocValues and returns the first value (min) */
   static class MinValue extends NumericDocValues {
     final SortedNumericDocValues in;
     
@@ -115,7 +96,6 @@ public class SortedNumericSelector {
     }
   }
   
-  /** Wraps a SortedNumericDocValues and returns the last value (max) */
   static class MaxValue extends NumericDocValues {
     final SortedNumericDocValues in;
     

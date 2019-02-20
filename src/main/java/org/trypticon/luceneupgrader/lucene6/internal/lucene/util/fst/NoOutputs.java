@@ -20,13 +20,6 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.util.fst;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.DataOutput;
 
-/**
- * A null FST {@link Outputs} implementation; use this if
- * you just want to build an FSA.
- *
- * @lucene.experimental
- */
-
 public final class NoOutputs extends Outputs<Object> {
 
   static final Object NO_OUTPUT = new Object() {

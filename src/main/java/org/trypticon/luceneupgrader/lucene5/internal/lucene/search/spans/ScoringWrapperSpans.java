@@ -22,18 +22,10 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.similarities.Similarity;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.TwoPhaseIterator;
 
-/**
- * A Spans that wraps another Spans with a different SimScorer
- */
 public class ScoringWrapperSpans extends Spans {
 
   private final Spans in;
 
-  /**
-   * Creates a new ScoringWrapperSpans
-   * @param spans the scorer to wrap
-   * @param simScorer  the SimScorer to use for scoring
-   */
   public ScoringWrapperSpans(Spans spans, Similarity.SimScorer simScorer) {
     this.in = spans;
   }

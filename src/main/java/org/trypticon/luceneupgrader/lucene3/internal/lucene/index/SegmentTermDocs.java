@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BitVector;
@@ -140,7 +139,6 @@ class SegmentTermDocs implements TermDocs {
     return true;
   }
 
-  /** Optimized implementation. */
   public int read(final int[] docs, final int[] freqs)
           throws IOException {
     final int length = docs.length;
@@ -187,10 +185,8 @@ class SegmentTermDocs implements TermDocs {
   }
  
   
-  /** Overridden by SegmentTermPositions to skip in prox stream. */
   protected void skipProx(long proxPointer, int payloadLength) throws IOException {}
 
-  /** Optimized implementation. */
   public boolean skipTo(int target) throws IOException {
     if ((target - skipInterval) >= doc && df >= skipInterval) {                      // optimized case
       if (skipListReader == null)

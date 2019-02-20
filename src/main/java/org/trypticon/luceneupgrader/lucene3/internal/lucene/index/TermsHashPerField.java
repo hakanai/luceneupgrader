@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -184,7 +183,6 @@ final class TermsHashPerField extends InvertedDocConsumerPerField {
     postingsCompacted = true;
   }
 
-  /** Collapse the hash table & sort in-place. */
   public int[] sortPostings() {
     compactPostings();
     final int[] postingsHash = this.postingsHash;
@@ -232,8 +230,6 @@ final class TermsHashPerField extends InvertedDocConsumerPerField {
       private int pivotTerm, pivotBufPos;
       private char[] pivotBuf;
 
-      /** Compares term text for two Posting instance and
-       *  returns -1 if p1 < p2; 1 if p1 > p2; else 0. */
       private int comparePostings(final char[] text1, int pos1, final char[] text2, int pos2) {
         assert text1 != text2 || pos1 != pos2;
 
@@ -257,8 +253,6 @@ final class TermsHashPerField extends InvertedDocConsumerPerField {
     return postingsHash;
   }
 
-  /** Test whether the text for current RawPostingList p equals
-   *  current tokenText. */
   private boolean postingEquals(final int termID, final char[] tokenText, final int tokenTextLen) {
     final int textStart = postingsArray.textStarts[termID];
     
@@ -554,8 +548,6 @@ final class TermsHashPerField extends InvertedDocConsumerPerField {
     }
   }
 
-  /** Called when postings hash is too small (> 50%
-   *  occupied) or too large (< 20% occupied). */
   void rehashPostings(final int newSize) {
 
     final int newMask = newSize-1;

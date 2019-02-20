@@ -22,9 +22,7 @@ import java.io.IOException;
 
 import static org.trypticon.luceneupgrader.lucene6.internal.lucene.store.RAMOutputStream.BUFFER_SIZE;
 
-/** A memory-resident {@link IndexInput} implementation. 
- *  
- *  @lucene.internal */
+
 public class RAMInputStream extends IndexInput implements Cloneable {
 
   private final RAMFile file;

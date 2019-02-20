@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,32 +13,11 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattributes.TermToBytesRefAttribute; // javadoc
 
-/**
- * Provides support for converting byte sequences to Strings and back again.
- * The resulting Strings preserve the original byte sequences' sort order.
- * <p/>
- * The Strings are constructed using a Base 8000h encoding of the original
- * binary data - each char of an encoded String represents a 15-bit chunk
- * from the byte sequence.  Base 8000h was chosen because it allows for all
- * lower 15 bits of char to be used without restriction; the surrogate range 
- * [U+D8000-U+DFFF] does not represent valid chars, and would require
- * complicated handling to avoid them and allow use of char's high bit.
- * <p/>
- * Although unset bits are used as padding in the final char, the original
- * byte sequence could contain trailing bytes with no set bits (null bytes):
- * padding is indistinguishable from valid information.  To overcome this
- * problem, a char is appended, indicating the number of encoded bytes in the
- * final content char.
- * <p/>
- *
- * @lucene.experimental
- * @deprecated Implement {@link TermToBytesRefAttribute} and store bytes directly
- * instead. This class will be removed in Lucene 5.0
- */
 @Deprecated
 public final class IndexableBinaryStringTools {
 
@@ -60,28 +37,12 @@ public final class IndexableBinaryStringTools {
   // Export only static methods
   private IndexableBinaryStringTools() {}
 
-  /**
-   * Returns the number of chars required to encode the given bytes.
-   * 
-   * @param inputArray byte sequence to be encoded
-   * @param inputOffset initial offset into inputArray
-   * @param inputLength number of bytes in inputArray
-   * @return The number of chars required to encode the number of bytes.
-   */
   public static int getEncodedLength(byte[] inputArray, int inputOffset,
       int inputLength) {
     // Use long for intermediaries to protect against overflow
     return (int)((8L * inputLength + 14L) / 15L) + 1;
   }
 
-  /**
-   * Returns the number of bytes required to decode the given char sequence.
-   * 
-   * @param encoded char sequence to be decoded
-   * @param offset initial offset
-   * @param length number of characters
-   * @return The number of bytes required to decode the given char sequence
-   */
   public static int getDecodedLength(char[] encoded, int offset, int length) {
     final int numChars = length - 1;
     if (numChars <= 0) {
@@ -94,18 +55,6 @@ public final class IndexableBinaryStringTools {
     }
   }
 
-  /**
-   * Encodes the input byte sequence into the output char sequence.  Before
-   * calling this method, ensure that the output array has sufficient
-   * capacity by calling {@link #getEncodedLength(byte[], int, int)}.
-   * 
-   * @param inputArray byte sequence to be encoded
-   * @param inputOffset initial offset into inputArray
-   * @param inputLength number of bytes in inputArray
-   * @param outputArray char sequence to store encoded result
-   * @param outputOffset initial offset into outputArray
-   * @param outputLength length of output, must be getEncodedLength
-   */
   public static void encode(byte[] inputArray, int inputOffset,
       int inputLength, char[] outputArray, int outputOffset, int outputLength) {
     assert (outputLength == getEncodedLength(inputArray, inputOffset,
@@ -148,19 +97,6 @@ public final class IndexableBinaryStringTools {
     }
   }
 
-  /**
-   * Decodes the input char sequence into the output byte sequence. Before
-   * calling this method, ensure that the output array has sufficient capacity
-   * by calling {@link #getDecodedLength(char[], int, int)}.
-   * 
-   * @param inputArray char sequence to be decoded
-   * @param inputOffset initial offset into inputArray
-   * @param inputLength number of chars in inputArray
-   * @param outputArray byte sequence to store encoded result
-   * @param outputOffset initial offset into outputArray
-   * @param outputLength length of output, must be
-   *        getDecodedLength(inputArray, inputOffset, inputLength)
-   */
   public static void decode(char[] inputArray, int inputOffset,
       int inputLength, byte[] outputArray, int outputOffset, int outputLength) {
     assert (outputLength == getDecodedLength(inputArray, inputOffset,

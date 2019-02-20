@@ -19,27 +19,14 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.codecs;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.OrdTermState;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.TermState;
 
-/**
- * Holds all state required for {@link PostingsReaderBase}
- * to produce a {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.index.PostingsEnum} without re-seeking the
- * terms dict.
- *
- * @lucene.internal
- */
 public class BlockTermState extends OrdTermState {
-  /** how many docs have this term */
   public int docFreq;
-  /** total number of occurrences of this term */
   public long totalTermFreq;
 
-  /** the term's ord in the current block */
   public int termBlockOrd;
-  /** fp into the terms dict primary file (_X.tim) that holds this term */
   // TODO: update BTR to nuke this
   public long blockFilePointer;
 
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected BlockTermState() {
   }
 

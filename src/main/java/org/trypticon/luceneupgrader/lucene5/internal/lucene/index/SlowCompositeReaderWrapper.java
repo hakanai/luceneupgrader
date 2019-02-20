@@ -26,31 +26,13 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.MultiDocValues
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.MultiDocValues.MultiSortedSetDocValues;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.MultiDocValues.OrdinalMap;
 
-/**
- * This class forces a composite reader (eg a {@link
- * MultiReader} or {@link DirectoryReader}) to emulate a
- * {@link LeafReader}.  This requires implementing the postings
- * APIs on-the-fly, using the static methods in {@link
- * MultiFields}, {@link MultiDocValues}, by stepping through
- * the sub-readers to merge fields/terms, appending docs, etc.
- *
- * <p><b>NOTE</b>: this class almost always results in a
- * performance hit.  If this is important to your use case,
- * you'll get better performance by gathering the sub readers using
- * {@link IndexReader#getContext()} to get the
- * leaves and then operate per-LeafReader,
- * instead of using this class.
- */
 public final class SlowCompositeReaderWrapper extends LeafReader {
 
   private final CompositeReader in;
   private final Fields fields;
   private final boolean merging;
   
-  /** This method is sugar for getting an {@link LeafReader} from
-   * an {@link IndexReader} of any kind. If the reader is already atomic,
-   * it is returned unchanged, otherwise wrapped by this class.
-   */
+
   public static LeafReader wrap(IndexReader reader) throws IOException {
     if (reader instanceof CompositeReader) {
       return new SlowCompositeReaderWrapper((CompositeReader) reader, false);

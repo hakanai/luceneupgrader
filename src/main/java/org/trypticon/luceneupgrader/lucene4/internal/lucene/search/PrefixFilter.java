@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,14 +13,11 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.Term;
 
-/**
- * A Filter that restricts search results to values that have a matching prefix in a given
- * field.
- */
 public class PrefixFilter extends MultiTermQueryWrapperFilter<PrefixQuery> {
 
   public PrefixFilter(Term prefix) {
@@ -31,7 +26,6 @@ public class PrefixFilter extends MultiTermQueryWrapperFilter<PrefixQuery> {
 
   public Term getPrefix() { return query.getPrefix(); }
 
-  /** Prints a user-readable version of this query. */
   @Override
   public String toString () {
     StringBuilder buffer = new StringBuilder();

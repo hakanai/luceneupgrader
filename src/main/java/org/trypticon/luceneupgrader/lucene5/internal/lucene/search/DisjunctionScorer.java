@@ -24,9 +24,6 @@ import java.util.List;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.PriorityQueue;
 
-/**
- * Base class for Scorers that score disjunctions.
- */
 abstract class DisjunctionScorer extends Scorer {
 
   private final boolean needsScores;
@@ -190,7 +187,6 @@ abstract class DisjunctionScorer extends Scorer {
     return score(getSubMatches());
   }
 
-  /** Compute the score for the given linked list of scorers. */
   protected abstract float score(DisiWrapper topList) throws IOException;
 
   @Override

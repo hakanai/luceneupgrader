@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
 import java.io.IOException;
 import java.util.Map;
@@ -23,37 +22,20 @@ import java.util.Map;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.UnicodeUtil;
 
-/**
- * Abstract base class for performing write operations of Lucene's low-level
- * data types.
- */
 public abstract class DataOutput {
 
-  /** Writes a single byte.
-   * @see IndexInput#readByte()
-   */
+
   public abstract void writeByte(byte b) throws IOException;
 
-  /** Writes an array of bytes.
-   * @param b the bytes to write
-   * @param length the number of bytes to write
-   * @see DataInput#readBytes(byte[],int,int)
-   */
+
   public void writeBytes(byte[] b, int length) throws IOException {
     writeBytes(b, 0, length);
   }
 
-  /** Writes an array of bytes.
-   * @param b the bytes to write
-   * @param offset the offset in the byte array
-   * @param length the number of bytes to write
-   * @see DataInput#readBytes(byte[],int,int)
-   */
+
   public abstract void writeBytes(byte[] b, int offset, int length) throws IOException;
 
-  /** Writes an int as four bytes.
-   * @see DataInput#readInt()
-   */
+
   public void writeInt(int i) throws IOException {
     writeByte((byte)(i >> 24));
     writeByte((byte)(i >> 16));
@@ -61,19 +43,13 @@ public abstract class DataOutput {
     writeByte((byte) i);
   }
 
-  /** Writes a short as two bytes.
-   * @see DataInput#readShort()
-   */
+
   public void writeShort(short i) throws IOException {
     writeByte((byte)(i >>  8));
     writeByte((byte) i);
   }
 
-  /** Writes an int in a variable-length format.  Writes between one and
-   * five bytes.  Smaller values take fewer bytes.  Negative numbers are
-   * supported, but should be avoided.
-   * @see DataInput#readVInt()
-   */
+
   public final void writeVInt(int i) throws IOException {
     while ((i & ~0x7F) != 0) {
       writeByte((byte)((i & 0x7F) | 0x80));
@@ -82,19 +58,13 @@ public abstract class DataOutput {
     writeByte((byte)i);
   }
 
-  /** Writes a long as eight bytes.
-   * @see DataInput#readLong()
-   */
+
   public void writeLong(long i) throws IOException {
     writeInt((int) (i >> 32));
     writeInt((int) i);
   }
 
-  /** Writes an long in a variable-length format.  Writes between one and nine
-   * bytes.  Smaller values take fewer bytes.  Negative numbers are not
-   * supported.
-   * @see DataInput#readVLong()
-   */
+
   public final void writeVLong(long i) throws IOException {
     assert i >= 0L;
     while ((i & ~0x7FL) != 0L) {
@@ -104,9 +74,7 @@ public abstract class DataOutput {
     writeByte((byte)i);
   }
 
-  /** Writes a string.
-   * @see DataInput#readString()
-   */
+
   public void writeString(String s) throws IOException {
     final BytesRef utf8Result = new BytesRef(10);
     UnicodeUtil.UTF16toUTF8(s, 0, s.length(), utf8Result);
@@ -117,7 +85,6 @@ public abstract class DataOutput {
   private static int COPY_BUFFER_SIZE = 16384;
   private byte[] copyBuffer;
 
-  /** Copy numBytes bytes from input to ourself. */
   public void copyBytes(DataInput input, long numBytes) throws IOException {
     assert numBytes >= 0: "numBytes=" + numBytes;
     long left = numBytes;
@@ -135,14 +102,7 @@ public abstract class DataOutput {
     }
   }
 
-  /** Writes a sub sequence of characters from s as the old
-   *  format (modified UTF-8 encoded bytes).
-   * @param s the source of the characters
-   * @param start the first character in the sequence
-   * @param length the number of characters in the sequence
-   * @deprecated -- please pre-convert to utf8 bytes
-   * instead or use {@link #writeString}
-   */
+
   @Deprecated
   public void writeChars(String s, int start, int length)
        throws IOException {
@@ -162,13 +122,7 @@ public abstract class DataOutput {
     }
   }
 
-  /** Writes a sub sequence of characters from char[] as
-   *  the old format (modified UTF-8 encoded bytes).
-   * @param s the source of the characters
-   * @param start the first character in the sequence
-   * @param length the number of characters in the sequence
-   * @deprecated -- please pre-convert to utf8 bytes instead or use {@link #writeString}
-   */
+
   @Deprecated
   public void writeChars(char[] s, int start, int length)
     throws IOException {

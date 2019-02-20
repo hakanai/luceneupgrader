@@ -22,10 +22,6 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.LeafReaderContext;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Bits;
 
-/**
- * A query that matches all documents.
- *
- */
 public final class MatchAllDocsQuery extends Query {
 
   @Override

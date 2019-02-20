@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 
@@ -26,20 +25,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeSource
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ToStringUtils;
 
-/**
- * A Query that matches documents within an range of terms.
- *
- * <p>This query matches the documents looking for terms that fall into the
- * supplied range according to {@link
- * Byte#compareTo(Byte)}. It is not intended
- * for numerical ranges; use {@link NumericRangeQuery} instead.
- *
- * <p>This query uses the {@link
- * MultiTermQuery#CONSTANT_SCORE_AUTO_REWRITE_DEFAULT}
- * rewrite method.
- * @since 2.9
- */
-
 public class TermRangeQuery extends MultiTermQuery {
   private BytesRef lowerTerm;
   private BytesRef upperTerm;
@@ -47,28 +32,6 @@ public class TermRangeQuery extends MultiTermQuery {
   private boolean includeUpper;
 
 
-  /**
-   * Constructs a query selecting all terms greater/equal than <code>lowerTerm</code>
-   * but less/equal than <code>upperTerm</code>. 
-   * 
-   * <p>
-   * If an endpoint is null, it is said 
-   * to be "open". Either or both endpoints may be open.  Open endpoints may not 
-   * be exclusive (you can't select all but the first or last term without 
-   * explicitly specifying the term to exclude.)
-   * 
-   * @param field The field that holds both lower and upper terms.
-   * @param lowerTerm
-   *          The term text at the lower end of the range
-   * @param upperTerm
-   *          The term text at the upper end of the range
-   * @param includeLower
-   *          If true, the <code>lowerTerm</code> is
-   *          included in the range.
-   * @param includeUpper
-   *          If true, the <code>upperTerm</code> is
-   *          included in the range.
-   */
   public TermRangeQuery(String field, BytesRef lowerTerm, BytesRef upperTerm, boolean includeLower, boolean includeUpper) {
     super(field);
     this.lowerTerm = lowerTerm;
@@ -77,25 +40,18 @@ public class TermRangeQuery extends MultiTermQuery {
     this.includeUpper = includeUpper;
   }
 
-  /**
-   * Factory that creates a new TermRangeQuery using Strings for term text.
-   */
   public static TermRangeQuery newStringRange(String field, String lowerTerm, String upperTerm, boolean includeLower, boolean includeUpper) {
     BytesRef lower = lowerTerm == null ? null : new BytesRef(lowerTerm);
     BytesRef upper = upperTerm == null ? null : new BytesRef(upperTerm);
     return new TermRangeQuery(field, lower, upper, includeLower, includeUpper);
   }
 
-  /** Returns the lower value of this range query */
   public BytesRef getLowerTerm() { return lowerTerm; }
 
-  /** Returns the upper value of this range query */
   public BytesRef getUpperTerm() { return upperTerm; }
   
-  /** Returns <code>true</code> if the lower endpoint is inclusive */
   public boolean includesLower() { return includeLower; }
   
-  /** Returns <code>true</code> if the upper endpoint is inclusive */
   public boolean includesUpper() { return includeUpper; }
   
   @Override
@@ -113,7 +69,6 @@ public class TermRangeQuery extends MultiTermQuery {
         lowerTerm, upperTerm, includeLower, includeUpper);
   }
 
-  /** Prints a user-readable version of this query. */
   @Override
   public String toString(String field) {
       StringBuilder buffer = new StringBuilder();

@@ -17,37 +17,13 @@
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.index;
 
 
-/** 
- * Extension of {@link SortedSetDocValues} that supports random access
- * to the ordinals of a document.
- * <p>
- * Operations via this API are independent of the iterator api ({@link #nextOrd()})
- * and do not impact its state.
- * <p>
- * Codecs can optionally extend this API if they support constant-time access
- * to ordinals for the document.
- */
 public abstract class RandomAccessOrds extends SortedSetDocValues {
   
-  /** Sole constructor. (For invocation by subclass 
-   * constructors, typically implicit.) */
   protected RandomAccessOrds() {}
 
-  /** 
-   * Retrieve the ordinal for the current document (previously
-   * set by {@link #setDocument(int)} at the specified index.
-   * <p>
-   * An index ranges from {@code 0} to {@code cardinality()-1}.
-   * The first ordinal value is at index {@code 0}, the next at index {@code 1},
-   * and so on, as for array indexing.
-   * @param index index of the ordinal for the document.
-   * @return ordinal for the document at the specified index.
-   */
+
   public abstract long ordAt(int index);
   
-  /** 
-   * Returns the cardinality for the current document (previously
-   * set by {@link #setDocument(int)}.
-   */
+
   public abstract int cardinality();
 }

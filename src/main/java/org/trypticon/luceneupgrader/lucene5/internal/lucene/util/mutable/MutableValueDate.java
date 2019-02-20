@@ -18,10 +18,6 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.util.mutable;
 
 import java.util.Date;
 
-/**
- * {@link MutableValue} implementation of type {@link Date}.
- * @see MutableValueLong
- */
 public class MutableValueDate extends MutableValueLong {
   @Override
   public Object toObject() {

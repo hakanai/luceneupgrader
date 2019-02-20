@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,18 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
 
-/**
- * Byte[] referencing is used because a new norm object needs 
- * to be created for each clone, and the byte array is all 
- * that is needed for sharing between cloned readers.  The 
- * current norm referencing is for sharing between readers 
- * whereas the byte[] referencing is for copy on write which 
- * is independent of reader references (i.e. incRef, decRef).
- */
-
 final class SegmentNorms implements Cloneable {
 
-  /** norms header placeholder */
   static final byte[] NORMS_HEADER = new byte[]{'N','R','M',-1};
 
   int refCount = 1;

@@ -21,29 +21,13 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 
-/** 
- * Iterates through the documents and term freqs.
- * NOTE: you must first call {@link #nextDoc} before using
- * any of the per-doc methods. 
- * @deprecated Use {@link PostingsEnum} instead.
- */
 @Deprecated
 public abstract class DocsEnum extends PostingsEnum {
   
-  /**
-   * Flag to pass to {@link TermsEnum#docs(Bits,DocsEnum,int)} if you don't
-   * require term frequencies in the returned enum. When passed to
-   * {@link TermsEnum#docsAndPositions(Bits,DocsAndPositionsEnum,int)} means
-   * that no offsets and payloads will be returned.
-   */
   public static final int FLAG_NONE = 0x0;
 
-  /** Flag to pass to {@link TermsEnum#docs(Bits,DocsEnum,int)}
-   *  if you require term frequencies in the returned enum. */
   public static final int FLAG_FREQS = 0x1;
 
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected DocsEnum() {
   }
 

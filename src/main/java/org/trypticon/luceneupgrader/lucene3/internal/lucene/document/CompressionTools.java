@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.document;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.document;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.document;
 
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -23,20 +22,12 @@ import java.util.zip.DataFormatException;
 import java.io.ByteArrayOutputStream;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.UnicodeUtil;
 
-/** Simple utility class providing static methods to
- *  compress and decompress binary data for stored fields.
- *  This class uses java.util.zip.Deflater and Inflater
- *  classes to compress and decompress.
- */
-
 public class CompressionTools {
 
   // Export only static methods
   private CompressionTools() {}
 
-  /** Compresses the specified byte range using the
-   *  specified compressionLevel (constants are defined in
-   *  java.util.zip.Deflater). */
+
   public static byte[] compress(byte[] value, int offset, int length, int compressionLevel) {
 
     /* Create an expandable byte array to hold the compressed data.
@@ -65,32 +56,25 @@ public class CompressionTools {
     return bos.toByteArray();
   }
 
-  /** Compresses the specified byte range, with default BEST_COMPRESSION level */
   public static byte[] compress(byte[] value, int offset, int length) {
     return compress(value, offset, length, Deflater.BEST_COMPRESSION);
   }
   
-  /** Compresses all bytes in the array, with default BEST_COMPRESSION level */
   public static byte[] compress(byte[] value) {
     return compress(value, 0, value.length, Deflater.BEST_COMPRESSION);
   }
 
-  /** Compresses the String value, with default BEST_COMPRESSION level */
   public static byte[] compressString(String value) {
     return compressString(value, Deflater.BEST_COMPRESSION);
   }
 
-  /** Compresses the String value using the specified
-   *  compressionLevel (constants are defined in
-   *  java.util.zip.Deflater). */
+
   public static byte[] compressString(String value, int compressionLevel) {
     UnicodeUtil.UTF8Result result = new UnicodeUtil.UTF8Result();
     UnicodeUtil.UTF16toUTF8(value, 0, value.length(), result);
     return compress(result.result, 0, result.length, compressionLevel);
   }
 
-  /** Decompress the byte array previously returned by
-   *  compress */
   public static byte[] decompress(byte[] value) throws DataFormatException {
     // Create an expandable byte array to hold the decompressed data
     ByteArrayOutputStream bos = new ByteArrayOutputStream(value.length);
@@ -113,8 +97,6 @@ public class CompressionTools {
     return bos.toByteArray();
   }
 
-  /** Decompress the byte array previously returned by
-   *  compressString back into a String */
   public static String decompressString(byte[] value) throws DataFormatException {
     UnicodeUtil.UTF16Result result = new UnicodeUtil.UTF16Result();
     final byte[] bytes = decompress(value);

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,20 +13,11 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
-/**
- * This interface is used to reflect contents of {@link AttributeSource} or {@link AttributeImpl}.
- */
 public interface AttributeReflector {
 
-  /**
-   * This method gets called for every property in an {@link AttributeImpl}/{@link AttributeSource}
-   * passing the class name of the {@link Attribute}, a key and the actual value.
-   * E.g., an invocation of {@link org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattributes.CharTermAttributeImpl#reflectWith}
-   * would call this method once using {@code org.apache.lucene.analysis.tokenattributes.CharTermAttribute.class}
-   * as attribute class, {@code "term"} as key and the actual value as a String.
-   */
   public void reflect(Class<? extends Attribute> attClass, String key, Object value);
   
 }

@@ -24,9 +24,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.DocIdSetItera
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.ConjunctionDISI;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.TwoPhaseIterator;
 
-/**
- * Common super class for multiple sub spans required in a document.
- */
 abstract class ConjunctionSpans extends Spans {
   final Spans[] subSpans; // in query order
   final DocIdSetIterator conjunction; // use to move to next doc with all clauses
@@ -81,9 +78,6 @@ abstract class ConjunctionSpans extends Spans {
 
   abstract boolean twoPhaseCurrentDocMatches() throws IOException;
 
-  /**
-   * Return a {@link TwoPhaseIterator} view of this ConjunctionSpans.
-   */
   @Override
   public TwoPhaseIterator asTwoPhaseIterator() {
     float totalMatchCost = 0;

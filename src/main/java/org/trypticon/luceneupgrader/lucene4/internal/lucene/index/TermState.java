@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,29 +13,14 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
-/**
- * Encapsulates all required internal state to position the associated
- * {@link TermsEnum} without re-seeking.
- * 
- * @see TermsEnum#seekExact(org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef, TermState)
- * @see TermsEnum#termState()
- * @lucene.experimental
- */
 public abstract class TermState implements Cloneable {
 
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected TermState() {
   }
 
-  /**
-   * Copies the content of the given {@link TermState} to this instance
-   * 
-   * @param other
-   *          the TermState to copy
-   */
   public abstract void copyFrom(TermState other);
 
   @Override

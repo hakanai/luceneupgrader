@@ -32,14 +32,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.ServiceConfigurationError;
 
-/**
- * Helper class for loading SPI classes from classpath (META-INF files).
- * This is a light impl of {@link java.util.ServiceLoader} but is guaranteed to
- * be bug-free regarding classpath order and does not instantiate or initialize
- * the classes found.
- *
- * @lucene.internal
- */
 public final class SPIClassIterator<S> implements Iterator<Class<? extends S>> {
   private static final String META_INF_SERVICES = "META-INF/services/";
 
@@ -48,7 +40,6 @@ public final class SPIClassIterator<S> implements Iterator<Class<? extends S>> {
   private final Enumeration<URL> profilesEnum;
   private Iterator<String> linesIterator;
   
-  /** Creates a new SPI iterator to lookup services of type {@code clazz} using the context classloader. */
   public static <S> SPIClassIterator<S> get(Class<S> clazz) {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     if (cl == null) {
@@ -57,18 +48,10 @@ public final class SPIClassIterator<S> implements Iterator<Class<? extends S>> {
     return new SPIClassIterator<>(clazz, cl);
   }
   
-  /** Creates a new SPI iterator to lookup services of type {@code clazz} using the given classloader. */
   public static <S> SPIClassIterator<S> get(Class<S> clazz, ClassLoader loader) {
     return new SPIClassIterator<>(clazz, loader);
   }
   
-  /**
-   * Utility method to check if some class loader is a (grand-)parent of or the same as another one.
-   * This means the child will be able to load all classes from the parent, too.
-   * <p>
-   * If caller's codesource doesn't have enough permissions to do the check, {@code false} is returned
-   * (this is fine, because if we get a {@code SecurityException} it is for sure no parent).
-   */
   public static boolean isParentClassLoader(final ClassLoader parent, final ClassLoader child) {
     try {
       ClassLoader cl = child;

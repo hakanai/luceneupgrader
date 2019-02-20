@@ -1,8 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-import java.io.Serializable;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,16 +14,11 @@ import java.io.Serializable;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-/**
- * The TermVectorOffsetInfo class holds information pertaining to a Term in a {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.index.TermPositionVector}'s
- * offset information.  This offset information is the character offset as set during the Analysis phase (and thus may not be the actual offset in the
- * original content).
- */
+import java.io.Serializable;
+
 public class TermVectorOffsetInfo implements Serializable {
-  /**
-   * Convenience declaration when creating a {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.index.TermPositionVector} that stores only position information.
-   */
   public transient static final TermVectorOffsetInfo[] EMPTY_OFFSET_INFO = new TermVectorOffsetInfo[0];
   private int startOffset;
   private int endOffset;
@@ -40,10 +31,6 @@ public class TermVectorOffsetInfo implements Serializable {
     this.startOffset = startOffset;
   }
 
-  /**
-   * The accessor for the ending offset for the term
-   * @return The offset
-   */
   public int getEndOffset() {
     return endOffset;
   }
@@ -52,11 +39,6 @@ public class TermVectorOffsetInfo implements Serializable {
     this.endOffset = endOffset;
   }
 
-  /**
-   * The accessor for the starting offset of the term.
-   *
-   * @return The offset
-   */
   public int getStartOffset() {
     return startOffset;
   }
@@ -65,11 +47,6 @@ public class TermVectorOffsetInfo implements Serializable {
     this.startOffset = startOffset;
   }
 
-  /**
-   * Two TermVectorOffsetInfos are equals if both the start and end offsets are the same
-   * @param o The comparison Object
-   * @return true if both {@link #getStartOffset()} and {@link #getEndOffset()} are the same for both objects.
-   */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

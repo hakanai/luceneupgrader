@@ -26,54 +26,11 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.Query;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 
-/**
- * {@link DocumentsWriterDeleteQueue} is a non-blocking linked pending deletes
- * queue. In contrast to other queue implementation we only maintain the
- * tail of the queue. A delete queue is always used in a context of a set of
- * DWPTs and a global delete pool. Each of the DWPT and the global pool need to
- * maintain their 'own' head of the queue (as a DeleteSlice instance per
- * {@link DocumentsWriterPerThread}).
- * The difference between the DWPT and the global pool is that the DWPT starts
- * maintaining a head once it has added its first document since for its segments
- * private deletes only the deletes after that document are relevant. The global
- * pool instead starts maintaining the head once this instance is created by
- * taking the sentinel instance as its initial head.
- * <p>
- * Since each {@link DeleteSlice} maintains its own head and the list is only
- * single linked the garbage collector takes care of pruning the list for us.
- * All nodes in the list that are still relevant should be either directly or
- * indirectly referenced by one of the DWPT's private {@link DeleteSlice} or by
- * the global {@link BufferedUpdates} slice.
- * <p>
- * Each DWPT as well as the global delete pool maintain their private
- * DeleteSlice instance. In the DWPT case updating a slice is equivalent to
- * atomically finishing the document. The slice update guarantees a "happens
- * before" relationship to all other updates in the same indexing session. When a
- * DWPT updates a document it:
- * 
- * <ol>
- * <li>consumes a document and finishes its processing</li>
- * <li>updates its private {@link DeleteSlice} either by calling
- * {@link #updateSlice(DeleteSlice)} or {@link #add(Term, DeleteSlice)} (if the
- * document has a delTerm)</li>
- * <li>applies all deletes in the slice to its private {@link BufferedUpdates}
- * and resets it</li>
- * <li>increments its internal document id</li>
- * </ol>
- * 
- * The DWPT also doesn't apply its current documents delete term until it has
- * updated its delete slice which ensures the consistency of the update. If the
- * update fails before the DeleteSlice could have been updated the deleteTerm
- * will also not be added to its private deletes neither to the global deletes.
- * 
- */
 final class DocumentsWriterDeleteQueue implements Accountable {
 
   // the current end (latest delete operation) in the delete queue:
   private volatile Node<?> tail;
 
-  /** Used to record deletes against all prior (already written to disk) segments.  Whenever any segment flushes, we bundle up this set of
-   *  deletes and insert into the buffered updates stream before the newly flushed segment(s). */
   private final DeleteSlice globalSlice;
   private final BufferedUpdates globalBufferedUpdates;
   
@@ -82,7 +39,6 @@ final class DocumentsWriterDeleteQueue implements Accountable {
 
   final long generation;
 
-  /** Generates the sequence number that IW returns to callers changing the index, showing the effective serialization of all operations. */
   private final AtomicLong nextSeqNo;
 
   // for asserts
@@ -127,9 +83,6 @@ final class DocumentsWriterDeleteQueue implements Accountable {
     return seqNo;
   }
   
-  /**
-   * invariant for document update
-   */
   long add(Term term, DeleteSlice slice) {
     final TermNode termNode = new TermNode(term);
     long seqNo = add(termNode);
@@ -221,7 +174,6 @@ final class DocumentsWriterDeleteQueue implements Accountable {
     return new DeleteSlice(tail);
   }
 
-  /** Negative result means there were new deletes since we last applied */
   synchronized long updateSlice(DeleteSlice slice) {
     long seqNo = getNextSequenceNumber();
     if (slice.sliceTail != tail) {
@@ -232,7 +184,6 @@ final class DocumentsWriterDeleteQueue implements Accountable {
     return seqNo;
   }
 
-  /** Just like updateSlice, but does not assign a sequence number */
   boolean updateSliceNoSeqNo(DeleteSlice slice) {
     if (slice.sliceTail != tail) {
       // new deletes arrived since we last checked
@@ -282,10 +233,6 @@ final class DocumentsWriterDeleteQueue implements Accountable {
       sliceHead = sliceTail;
     }
 
-    /**
-     * Returns <code>true</code> iff the given item is identical to the item
-     * hold by the slices tail, otherwise <code>false</code>.
-     */
     boolean isTailItem(Object item) {
       return sliceTail.item == item;
     }
@@ -452,8 +399,6 @@ final class DocumentsWriterDeleteQueue implements Accountable {
     return nextSeqNo.get()-1;
   }  
 
-  /** Inserts a gap in the sequence numbers.  This is used by IW during flush or commit to ensure any in-flight threads get sequence numbers
-   *  inside the gap */
   public void skipSequenceNumbers(long jump) {
     nextSeqNo.addAndGet(jump);
   }  

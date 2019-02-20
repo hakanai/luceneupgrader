@@ -22,12 +22,6 @@ import java.io.PrintStream;
 import java.nio.file.attribute.FileTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * InfoStream implementation over a {@link PrintStream}
- * such as <code>System.out</code>.
- * 
- * @lucene.internal
- */
 public class PrintStreamInfoStream extends InfoStream {
   // Used for printing messages
   private static final AtomicInteger MESSAGE_ID = new AtomicInteger();
@@ -66,7 +60,6 @@ public class PrintStreamInfoStream extends InfoStream {
     return stream == System.out || stream == System.err;
   }
   
-  /** Returns the current time as string for insertion into log messages. */
   protected String getTimestamp() {
     // We "misuse" Java 7 FileTime API here, because it returns a nice ISO-8601 string with milliseconds (UTC timezone).
     // The alternative, SimpleDateFormat is not thread safe!

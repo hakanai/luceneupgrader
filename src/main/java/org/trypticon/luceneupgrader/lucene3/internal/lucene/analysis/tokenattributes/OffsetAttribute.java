@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,30 +13,18 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattri
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Attribute;
 
-/**
- * The start and end character offset of a Token. 
- */
-public interface OffsetAttribute extends Attribute {
-  /** Returns this Token's starting offset, the position of the first character
-  corresponding to this token in the source text.
 
-  Note that the difference between endOffset() and startOffset() may not be
-  equal to termText.length(), as the term text may have been altered by a
-  stemmer or some other filter. */
+public interface OffsetAttribute extends Attribute {
   public int startOffset();
 
   
-  /** Set the starting and ending offset.
-    @see #startOffset() and #endOffset()*/
   public void setOffset(int startOffset, int endOffset);
   
 
-  /** Returns this Token's ending offset, one greater than the position of the
-  last character corresponding to this token in the source text. The length
-  of the token in the source text is (endOffset - startOffset). */
   public int endOffset();
 }

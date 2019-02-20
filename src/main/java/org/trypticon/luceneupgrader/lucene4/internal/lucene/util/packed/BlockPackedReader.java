@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
 
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BitUtil.zigZagDecode;
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.AbstractBlockPackedWriter.BPV_SHIFT;
@@ -32,10 +31,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.LongValues;
 
-/**
- * Provides random access to a stream written with {@link BlockPackedWriter}.
- * @lucene.internal
- */
 public final class BlockPackedReader extends LongValues implements Accountable {
 
   private final int blockShift, blockMask;
@@ -43,7 +38,6 @@ public final class BlockPackedReader extends LongValues implements Accountable {
   private final long[] minValues;
   private final PackedInts.Reader[] subReaders;
 
-  /** Sole constructor. */
   public BlockPackedReader(IndexInput in, int packedIntsVersion, int blockSize, long valueCount, boolean direct) throws IOException {
     this.valueCount = valueCount;
     blockShift = checkBlockSize(blockSize, MIN_BLOCK_SIZE, MAX_BLOCK_SIZE);

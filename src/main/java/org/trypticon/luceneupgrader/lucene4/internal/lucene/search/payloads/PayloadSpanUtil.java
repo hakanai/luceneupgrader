@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.payloads;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.payloads;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.payloads;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,34 +44,13 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans.SpanQue
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans.SpanTermQuery;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans.Spans;
 
-/**
- * Experimental class to get set of payloads for most standard Lucene queries.
- * Operates like Highlighter - IndexReader should only contain doc of interest,
- * best to use MemoryIndex.
- *
- * @lucene.experimental
- * 
- */
 public class PayloadSpanUtil {
   private IndexReaderContext context;
 
-  /**
-   * @param context
-   *          that contains doc with payloads to extract
-   *          
-   * @see IndexReader#getContext()
-   */
   public PayloadSpanUtil(IndexReaderContext context) {
     this.context = context;
   }
 
-  /**
-   * Query should be rewritten for wild/fuzzy support.
-   * 
-   * @param query rewritten query
-   * @return payloads Collection
-   * @throws IOException if there is a low-level I/O error
-   */
   public Collection<byte[]> getPayloadsForQuery(Query query) throws IOException {
     Collection<byte[]> payloads = new ArrayList<>();
     queryToSpanQuery(query, payloads);

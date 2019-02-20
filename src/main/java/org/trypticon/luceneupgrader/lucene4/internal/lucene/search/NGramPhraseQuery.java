@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,28 +13,17 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.Term;
 
-/**
- * This is a {@link PhraseQuery} which is optimized for n-gram phrase query.
- * For example, when you query "ABCD" on a 2-gram field, you may want to use
- * NGramPhraseQuery rather than {@link PhraseQuery}, because NGramPhraseQuery
- * will {@link #rewrite(IndexReader)} the query to "AB/0 CD/2", while {@link PhraseQuery}
- * will query "AB/0 BC/1 CD/2" (where term/position).
- *
- */
 public class NGramPhraseQuery extends PhraseQuery {
   private final int n;
   
-  /**
-   * Constructor that takes gram size.
-   * @param n n-gram size
-   */
   public NGramPhraseQuery(int n){
     super();
     this.n = n;
@@ -77,7 +64,6 @@ public class NGramPhraseQuery extends PhraseQuery {
     return optimized;
   }
 
-  /** Returns true iff <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof NGramPhraseQuery))
@@ -87,7 +73,6 @@ public class NGramPhraseQuery extends PhraseQuery {
     return super.equals(other);
   }
 
-  /** Returns a hash code value for this object.*/
   @Override
   public int hashCode() {
     return Float.floatToIntBits(getBoost())

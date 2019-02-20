@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40;
 
 import java.io.IOException;
 
@@ -25,17 +24,12 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.PostingsWrite
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentReadState;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentWriteState;
 
-/** 
- * Provides a {@link PostingsReaderBase} and {@link
- * PostingsWriterBase}.
- *
- * @deprecated Only for reading old 4.0 segments */
+
 
 // TODO: should these also be named / looked up via SPI?
 @Deprecated
 public final class Lucene40PostingsBaseFormat extends PostingsBaseFormat {
 
-  /** Sole constructor. */
   public Lucene40PostingsBaseFormat() {
     super("Lucene40");
   }

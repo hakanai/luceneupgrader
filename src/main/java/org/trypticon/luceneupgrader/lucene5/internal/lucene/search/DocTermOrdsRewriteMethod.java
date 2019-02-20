@@ -19,13 +19,6 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.search;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.MultiTermQuery.RewriteMethod;
 
-/**
- * Rewrites MultiTermQueries into a filter, using DocTermOrds for term enumeration.
- * <p>
- * This can be used to perform these queries against an unindexed docvalues field.
- * @lucene.experimental
- * @deprecated Use {@link DocValuesRewriteMethod} instead.
- */
 @Deprecated
 public final class DocTermOrdsRewriteMethod extends RewriteMethod {
   

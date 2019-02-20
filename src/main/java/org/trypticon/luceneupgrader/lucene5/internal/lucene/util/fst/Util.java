@@ -33,15 +33,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
-/** Static helper methods.
- *
- * @lucene.experimental */
+
 public final class Util {
   private Util() {
   }
 
-  /** Looks up the output for this input, or null if the
-   *  input is not accepted. */
   public static<T> T get(FST<T> fst, IntsRef input) throws IOException {
 
     // TODO: would be nice not to alloc this on every lookup
@@ -67,8 +63,6 @@ public final class Util {
 
   // TODO: maybe a CharsRef version for BYTE2
 
-  /** Looks up the output for this input, or null if the
-   *  input is not accepted */
   public static<T> T get(FST<T> fst, BytesRef input) throws IOException {
     assert fst.inputType == FST.INPUT_TYPE.BYTE1;
 
@@ -93,18 +87,7 @@ public final class Util {
     }
   }
 
-  /** Reverse lookup (lookup by output instead of by input),
-   *  in the special case when your FSTs outputs are
-   *  strictly ascending.  This locates the input/output
-   *  pair where the output is equal to the target, and will
-   *  return null if that output does not exist.
-   *
-   *  <p>NOTE: this only works with {@code FST<Long>}, only
-   *  works when the outputs are ascending in order with
-   *  the inputs.
-   *  For example, simple ordinals (0, 1,
-   *  2, ...), or file offets (when appending to a file)
-   *  fit this. */
+
   public static IntsRef getByOutput(FST<Long> fst, long targetOutput) throws IOException {
 
     final BytesReader in = fst.getBytesReader();
@@ -118,10 +101,7 @@ public final class Util {
     return getByOutput(fst, targetOutput, in, arc, scratchArc, result);
   }
     
-  /** 
-   * Expert: like {@link Util#getByOutput(FST, long)} except reusing 
-   * BytesReader, initial and scratch Arc, and result.
-   */
+
   public static IntsRef getByOutput(FST<Long> fst, long targetOutput, BytesReader in, Arc<Long> arc, Arc<Long> scratchArc, IntsRefBuilder result) throws IOException {
     long output = arc.output;
     int upto = 0;
@@ -243,10 +223,7 @@ public final class Util {
     }    
   }
 
-  /** Represents a path in TopNSearcher.
-   *
-   *  @lucene.experimental
-   */
+
   public static class FSTPath<T> {
     public FST.Arc<T> arc;
     public T cost;
@@ -254,7 +231,6 @@ public final class Util {
     public final float boost;
     public final CharSequence context;
 
-    /** Sole constructor */
     public FSTPath(T cost, FST.Arc<T> arc, IntsRefBuilder input) {
       this(cost, arc, input, 0, null);
     }
@@ -277,8 +253,6 @@ public final class Util {
     }
   }
 
-  /** Compares first by the provided comparator, and then
-   *  tie breaks by path.input. */
   private static class TieBreakByInputComparator<T> implements Comparator<FSTPath<T>> {
     private final Comparator<T> comparator;
     public TieBreakByInputComparator(Comparator<T> comparator) {
@@ -296,8 +270,6 @@ public final class Util {
     }
   }
 
-  /** Utility class to find top N shortest paths from start
-   *  point(s). */
   public static class TopNSearcher<T> {
 
     private final FST<T> fst;
@@ -312,13 +284,6 @@ public final class Util {
 
     TreeSet<FSTPath<T>> queue = null;
 
-    /**
-     * Creates an unbounded TopNSearcher
-     * @param fst the {@link org.trypticon.luceneupgrader.lucene5.internal.lucene.util.fst.FST} to search on
-     * @param topN the number of top scoring entries to retrieve
-     * @param maxQueueDepth the maximum size of the queue of possible top entries
-     * @param comparator the comparator to select the top N
-     */
     public TopNSearcher(FST<T> fst, int topN, int maxQueueDepth, Comparator<T> comparator) {
       this(fst, topN, maxQueueDepth, comparator, new TieBreakByInputComparator<>(comparator));
     }
@@ -384,8 +349,6 @@ public final class Util {
       addStartPaths(node, startOutput, allowEmptyString, input, 0, null);
     }
 
-    /** Adds all leaving arcs, including 'finished' arc, if
-     *  the node is final, from this node into the queue.  */
     public void addStartPaths(FST.Arc<T> node, T startOutput, boolean allowEmptyString, IntsRefBuilder input,
                               float boost, CharSequence context) throws IOException {
 
@@ -541,8 +504,6 @@ public final class Util {
     }
   }
 
-  /** Holds a single input (IntsRef) + output, returned by
-   *  {@link #shortestPaths shortestPaths()}. */
   public final static class Result<T> {
     public final IntsRef input;
     public final T output;
@@ -553,20 +514,9 @@ public final class Util {
   }
 
 
-  /**
-   * Holds the results for a top N search using {@link TopNSearcher}
-   */
   public static final class TopResults<T> implements Iterable<Result<T>> {
 
-    /**
-     * <code>true</code> iff this is a complete result ie. if
-     * the specified queue size was large enough to find the complete list of results. This might
-     * be <code>false</code> if the {@link TopNSearcher} rejected too many results.
-     */
     public final boolean isComplete;
-    /**
-     * The top results
-     */
     public final List<Result<T>> topN;
 
     TopResults(boolean isComplete, List<Result<T>> topN) {
@@ -581,8 +531,6 @@ public final class Util {
   }
 
 
-  /** Starting from node, find the top N min cost 
-   *  completions to a final node. */
   public static <T> TopResults<T> shortestPaths(FST<T> fst, FST.Arc<T> fromNode, T startOutput, Comparator<T> comparator, int topN,
                                                  boolean allowEmptyString) throws IOException {
 
@@ -596,39 +544,7 @@ public final class Util {
     return searcher.search();
   } 
 
-  /**
-   * Dumps an {@link FST} to a GraphViz's <code>dot</code> language description
-   * for visualization. Example of use:
-   * 
-   * <pre class="prettyprint">
-   * PrintWriter pw = new PrintWriter(&quot;out.dot&quot;);
-   * Util.toDot(fst, pw, true, true);
-   * pw.close();
-   * </pre>
-   * 
-   * and then, from command line:
-   * 
-   * <pre>
-   * dot -Tpng -o out.png out.dot
-   * </pre>
-   * 
-   * <p>
-   * Note: larger FSTs (a few thousand nodes) won't even
-   * render, don't bother.  If the FST is &gt; 2.1 GB in size
-   * then this method will throw strange exceptions.
-   * 
-   * @param sameRank
-   *          If <code>true</code>, the resulting <code>dot</code> file will try
-   *          to order states in layers of breadth-first traversal. This may
-   *          mess up arcs, but makes the output FST's structure a bit clearer.
-   * 
-   * @param labelStates
-   *          If <code>true</code> states will have labels equal to their offsets in their
-   *          binary format. Expands the graph considerably. 
-   * 
-   * @see <a href="http://www.graphviz.org/">graphviz project</a>
-   */
-  public static <T> void toDot(FST<T> fst, Writer out, boolean sameRank, boolean labelStates) 
+  public static <T> void toDot(FST<T> fst, Writer out, boolean sameRank, boolean labelStates)
     throws IOException {    
     final String expandedNodeColor = "blue";
 
@@ -811,9 +727,6 @@ public final class Util {
     out.flush();
   }
 
-  /**
-   * Emit a single state in the <code>dot</code> language. 
-   */
   private static void emitDotState(Writer out, String name, String shape,
       String color, String label) throws IOException {
     out.write("  " + name 
@@ -824,9 +737,6 @@ public final class Util {
         + "]\n");
   }
 
-  /**
-   * Ensures an arc's label is indeed printable (dot uses US-ASCII). 
-   */
   private static String printableLabel(int label) {
     // Any ordinary ascii character, except for " or \, are
     // printed as the character; else, as a hex string:
@@ -836,8 +746,6 @@ public final class Util {
     return "0x" + Integer.toHexString(label);
   }
 
-  /** Just maps each UTF16 unit (char) to the ints in an
-   *  IntsRef. */
   public static IntsRef toUTF16(CharSequence s, IntsRefBuilder scratch) {
     final int charLimit = s.length();
     scratch.setLength(charLimit);
@@ -848,9 +756,7 @@ public final class Util {
     return scratch.get();
   }    
 
-  /** Decodes the Unicode codepoints from the provided
-   *  CharSequence and places them in the provided scratch
-   *  IntsRef, which must not be null, returning it. */
+
   public static IntsRef toUTF32(CharSequence s, IntsRefBuilder scratch) {
     int charIdx = 0;
     int intIdx = 0;
@@ -866,9 +772,7 @@ public final class Util {
     return scratch.get();
   }
 
-  /** Decodes the Unicode codepoints from the provided
-   *  char[] and places them in the provided scratch
-   *  IntsRef, which must not be null, returning it. */
+
   public static IntsRef toUTF32(char[] s, int offset, int length, IntsRefBuilder scratch) {
     int charIdx = offset;
     int intIdx = 0;
@@ -884,8 +788,6 @@ public final class Util {
     return scratch.get();
   }
 
-  /** Just takes unsigned byte values from the BytesRef and
-   *  converts into an IntsRef. */
   public static IntsRef toIntsRef(BytesRef input, IntsRefBuilder scratch) {
     scratch.clear();
     for(int i=0;i<input.length;i++) {
@@ -894,8 +796,6 @@ public final class Util {
     return scratch.get();
   }
 
-  /** Just converts IntsRef to BytesRef; you must ensure the
-   *  int values fit into a byte. */
   public static BytesRef toBytesRef(IntsRef input, BytesRefBuilder scratch) {
     scratch.grow(input.length);
     for(int i=0;i<input.length;i++) {
@@ -918,16 +818,6 @@ public final class Util {
   }
   */
 
-  /**
-   * Reads the first arc greater or equal that the given label into the provided
-   * arc in place and returns it iff found, otherwise return <code>null</code>.
-   * 
-   * @param label the label to ceil on
-   * @param fst the fst to operate on
-   * @param follow the arc to follow reading the label from
-   * @param arc the arc to read into in place
-   * @param in the fst's {@link BytesReader}
-   */
   public static <T> Arc<T> readCeilArc(int label, FST<T> fst, Arc<T> follow,
       Arc<T> arc, BytesReader in) throws IOException {
     // TODO maybe this is a useful in the FST class - we could simplify some other code like FSTEnum?

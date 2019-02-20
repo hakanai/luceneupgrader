@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -35,38 +34,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ThreadInterruptedException;
 
-/**
- * Utility class to manage sharing near-real-time searchers
- * across multiple searching thread.  The difference vs
- * SearcherManager is that this class enables individual
- * requests to wait until specific indexing changes are
- * visible.
- *
- * <p>You must create an IndexWriter, then create a {@link
- * NRTManager.TrackingIndexWriter} from it, and pass that to the
- * NRTManager.  You may want to create two NRTManagers, once
- * that always applies deletes on refresh and one that does
- * not.  In this case you should use a single {@link
- * NRTManager.TrackingIndexWriter} instance for both.
- *
- * <p>Then, use {@link #acquire} to obtain the
- * {@link IndexSearcher}, and {@link #release} (ideally,
- * from within a <code>finally</code> clause) to release it.
- *
- * <p>NOTE: to use this class, you must call {@link #maybeRefresh()}
- * periodically.  The {@link NRTManagerReopenThread} is a
- * simple class to do this on a periodic basis, and reopens
- * more quickly if a request is waiting.  If you implement
- * your own reopener, be sure to call {@link
- * #addWaitingListener} so your reopener is notified when a
- * caller is waiting for a specific generation
- * searcher. </p>
- *
- * @see SearcherFactory
- * 
- * @lucene.experimental
- */
-
 public class NRTManager extends ReferenceManager<IndexSearcher> {
   private static final long MAX_SEARCHER_GEN = Long.MAX_VALUE;
   private final TrackingIndexWriter writer;
@@ -77,26 +44,11 @@ public class NRTManager extends ReferenceManager<IndexSearcher> {
 
   private volatile long searchingGen;
 
-  /**
-   * Create new NRTManager.
-   * 
-   * @param writer TrackingIndexWriter to open near-real-time
-   *        readers
-   * @param searcherFactory An optional {@link SearcherFactory}. Pass
-   *        <code>null</code> if you don't require the searcher to be warmed
-   *        before going live or other custom behavior.
-   */
   public NRTManager(TrackingIndexWriter writer, SearcherFactory searcherFactory) throws IOException {
     this(writer, searcherFactory, true);
   }
 
-  /**
-   * Expert: just like {@link
-   * #NRTManager(TrackingIndexWriter,SearcherFactory)},
-   * but you can also specify whether each reopened searcher must
-   * apply deletes.  This is useful for cases where certain
-   * uses can tolerate seeing some deleted docs, since
-   * reopen time is faster if deletes need not be applied. */
+
   public NRTManager(TrackingIndexWriter writer, SearcherFactory searcherFactory, boolean applyAllDeletes) throws IOException {
     this.writer = writer;
     if (searcherFactory == null) {
@@ -116,34 +68,21 @@ public class NRTManager extends ReferenceManager<IndexSearcher> {
     return reference.getIndexReader().tryIncRef();
   }
 
-  /** NRTManager invokes this interface to notify it when a
-   *  caller is waiting for a specific generation searcher
-   *  to be visible. */
+
   public static interface WaitingListener {
     public void waiting(long targetGen);
   }
 
-  /** Adds a listener, to be notified when a caller is
-   *  waiting for a specific generation searcher to be
-   *  visible. */
+
   public void addWaitingListener(WaitingListener l) {
     waitingListeners.add(l);
   }
 
-  /** Remove a listener added with {@link
-   *  #addWaitingListener}. */
   public void removeWaitingListener(WaitingListener l) {
     waitingListeners.remove(l);
   }
 
-  /** Class that tracks changes to a delegated
-   * IndexWriter.  Create this class (passing your
-   * IndexWriter), and then pass this class to NRTManager.
-   * Be sure to make all changes via the
-   * TrackingIndexWriter, otherwise NRTManager won't know
-   * about the changes.
-   *
-   * @lucene.experimental */
+
   public static class TrackingIndexWriter {
     private final IndexWriter writer;
     private final AtomicLong indexingGen = new AtomicLong(1);
@@ -255,38 +194,10 @@ public class NRTManager extends ReferenceManager<IndexSearcher> {
     }
   }
 
-  /**
-   * Waits for the target generation to become visible in
-   * the searcher.
-   * If the current searcher is older than the
-   * target generation, this method will block
-   * until the searcher is reopened, by another via
-   * {@link #maybeRefresh} or until the {@link NRTManager} is closed.
-   * 
-   * @param targetGen the generation to wait for
-   */
   public void waitForGeneration(long targetGen) {
     waitForGeneration(targetGen, -1, TimeUnit.NANOSECONDS);
   }
 
-  /**
-   * Waits for the target generation to become visible in
-   * the searcher.  If the current searcher is older than
-   * the target generation, this method will block until the
-   * searcher has been reopened by another thread via
-   * {@link #maybeRefresh}, the given waiting time has elapsed, or until
-   * the NRTManager is closed.
-   * <p>
-   * NOTE: if the waiting time elapses before the requested target generation is
-   * available the current {@link SearcherManager} is returned instead.
-   * 
-   * @param targetGen
-   *          the generation to wait for
-   * @param time
-   *          the time to wait for the target generation
-   * @param unit
-   *          the waiting time's time unit
-   */
   public void waitForGeneration(long targetGen, long time, TimeUnit unit) {
     try {
       final long curGen = writer.getGeneration();
@@ -324,7 +235,6 @@ public class NRTManager extends ReferenceManager<IndexSearcher> {
     }
   }
 
-  /** Returns generation of current searcher. */
   public long getCurrentSearchingGen() {
     return searchingGen;
   }
@@ -375,11 +285,6 @@ public class NRTManager extends ReferenceManager<IndexSearcher> {
     }
   }
 
-  /**
-   * Returns <code>true</code> if no changes have occured since this searcher
-   * ie. reader was opened, otherwise <code>false</code>.
-   * @see IndexReader#isCurrent() 
-   */
   public boolean isSearcherCurrent() throws IOException {
     final IndexSearcher searcher = acquire();
     try {

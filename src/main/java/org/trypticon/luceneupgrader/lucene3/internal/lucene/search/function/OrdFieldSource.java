@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -13,8 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
@@ -22,40 +21,10 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.FieldCache;
 
 import java.io.IOException;
 
-/**
- * Expert: obtains the ordinal of the field value from the default Lucene 
- * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.FieldCache Fieldcache} using getStringIndex().
- * <p>
- * The native lucene index order is used to assign an ordinal value for each field value.
- * <p
- * Field values (terms) are lexicographically ordered by unicode value, and numbered starting at 1.
- * <p>
- * Example:
- * <br>If there were only three field values: "apple","banana","pear"
- * <br>then ord("apple")=1, ord("banana")=2, ord("pear")=3
- * <p>
- * WARNING: 
- * ord() depends on the position in an index and can thus change 
- * when other documents are inserted or deleted,
- * or if a MultiSearcher is used. 
- *
- * @lucene.experimental
- *
- * <p><b>NOTE</b>: with the switch in 2.9 to segment-based
- * searching, if {@link #getValues} is invoked with a
- * composite (multi-segment) reader, this can easily cause
- * double RAM usage for the values in the FieldCache.  It's
- * best to switch your application to pass only atomic
- * (single segment) readers to this API.</p>
- */
-
 public class OrdFieldSource extends ValueSource {
   protected String field;
 
-  /** 
-   * Constructor for a certain field.
-   * @param field field whose values order is used.  
-   */
+
   public OrdFieldSource(String field) {
     this.field = field;
   }

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -13,16 +13,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.DocIdSetIterator;
 
-/** An iterator to iterate over set bits in an OpenBitSet.
- * This is faster than nextSetBit() for iterating over the complete set of bits,
- * especially when the density of the bits set is high.
- */
 public class OpenBitSetIterator extends DocIdSetIterator {
 
   // The General Idea: instead of having an array per byte that has
@@ -60,20 +55,6 @@ public class OpenBitSetIterator extends DocIdSetIterator {
     0x87653, 0x876531, 0x876532, 0x8765321, 0x87654, 0x876541, 0x876542, 
     0x8765421, 0x876543, 0x8765431, 0x8765432, 0x87654321
   };
-  /***** the python code that generated bitlist
-  def bits2int(val):
-  arr=0
-  for shift in range(8,0,-1):
-    if val & 0x80:
-      arr = (arr << 4) | shift
-    val = val << 1
-  return arr
-
-  def int_table():
-    tbl = [ hex(bits2int(val)).strip('L') for val in range(256) ]
-    return ','.join(tbl)
-  ******/
-
   // hmmm, what about an iterator that finds zeros though,
   // or a reverse iterator... should they be separate classes
   // for efficiency, or have a common root interface?  (or
@@ -103,28 +84,6 @@ public class OpenBitSetIterator extends DocIdSetIterator {
     if ((word & 0x000000FF) == 0) { wordShift +=8; word >>>=8; }
     indexArray = bitlist[(int)word & 0xff];
   }
-
-  /***** alternate shift implementations
-  // 32 bit shifts, but a long shift needed at the end
-  private void shift2() {
-    int y = (int)word;
-    if (y==0) {wordShift +=32; y = (int)(word >>>32); }
-    if ((y & 0x0000FFFF) == 0) { wordShift +=16; y>>>=16; }
-    if ((y & 0x000000FF) == 0) { wordShift +=8; y>>>=8; }
-    indexArray = bitlist[y & 0xff];
-    word >>>= (wordShift +1);
-  }
-
-  private void shift3() {
-    int lower = (int)word;
-    int lowByte = lower & 0xff;
-    if (lowByte != 0) {
-      indexArray=bitlist[lowByte];
-      return;
-    }
-    shift();
-  }
-  ******/
 
   @Override
   public int nextDoc() {

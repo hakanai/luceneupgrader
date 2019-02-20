@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,22 +13,14 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
 
 import java.io.IOException;
 import java.util.Arrays;
-
-/**
- * Space optimized random access capable array of values with a fixed number of
- * bits. For 32 bits/value and less, performance on 32 bit machines is not
- * optimal. Consider using {@link Packed32} for such a setup.
- * </p><p>
- * The implementation strives to avoid conditionals and expensive operations,
- * sacrificing code clarity to achieve better performance.
- */
 
 class Packed64 extends PackedInts.ReaderImpl implements PackedInts.Mutable {
   static final int BLOCK_SIZE = 64; // 32 = int, 64 = long
@@ -110,12 +100,6 @@ class Packed64 extends PackedInts.ReaderImpl implements PackedInts.Mutable {
   private long[] readMasks;
   private long[] writeMasks;
 
-  /**
-   * Creates an array with the internal structures adjusted for the given
-   * limits and initialized to 0.
-   * @param valueCount   the number of elements.
-   * @param bitsPerValue the number of bits available for any given value.
-   */
   public Packed64(int valueCount, int bitsPerValue) {
     // TODO: Test for edge-cases (2^31 values, 63 bitsPerValue)
     // +2 due to the avoid-conditionals-trick. The last entry is always 0
@@ -124,30 +108,12 @@ class Packed64 extends PackedInts.ReaderImpl implements PackedInts.Mutable {
   }
 
 
-  /**
-   * Creates an array backed by the given blocks.
-   * </p><p>
-   * Note: The blocks are used directly, so changes to the given block will
-   * affect the Packed32-structure.
-   * @param blocks   used as the internal backing array. Not that the last
-   *                 element cannot be addressed directly.
-   * @param valueCount the number of values.
-   * @param bitsPerValue the number of bits available for any given value.
-   */
   public Packed64(long[] blocks, int valueCount, int bitsPerValue) {
     super(valueCount, bitsPerValue);
     this.blocks = blocks;
     updateCached();
   }
 
-  /**
-   * Creates an array with content retrieved from the given DataInput.
-   * @param in       a DataInput, positioned at the start of Packed64-content.
-   * @param valueCount  the number of elements.
-   * @param bitsPerValue the number of bits available for any given value.
-   * @throws java.io.IOException if the values for the backing array could not
-   *                             be retrieved.
-   */
   public Packed64(DataInput in, int valueCount, int bitsPerValue)
                                                             throws IOException {
     super(valueCount, bitsPerValue);
@@ -172,10 +138,6 @@ class Packed64 extends PackedInts.ReaderImpl implements PackedInts.Mutable {
     maxPos = (int)((((long)blocks.length) * BLOCK_SIZE / bitsPerValue) - 2);
   }
 
-  /**
-   * @param index the position of the value.
-   * @return the value at the given index.
-   */
   public long get(final int index) {
     assert index >= 0 && index < size();
     final long majorBitPos = (long)index * bitsPerValue;

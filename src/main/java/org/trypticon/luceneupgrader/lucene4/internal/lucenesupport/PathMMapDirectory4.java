@@ -15,13 +15,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Locale;
 
-/**
- * Clone of {@link MMapDirectory} accepting {@link Path} instead of {@link File}.
- */
 public class PathMMapDirectory4 extends PathFSDirectory4 {
-    /**
-     * <code>true</code>, if this platform supports unmapping mmapped files.
-     */
     public static final boolean UNMAP_SUPPORTED;
     static {
         boolean v;
@@ -37,53 +31,17 @@ public class PathMMapDirectory4 extends PathFSDirectory4 {
     }
 
     private boolean useUnmapHack = UNMAP_SUPPORTED;
-    /**
-     * Default max chunk size.
-     * @see #PathMMapDirectory4(Path, LockFactory, int)
-     */
     public static final int DEFAULT_MAX_BUFF = Constants.JRE_IS_64BIT ? (1 << 30) : (1 << 28);
     final int chunkSizePower;
 
-    /** Create a new PathMMapDirectory4 for the named location.
-     *
-     * @param path the path of the directory
-     * @param lockFactory the lock factory to use, or null for the default
-     * ({@link NativeFSLockFactory});
-     * @throws IOException if there is a low-level I/O error
-     */
     public PathMMapDirectory4(Path path, LockFactory lockFactory) throws IOException {
         this(path, lockFactory, DEFAULT_MAX_BUFF);
     }
 
-    /** Create a new PathMMapDirectory4 for the named location and {@link NativeFSLockFactory}.
-     *
-     * @param path the path of the directory
-     * @throws IOException if there is a low-level I/O error
-     */
     public PathMMapDirectory4(Path path) throws IOException {
         this(path, null);
     }
 
-    /**
-     * Create a new PathMMapDirectory4 for the named location, specifying the
-     * maximum chunk size used for memory mapping.
-     *
-     * @param path the path of the directory
-     * @param lockFactory the lock factory to use, or null for the default
-     * ({@link NativeFSLockFactory});
-     * @param maxChunkSize maximum chunk size (default is 1 GiBytes for
-     * 64 bit JVMs and 256 MiBytes for 32 bit JVMs) used for memory mapping.
-     * <p>
-     * Especially on 32 bit platform, the address space can be very fragmented,
-     * so large index files cannot be mapped. Using a lower chunk size makes
-     * the directory implementation a little bit slower (as the correct chunk
-     * may be resolved on lots of seeks) but the chance is higher that mmap
-     * does not fail. On 64 bit Java platforms, this parameter should always
-     * be {@code 1 << 30}, as the address space is big enough.
-     * <p>
-     * <b>Please note:</b> The chunk size is always rounded down to a power of 2.
-     * @throws IOException if there is a low-level I/O error
-     */
     public PathMMapDirectory4(Path path, LockFactory lockFactory, int maxChunkSize) throws IOException {
         super(path, lockFactory);
         if (maxChunkSize <= 0) {
@@ -93,41 +51,20 @@ public class PathMMapDirectory4 extends PathFSDirectory4 {
         assert this.chunkSizePower >= 0 && this.chunkSizePower <= 30;
     }
 
-    /**
-     * This method enables the workaround for unmapping the buffers
-     * from address space after closing {@link IndexInput}, that is
-     * mentioned in the bug report. This hack may fail on non-Sun JVMs.
-     * It forcefully unmaps the buffer on close by using
-     * an undocumented internal cleanup functionality.
-     * <p><b>NOTE:</b> Enabling this is completely unsupported
-     * by Java and may lead to JVM crashes if <code>IndexInput</code>
-     * is closed while another thread is still accessing it (SIGSEGV).
-     * @throws IllegalArgumentException if {@link #UNMAP_SUPPORTED}
-     * is <code>false</code> and the workaround cannot be enabled.
-     */
     public void setUseUnmap(final boolean useUnmapHack) {
         if (useUnmapHack && !UNMAP_SUPPORTED)
             throw new IllegalArgumentException("Unmap hack not supported on this platform!");
         this.useUnmapHack=useUnmapHack;
     }
 
-    /**
-     * Returns <code>true</code>, if the unmap workaround is enabled.
-     * @see #setUseUnmap
-     */
     public boolean getUseUnmap() {
         return useUnmapHack;
     }
 
-    /**
-     * Returns the current mmap chunk size.
-     * @see #PathMMapDirectory4(Path, LockFactory, int)
-     */
     public final int getMaxChunkSize() {
         return 1 << chunkSizePower;
     }
 
-    /** Creates an IndexInput for the file with the given name. */
     @Override
     public IndexInput openInput(String name, IOContext context) throws IOException {
         ensureOpen();
@@ -141,7 +78,6 @@ public class PathMMapDirectory4 extends PathFSDirectory4 {
         }
     }
 
-    /** Maps a file into a set of buffers */
     final ByteBuffer[] map(String resourceDescription, FileChannel fc, long offset, long length) throws IOException {
         if ((length >>> chunkSizePower) >= Integer.MAX_VALUE)
             throw new IllegalArgumentException("RandomAccessFile too big for chunk size: " + resourceDescription);

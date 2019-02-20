@@ -22,14 +22,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BitDocIdSet;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.FixedBitSet;
 
-/**
- * Base class for DocIdSet to be used with DocValues. The implementation
- * of its iterator is very stupid and slow if the implementation of the
- * {@link #matchDoc} method is not optimized, as iterators simply increment
- * the document id until {@code matchDoc(int)} returns true. Because of this
- * {@code matchDoc(int)} must be as fast as possible.
- * @lucene.internal
- */
 public abstract class DocValuesDocIdSet extends DocIdSet {
 
   protected final int maxDoc;
@@ -40,9 +32,6 @@ public abstract class DocValuesDocIdSet extends DocIdSet {
     this.acceptDocs = acceptDocs;
   }
 
-  /**
-   * this method checks, if a doc is a hit
-   */
   protected abstract boolean matchDoc(int doc);
 
   @Override

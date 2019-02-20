@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,27 +13,18 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
 import java.util.Comparator;
 import java.util.Collections;
 import java.util.List;
 import java.util.RandomAccess;
 
-/**
- * Methods for manipulating (sorting) collections.
- * Sort methods work directly on the supplied lists and don't copy to/from arrays
- * before/after. For medium size collections as used in the Lucene indexer that is
- * much more efficient.
- *
- * @lucene.internal
- */
-
 public final class CollectionUtil {
 
   private CollectionUtil() {} // no instance
   
-  /** SorterTemplate with custom {@link Comparator} */
   private static <T> SorterTemplate getSorter(final List<T> list, final Comparator<? super T> comp) {
     if (!(list instanceof RandomAccess))
       throw new IllegalArgumentException("CollectionUtil can only sort random access lists in-place.");
@@ -64,7 +53,6 @@ public final class CollectionUtil {
     };
   }
   
-  /** Natural SorterTemplate */
   private static <T extends Comparable<? super T>> SorterTemplate getSorter(final List<T> list) {
     if (!(list instanceof RandomAccess))
       throw new IllegalArgumentException("CollectionUtil can only sort random access lists in-place.");
@@ -93,24 +81,12 @@ public final class CollectionUtil {
     };
   }
 
-  /**
-   * Sorts the given random access {@link List} using the {@link Comparator}.
-   * The list must implement {@link RandomAccess}. This method uses the quick sort
-   * algorithm, but falls back to insertion sort for small lists.
-   * @throws IllegalArgumentException if list is e.g. a linked list without random access.
-   */
   public static <T> void quickSort(List<T> list, Comparator<? super T> comp) {
     final int size = list.size();
     if (size <= 1) return;
     getSorter(list, comp).quickSort(0, size-1);
   }
   
-  /**
-   * Sorts the given random access {@link List} in natural order.
-   * The list must implement {@link RandomAccess}. This method uses the quick sort
-   * algorithm, but falls back to insertion sort for small lists.
-   * @throws IllegalArgumentException if list is e.g. a linked list without random access.
-   */
   public static <T extends Comparable<? super T>> void quickSort(List<T> list) {
     final int size = list.size();
     if (size <= 1) return;
@@ -119,24 +95,12 @@ public final class CollectionUtil {
 
   // mergeSorts:
   
-  /**
-   * Sorts the given random access {@link List} using the {@link Comparator}.
-   * The list must implement {@link RandomAccess}. This method uses the merge sort
-   * algorithm, but falls back to insertion sort for small lists.
-   * @throws IllegalArgumentException if list is e.g. a linked list without random access.
-   */
   public static <T> void mergeSort(List<T> list, Comparator<? super T> comp) {
     final int size = list.size();
     if (size <= 1) return;
     getSorter(list, comp).mergeSort(0, size-1);
   }
   
-  /**
-   * Sorts the given random access {@link List} in natural order.
-   * The list must implement {@link RandomAccess}. This method uses the merge sort
-   * algorithm, but falls back to insertion sort for small lists.
-   * @throws IllegalArgumentException if list is e.g. a linked list without random access.
-   */
   public static <T extends Comparable<? super T>> void mergeSort(List<T> list) {
     final int size = list.size();
     if (size <= 1) return;
@@ -145,24 +109,12 @@ public final class CollectionUtil {
 
   // insertionSorts:
   
-  /**
-   * Sorts the given random access {@link List} using the {@link Comparator}.
-   * The list must implement {@link RandomAccess}. This method uses the insertion sort
-   * algorithm. It is only recommended to use this algorithm for partially sorted small lists!
-   * @throws IllegalArgumentException if list is e.g. a linked list without random access.
-   */
   public static <T> void insertionSort(List<T> list, Comparator<? super T> comp) {
     final int size = list.size();
     if (size <= 1) return;
     getSorter(list, comp).insertionSort(0, size-1);
   }
   
-  /**
-   * Sorts the given random access {@link List} in natural order.
-   * The list must implement {@link RandomAccess}. This method uses the insertion sort
-   * algorithm. It is only recommended to use this algorithm for partially sorted small lists!
-   * @throws IllegalArgumentException if list is e.g. a linked list without random access.
-   */
   public static <T extends Comparable<? super T>> void insertionSort(List<T> list) {
     final int size = list.size();
     if (size <= 1) return;

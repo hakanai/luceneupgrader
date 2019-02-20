@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -13,20 +13,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.util.LinkedList;
 
-/**
- * Simplistic {@link CharFilter} that applies the mappings
- * contained in a {@link NormalizeCharMap} to the character
- * stream, and correcting the resulting changes to the
- * offsets.
- */
+
 public class MappingCharFilter extends BaseCharFilter {
 
   private final NormalizeCharMap normMap;
@@ -35,13 +29,11 @@ public class MappingCharFilter extends BaseCharFilter {
   private int charPointer;
   private int nextCharCounter;
 
-  /** Default constructor that takes a {@link CharStream}. */
   public MappingCharFilter(NormalizeCharMap normMap, CharStream in) {
     super(in);
     this.normMap = normMap;
   }
 
-  /** Easy-use constructor that takes a {@link Reader}. */
   public MappingCharFilter(NormalizeCharMap normMap, Reader in) {
     super(CharReader.get(in));
     this.normMap = normMap;

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 
@@ -27,30 +26,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeSource
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ToStringUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.LevenshteinAutomata;
 
-/** Implements the fuzzy search query. The similarity measurement
- * is based on the Damerau-Levenshtein (optimal string alignment) algorithm,
- * though you can explicitly choose classic Levenshtein by passing <code>false</code>
- * to the <code>transpositions</code> parameter.
- * 
- * <p>This query uses {@link MultiTermQuery.TopTermsScoringBooleanQueryRewrite}
- * as default. So terms will be collected and scored according to their
- * edit distance. Only the top terms are used for building the {@link BooleanQuery}.
- * It is not recommended to change the rewrite mode for fuzzy queries.
- * 
- * <p>At most, this query will match terms up to 
- * {@value org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.LevenshteinAutomata#MAXIMUM_SUPPORTED_DISTANCE} edits.
- * Higher distances (especially with transpositions enabled), are generally not useful and 
- * will match a significant amount of the term dictionary. If you really want this, consider
- * using an n-gram indexing technique (such as the SpellChecker in the 
- * <a href="{@docRoot}/../suggest/overview-summary.html">suggest module</a>) instead.
- *
- * <p>NOTE: terms of length 1 or 2 will sometimes not match because of how the scaled
- * distance between two terms is computed.  For a term to match, the edit distance between
- * the terms must be less than the minimum length term (either the input term, or
- * the candidate term).  For example, FuzzyQuery on term "abcd" with maxEdits=2 will
- * not match an indexed term "ab", and FuzzyQuery on term "a" with maxEdits=2 will not
- * match an indexed term "abc".
- */
 public class FuzzyQuery extends MultiTermQuery {
   
   public final static int defaultMaxEdits = LevenshteinAutomata.MAXIMUM_SUPPORTED_DISTANCE;
@@ -64,22 +39,6 @@ public class FuzzyQuery extends MultiTermQuery {
   private final int prefixLength;
   private final Term term;
   
-  /**
-   * Create a new FuzzyQuery that will match terms with an edit distance 
-   * of at most <code>maxEdits</code> to <code>term</code>.
-   * If a <code>prefixLength</code> &gt; 0 is specified, a common prefix
-   * of that length is also required.
-   * 
-   * @param term the term to search for
-   * @param maxEdits must be >= 0 and <= {@link LevenshteinAutomata#MAXIMUM_SUPPORTED_DISTANCE}.
-   * @param prefixLength length of common (non-fuzzy) prefix
-   * @param maxExpansions the maximum number of terms to match. If this number is
-   *  greater than {@link BooleanQuery#getMaxClauseCount} when the query is rewritten, 
-   *  then the maxClauseCount will be used instead.
-   * @param transpositions true if transpositions should be treated as a primitive
-   *        edit operation. If this is false, comparisons will implement the classic
-   *        Levenshtein algorithm.
-   */
   public FuzzyQuery(Term term, int maxEdits, int prefixLength, int maxExpansions, boolean transpositions) {
     super(term.field());
     
@@ -101,48 +60,26 @@ public class FuzzyQuery extends MultiTermQuery {
     setRewriteMethod(new MultiTermQuery.TopTermsScoringBooleanQueryRewrite(maxExpansions));
   }
   
-  /**
-   * Calls {@link #FuzzyQuery(Term, int, int, int, boolean) 
-   * FuzzyQuery(term, maxEdits, prefixLength, defaultMaxExpansions, defaultTranspositions)}.
-   */
   public FuzzyQuery(Term term, int maxEdits, int prefixLength) {
     this(term, maxEdits, prefixLength, defaultMaxExpansions, defaultTranspositions);
   }
   
-  /**
-   * Calls {@link #FuzzyQuery(Term, int, int) FuzzyQuery(term, maxEdits, defaultPrefixLength)}.
-   */
   public FuzzyQuery(Term term, int maxEdits) {
     this(term, maxEdits, defaultPrefixLength);
   }
 
-  /**
-   * Calls {@link #FuzzyQuery(Term, int) FuzzyQuery(term, defaultMaxEdits)}.
-   */
   public FuzzyQuery(Term term) {
     this(term, defaultMaxEdits);
   }
   
-  /**
-   * @return the maximum number of edit distances allowed for this query to match.
-   */
   public int getMaxEdits() {
     return maxEdits;
   }
     
-  /**
-   * Returns the non-fuzzy prefix length. This is the number of characters at the start
-   * of a term that must be identical (not fuzzy) to the query term if the query
-   * is to match that term. 
-   */
   public int getPrefixLength() {
     return prefixLength;
   }
   
-  /**
-   * Returns true if transpositions should be treated as a primitive edit operation. 
-   * If this is false, comparisons will implement the classic Levenshtein algorithm.
-   */
   public boolean getTranspositions() {
     return transpositions;
   }
@@ -155,9 +92,6 @@ public class FuzzyQuery extends MultiTermQuery {
     return new FuzzyTermsEnum(terms, atts, getTerm(), maxEdits, prefixLength, transpositions);
   }
   
-  /**
-   * Returns the pattern term.
-   */
   public Term getTerm() {
     return term;
   }
@@ -213,21 +147,9 @@ public class FuzzyQuery extends MultiTermQuery {
     return true;
   }
   
-  /**
-   * @deprecated pass integer edit distances instead.
-   */
   @Deprecated
   public final static float defaultMinSimilarity = LevenshteinAutomata.MAXIMUM_SUPPORTED_DISTANCE;
 
-  /**
-   * Helper function to convert from deprecated "minimumSimilarity" fractions
-   * to raw edit distances.
-   * 
-   * @param minimumSimilarity scaled similarity
-   * @param termLen length (in unicode codepoints) of the term.
-   * @return equivalent number of maxEdits
-   * @deprecated pass integer edit distances instead.
-   */
   @Deprecated
   public static int floatToEdits(float minimumSimilarity, int termLen) {
     if (minimumSimilarity >= 1f) {

@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
 
 import java.io.IOException;
@@ -25,13 +24,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexFormatToo
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexFormatTooOldException;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataOutput;
-
-/**
- * Utility class for reading and writing versioned headers.
- * This is useful to ensure that a file is in the format
- * you think it is.
- * @lucene.experimental
- */
 
 public final class CodecUtil {
   private CodecUtil() {} // no instance

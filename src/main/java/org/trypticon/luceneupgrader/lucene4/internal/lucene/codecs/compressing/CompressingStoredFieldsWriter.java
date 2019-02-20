@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
 
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40.Lucene40StoredFieldsWriter.FIELDS_EXTENSION;
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40.Lucene40StoredFieldsWriter.FIELDS_INDEX_EXTENSION;
@@ -48,10 +47,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.GrowableByteArr
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
-/**
- * {@link StoredFieldsWriter} impl for {@link CompressingStoredFieldsFormat}.
- * @lucene.experimental
- */
 public final class CompressingStoredFieldsWriter extends StoredFieldsWriter {
 
   // hard limit on the maximum number of documents per chunk
@@ -90,7 +85,6 @@ public final class CompressingStoredFieldsWriter extends StoredFieldsWriter {
   private int docBase; // doc ID at the beginning of the chunk
   private int numBufferedDocs; // docBase + numBufferedDocs == current doc ID
 
-  /** Sole constructor. */
   public CompressingStoredFieldsWriter(Directory directory, SegmentInfo si, String segmentSuffix, IOContext context,
       String formatName, CompressionMode compressionMode, int chunkSize) throws IOException {
     assert directory != null;

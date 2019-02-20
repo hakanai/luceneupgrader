@@ -29,20 +29,8 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.util;
  * =============================================================================
  */
 
-/** Math functions that trade off accuracy for speed. */
 public class SloppyMath {
   
-  /**
-   * Returns the Haversine distance in kilometers between two points
-   * specified in decimal degrees (latitude/longitude).  This works correctly
-   * even if the dateline is between the two points.
-   *
-   * @param lat1 Latitude of the first point.
-   * @param lon1 Longitude of the first point.
-   * @param lat2 Latitude of the second point.
-   * @param lon2 Longitude of the second point.
-   * @return distance in kilometers.
-   */
   public static double haversin(double lat1, double lon1, double lat2, double lon2) {
     double x1 = lat1 * TO_RADIANS;
     double x2 = lat2 * TO_RADIANS;
@@ -57,19 +45,6 @@ public class SloppyMath {
     
   }
 
-  /**
-   * Returns the trigonometric cosine of an angle.
-   * <p>
-   * Error is around 1E-15.
-   * <p>
-   * Special cases:
-   * <ul>
-   *  <li>If the argument is {@code NaN} or an infinity, then the result is {@code NaN}.
-   * </ul>
-   * @param a an angle, in radians.
-   * @return the cosine of the argument.
-   * @see Math#cos(double)
-   */
   public static double cos(double a) {
     if (a < 0.0) {
       a = -a;
@@ -88,54 +63,14 @@ public class SloppyMath {
     return indexCos + delta * (-indexSin + delta * (-indexCos * ONE_DIV_F2 + delta * (indexSin * ONE_DIV_F3 + delta * indexCos * ONE_DIV_F4)));
   }
 
-  /**
-   * Returns the trigonometric sine of an angle converted as a cos operation.
-   * <p>
-   * Error is around 1E-15.
-   * <p>
-   * Special cases:
-   * <ul>
-   *  <li>If the argument is {@code NaN} or an infinity, then the result is {@code NaN}.
-   * </ul>
-   * @param a an angle, in radians.
-   * @return the sine of the argument.
-   * @see Math#cos(double)
-   */
   public static double sin(double a) {
     return cos(a - PIO2);
   }
 
-  /**
-   * Returns the trigonometric tangent of an angle converted in terms of a sin/cos operation.
-   * <p>
-   * Error is around 1E-15.
-   * <p>
-   * Special cases:
-   * <ul>
-   *  <li>If the argument is {@code NaN} or an infinity, then the result is {@code NaN}.
-   * </ul>
-   * @param a an angle, in radians.
-   * @return the tangent of the argument.
-   * @see Math#sin(double) aand Math#cos(double)
-   */
   public static double tan(double a) {
     return sin(a) / cos(a);
   }
 
-  /**
-   * Returns the arc sine of a value.
-   * <p>
-   * The returned angle is in the range <i>-pi</i>/2 through <i>pi</i>/2. 
-   * Error is around 1E-7.
-   * <p>
-   * Special cases:
-   * <ul>
-   *  <li>If the argument is {@code NaN} or its absolute value is greater than 1, then the result is {@code NaN}.
-   * </ul>
-   * @param a the value whose arc sine is to be returned.
-   * @return arc sine of the argument
-   * @see Math#asin(double)
-   */
   // because asin(-x) = -asin(x), asin(x) only needs to be computed on [0,1].
   // ---> we only have to compute asin(x) on [0,1].
   // For values not close to +-1, we use look-up tables;
@@ -173,7 +108,6 @@ public class SloppyMath {
     }
   }
 
-  /** Return an approximate value of the diameter of the earth at the given latitude, in kilometers. */
   public static double earthDiameter(double latitude) {
     final int index = (int)(Math.abs(latitude) * RADIUS_INDEXER + 0.5) % earthDiameterPerLatitude.length;
     return earthDiameterPerLatitude[index];
@@ -237,7 +171,6 @@ public class SloppyMath {
   private static final double RADIUS_INDEXER = 1d/RADIUS_DELTA;
   private static final double[] earthDiameterPerLatitude = new double[RADIUS_TABS_SIZE];
   
-  /** Initializes look-up tables. */
   static {
     // sin and cos
     final int SIN_COS_PI_INDEX = (SIN_COS_TABS_SIZE-1)/2;

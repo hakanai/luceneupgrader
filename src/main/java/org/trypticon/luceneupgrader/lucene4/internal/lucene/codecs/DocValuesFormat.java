@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
 
 import java.io.IOException;
 import java.util.ServiceLoader;
@@ -25,57 +24,23 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentReadSta
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentWriteState;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.NamedSPILoader;
 
-/** 
- * Encodes/decodes per-document values.
- * <p>
- * Note, when extending this class, the name ({@link #getName}) may
- * written into the index in certain configurations. In order for the segment 
- * to be read, the name must resolve to your implementation via {@link #forName(String)}.
- * This method uses Java's 
- * {@link ServiceLoader Service Provider Interface} (SPI) to resolve format names.
- * <p>
- * If you implement your own format, make sure that it has a no-arg constructor
- * so SPI can load it.
- * @see ServiceLoader
- * @lucene.experimental */
+
 public abstract class DocValuesFormat implements NamedSPILoader.NamedSPI {
   
   private static final NamedSPILoader<DocValuesFormat> loader =
       new NamedSPILoader<>(DocValuesFormat.class);
   
-  /** Unique name that's used to retrieve this format when
-   *  reading the index.
-   */
+
   private final String name;
 
-  /**
-   * Creates a new docvalues format.
-   * <p>
-   * The provided name will be written into the index segment in some configurations
-   * (such as when using {@code PerFieldDocValuesFormat}): in such configurations,
-   * for the segment to be read this class should be registered with Java's
-   * SPI mechanism (registered in META-INF/ of your jar file, etc).
-   * @param name must be all ascii alphanumeric, and less than 128 characters in length.
-   */
   protected DocValuesFormat(String name) {
     NamedSPILoader.checkServiceName(name);
     this.name = name;
   }
 
-  /** Returns a {@link DocValuesConsumer} to write docvalues to the
-   *  index. */
   public abstract DocValuesConsumer fieldsConsumer(SegmentWriteState state) throws IOException;
 
-  /** 
-   * Returns a {@link DocValuesProducer} to read docvalues from the index. 
-   * <p>
-   * NOTE: by the time this call returns, it must hold open any files it will 
-   * need to use; else, those files may be deleted. Additionally, required files 
-   * may be deleted during the execution of this call before there is a chance 
-   * to open them. Under these circumstances an IOException should be thrown by 
-   * the implementation. IOExceptions are expected and will automatically cause 
-   * a retry of the segment opening logic with the newly revised segments.
-   */
+
   public abstract DocValuesProducer fieldsProducer(SegmentReadState state) throws IOException;
 
   @Override
@@ -88,7 +53,6 @@ public abstract class DocValuesFormat implements NamedSPILoader.NamedSPI {
     return "DocValuesFormat(name=" + name + ")";
   }
   
-  /** looks up a format by name */
   public static DocValuesFormat forName(String name) {
     if (loader == null) {
       throw new IllegalStateException("You called DocValuesFormat.forName() before all formats could be initialized. "+
@@ -97,7 +61,6 @@ public abstract class DocValuesFormat implements NamedSPILoader.NamedSPI {
     return loader.lookup(name);
   }
   
-  /** returns a list of all available format names */
   public static Set<String> availableDocValuesFormats() {
     if (loader == null) {
       throw new IllegalStateException("You called DocValuesFormat.availableDocValuesFormats() before all formats could be initialized. "+
@@ -106,17 +69,7 @@ public abstract class DocValuesFormat implements NamedSPILoader.NamedSPI {
     return loader.availableServices();
   }
   
-  /** 
-   * Reloads the DocValues format list from the given {@link ClassLoader}.
-   * Changes to the docvalues formats are visible after the method ends, all
-   * iterators ({@link #availableDocValuesFormats()},...) stay consistent. 
-   * 
-   * <p><b>NOTE:</b> Only new docvalues formats are added, existing ones are
-   * never removed or replaced.
-   * 
-   * <p><em>This method is expensive and should only be called for discovery
-   * of new docvalues formats on the given classpath/classloader!</em>
-   */
+
   public static void reloadDocValuesFormats(ClassLoader classloader) {
     loader.reload(classloader);
   }

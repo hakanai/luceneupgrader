@@ -1,4 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,21 +14,13 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.FixedBitSet;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.OpenBitSet;
 
-/**
- * Base class for DocIdSet to be used with FieldCache. The implementation
- * of its iterator is very stupid and slow if the implementation of the
- * {@link #matchDoc} method is not optimized, as iterators simply increment
- * the document id until {@code matchDoc(int)} returns true. Because of this
- * {@code matchDoc(int)} must be as fast as possible and in no case do any
- * I/O.
- * @lucene.internal
- */
 public abstract class FieldCacheDocIdSet extends DocIdSet {
 
   protected final int maxDoc;
@@ -40,9 +31,6 @@ public abstract class FieldCacheDocIdSet extends DocIdSet {
     this.acceptDocs = acceptDocs;
   }
 
-  /**
-   * this method checks, if a doc is a hit
-   */
   protected abstract boolean matchDoc(int doc);
 
   @Override

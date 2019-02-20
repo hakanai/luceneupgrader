@@ -23,67 +23,34 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.AttributeSource
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits; // javadocs
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 
-/** 
- * Also iterates through positions. 
- * @deprecated Use {@link PostingsEnum} instead.
- */
 @Deprecated
 public abstract class DocsAndPositionsEnum extends DocsEnum {
   
-  /** Flag to pass to {@link TermsEnum#docsAndPositions(Bits,DocsAndPositionsEnum,int)}
-   *  if you require offsets in the returned enum. */
   public static final int FLAG_OFFSETS = 0x1;
 
-  /** Flag to pass to  {@link TermsEnum#docsAndPositions(Bits,DocsAndPositionsEnum,int)}
-   *  if you require payloads in the returned enum. */
   public static final int FLAG_PAYLOADS = 0x2;
   
-  /**
-   * Codec implementations should check for this flag,
-   * and return null when positions are requested but not present.
-   * @deprecated only for internal use.
-   */
   @Deprecated
   public static final short OLD_NULL_SEMANTICS = 1 << 14;
 
-  /** Sole constructor. (For invocation by subclass 
-   * constructors, typically implicit.) */
   protected DocsAndPositionsEnum() {
   }
 
-  /** Returns the next position.  You should only call this
-   *  up to {@link DocsEnum#freq()} times else
-   *  the behavior is not defined.  If positions were not
-   *  indexed this will return -1; this only happens if
-   *  offsets were indexed and you passed needsOffset=true
-   *  when pulling the enum.  */
+
   public abstract int nextPosition() throws IOException;
 
-  /** Returns start offset for the current position, or -1
-   *  if offsets were not indexed. */
   public abstract int startOffset() throws IOException;
 
-  /** Returns end offset for the current position, or -1 if
-   *  offsets were not indexed. */
   public abstract int endOffset() throws IOException;
 
-  /** Returns the payload at this position, or null if no
-   *  payload was indexed. You should not modify anything 
-   *  (neither members of the returned BytesRef nor bytes 
-   *  in the byte[]). */
+
   public abstract BytesRef getPayload() throws IOException;
   
-  /** 
-   * Wraps a PostingsEnum with a legacy DocsAndPositionsEnum.
-   */
+
   static DocsAndPositionsEnum wrap(final PostingsEnum postings, Bits liveDocs) {
     return new DocsAndPositionsEnumWrapper(postings, liveDocs);
   }
   
-  /**
-   * Unwrap a legacy DocsAndPositionsEnum and return the actual PostingsEnum.
-   * if {@code docs} is null, this returns null for convenience
-   */
   static PostingsEnum unwrap(final DocsEnum docs) {
     if (docs instanceof DocsAndPositionsEnumWrapper) {
       return ((DocsAndPositionsEnumWrapper)docs).in;
@@ -94,9 +61,6 @@ public abstract class DocsAndPositionsEnum extends DocsEnum {
     }
   }
 
-  /**
-   * Return the live docs that are being applied to this {@link DocsEnum}.
-   */
   static Bits unwrapliveDocs(final DocsEnum docs) {
     if (docs instanceof DocsAndPositionsEnumWrapper) {
       return ((DocsAndPositionsEnumWrapper)docs).liveDocs;

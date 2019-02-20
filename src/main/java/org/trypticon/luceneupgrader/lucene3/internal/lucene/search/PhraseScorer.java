@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,20 +13,11 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.IOException;
 
-/** Expert: Scoring functionality for phrase queries.
- * <br>A document is considered matching if it contains the phrase-query terms  
- * at "valid" positions. What "valid positions" are
- * depends on the type of the phrase query: for an exact phrase query terms are required 
- * to appear in adjacent locations, while for a sloppy phrase query some distance between 
- * the terms is allowed. The abstract method {@link #phraseFreq()} of extending classes
- * is invoked for each document containing all the phrase query terms, in order to 
- * compute the frequency of the phrase query in that document. A non zero frequency
- * means a match. 
- */
 abstract class PhraseScorer extends Scorer {
   protected byte[] norms;
   protected float value;
@@ -112,21 +101,11 @@ abstract class PhraseScorer extends Scorer {
     return max.doc;
   }
   
-  /**
-   * phrase frequency in current doc as computed by phraseFreq().
-   */
   @Override
   public final float freq() {
     return freq;
   }
 
-  /**
-   * For a document containing all the phrase query terms, compute the
-   * frequency of the phrase in that document. 
-   * A non zero frequency means a match.
-   * <br>Note, that containing all phrase terms does not guarantee a match - they have to be found in matching locations.  
-   * @return frequency of the phrase in current doc, 0 if not found. 
-   */
   abstract float phraseFreq() throws IOException;
 
   @Override

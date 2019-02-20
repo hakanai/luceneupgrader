@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,19 +13,14 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * InfoStream implementation over a {@link PrintStream}
- * such as <code>System.out</code>.
- * 
- * @lucene.internal
- */
 public class PrintStreamInfoStream extends InfoStream {
   // Used for printing messages
   private static final AtomicInteger MESSAGE_ID = new AtomicInteger();

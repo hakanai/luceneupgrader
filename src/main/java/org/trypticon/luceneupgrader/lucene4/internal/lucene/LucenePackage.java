@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,14 +13,13 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene;
 
-/** Lucene's package information, including version. **/
 public final class LucenePackage {
 
   private LucenePackage() {}                      // can't construct
 
-  /** Return Lucene's package, including version information. */
   public static Package get() {
     return LucenePackage.class.getPackage();
   }

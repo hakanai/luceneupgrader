@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,18 +13,14 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
 
-/**
- * Implements the skip list reader for the default posting list format
- * that stores positions and payloads.
- *
- */
 class DefaultSkipListReader extends MultiLevelSkipListReader {
   private boolean currentFieldStoresPayloads;
   private long freqPointer[];
@@ -56,21 +50,15 @@ class DefaultSkipListReader extends MultiLevelSkipListReader {
     Arrays.fill(payloadLength, 0);
   }
 
-  /** Returns the freq pointer of the doc to which the last call of 
-   * {@link MultiLevelSkipListReader#skipTo(int)} has skipped.  */
   long getFreqPointer() {
     return lastFreqPointer;
   }
 
-  /** Returns the prox pointer of the doc to which the last call of 
-   * {@link MultiLevelSkipListReader#skipTo(int)} has skipped.  */
   long getProxPointer() {
     return lastProxPointer;
   }
   
-  /** Returns the payload length of the payload stored just before 
-   * the doc to which the last call of {@link MultiLevelSkipListReader#skipTo(int)} 
-   * has skipped.  */
+
   int getPayloadLength() {
     return lastPayloadLength;
   }

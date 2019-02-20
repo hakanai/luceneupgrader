@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -16,10 +14,7 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-  
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SingleTermsEnum;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.Terms;
@@ -28,91 +23,44 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.PrefixTermsEn
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder;
 
-/**
- * Immutable class holding compiled details for a given
- * Automaton.  The Automaton is deterministic, must not have
- * dead states but is not necessarily minimal.
- *
- * @lucene.experimental
- */
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class CompiledAutomaton {
-  /**
-   * Automata are compiled into different internal forms for the
-   * most efficient execution depending upon the language they accept.
-   */
   public enum AUTOMATON_TYPE {
-    /** Automaton that accepts no strings. */
-    NONE, 
-    /** Automaton that accepts all possible strings. */
-    ALL, 
-    /** Automaton that accepts only a single fixed string. */
-    SINGLE, 
-    /** Automaton that matches all Strings with a constant prefix. */
-    PREFIX, 
-    /** Catch-all for any other automata. */
+    NONE,
+    ALL,
+    SINGLE,
+    PREFIX,
     NORMAL
   };
 
-  /** If simplify is true this will be the "simplified" type; else, this is NORMAL */
   public final AUTOMATON_TYPE type;
 
-  /** 
-   * For {@link AUTOMATON_TYPE#PREFIX}, this is the prefix term; 
-   * for {@link AUTOMATON_TYPE#SINGLE} this is the singleton term.
-   */
+
   public final BytesRef term;
 
-  /** 
-   * Matcher for quickly determining if a byte[] is accepted.
-   * only valid for {@link AUTOMATON_TYPE#NORMAL}.
-   */
+
   public final ByteRunAutomaton runAutomaton;
 
-  /**
-   * Two dimensional array of transitions, indexed by state
-   * number for traversal. The state numbering is consistent with
-   * {@link #runAutomaton}. 
-   * Only valid for {@link AUTOMATON_TYPE#NORMAL}.
-   */
   public final Automaton automaton;
 
-  /**
-   * Shared common suffix accepted by the automaton. Only valid
-   * for {@link AUTOMATON_TYPE#NORMAL}, and only when the
-   * automaton accepts an infinite language.
-   */
   public final BytesRef commonSuffixRef;
 
-  /**
-   * Indicates if the automaton accepts a finite set of strings.
-   * Null if this was not computed.
-   * Only valid for {@link AUTOMATON_TYPE#NORMAL}.
-   */
   public final Boolean finite;
 
-  /** Create this, passing simplify=true and finite=null, so that we try
-   *  to simplify the automaton and determine if it is finite. */
   public CompiledAutomaton(Automaton automaton) {
     this(automaton, null, true);
   }
 
-  /** Create this.  If finite is null, we use {@link Operations#isFinite}
-   *  to determine whether it is finite.  If simplify is true, we run
-   *  possibly expensive operations to determine if the automaton is one
-   *  the cases in {@link CompiledAutomaton.AUTOMATON_TYPE}. */
+
   public CompiledAutomaton(Automaton automaton, Boolean finite, boolean simplify) {
     this(automaton, finite, simplify, Operations.DEFAULT_MAX_DETERMINIZED_STATES);
   }
 
 
-  /** Create this.  If finite is null, we use {@link Operations#isFinite}
-   *  to determine whether it is finite.  If simplify is true, we run
-   *  possibly expensive operations to determine if the automaton is one
-   *  the cases in {@link CompiledAutomaton.AUTOMATON_TYPE}. If simplify
-   *  requires determinizing the autaomaton then only maxDeterminizedStates
-   *  will be created.  Any more than that will cause a
-   *  TooComplexToDeterminizeException.
-   */
+
   public CompiledAutomaton(Automaton automaton, Boolean finite, boolean simplify,
       int maxDeterminizedStates) {
     if (automaton.getNumStates() == 0) {
@@ -274,8 +222,6 @@ public class CompiledAutomaton {
   // TODO: should this take startTerm too?  This way
   // Terms.intersect could forward to this method if type !=
   // NORMAL:
-  /** Return a {@link TermsEnum} intersecting the provided {@link Terms}
-   *  with the terms accepted by this automaton. */
   public TermsEnum getTermsEnum(Terms terms) throws IOException {
     switch(type) {
     case NONE:
@@ -296,13 +242,7 @@ public class CompiledAutomaton {
     }
   }
 
-  /** Finds largest term accepted by this Automaton, that's
-   *  <= the provided input term.  The result is placed in
-   *  output; it's fine for output and input to point to
-   *  the same bytes.  The returned result is either the
-   *  provided output, or null if there is no floor term
-   *  (ie, the provided input term is before the first term
-   *  accepted by this Automaton). */
+
   public BytesRef floor(BytesRef input, BytesRefBuilder output) {
 
     //if (DEBUG) System.out.println("CA.floor input=" + input.utf8ToString());

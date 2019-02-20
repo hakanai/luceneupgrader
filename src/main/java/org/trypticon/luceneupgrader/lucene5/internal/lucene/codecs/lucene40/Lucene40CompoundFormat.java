@@ -25,14 +25,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentInfo;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IOContext;
 
-/**
- * Lucene 4.0 compound file format
- * @deprecated only for reading old 4.x segments
- */
 @Deprecated
 public final class Lucene40CompoundFormat extends CompoundFormat {
   
-  /** Sole constructor. */
   public Lucene40CompoundFormat() {
   }
 
@@ -52,8 +47,6 @@ public final class Lucene40CompoundFormat extends CompoundFormat {
     }
   }
   
-  /** Extension of compound file */
   static final String COMPOUND_FILE_EXTENSION = "cfs";
-  /** Extension of compound file entries */
   static final String COMPOUND_FILE_ENTRIES_EXTENSION = "cfe";
 }

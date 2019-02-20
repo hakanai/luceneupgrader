@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,31 +13,22 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.FSDirectory;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.FSDirectory;
-
-/**
- * Class containing some useful methods used by command line tools 
- *
- */
 public final class CommandLineUtil {
   
   private CommandLineUtil() {
     
   }
   
-  /**
-   * Creates a specific FSDirectory instance starting from its class name
-   * @param clazzName The name of the FSDirectory class to load
-   * @param file The file to be used as parameter constructor
-   * @return the new FSDirectory instance
-   */
   public static FSDirectory newFSDirectory(String clazzName, File file) {
     try {
       final Class<? extends FSDirectory> clazz = loadFSDirectoryClass(clazzName);
@@ -58,24 +47,12 @@ public final class CommandLineUtil {
     }
   }
   
-  /**
-   * Loads a specific Directory implementation 
-   * @param clazzName The name of the Directory class to load
-   * @return The Directory class loaded
-   * @throws ClassNotFoundException
-   */
-  public static Class<? extends Directory> loadDirectoryClass(String clazzName) 
+  public static Class<? extends Directory> loadDirectoryClass(String clazzName)
       throws ClassNotFoundException {
     return Class.forName(adjustDirectoryClassName(clazzName)).asSubclass(Directory.class);
   }
   
-  /**
-   * Loads a specific FSDirectory implementation
-   * @param clazzName The name of the FSDirectory class to load
-   * @return The FSDirectory class loaded
-   * @throws ClassNotFoundException
-   */
-  public static Class<? extends FSDirectory> loadFSDirectoryClass(String clazzName) 
+  public static Class<? extends FSDirectory> loadFSDirectoryClass(String clazzName)
       throws ClassNotFoundException {
     return Class.forName(adjustDirectoryClassName(clazzName)).asSubclass(FSDirectory.class);
   }
@@ -92,17 +69,7 @@ public final class CommandLineUtil {
     return clazzName;
   }
   
-  /**
-   * Creates a new specific FSDirectory instance
-   * @param clazz The class of the object to be created
-   * @param file The file to be used as parameter constructor
-   * @return The new FSDirectory instance
-   * @throws NoSuchMethodException
-   * @throws InstantiationException
-   * @throws IllegalAccessException
-   * @throws InvocationTargetException
-   */
-  public static FSDirectory newFSDirectory(Class<? extends FSDirectory> clazz, File file) 
+  public static FSDirectory newFSDirectory(Class<? extends FSDirectory> clazz, File file)
       throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
     // Assuming every FSDirectory has a ctor(File):
     Constructor<? extends FSDirectory> ctor = clazz.getConstructor(File.class);

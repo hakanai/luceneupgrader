@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
 
 import java.io.IOException;
 
@@ -23,17 +22,9 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.FieldInfos;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 
-/**
- * Codec API for reading {@link FieldInfos}.
- * @lucene.experimental
- */
 public abstract class FieldInfosReader {
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected FieldInfosReader() {
   }
 
-  /** Read the {@link FieldInfos} previously written with {@link
-   *  FieldInfosWriter}. */
   public abstract FieldInfos read(Directory directory, String segmentName, String segmentSuffix, IOContext iocontext) throws IOException;
 }

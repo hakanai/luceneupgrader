@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,11 +22,6 @@ import java.util.Arrays;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
 
 
-/**
- * Implements the skip list writer for the default posting list format
- * that stores positions and payloads.
- *
- */
 class DefaultSkipListWriter extends MultiLevelSkipListWriter {
   private int[] lastSkipDoc;
   private int[] lastSkipPayloadLength;
@@ -62,9 +56,6 @@ class DefaultSkipListWriter extends MultiLevelSkipListWriter {
     this.proxOutput = proxOutput;
   }
 
-  /**
-   * Sets the values for the current skip data. 
-   */
   void setSkipData(int doc, boolean storePayloads, int payloadLength) {
     this.curDoc = doc;
     this.curStorePayloads = storePayloads;

@@ -27,15 +27,7 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountable;
 
-/** The core terms dictionaries (BlockTermsReader,
- *  BlockTreeTermsReader) interact with a single instance
- *  of this class to manage creation of {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.index.PostingsEnum} and
- *  {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.index.PostingsEnum} instances.  It provides an
- *  IndexInput (termsIn) where this class may read any
- *  previously stored data that it had written in its
- *  corresponding {@link PostingsWriterBase} at indexing
- *  time. 
- *  @lucene.experimental */
+
 
 // TODO: maybe move under blocktree?  but it's used by other terms dicts (e.g. Block)
 
@@ -44,35 +36,20 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountable;
 // TermsDict + PostingsReader/WriterBase == PostingsConsumer/Producer
 public abstract class PostingsReaderBase implements Closeable, Accountable {
 
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected PostingsReaderBase() {
   }
 
-  /** Performs any initialization, such as reading and
-   *  verifying the header from the provided terms
-   *  dictionary {@link IndexInput}. */
+
   public abstract void init(IndexInput termsIn, SegmentReadState state) throws IOException;
 
-  /** Return a newly created empty TermState */
   public abstract BlockTermState newTermState() throws IOException;
 
-  /** Actually decode metadata for next term 
-   *  @see PostingsWriterBase#encodeTerm 
-   */
+
   public abstract void decodeTerm(long[] longs, DataInput in, FieldInfo fieldInfo, BlockTermState state, boolean absolute) throws IOException;
 
-  /** Must fully consume state, since after this call that
-   *  TermState may be reused. */
   public abstract PostingsEnum postings(FieldInfo fieldInfo, BlockTermState state, PostingsEnum reuse, int flags) throws IOException;
   
-  /** 
-   * Checks consistency of this reader.
-   * <p>
-   * Note that this may be costly in terms of I/O, e.g. 
-   * may involve computing a checksum value against large data files.
-   * @lucene.internal
-   */
+
   public abstract void checkIntegrity() throws IOException;
 
   @Override

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -29,54 +28,28 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SortedSetDocVa
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 
-/** Abstract API that produces numeric, binary and
- * sorted docvalues.
- *
- * @lucene.experimental
- */
 public abstract class DocValuesProducer implements Closeable, Accountable {
   
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected DocValuesProducer() {}
 
-  /** Returns {@link NumericDocValues} for this field.
-   *  The returned instance need not be thread-safe: it will only be
-   *  used by a single thread. */
+
   public abstract NumericDocValues getNumeric(FieldInfo field) throws IOException;
 
-  /** Returns {@link BinaryDocValues} for this field.
-   *  The returned instance need not be thread-safe: it will only be
-   *  used by a single thread. */
+
   public abstract BinaryDocValues getBinary(FieldInfo field) throws IOException;
 
-  /** Returns {@link SortedDocValues} for this field.
-   *  The returned instance need not be thread-safe: it will only be
-   *  used by a single thread. */
+
   public abstract SortedDocValues getSorted(FieldInfo field) throws IOException;
   
-  /** Returns {@link SortedNumericDocValues} for this field.
-   *  The returned instance need not be thread-safe: it will only be
-   *  used by a single thread. */
+
   public abstract SortedNumericDocValues getSortedNumeric(FieldInfo field) throws IOException;
   
-  /** Returns {@link SortedSetDocValues} for this field.
-   *  The returned instance need not be thread-safe: it will only be
-   *  used by a single thread. */
+
   public abstract SortedSetDocValues getSortedSet(FieldInfo field) throws IOException;
   
-  /** Returns a {@link Bits} at the size of <code>reader.maxDoc()</code>, 
-   *  with turned on bits for each docid that does have a value for this field.
-   *  The returned instance need not be thread-safe: it will only be
-   *  used by a single thread. */
+
   public abstract Bits getDocsWithField(FieldInfo field) throws IOException;
   
-  /** 
-   * Checks consistency of this producer
-   * <p>
-   * Note that this may be costly in terms of I/O, e.g. 
-   * may involve computing a checksum value against large data files.
-   * @lucene.internal
-   */
+
   public abstract void checkIntegrity() throws IOException;
 }

@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.payloads;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.payloads;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.payloads;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,32 +38,13 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans.SpanQue
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans.SpanTermQuery;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans.Spans;
 
-/**
- * Experimental class to get set of payloads for most standard Lucene queries.
- * Operates like Highlighter - IndexReader should only contain doc of interest,
- * best to use MemoryIndex.
- *
- * @lucene.experimental
- * 
- */
 public class PayloadSpanUtil {
   private IndexReader reader;
 
-  /**
-   * @param reader
-   *          that contains doc with payloads to extract
-   */
   public PayloadSpanUtil(IndexReader reader) {
     this.reader = reader;
   }
 
-  /**
-   * Query should be rewritten for wild/fuzzy support.
-   * 
-   * @param query
-   * @return payloads Collection
-   * @throws IOException
-   */
   public Collection<byte[]> getPayloadsForQuery(Query query) throws IOException {
     Collection<byte[]> payloads = new ArrayList<byte[]>();
     queryToSpanQuery(query, payloads);

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -24,27 +23,15 @@ import java.util.List;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.AtomicReaderContext;
 
-/** A {@link Rescorer} that uses a provided Query to assign
- *  scores to the first-pass hits.
- *
- * @lucene.experimental */
+
 public abstract class QueryRescorer extends Rescorer {
 
   private final Query query;
 
-  /** Sole constructor, passing the 2nd pass query to
-   *  assign scores to the 1st pass hits.  */
   public QueryRescorer(Query query) {
     this.query = query;
   }
 
-  /**
-   * Implement this in a subclass to combine the first pass and
-   * second pass scores.  If secondPassMatches is false then
-   * the second pass query failed to match a hit from the
-   * first pass query, and you should ignore the
-   * secondPassScore.
-   */
   protected abstract float combine(float firstPassScore, boolean secondPassMatches, float secondPassScore);
 
   @Override
@@ -168,8 +155,6 @@ public abstract class QueryRescorer extends Rescorer {
     return result;
   }
 
-  /** Sugar API, calling {#rescore} using a simple linear
-   *  combination of firstPassScore + weight * secondPassScore */
   public static TopDocs rescore(IndexSearcher searcher, TopDocs topDocs, Query query, final double weight, int topN) throws IOException {
     return new QueryRescorer(query) {
       @Override

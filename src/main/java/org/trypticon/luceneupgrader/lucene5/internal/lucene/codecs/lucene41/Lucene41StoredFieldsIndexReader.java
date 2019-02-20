@@ -33,10 +33,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 
-/**
- * Reader for 4.x stored fields/term vectors index
- * @deprecated only for reading old segments
- */
 @Deprecated
 public final class Lucene41StoredFieldsIndexReader implements Cloneable, Accountable {
 

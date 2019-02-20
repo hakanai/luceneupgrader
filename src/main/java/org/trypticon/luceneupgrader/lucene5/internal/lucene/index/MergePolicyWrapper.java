@@ -19,21 +19,10 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.index;
 import java.io.IOException;
 import java.util.Map;
 
-/**
- * A wrapper for {@link MergePolicy} instances.
- *
- * @lucene.experimental
- */
 public class MergePolicyWrapper extends MergePolicy {
 
-  /** The wrapped {@link MergePolicy}. */
   protected final MergePolicy in;
 
-  /**
-   * Creates a new merge policy instance.
-   *
-   * @param in the wrapped {@link MergePolicy}
-   */
   public MergePolicyWrapper(MergePolicy in) {
     this.in = in;
   }

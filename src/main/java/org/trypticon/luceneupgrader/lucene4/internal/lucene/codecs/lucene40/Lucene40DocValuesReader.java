@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -44,11 +43,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.PagedBytes;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
-/**
- * Reads the 4.0 format of norms/docvalues
- * @lucene.experimental
- * @deprecated Only for reading old 4.0 and 4.1 segments
- */
 @Deprecated
 final class Lucene40DocValuesReader extends DocValuesProducer {
   private final Directory dir;

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -24,15 +23,11 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder;
 
-/** Implements a {@link TermsEnum} wrapping a provided
- * {@link SortedSetDocValues}. */
-
 class SortedSetDocValuesTermsEnum extends TermsEnum {
   private final SortedSetDocValues values;
   private long currentOrd = -1;
   private final BytesRefBuilder scratch;
 
-  /** Creates a new TermsEnum over the provided values */
   public SortedSetDocValuesTermsEnum(SortedSetDocValues values) {
     this.values = values;
     scratch = new BytesRefBuilder();

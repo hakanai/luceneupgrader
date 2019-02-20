@@ -19,23 +19,13 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.tokenattri
 
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Attribute;
 
-/**
- * A Token's lexical type. The Default value is "word". 
- */
 public interface TypeAttribute extends Attribute {
 
-  /** the default type */
   public static final String DEFAULT_TYPE = "word";
 
-  /** 
-   * Returns this Token's lexical type.  Defaults to "word". 
-   * @see #setType(String)
-   */
+
   public String type();
 
-  /** 
-   * Set the lexical type.
-   * @see #type() 
-   */
+
   public void setType(String type);
 }

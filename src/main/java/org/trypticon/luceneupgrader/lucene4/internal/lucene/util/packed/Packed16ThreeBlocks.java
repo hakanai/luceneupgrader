@@ -1,7 +1,3 @@
-// This file has been automatically generated, DO NOT EDIT
-
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -17,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
@@ -25,10 +22,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimat
 import java.io.IOException;
 import java.util.Arrays;
 
-/**
- * Packs integers into 3 shorts (48 bits per value).
- * @lucene.internal
- */
 final class Packed16ThreeBlocks extends PackedInts.MutableImpl {
   final short[] blocks;
 

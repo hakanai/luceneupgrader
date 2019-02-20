@@ -23,21 +23,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.DocumentsWrite
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.InfoStream;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ThreadInterruptedException;
 
-/**
- * Controls the health status of a {@link DocumentsWriter} sessions. This class
- * used to block incoming indexing threads if flushing significantly slower than
- * indexing to ensure the {@link DocumentsWriter}s healthiness. If flushing is
- * significantly slower than indexing the net memory used within an
- * {@link IndexWriter} session can increase very quickly and easily exceed the
- * JVM's available memory.
- * <p>
- * To prevent OOM Errors and ensure IndexWriter's stability this class blocks
- * incoming threads from indexing once 2 x number of available
- * {@link ThreadState}s in {@link DocumentsWriterPerThreadPool} is exceeded.
- * Once flushing catches up and the number of flushing DWPT is equal or lower
- * than the number of active {@link ThreadState}s threads are released and can
- * continue indexing.
- */
 final class DocumentsWriterStallControl {
   
   private volatile boolean stalled;
@@ -50,14 +35,6 @@ final class DocumentsWriterStallControl {
     infoStream = iwc.getInfoStream();
   }
   
-  /**
-   * Update the stalled flag status. This method will set the stalled flag to
-   * <code>true</code> iff the number of flushing
-   * {@link DocumentsWriterPerThread} is greater than the number of active
-   * {@link DocumentsWriterPerThread}. Otherwise it will reset the
-   * {@link DocumentsWriterStallControl} to healthy and release all threads
-   * waiting on {@link #waitIfStalled()}
-   */
   synchronized void updateStalled(boolean stalled) {
     this.stalled = stalled;
     if (stalled) {
@@ -66,10 +43,6 @@ final class DocumentsWriterStallControl {
     notifyAll();
   }
   
-  /**
-   * Blocks if documents writing is currently in a stalled state. 
-   * 
-   */
   void waitIfStalled() {
     if (stalled) {
       synchronized (this) {

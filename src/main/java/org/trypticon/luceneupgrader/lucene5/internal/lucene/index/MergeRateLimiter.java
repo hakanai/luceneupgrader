@@ -22,14 +22,7 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ThreadInterrupt
 
 import static org.trypticon.luceneupgrader.lucene5.internal.lucene.store.RateLimiter.SimpleRateLimiter;
 
-/** This is the {@link RateLimiter} that {@link IndexWriter} assigns to each running merge, to 
- *  give {@link MergeScheduler}s ionice like control.
- *
- *  This is similar to {@link SimpleRateLimiter}, except it's merge-private,
- *  it will wake up if its rate changes while it's paused, it tracks how
- *  much time it spent stopped and paused, and it supports aborting.
- *
- *  @lucene.internal */
+
 
 public class MergeRateLimiter extends RateLimiter {
 
@@ -44,10 +37,8 @@ public class MergeRateLimiter extends RateLimiter {
   long totalStoppedNS;
   final MergePolicy.OneMerge merge;
 
-  /** Returned by {@link #maybePause}. */
   private static enum PauseResult {NO, STOPPED, PAUSED};
 
-  /** Sole constructor. */
   public MergeRateLimiter(MergePolicy.OneMerge merge) {
     this.merge = merge;
 
@@ -73,7 +64,6 @@ public class MergeRateLimiter extends RateLimiter {
     return mbPerSec;
   }
 
-  /** Returns total bytes written by this merge. */
   public long getTotalBytesWritten() {
     return totalBytesWritten;
   }
@@ -115,17 +105,14 @@ public class MergeRateLimiter extends RateLimiter {
     return pausedNS;
   }
 
-  /** Total NS merge was stopped. */
   public synchronized long getTotalStoppedNS() {
     return totalStoppedNS;
   } 
 
-  /** Total NS merge was paused to rate limit IO. */
   public synchronized long getTotalPausedNS() {
     return totalPausedNS;
   } 
 
-  /** Returns NO if no pause happened, STOPPED if pause because rate was 0.0 (merge is stopped), PAUSED if paused with a normal rate limit. */
   private synchronized PauseResult maybePause(long bytes, long curNS) throws MergePolicy.MergeAbortedException {
 
     // Now is a good time to abort the merge:
@@ -172,20 +159,17 @@ public class MergeRateLimiter extends RateLimiter {
     }
   }
 
-  /** Throws {@link MergePolicy.MergeAbortedException} if this merge was aborted. */
   public synchronized void checkAbort() throws MergePolicy.MergeAbortedException {
     if (abort) {
       throw new MergePolicy.MergeAbortedException("merge is aborted: " + merge.segString());
     }
   }
 
-  /** Mark this merge aborted. */
   public synchronized void setAbort() {
     abort = true;
     notify();
   }
 
-  /** Returns true if this merge was aborted. */
   public synchronized boolean getAbort() {
     return abort;
   }

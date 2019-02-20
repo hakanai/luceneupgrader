@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -25,14 +24,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.DocIdSetItera
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedLongValues;
 
-/**
- * {@link DocIdSet} implementation based on pfor-delta encoding.
- * <p>This implementation is inspired from LinkedIn's Kamikaze
- * (http://data.linkedin.com/opensource/kamikaze) and Daniel Lemire's JavaFastPFOR
- * (https://github.com/lemire/JavaFastPFOR).</p>
- * <p>On the contrary to the original PFOR paper, exceptions are encoded with
- * FOR instead of Simple16.</p>
- */
 public final class PForDeltaDocIdSet extends DocIdSet implements Accountable {
 
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(PForDeltaDocIdSet.class);
@@ -60,7 +51,6 @@ public final class PForDeltaDocIdSet extends DocIdSet implements Accountable {
     MAX_BYTE_BLOCK_COUNT = maxByteBLockCount;
   }
 
-  /** A builder for {@link PForDeltaDocIdSet}. */
   public static class Builder {
 
     final GrowableByteArrayDataOutput data;
@@ -79,7 +69,6 @@ public final class PForDeltaDocIdSet extends DocIdSet implements Accountable {
     int numExceptions;
     int bitsPerException;
 
-    /** Sole constructor. */
     public Builder() {
       data = new GrowableByteArrayDataOutput(128);
       bufferSize = 0;
@@ -89,8 +78,6 @@ public final class PForDeltaDocIdSet extends DocIdSet implements Accountable {
       numBlocks = 0;
     }
 
-    /** Set the index interval. Every <code>indexInterval</code>-th block will
-     * be stored in the index. Set to {@link Integer#MAX_VALUE} to disable indexing. */
     public Builder setIndexInterval(int indexInterval) {
       if (indexInterval < 1) {
         throw new IllegalArgumentException("indexInterval must be >= 1");
@@ -99,7 +86,6 @@ public final class PForDeltaDocIdSet extends DocIdSet implements Accountable {
       return this;
     }
 
-    /** Add a document to this builder. Documents must be added in order. */
     public Builder add(int doc) {
       if (doc <= previousDoc) {
         throw new IllegalArgumentException("Doc IDs must be provided in order, but previousDoc=" + previousDoc + " and doc=" + doc);
@@ -114,7 +100,6 @@ public final class PForDeltaDocIdSet extends DocIdSet implements Accountable {
       return this;
     }
 
-    /** Convenience method to add the content of a {@link DocIdSetIterator} to this builder. */
     public Builder add(DocIdSetIterator it) throws IOException {
       for (int doc = it.nextDoc(); doc != DocIdSetIterator.NO_MORE_DOCS; doc = it.nextDoc()) {
         add(doc);
@@ -267,7 +252,6 @@ public final class PForDeltaDocIdSet extends DocIdSet implements Accountable {
       assert data.length - originalLength == blockSize : (data.length - originalLength) + " <> " + blockSize;
     }
 
-    /** Build the {@link PForDeltaDocIdSet} instance. */
     public PForDeltaDocIdSet build() {
       assert bufferSize < BLOCK_SIZE;
 
@@ -505,7 +489,6 @@ public final class PForDeltaDocIdSet extends DocIdSet implements Accountable {
 
   }
 
-  /** Return the number of documents in this {@link DocIdSet} in constant time. */
   public int cardinality() {
     return cardinality;
   }

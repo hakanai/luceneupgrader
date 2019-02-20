@@ -1,8 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
-import java.util.Comparator;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,38 +14,24 @@ import java.util.Comparator;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
- * Represents char[], as a slice (offset + length) into an existing char[].
- * The {@link #chars} member should never be null; use
- * {@link #EMPTY_CHARS} if necessary.
- * @lucene.internal
- */
+import java.util.Comparator;
+
 public final class CharsRef implements Comparable<CharsRef>, CharSequence, Cloneable {
   public static final char[] EMPTY_CHARS = new char[0];
   public char[] chars;
   public int offset;
   public int length;
 
-  /**
-   * Creates a new {@link CharsRef} initialized an empty array zero-length
-   */
   public CharsRef() {
     this(EMPTY_CHARS, 0, 0);
   }
 
-  /**
-   * Creates a new {@link CharsRef} initialized with an array of the given
-   * capacity
-   */
   public CharsRef(int capacity) {
     chars = new char[capacity];
   }
 
-  /**
-   * Creates a new {@link CharsRef} initialized with the given array, offset and
-   * length
-   */
   public CharsRef(char[] chars, int offset, int length) {
     assert chars != null;
     assert offset >= 0;
@@ -60,10 +42,6 @@ public final class CharsRef implements Comparable<CharsRef>, CharSequence, Clone
     this.length = length;
   }
 
-  /**
-   * Creates a new {@link CharsRef} initialized with the given Strings character
-   * array
-   */
   public CharsRef(String string) {
     this.chars = string.toCharArray();
     this.offset = 0;
@@ -113,8 +91,7 @@ public final class CharsRef implements Comparable<CharsRef>, CharSequence, Clone
     }
   }
 
-  /** Signed int order comparison */
-  public int compareTo(CharsRef other) {
+    public int compareTo(CharsRef other) {
     if (this == other)
       return 0;
 
@@ -139,21 +116,11 @@ public final class CharsRef implements Comparable<CharsRef>, CharSequence, Clone
     return this.length - other.length;
   }
   
-  /**
-   * Copies the given {@link CharsRef} referenced content into this instance.
-   * 
-   * @param other
-   *          the {@link CharsRef} to copy
-   */
   public void copyChars(CharsRef other) {
     copyChars(other.chars, other.offset, other.length);
   }
 
-  /** 
-   * Used to grow the reference array. 
-   * 
-   * In general this should not be used as it does not take the offset into account.
-   * @lucene.internal */
+
   public void grow(int newLength) {
     assert offset == 0;
     if (chars.length < newLength) {
@@ -161,9 +128,6 @@ public final class CharsRef implements Comparable<CharsRef>, CharSequence, Clone
     }
   }
 
-  /**
-   * Copies the given array into this CharsRef.
-   */
   public void copyChars(char[] otherChars, int otherOffset, int otherLength) {
     if (chars.length - offset < otherLength) {
       chars = new char[otherLength];
@@ -173,9 +137,6 @@ public final class CharsRef implements Comparable<CharsRef>, CharSequence, Clone
     length = otherLength;
   }
 
-  /**
-   * Appends the given array to this CharsRef
-   */
   public void append(char[] otherChars, int otherOffset, int otherLength) {
     int newLen = length + otherLength;
     if (chars.length - offset < newLen) {
@@ -265,13 +226,6 @@ public final class CharsRef implements Comparable<CharsRef>, CharSequence, Clone
     }
   }
   
-  /**
-   * Creates a new CharsRef that points to a copy of the chars from 
-   * <code>other</code>
-   * <p>
-   * The returned CharsRef will have a length of other.length
-   * and an offset of zero.
-   */
   public static CharsRef deepCopyOf(CharsRef other) {
     CharsRef clone = new CharsRef();
     clone.copyChars(other);

@@ -1,5 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.payloads;
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,45 +14,17 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.payloads;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.payloads;
 
-import java.io.Serializable;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Explanation;
 
-/**
- * An abstract class that defines a way for Payload*Query instances to transform
- * the cumulative effects of payload scores for a document.
- * 
- * @see org.trypticon.luceneupgrader.lucene3.internal.lucene.search.payloads.PayloadTermQuery for more information
- * 
- * @lucene.experimental This class and its derivations are experimental and subject to
- *               change
- * 
- **/
+import java.io.Serializable;
+
+
 public abstract class PayloadFunction implements Serializable {
 
-  /**
-   * Calculate the score up to this point for this doc and field
-   * @param docId The current doc
-   * @param field The field
-   * @param start The start position of the matching Span
-   * @param end The end position of the matching Span
-   * @param numPayloadsSeen The number of payloads seen so far
-   * @param currentScore The current score so far
-   * @param currentPayloadScore The score for the current payload
-   * @return The new current Score
-   *
-   * @see org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans.Spans
-   */
   public abstract float currentScore(int docId, String field, int start, int end, int numPayloadsSeen, float currentScore, float currentPayloadScore);
 
-  /**
-   * Calculate the final score for all the payloads seen so far for this doc/field
-   * @param docId The current doc
-   * @param field The current field
-   * @param numPayloadsSeen The total number of payloads seen on this document
-   * @param payloadScore The raw score for those payloads
-   * @return The final score for the payloads
-   */
   public abstract float docScore(int docId, String field, int numPayloadsSeen, float payloadScore);
   
   public Explanation explain(int docId, int numPayloadsSeen, float payloadScore){

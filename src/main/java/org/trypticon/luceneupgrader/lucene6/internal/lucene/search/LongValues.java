@@ -13,26 +13,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.search;
 
 import java.io.IOException;
 
-/**
- * Per-segment, per-document long values, which can be calculated at search-time
- */
 public abstract class LongValues {
 
-  /**
-   * Get the long value for the current document
-   */
   public abstract long longValue() throws IOException;
 
-  /**
-   * Advance this instance to the given document id
-   * @return true if there is a value for this document
-   */
   public abstract boolean advanceExact(int doc) throws IOException;
 
 }

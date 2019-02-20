@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 
@@ -25,22 +24,15 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.Terms;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeSource;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ToStringUtils;
 
-/** A Query that matches documents containing terms with a specified prefix. A PrefixQuery
- * is built by QueryParser for input like <code>app*</code>.
- *
- * <p>This query uses the {@link
- * MultiTermQuery#CONSTANT_SCORE_AUTO_REWRITE_DEFAULT}
- * rewrite method. */
+
 public class PrefixQuery extends MultiTermQuery {
   private Term prefix;
 
-  /** Constructs a query for terms starting with <code>prefix</code>. */
   public PrefixQuery(Term prefix) {
     super(prefix.field());
     this.prefix = prefix;
   }
 
-  /** Returns the prefix of this query. */
   public Term getPrefix() { return prefix; }
   
   @Override  
@@ -54,7 +46,6 @@ public class PrefixQuery extends MultiTermQuery {
     return new PrefixTermsEnum(tenum, prefix.bytes());
   }
 
-  /** Prints a user-readable version of this query. */
   @Override
   public String toString(String field) {
     StringBuilder buffer = new StringBuilder();

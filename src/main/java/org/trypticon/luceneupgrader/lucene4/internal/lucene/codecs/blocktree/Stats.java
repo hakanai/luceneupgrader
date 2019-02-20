@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.blocktree;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.blocktree;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.blocktree;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -27,72 +26,44 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 
-/**
- * BlockTree statistics for a single field 
- * returned by {@link FieldReader#computeStats()}.
- */
 public class Stats {
-  /** How many nodes in the index FST. */
   public long indexNodeCount;
 
-  /** How many arcs in the index FST. */
   public long indexArcCount;
 
-  /** Byte size of the index. */
   public long indexNumBytes;
 
-  /** Total number of terms in the field. */
   public long totalTermCount;
 
-  /** Total number of bytes (sum of term lengths) across all terms in the field. */
   public long totalTermBytes;
 
-  /** The number of normal (non-floor) blocks in the terms file. */
   public int nonFloorBlockCount;
 
-  /** The number of floor blocks (meta-blocks larger than the
-   *  allowed {@code maxItemsPerBlock}) in the terms file. */
   public int floorBlockCount;
     
-  /** The number of sub-blocks within the floor blocks. */
   public int floorSubBlockCount;
 
-  /** The number of "internal" blocks (that have both
-   *  terms and sub-blocks). */
   public int mixedBlockCount;
 
-  /** The number of "leaf" blocks (blocks that have only
-   *  terms). */
   public int termsOnlyBlockCount;
 
-  /** The number of "internal" blocks that do not contain
-   *  terms (have only sub-blocks). */
   public int subBlocksOnlyBlockCount;
 
-  /** Total number of blocks. */
   public int totalBlockCount;
 
-  /** Number of blocks at each prefix depth. */
   public int[] blockCountByPrefixLen = new int[10];
   private int startBlockCount;
   private int endBlockCount;
 
-  /** Total number of bytes used to store term suffixes. */
   public long totalBlockSuffixBytes;
 
-  /** Total number of bytes used to store term stats (not
-   *  including what the {@link PostingsBaseFormat}
-   *  stores. */
+
   public long totalBlockStatsBytes;
 
-  /** Total bytes stored by the {@link PostingsBaseFormat},
-   *  plus the other few vInts stored in the frame. */
   public long totalBlockOtherBytes;
 
-  /** Segment name. */
   public final String segment;
 
-  /** Field name. */
   public final String field;
 
   Stats(String segment, String field) {

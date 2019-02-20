@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,17 +13,13 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
 import java.io.IOException;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
-/** Writes bytes through to a primary IndexOutput, computing
- *  checksum.  Note that you cannot use seek().
- *
- * @lucene.internal
- */
 public class ChecksumIndexOutput extends IndexOutput {
   IndexOutput main;
   Checksum digest;
@@ -71,12 +65,6 @@ public class ChecksumIndexOutput extends IndexOutput {
     throw new UnsupportedOperationException();    
   }
 
-  /**
-   * Starts but does not complete the commit of this file (=
-   * writing of the final checksum at the end).  After this
-   * is called must call {@link #finishCommit} and the
-   * {@link #close} to complete the commit.
-   */
   public void prepareCommit() throws IOException {
     final long checksum = getChecksum();
     // Intentionally write a mismatched checksum.  This is
@@ -90,7 +78,6 @@ public class ChecksumIndexOutput extends IndexOutput {
     main.seek(pos);
   }
 
-  /** See {@link #prepareCommit} */
   public void finishCommit() throws IOException {
     main.writeLong(getChecksum());
   }

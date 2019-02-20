@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -38,11 +37,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.CloseableThreadLocal;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
 
-/**
- * Class responsible for access to stored document fields.
- * <p/>
- * It uses &lt;segment&gt;.fdt and &lt;segment&gt;.fdx; files.
- */
 final class FieldsReader implements Cloneable, Closeable {
   private final FieldInfos fieldInfos;
 
@@ -68,23 +62,13 @@ final class FieldsReader implements Cloneable, Closeable {
   private CloseableThreadLocal<IndexInput> fieldsStreamTL = new CloseableThreadLocal<IndexInput>();
   private boolean isOriginal = false;
 
-  /** Returns a cloned FieldsReader that shares open
-   *  IndexInputs with the original one.  It is the caller's
-   *  job not to close the original FieldsReader until all
-   *  clones are called (eg, currently SegmentReader manages
-   *  this logic). */
+
   @Override
   public Object clone() {
     ensureOpen();
     return new FieldsReader(fieldInfos, numTotalDocs, size, format, formatSize, docStoreOffset, cloneableFieldsStream, cloneableIndexStream);
   }
 
-  /**
-   * Detects the code version this segment was written with. Returns either
-   * "2.x" for all pre-3.0 segments, or "3.0" for 3.0 segments. This method
-   * should not be called for 3.1+ segments since they already record their code
-   * version.
-   */
   static String detectCodeVersion(Directory dir, String segment) throws IOException {
     IndexInput idxStream = dir.openInput(IndexFileNames.segmentFileName(segment, IndexFileNames.FIELDS_INDEX_EXTENSION), 1024);
     try {
@@ -184,21 +168,12 @@ final class FieldsReader implements Cloneable, Closeable {
     }
   }
 
-  /**
-   * @throws AlreadyClosedException if this FieldsReader is closed
-   */
   private void ensureOpen() throws AlreadyClosedException {
     if (closed) {
       throw new AlreadyClosedException("this FieldsReader is closed");
     }
   }
 
-  /**
-   * Closes the underlying {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput} streams, including any ones associated with a
-   * lazy implementation of a Field.  This means that the Fields values will not be accessible.
-   *
-   * @throws IOException
-   */
   public final void close() throws IOException {
     if (!closed) {
       if (isOriginal) {
@@ -275,10 +250,7 @@ final class FieldsReader implements Cloneable, Closeable {
     return doc;
   }
 
-  /** Returns the length in bytes of each raw document in a
-   *  contiguous range of length numDocs starting with
-   *  startDocID.  Returns the IndexInput (the fieldStream),
-   *  already seeked to the starting point for startDocID.*/
+
   final IndexInput rawDocs(int[] lengths, int startDocID, int numDocs) throws IOException {
     seekIndex(startDocID);
     long startOffset = indexStream.readLong();
@@ -301,10 +273,6 @@ final class FieldsReader implements Cloneable, Closeable {
     return fieldsStream;
   }
 
-  /**
-   * Skip the field.  We still have to read some of the information about the field, but can skip past the actual content.
-   * This will have the most payoff on large fields.
-   */
   private void skipField(boolean binary, boolean compressed, int numeric) throws IOException {
     final int numBytes;
     switch(numeric) {
@@ -464,14 +432,9 @@ final class FieldsReader implements Cloneable, Closeable {
     return size;
   }
 
-  /**
-   * A Lazy implementation of Fieldable that defers loading of fields until asked for, instead of when the Document is
-   * loaded.
-   */
   private class LazyField extends AbstractField implements Fieldable {
     private int toRead;
     private long pointer;
-    /** @deprecated Only kept for backward-compatbility with <3.0 indexes. Will be removed in 4.0. */
     @Deprecated
     private boolean isCompressed;
 	private boolean cacheResult;
@@ -509,25 +472,19 @@ final class FieldsReader implements Cloneable, Closeable {
       return localFieldsStream;
     }
 
-    /** The value of the field as a Reader, or null.  If null, the String value,
-     * binary value, or TokenStream value is used.  Exactly one of stringValue(), 
-     * readerValue(), getBinaryValue(), and tokenStreamValue() must be set. */
+
     public Reader readerValue() {
       ensureOpen();
       return null;
     }
 
-    /** The value of the field as a TokenStream, or null.  If null, the Reader value,
-     * String value, or binary value is used. Exactly one of stringValue(), 
-     * readerValue(), getBinaryValue(), and tokenStreamValue() must be set. */
+
     public TokenStream tokenStreamValue() {
       ensureOpen();
       return null;
     }
 
-    /** The value of the field as a String, or null.  If null, the Reader value,
-     * binary value, or TokenStream value is used.  Exactly one of stringValue(), 
-     * readerValue(), getBinaryValue(), and tokenStreamValue() must be set. */
+
     public String stringValue() {
       ensureOpen();
       if (isBinary)

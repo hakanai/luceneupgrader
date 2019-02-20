@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,12 +29,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.Query;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 
-/**
- * Holds buffered deletes and updates by term or query, once pushed. Pushed
- * deletes/updates are write-once, so we shift to more memory efficient data
- * structure to hold them. We don't hold docIDs because these are applied on
- * flush.
- */
 class FrozenBufferedUpdates {
 
   /* Query we often undercount (say 24 bytes), plus int. */

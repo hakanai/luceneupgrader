@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
 
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts.checkBlockSize;
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts.numBlocks;
@@ -24,10 +23,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.LongValues;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 
-/**
- * Base implementation for {@link PagedMutable} and {@link PagedGrowableWriter}.
- * @lucene.internal
- */
 abstract class AbstractPagedMutable<T extends AbstractPagedMutable<T>> extends LongValues {
 
   static final int MIN_BLOCK_SIZE = 1 << 6;
@@ -68,7 +63,6 @@ abstract class AbstractPagedMutable<T extends AbstractPagedMutable<T>> extends L
     return pageMask + 1;
   }
 
-  /** The number of values. */
   public final long size() {
     return size;
   }
@@ -89,7 +83,6 @@ abstract class AbstractPagedMutable<T extends AbstractPagedMutable<T>> extends L
     return subMutables[pageIndex].get(indexInPage);
   }
 
-  /** Set value at <code>index</code>. */
   public final void set(long index, long value) {
     assert index >= 0 && index < size;
     final int pageIndex = pageIndex(index);
@@ -104,7 +97,6 @@ abstract class AbstractPagedMutable<T extends AbstractPagedMutable<T>> extends L
         + 3 * RamUsageEstimator.NUM_BYTES_INT;
   }
 
-  /** Return the number of bytes used by this object. */
   public long ramBytesUsed() {
     long bytesUsed = RamUsageEstimator.alignObjectSize(baseRamBytesUsed());
     bytesUsed += RamUsageEstimator.alignObjectSize(RamUsageEstimator.shallowSizeOf(subMutables));
@@ -116,9 +108,7 @@ abstract class AbstractPagedMutable<T extends AbstractPagedMutable<T>> extends L
 
   protected abstract T newUnfilledCopy(long newSize);
 
-  /** Create a new copy of size <code>newSize</code> based on the content of
-   *  this buffer. This method is much more efficient than creating a new
-   *  instance and copying values one by one. */
+
   public final T resize(long newSize) {
     final T copy = newUnfilledCopy(newSize);
     final int numCommonPages = Math.min(copy.subMutables.length, subMutables.length);
@@ -135,7 +125,6 @@ abstract class AbstractPagedMutable<T extends AbstractPagedMutable<T>> extends L
     return copy;
   }
 
-  /** Similar to {@link ArrayUtil#grow(long[], int)}. */
   public final T grow(long minSize) {
     assert minSize >= 0;
     if (minSize <= size()) {
@@ -151,7 +140,6 @@ abstract class AbstractPagedMutable<T extends AbstractPagedMutable<T>> extends L
     return resize(newSize);
   }
 
-  /** Similar to {@link ArrayUtil#grow(long[])}. */
   public final T grow() {
     return grow(size() + 1);
   }

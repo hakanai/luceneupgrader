@@ -1,8 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataOutput;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ByteBlockPool;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -19,13 +14,10 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ByteBlockPool;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
-
-/**
- * Class to write byte streams into slices of shared
- * byte[].  This is used by DocumentsWriter to hold the
- * posting list for many terms in RAM.
- */
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataOutput;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ByteBlockPool;
 
 final class ByteSliceWriter extends DataOutput {
 
@@ -39,9 +31,6 @@ final class ByteSliceWriter extends DataOutput {
     this.pool = pool;
   }
 
-  /**
-   * Set up the writer to write at address.
-   */
   public void init(int address) {
     slice = pool.buffers[address >> ByteBlockPool.BYTE_BLOCK_SHIFT];
     assert slice != null;
@@ -50,7 +39,6 @@ final class ByteSliceWriter extends DataOutput {
     assert upto < slice.length;
   }
 
-  /** Write byte into byte slice stream */
   @Override
   public void writeByte(byte b) {
     assert slice != null;

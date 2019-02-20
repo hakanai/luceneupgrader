@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -47,7 +46,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 
-/** @deprecated Only for reading existing 3.x indexes */
 @Deprecated
 class Lucene3xTermVectorsReader extends TermVectorsReader {
 
@@ -71,13 +69,10 @@ class Lucene3xTermVectorsReader extends TermVectorsReader {
 
   public static final byte STORE_OFFSET_WITH_TERMVECTOR = 0x2;
   
-  /** Extension of vectors fields file */
   public static final String VECTORS_FIELDS_EXTENSION = "tvf";
 
-  /** Extension of vectors documents file */
   public static final String VECTORS_DOCUMENTS_EXTENSION = "tvd";
 
-  /** Extension of vectors index file */
   public static final String VECTORS_INDEX_EXTENSION = "tvx";
 
   private FieldInfos fieldInfos;
@@ -190,10 +185,6 @@ class Lucene3xTermVectorsReader extends TermVectorsReader {
     IOUtils.close(tvx, tvd, tvf, storeCFSReader);
   }
 
-  /**
-   * 
-   * @return The number of documents in the reader
-   */
   int size() {
     return size;
   }

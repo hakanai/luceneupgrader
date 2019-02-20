@@ -24,9 +24,7 @@ import java.util.List;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 
-/** Utility class to write new points into in-heap arrays.
- *
- *  @lucene.internal */
+
 public final class HeapPointWriter implements PointWriter {
   public int[] docIDs;
   public long[] ordsLong;
@@ -87,8 +85,7 @@ public final class HeapPointWriter implements PointWriter {
     System.arraycopy(blocks.get(block), blockIndex * packedBytesLength, bytes, 0, packedBytesLength);
   }
 
-  /** Returns a reference, in <code>result</code>, to the byte[] slice holding this value */
-  public void getPackedValueSlice(int index, BytesRef result) {
+    public void getPackedValueSlice(int index, BytesRef result) {
     int block = index / valuesPerBlock;
     int blockIndex = index % valuesPerBlock;
     result.bytes = blocks.get(block);

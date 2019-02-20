@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,42 +13,23 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ThreadInterruptedException;
 
-/** Abstract base class to rate limit IO.  Typically implementations are
- *  shared across multiple IndexInputs or IndexOutputs (for example
- *  those involved all merging).  Those IndexInputs and
- *  IndexOutputs would call {@link #pause} whenever the have read
- *  or written more than {@link #getMinPauseCheckBytes} bytes. */
+
 public abstract class RateLimiter {
 
-  /**
-   * Sets an updated mb per second rate limit.
-   */
   public abstract void setMbPerSec(double mbPerSec);
 
-  /**
-   * The current mb per second rate limit.
-   */
   public abstract double getMbPerSec();
   
-  /** Pauses, if necessary, to keep the instantaneous IO
-   *  rate at or below the target. 
-   *  <p>
-   *  Note: the implementation is thread-safe
-   *  </p>
-   *  @return the pause time in nano seconds 
-   * */
+
   public abstract long pause(long bytes);
   
-  /** How many bytes caller should add up itself before invoking {@link #pause}. */
   public abstract long getMinPauseCheckBytes();
 
-  /**
-   * Simple class to rate limit IO.
-   */
   public static class SimpleRateLimiter extends RateLimiter {
 
     private final static int MIN_PAUSE_CHECK_MSEC = 5;
@@ -63,15 +42,11 @@ public abstract class RateLimiter {
     // determine the allowed rate, eg if an app wants to
     // change the allowed rate over time or something
 
-    /** mbPerSec is the MB/sec max IO rate */
     public SimpleRateLimiter(double mbPerSec) {
       setMbPerSec(mbPerSec);
       lastNS = System.nanoTime();
     }
 
-    /**
-     * Sets an updated mb per second rate limit.
-     */
     @Override
     public void setMbPerSec(double mbPerSec) {
       this.mbPerSec = mbPerSec;
@@ -83,20 +58,12 @@ public abstract class RateLimiter {
       return minPauseCheckBytes;
     }
 
-    /**
-     * The current mb per second rate limit.
-     */
     @Override
     public double getMbPerSec() {
       return this.mbPerSec;
     }
     
-    /** Pauses, if necessary, to keep the instantaneous IO
-     *  rate at or below the target.  Be sure to only call
-     *  this method when bytes > {@link #getMinPauseCheckBytes},
-     *  otherwise it will pause way too long!
-     *
-     *  @return the pause time in nano seconds */  
+
     @Override
     public long pause(long bytes) {
 

@@ -16,20 +16,9 @@
  */
 package org.trypticon.luceneupgrader.lucene5.internal.lucene.search;
 
-/**
- * A cache for filters.
- *
- * @see LRUFilterCache
- * @lucene.experimental
- * @deprecated Use {@link QueryCache} instead
- */
 @Deprecated
 public interface FilterCache {
 
-  /**
-   * Return a wrapper around the provided <code>filter</code> that will cache
-   * {@link DocIdSet}s per-segment accordingly to the given <code>policy</code>.
-   */
   Filter doCache(Filter filter, FilterCachingPolicy policy);
 
 }

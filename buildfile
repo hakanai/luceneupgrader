@@ -23,9 +23,6 @@ end
 
 LUCENE_VERSION = '7.5.0'
 
-LUCENE = artifact("org.apache.lucene:lucene-core:jar:#{LUCENE_VERSION}")
-LUCENE_RUNTIME = artifact("org.apache.lucene:lucene-backward-codecs:jar:#{LUCENE_VERSION}")
-
 require 'buildr/custom_pom'
 
 desc 'Lucene Index Upgrader'
@@ -33,11 +30,11 @@ define 'luceneupgrader' do
   project.version=VERSION_NUMBER
   project.group = 'org.trypticon.luceneupgrader'
   compile.options.source = compile.options.target = '1.8'
-  compile.with LUCENE
+  compile.with 'com.google.code.findbugs:jsr305:jar:3.0.1'
+  compile.with "org.apache.lucene:lucene-core:jar:#{LUCENE_VERSION}"
   test.with 'junit:junit:jar:4.12'
   test.with 'org.hamcrest:hamcrest-library:jar:1.3'
-  test.with LUCENE_RUNTIME
-  doc.using 'Xdoclint:none' => true
+  test.with "org.apache.lucene:lucene-backward-codecs:jar:#{LUCENE_VERSION}"
   package :jar
   package :sources
   package :javadoc

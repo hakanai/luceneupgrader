@@ -13,13 +13,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene4.internal.lucene.util; // from org.apache.solr.util rev 555343
 
-/**  A variety of high efficiency bit twiddling routines.
- * @lucene.internal
- */
 public final class BitUtil {
 
   private static final byte[] BYTE_COUNTS = {  // table of bits/byte
@@ -46,19 +42,6 @@ public final class BitUtil {
   // packed inside a 32 bit integer (8 4 bit numbers).  That
   // should be faster than accessing an array for each index, and
   // the total array size is kept smaller (256*sizeof(int))=1K
-  /***** the python code that generated bitlist
-  def bits2int(val):
-  arr=0
-  for shift in range(8,0,-1):
-    if val & 0x80:
-      arr = (arr << 4) | shift
-    val = val << 1
-  return arr
-
-  def int_table():
-    tbl = [ hex(bits2int(val)).strip('L') for val in range(256) ]
-    return ','.join(tbl)
-  ******/
   private static final int[] BIT_LISTS = {
     0x0, 0x1, 0x2, 0x21, 0x3, 0x31, 0x32, 0x321, 0x4, 0x41, 0x42, 0x421, 0x43, 
     0x431, 0x432, 0x4321, 0x5, 0x51, 0x52, 0x521, 0x53, 0x531, 0x532, 0x5321, 
@@ -92,19 +75,11 @@ public final class BitUtil {
 
   private BitUtil() {} // no instance
 
-  /** Return the number of bits sets in b. */
   public static int bitCount(byte b) {
     return BYTE_COUNTS[b & 0xFF];
   }
 
-  /** Return the list of bits which are set in b encoded as followed:
-   * <code>(i >>> (4 * n)) & 0x0F</code> is the offset of the n-th set bit of
-   * the given byte plus one, or 0 if there are n or less bits set in the given
-   * byte. For example <code>bitList(12)</code> returns 0x43:<ul>
-   * <li><code>0x43 & 0x0F</code> is 3, meaning the the first bit set is at offset 3-1 = 2,</li>
-   * <li><code>(0x43 >>> 4) & 0x0F</code> is 4, meaning there is a second bit set at offset 4-1=3,</li>
-   * <li><code>(0x43 >>> 8) & 0x0F</code> is 0, meaning there is no more bit set in this byte.</li>
-   * </ul>*/
+
   public static int bitList(byte b) {
     return BIT_LISTS[b & 0xFF];
   }
@@ -113,7 +88,6 @@ public final class BitUtil {
   // turns out that it is faster to use the Long.bitCount method (which is an
   // intrinsic since Java 6u18) in a naive loop, see LUCENE-2221
 
-  /** Returns the number of set bits in an array of longs. */
   public static long pop_array(long[] arr, int wordOffset, int numWords) {
     long popCount = 0;
     for (int i = wordOffset, end = wordOffset + numWords; i < end; ++i) {
@@ -122,8 +96,6 @@ public final class BitUtil {
     return popCount;
   }
 
-  /** Returns the popcount or cardinality of the two sets after an intersection.
-   *  Neither array is modified. */
   public static long pop_intersect(long[] arr1, long[] arr2, int wordOffset, int numWords) {
     long popCount = 0;
     for (int i = wordOffset, end = wordOffset + numWords; i < end; ++i) {
@@ -132,8 +104,6 @@ public final class BitUtil {
     return popCount;
   }
 
-   /** Returns the popcount or cardinality of the union of two sets.
-    *  Neither array is modified. */
    public static long pop_union(long[] arr1, long[] arr2, int wordOffset, int numWords) {
      long popCount = 0;
      for (int i = wordOffset, end = wordOffset + numWords; i < end; ++i) {
@@ -142,8 +112,6 @@ public final class BitUtil {
      return popCount;
    }
 
-  /** Returns the popcount or cardinality of A & ~B.
-   *  Neither array is modified. */
   public static long pop_andnot(long[] arr1, long[] arr2, int wordOffset, int numWords) {
     long popCount = 0;
     for (int i = wordOffset, end = wordOffset + numWords; i < end; ++i) {
@@ -152,8 +120,6 @@ public final class BitUtil {
     return popCount;
   }
 
-  /** Returns the popcount or cardinality of A ^ B
-    * Neither array is modified. */
   public static long pop_xor(long[] arr1, long[] arr2, int wordOffset, int numWords) {
     long popCount = 0;
     for (int i = wordOffset, end = wordOffset + numWords; i < end; ++i) {
@@ -162,7 +128,6 @@ public final class BitUtil {
     return popCount;
   }
 
-  /** returns the next highest power of two, or the current value if it's already a power of two or zero*/
   public static int nextHighestPowerOfTwo(int v) {
     v--;
     v |= v >> 1;
@@ -174,7 +139,6 @@ public final class BitUtil {
     return v;
   }
 
-  /** returns the next highest power of two, or the current value if it's already a power of two or zero*/
    public static long nextHighestPowerOfTwo(long v) {
     v--;
     v |= v >> 1;
@@ -187,27 +151,18 @@ public final class BitUtil {
     return v;
   }
 
-   /** Same as {@link #zigZagEncode(long)} but on integers. */
    public static int zigZagEncode(int i) {
      return (i >> 31) ^ (i << 1);
    }
 
-   /**
-    * <a href="https://developers.google.com/protocol-buffers/docs/encoding#types">Zig-zag</a>
-    * encode the provided long. Assuming the input is a signed long whose
-    * absolute value can be stored on <tt>n</tt> bits, the returned value will
-    * be an unsigned long that can be stored on <tt>n+1</tt> bits.
-    */
    public static long zigZagEncode(long l) {
      return (l >> 63) ^ (l << 1);
    }
 
-   /** Decode an int previously encoded with {@link #zigZagEncode(int)}. */
    public static int zigZagDecode(int i) {
      return ((i >>> 1) ^ -(i & 1));
    }
 
-   /** Decode a long previously encoded with {@link #zigZagEncode(long)}. */
    public static long zigZagDecode(long l) {
      return ((l >>> 1) ^ -(l & 1));
    }

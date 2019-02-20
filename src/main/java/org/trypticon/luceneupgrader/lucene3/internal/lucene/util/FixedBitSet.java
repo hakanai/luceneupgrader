@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -13,8 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
 import java.io.IOException;
@@ -26,21 +25,12 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.DocIdSetItera
 // TODO: maybe merge with BitVector?  Problem is BitVector
 // caches its cardinality...
 
-/** BitSet of fixed length (numBits), backed by accessible
- *  ({@link #getBits}) long[], accessed with an int index,
- *  implementing Bits and DocIdSet.  Unlike {@link
- *  OpenBitSet} this bit set does not auto-expand, cannot
- *  handle long index, and does not have fastXX/XX variants
- *  (just X).
- *
- * @lucene.internal
- **/
+
 
 public final class FixedBitSet extends DocIdSet implements Bits {
   private final long[] bits;
   private int numBits;
 
-  /** returns the number of 64 bit words it would take to hold numBits */
   public static int bits2words(int numBits) {
     int numLong = numBits >>> 6;
     if ((numBits & 63) != 0) {
@@ -54,7 +44,6 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     bits = new long[bits2words(numBits)];
   }
 
-  /** Makes full copy. */
   public FixedBitSet(FixedBitSet other) {
     bits = new long[other.bits.length];
     System.arraycopy(other.bits, 0, bits, 0, bits.length);
@@ -70,20 +59,16 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     return numBits;
   }
 
-  /** This DocIdSet implementation is cacheable. */
   @Override
   public boolean isCacheable() {
     return true;
   }
 
-  /** Expert. */
   public long[] getBits() {
     return bits;
   }
 
-  /** Returns number of set bits.  NOTE: this visits every
-   *  long in the backing bits array, and the result is not
-   *  internally cached! */
+
   public int cardinality() {
     return (int) BitUtil.pop_array(bits, 0, bits.length);
   }
@@ -134,9 +119,7 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     return val;
   }
 
-  /** Returns the index of the first set bit starting at the index specified.
-   *  -1 is returned if there are no more set bits.
-   */
+
   public int nextSetBit(int index) {
     assert index >= 0 && index < numBits;
     int i = index >> 6;
@@ -157,9 +140,7 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     return -1;
   }
 
-  /** Returns the index of the last set bit before or on the index specified.
-   *  -1 is returned if there are no more set bits.
-   */
+
   public int prevSetBit(int index) {
     assert index >= 0 && index < numBits: "index=" + index + " numBits=" + numBits;
     int i = index >> 6;
@@ -180,8 +161,6 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     return -1;
   }
 
-  /** Does in-place OR of the bits provided by the
-   *  iterator. */
   public void or(DocIdSetIterator iter) throws IOException {
     if (iter instanceof OpenBitSetIterator && iter.docID() == -1) {
       final OpenBitSetIterator obs = (OpenBitSetIterator) iter;
@@ -197,7 +176,6 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     }
   }
 
-  /** this = this OR other */
   public void or(FixedBitSet other) {
     or(other.bits, other.bits.length);
   }
@@ -210,8 +188,6 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     }
   }
 
-  /** Does in-place AND of the bits provided by the
-   *  iterator. */
   public void and(DocIdSetIterator iter) throws IOException {
     if (iter instanceof OpenBitSetIterator && iter.docID() == -1) {
       final OpenBitSetIterator obs = (OpenBitSetIterator) iter;
@@ -233,7 +209,6 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     }
   }
 
-  /** this = this AND other */
   public void and(FixedBitSet other) {
     and(other.bits, other.bits.length);
   }
@@ -249,8 +224,6 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     }
   }
 
-  /** Does in-place AND NOT of the bits provided by the
-   *  iterator. */
   public void andNot(DocIdSetIterator iter) throws IOException {
     if (iter instanceof OpenBitSetIterator && iter.docID() == -1) {
       final OpenBitSetIterator obs = (OpenBitSetIterator) iter;
@@ -266,7 +239,6 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     }
   }
 
-  /** this = this AND NOT other */
   public void andNot(FixedBitSet other) {
     andNot(other.bits, other.bits.length);
   }
@@ -283,11 +255,7 @@ public final class FixedBitSet extends DocIdSet implements Bits {
   // typically isEmpty is low cost, but this one wouldn't
   // be)
 
-  /** Flips a range of bits
-   *
-   * @param startIndex lower index
-   * @param endIndex one-past the last bit to flip
-   */
+
   public void flip(int startIndex, int endIndex) {
     assert startIndex >= 0 && startIndex < numBits;
     assert endIndex >= 0 && endIndex <= numBits;
@@ -297,13 +265,6 @@ public final class FixedBitSet extends DocIdSet implements Bits {
 
     int startWord = startIndex >> 6;
     int endWord = (endIndex-1) >> 6;
-
-    /*** Grrr, java shifting wraps around so -1L>>>64 == -1
-     * for that reason, make sure not to use endmask if the bits to flip will
-     * be zero in the last word (redefine endWord to be the last changed...)
-    long startmask = -1L << (startIndex & 0x3f);     // example: 11111...111000
-    long endmask = -1L >>> (64-(endIndex & 0x3f));   // example: 00111...111111
-    ***/
 
     long startmask = -1L << startIndex;
     long endmask = -1L >>> -endIndex;  // 64-(endIndex&0x3f) is the same as -endIndex due to wrap
@@ -322,11 +283,7 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     bits[endWord] ^= endmask;
   }
 
-  /** Sets a range of bits
-   *
-   * @param startIndex lower index
-   * @param endIndex one-past the last bit to set
-   */
+
   public void set(int startIndex, int endIndex) {
     assert startIndex >= 0 && startIndex < numBits;
     assert endIndex >= 0 && endIndex <= numBits;
@@ -350,11 +307,7 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     bits[endWord] |= endmask;
   }
 
-  /** Clears a range of bits.
-   *
-   * @param startIndex lower index
-   * @param endIndex one-past the last bit to clear
-   */
+
   public void clear(int startIndex, int endIndex) {
     assert startIndex >= 0 && startIndex < numBits;
     assert endIndex >= 0 && endIndex <= numBits;
@@ -387,7 +340,6 @@ public final class FixedBitSet extends DocIdSet implements Bits {
     return new FixedBitSet(this);
   }
 
-  /** returns true if both sets have the same bits set */
   @Override
   public boolean equals(Object o) {
     if (this == o) {

@@ -1,21 +1,5 @@
 package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40;
 
-/**
- * Copyright 2004 The Apache Software Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.CodecUtil;
@@ -38,14 +22,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 
-/** 
- * Class responsible for writing stored document fields.
- * <p/>
- * It uses &lt;segment&gt;.fdt and &lt;segment&gt;.fdx; files.
- * 
- * @see Lucene40StoredFieldsFormat
- * @lucene.experimental 
- */
 public final class Lucene40StoredFieldsWriter extends StoredFieldsWriter {
   // NOTE: bit 0 is free here!  You can steal it!
   static final int FIELD_IS_BINARY = 1 << 1;
@@ -73,10 +49,8 @@ public final class Lucene40StoredFieldsWriter extends StoredFieldsWriter {
 
 
 
-  /** Extension of stored fields file */
   public static final String FIELDS_EXTENSION = "fdt";
   
-  /** Extension of stored fields index file */
   public static final String FIELDS_INDEX_EXTENSION = "fdx";
 
   private final Directory directory;
@@ -85,7 +59,6 @@ public final class Lucene40StoredFieldsWriter extends StoredFieldsWriter {
   private IndexOutput indexStream;
   private final RAMOutputStream fieldsBuffer = new RAMOutputStream();
 
-  /** Sole constructor. */
   public Lucene40StoredFieldsWriter(Directory directory, String segment, IOContext context) throws IOException {
     assert directory != null;
     this.directory = directory;
@@ -205,11 +178,7 @@ public final class Lucene40StoredFieldsWriter extends StoredFieldsWriter {
     }
   }
 
-  /** Bulk write a contiguous series of documents.  The
-   *  lengths array is the length (in bytes) of each raw
-   *  document.  The stream IndexInput is the
-   *  fieldsStream from which we should bulk-copy all
-   *  bytes. */
+
   public void addRawDocuments(IndexInput stream, int[] lengths, int numDocs) throws IOException {
     long position = fieldsStream.getFilePointer();
     long start = position;
@@ -263,8 +232,6 @@ public final class Lucene40StoredFieldsWriter extends StoredFieldsWriter {
     return docCount;
   }
 
-  /** Maximum number of contiguous documents to bulk-copy
-      when merging stored fields */
   private final static int MAX_RAW_MERGE_DOCS = 4192;
 
   private int copyFieldsWithDeletions(MergeState mergeState, final AtomicReader reader,

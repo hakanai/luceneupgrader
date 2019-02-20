@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,21 +13,17 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
 import java.util.Comparator;
 
-/**
- * A {@link TimSorter} for object arrays.
- * @lucene.internal
- */
 final class ArrayTimSorter<T> extends TimSorter {
 
   private final Comparator<? super T> comparator;
   private final T[] arr;
   private final T[] tmp;
 
-  /** Create a new {@link ArrayTimSorter}. */
   public ArrayTimSorter(T[] arr, Comparator<? super T> comparator, int maxTempSlots) {
     super(maxTempSlots);
     this.arr = arr;

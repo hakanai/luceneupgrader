@@ -21,9 +21,6 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.IndexReader;
 
-/**
- * A query that matches no documents.
- */
 public class MatchNoDocsQuery extends Query {
 
   @Override

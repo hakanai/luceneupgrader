@@ -8,6 +8,21 @@ package org.trypticon.luceneupgrader;
 public interface InfoStream {
 
     /**
+     * An info stream which logs to nowhere.
+     */
+    InfoStream NO_OUTPUT = new InfoStream() {
+        @Override
+        public void message(String component, String line) {
+
+        }
+
+        @Override
+        public boolean isEnabled(String component) {
+            return false;
+        }
+    };
+
+    /**
      * Logs a message for a component.
      *
      * @param component the component name.

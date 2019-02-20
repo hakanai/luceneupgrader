@@ -26,33 +26,16 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.FSDirectory;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.FSLockFactory;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.LockFactory;
 
-/**
- * Class containing some useful methods used by command line tools 
- *
- */
 public final class CommandLineUtil {
   
   private CommandLineUtil() {
     
   }
   
-  /**
-   * Creates a specific FSDirectory instance starting from its class name, using the default lock factory
-   * @param clazzName The name of the FSDirectory class to load
-   * @param path The path to be used as parameter constructor
-   * @return the new FSDirectory instance
-   */
   public static FSDirectory newFSDirectory(String clazzName, Path path) {
     return newFSDirectory(clazzName, path, FSLockFactory.getDefault());
   }
   
-  /**
-   * Creates a specific FSDirectory instance starting from its class name
-   * @param clazzName The name of the FSDirectory class to load
-   * @param path The path to be used as parameter constructor
-   * @param lf The lock factory to be used
-   * @return the new FSDirectory instance
-   */
   public static FSDirectory newFSDirectory(String clazzName, Path path, LockFactory lf) {
     try {
       final Class<? extends FSDirectory> clazz = loadFSDirectoryClass(clazzName);
@@ -71,24 +54,12 @@ public final class CommandLineUtil {
     }
   }
   
-  /**
-   * Loads a specific Directory implementation 
-   * @param clazzName The name of the Directory class to load
-   * @return The Directory class loaded
-   * @throws ClassNotFoundException If the specified class cannot be found.
-   */
-  public static Class<? extends Directory> loadDirectoryClass(String clazzName) 
+  public static Class<? extends Directory> loadDirectoryClass(String clazzName)
       throws ClassNotFoundException {
     return Class.forName(adjustDirectoryClassName(clazzName)).asSubclass(Directory.class);
   }
   
-  /**
-   * Loads a specific FSDirectory implementation
-   * @param clazzName The name of the FSDirectory class to load
-   * @return The FSDirectory class loaded
-   * @throws ClassNotFoundException If the specified class cannot be found.
-   */
-  public static Class<? extends FSDirectory> loadFSDirectoryClass(String clazzName) 
+  public static Class<? extends FSDirectory> loadFSDirectoryClass(String clazzName)
       throws ClassNotFoundException {
     return Class.forName(adjustDirectoryClassName(clazzName)).asSubclass(FSDirectory.class);
   }
@@ -105,33 +76,12 @@ public final class CommandLineUtil {
     return clazzName;
   }
   
-  /**
-   * Creates a new specific FSDirectory instance
-   * @param clazz The class of the object to be created
-   * @param path The file to be used as parameter constructor
-   * @return The new FSDirectory instance
-   * @throws NoSuchMethodException If the Directory does not have a constructor that takes <code>Path</code>.
-   * @throws InstantiationException If the class is abstract or an interface.
-   * @throws IllegalAccessException If the constructor does not have public visibility.
-   * @throws InvocationTargetException If the constructor throws an exception
-   */
-  public static FSDirectory newFSDirectory(Class<? extends FSDirectory> clazz, Path path) 
+  public static FSDirectory newFSDirectory(Class<? extends FSDirectory> clazz, Path path)
       throws ReflectiveOperationException {
     return newFSDirectory(clazz, path, FSLockFactory.getDefault());
   }
   
-  /**
-   * Creates a new specific FSDirectory instance
-   * @param clazz The class of the object to be created
-   * @param path The file to be used as parameter constructor
-   * @param lf The lock factory to be used
-   * @return The new FSDirectory instance
-   * @throws NoSuchMethodException If the Directory does not have a constructor that takes <code>Path</code>.
-   * @throws InstantiationException If the class is abstract or an interface.
-   * @throws IllegalAccessException If the constructor does not have public visibility.
-   * @throws InvocationTargetException If the constructor throws an exception
-   */
-  public static FSDirectory newFSDirectory(Class<? extends FSDirectory> clazz, Path path, LockFactory lf) 
+  public static FSDirectory newFSDirectory(Class<? extends FSDirectory> clazz, Path path, LockFactory lf)
       throws ReflectiveOperationException {
     // Assuming every FSDirectory has a ctor(Path):
     Constructor<? extends FSDirectory> ctor = clazz.getConstructor(Path.class, LockFactory.class);

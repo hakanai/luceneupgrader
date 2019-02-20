@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -49,97 +48,14 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.NoSuchDirector
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Version;
 
-/**
- * A collection of segmentInfo objects with methods for operating on those
- * segments in relation to the file system.
- * <p>
- * The active segments in the index are stored in the segment info file,
- * <tt>segments_N</tt>. There may be one or more <tt>segments_N</tt> files in
- * the index; however, the one with the largest generation is the active one
- * (when older segments_N files are present it's because they temporarily cannot
- * be deleted, or, a writer is in the process of committing, or a custom
- * {@link org.trypticon.luceneupgrader.lucene4.internal.lucene.index.IndexDeletionPolicy IndexDeletionPolicy} is in
- * use). This file lists each segment by name and has details about the codec
- * and generation of deletes.
- * </p>
- * <p>
- * There is also a file <tt>segments.gen</tt>. This file contains the current
- * generation (the <tt>_N</tt> in <tt>segments_N</tt>) of the index. This is
- * used only as a fallback in case the current generation cannot be accurately
- * determined by directory listing alone (as is the case for some NFS clients
- * with time-based directory cache expiration). This file simply contains an
- * {@link DataOutput#writeInt Int32} version header (
- * {@link #FORMAT_SEGMENTS_GEN_CURRENT}), followed by the generation recorded as
- * {@link DataOutput#writeLong Int64}, written twice.
- * </p>
- * <p>
- * Files:
- * <ul>
- * <li><tt>segments.gen</tt>: GenHeader, Generation, Generation, Footer
- * <li><tt>segments_N</tt>: Header, Version, NameCounter, SegCount, &lt;SegName,
- * SegCodec, DelGen, DeletionCount, FieldInfosGen, DocValuesGen,
- * UpdatesFiles&gt;<sup>SegCount</sup>, CommitUserData, Footer
- * </ul>
- * </p>
- * Data types:
- * <p>
- * <ul>
- * <li>Header --&gt; {@link CodecUtil#writeHeader CodecHeader}</li>
- * <li>GenHeader, NameCounter, SegCount, DeletionCount --&gt;
- * {@link DataOutput#writeInt Int32}</li>
- * <li>Generation, Version, DelGen, Checksum, FieldInfosGen, DocValuesGen --&gt;
- * {@link DataOutput#writeLong Int64}</li>
- * <li>SegName, SegCodec --&gt; {@link DataOutput#writeString String}</li>
- * <li>CommitUserData --&gt; {@link DataOutput#writeStringStringMap
- * Map&lt;String,String&gt;}</li>
- * <li>UpdatesFiles --&gt; Map&lt;{@link DataOutput#writeInt Int32},
- * {@link DataOutput#writeStringSet(Set) Set&lt;String&gt;}&gt;</li>
- * <li>Footer --&gt; {@link CodecUtil#writeFooter CodecFooter}</li>
- * </ul>
- * </p>
- * Field Descriptions:
- * <p>
- * <ul>
- * <li>Version counts how often the index has been changed by adding or deleting
- * documents.</li>
- * <li>NameCounter is used to generate names for new segment files.</li>
- * <li>SegName is the name of the segment, and is used as the file name prefix
- * for all of the files that compose the segment's index.</li>
- * <li>DelGen is the generation count of the deletes file. If this is -1, there
- * are no deletes. Anything above zero means there are deletes stored by
- * {@link LiveDocsFormat}.</li>
- * <li>DeletionCount records the number of deleted documents in this segment.</li>
- * <li>SegCodec is the {@link Codec#getName() name} of the Codec that encoded
- * this segment.</li>
- * <li>CommitUserData stores an optional user-supplied opaque
- * Map&lt;String,String&gt; that was passed to
- * {@link IndexWriter#setCommitData(java.util.Map)}.</li>
- * <li>FieldInfosGen is the generation count of the fieldInfos file. If this is
- * -1, there are no updates to the fieldInfos in that segment. Anything above
- * zero means there are updates to fieldInfos stored by {@link FieldInfosFormat}
- * .</li>
- * <li>DocValuesGen is the generation count of the updatable DocValues. If this
- * is -1, there are no updates to DocValues in that segment. Anything above zero
- * means there are updates to DocValues stored by {@link DocValuesFormat}.</li>
- * <li>UpdatesFiles stores the set of files that were updated in that segment
- * per field.</li>
- * </ul>
- * </p>
- * 
- * @lucene.experimental
- */
 public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo> {
 
-  /** The file format version for the segments_N codec header, up to 4.5. */
   public static final int VERSION_40 = 0;
 
-  /** The file format version for the segments_N codec header, since 4.6+. */
   public static final int VERSION_46 = 1;
   
-  /** The file format version for the segments_N codec header, since 4.8+ */
   public static final int VERSION_48 = 2;
   
-  /** The file format version for the segments_N codec header, since 4.9+ */
   public static final int VERSION_49 = 3;
 
   // Used for the segments.gen file only!
@@ -147,14 +63,11 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
   private static final int FORMAT_SEGMENTS_GEN_47 = -2;
   private static final int FORMAT_SEGMENTS_GEN_CHECKSUM = -3;
   private static final int FORMAT_SEGMENTS_GEN_START = FORMAT_SEGMENTS_GEN_47;
-  /** Current format of segments.gen */
   public static final int FORMAT_SEGMENTS_GEN_CURRENT = FORMAT_SEGMENTS_GEN_CHECKSUM;
 
-  /** Used to name new segments. */
   // TODO: should this be a long ...?
   public int counter;
   
-  /** Counts how often the index has been changed.  */
   public long version;
 
   private long generation;     // generation of the "segments_N" for the next commit
@@ -162,37 +75,20 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
                                // or wrote; this is normally the same as generation except if
                                // there was an IOException that had interrupted a commit
 
-  /** Opaque Map&lt;String, String&gt; that user can specify during IndexWriter.commit */
   public Map<String,String> userData = Collections.<String,String>emptyMap();
   
   private List<SegmentCommitInfo> segments = new ArrayList<>();
   
-  /**
-   * If non-null, information about loading segments_N files
-   * will be printed here.  @see #setInfoStream.
-   */
   private static PrintStream infoStream = null;
 
-  /** Sole constructor. Typically you call this and then
-   *  use {@link #read(Directory) or
-   *  #read(Directory,String)} to populate each {@link
-   *  SegmentCommitInfo}.  Alternatively, you can add/remove your
-   *  own {@link SegmentCommitInfo}s. */
+
   public SegmentInfos() {
   }
 
-  /** Returns {@link SegmentCommitInfo} at the provided
-   *  index. */
   public SegmentCommitInfo info(int i) {
     return segments.get(i);
   }
 
-  /**
-   * Get the generation of the most recent commit to the
-   * list of index files (N in the segments_N file).
-   *
-   * @param files -- array of file names to check
-   */
   public static long getLastCommitGeneration(String[] files) {
     if (files == null) {
       return -1;
@@ -209,12 +105,6 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     return max;
   }
 
-  /**
-   * Get the generation of the most recent commit to the
-   * index in this directory (N in the segments_N file).
-   *
-   * @param directory -- directory to search for the latest segments_N file
-   */
   public static long getLastCommitGeneration(Directory directory) throws IOException {
     try {
       return getLastCommitGeneration(directory.listAll());
@@ -223,44 +113,24 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     }
   }
 
-  /**
-   * Get the filename of the segments_N file for the most
-   * recent commit in the list of index files.
-   *
-   * @param files -- array of file names to check
-   */
-
   public static String getLastCommitSegmentsFileName(String[] files) {
     return IndexFileNames.fileNameFromGeneration(IndexFileNames.SEGMENTS,
                                                  "",
                                                  getLastCommitGeneration(files));
   }
 
-  /**
-   * Get the filename of the segments_N file for the most
-   * recent commit to the index in this Directory.
-   *
-   * @param directory -- directory to search for the latest segments_N file
-   */
   public static String getLastCommitSegmentsFileName(Directory directory) throws IOException {
     return IndexFileNames.fileNameFromGeneration(IndexFileNames.SEGMENTS,
                                                  "",
                                                  getLastCommitGeneration(directory));
   }
 
-  /**
-   * Get the segments_N filename in use by this segment infos.
-   */
   public String getSegmentsFileName() {
     return IndexFileNames.fileNameFromGeneration(IndexFileNames.SEGMENTS,
                                                  "",
                                                  lastGeneration);
   }
   
-  /**
-   * Parse the generation off the segments file name and
-   * return it.
-   */
   public static long generationFromSegmentsFileName(String fileName) {
     if (fileName.equals(IndexFileNames.SEGMENTS)) {
       return 0;
@@ -272,17 +142,6 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     }
   }
 
-  /**
-   * A utility for writing the {@link IndexFileNames#SEGMENTS_GEN} file to a
-   * {@link Directory}.
-   * 
-   * <p>
-   * <b>NOTE:</b> this is an internal utility which is kept public so that it's
-   * accessible by code from other packages. You should avoid calling this
-   * method unless you're absolutely sure what you're doing!
-   * 
-   * @lucene.internal
-   */
   public static void writeSegmentsGen(Directory dir, long generation) {
     try {
       IndexOutput genOutput = dir.createOutput(IndexFileNames.SEGMENTS_GEN, IOContext.READONCE);
@@ -302,9 +161,6 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     }
   }
 
-  /**
-   * Get the next segments_N filename that will be written.
-   */
   public String getNextSegmentFileName() {
     long nextGeneration;
 
@@ -318,15 +174,6 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
                                                  nextGeneration);
   }
 
-  /**
-   * Read a particular segmentFileName.  Note that this may
-   * throw an IOException if a commit is in process.
-   *
-   * @param directory -- directory containing the segments file
-   * @param segmentFileName -- segment file to load
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
   public final void read(Directory directory, String segmentFileName) throws IOException {
     boolean success = false;
 
@@ -449,8 +296,6 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     }
   }
 
-  /** Find the latest commit ({@code segments_N file}) and
-   *  load all {@link SegmentCommitInfo}s. */
   public final void read(Directory directory) throws IOException {
     generation = lastGeneration = -1;
 
@@ -645,17 +490,11 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     return fileName;
   }
 
-  /**
-   * Returns a copy of this instance, also copying each
-   * SegmentInfo.
-   */
-  
   @Override
   public SegmentInfos clone() {
     return clone(false);
   }
 
-  /** Deep clone of this {@code SegmentInfos}, optionally also fully cloning the {@link SegmentInfo}. */
   SegmentInfos clone(boolean cloneSegmentInfo) {
     try {
       final SegmentInfos sis = (SegmentInfos) super.clone();
@@ -673,26 +512,19 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     }
   }
 
-  /**
-   * version number when this SegmentInfos was generated.
-   */
   public long getVersion() {
     return version;
   }
 
-  /** Returns current generation. */
   public long getGeneration() {
     return generation;
   }
 
-  /** Returns last succesfully read or written generation. */
   public long getLastGeneration() {
     return lastGeneration;
   }
 
-  /** If non-null, information about retries when loading
-   * the segments file will be printed to this.
-   */
+
   public static void setInfoStream(PrintStream infoStream) {
     SegmentInfos.infoStream = infoStream;
   }
@@ -701,74 +533,34 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
      segments_N file */
   private static int defaultGenLookaheadCount = 10;
 
-  /**
-   * Advanced: set how many times to try incrementing the
-   * gen when loading the segments file.  This only runs if
-   * the primary (listing directory) and secondary (opening
-   * segments.gen file) methods fail to find the segments
-   * file.
-   *
-   * @lucene.experimental
-   */
   public static void setDefaultGenLookaheadCount(int count) {
     defaultGenLookaheadCount = count;
   }
 
-  /**
-   * Returns the {@code defaultGenLookaheadCount}.
-   *
-   * @see #setDefaultGenLookaheadCount
-   *
-   * @lucene.experimental
-   */
   public static int getDefaultGenLookahedCount() {
     return defaultGenLookaheadCount;
   }
 
-  /**
-   * Returns {@code infoStream}.
-   *
-   * @see #setInfoStream
-   */
   public static PrintStream getInfoStream() {
     return infoStream;
   }
 
-  /**
-   * Prints the given message to the infoStream. Note, this method does not
-   * check for null infoStream. It assumes this check has been performed by the
-   * caller, which is recommended to avoid the (usually) expensive message
-   * creation.
-   */
   private static void message(String message) {
     infoStream.println("SIS [" + Thread.currentThread().getName() + "]: " + message);
   }
 
-  /**
-   * Utility class for executing code that needs to do
-   * something with the current segments file.  This is
-   * necessary with lock-less commits because from the time
-   * you locate the current segments file name, until you
-   * actually open it, read its contents, or check modified
-   * time, etc., it could have been deleted due to a writer
-   * commit finishing.
-   */
   public abstract static class FindSegmentsFile {
 
     final Directory directory;
 
-    /** Sole constructor. */ 
     public FindSegmentsFile(Directory directory) {
       this.directory = directory;
     }
 
-    /** Locate the most recent {@code segments} file and
-     *  run {@link #doBody} on it. */
     public Object run() throws IOException {
       return run(null);
     }
     
-    /** Run {@link #doBody} on the provided commit. */
     public Object run(IndexCommit commit) throws IOException {
       if (commit != null) {
         if (directory != commit.getDirectory())
@@ -979,12 +771,6 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
       }
     }
 
-    /**
-     * Subclass must implement this.  The assumption is an
-     * IOException will be thrown if something goes wrong
-     * during the processing that could have been caused by
-     * a writer committing.
-     */
     protected abstract Object doBody(String segmentFileName) throws IOException;
   }
 
@@ -1017,16 +803,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     }
   }
 
-  /** Call this to start a commit.  This writes the new
-   *  segments file, but writes an invalid checksum at the
-   *  end, so that it is not visible to readers.  Once this
-   *  is called you must call {@link #finishCommit} to complete
-   *  the commit or {@link #rollbackCommit} to abort it.
-   *  <p>
-   *  Note: {@link #changed()} should be called prior to this
-   *  method if changes have been made to this {@link SegmentInfos} instance
-   *  </p>  
-   **/
+
   final void prepareCommit(Directory dir) throws IOException {
     if (pendingSegnOutput != null) {
       throw new IllegalStateException("prepareCommit was already called");
@@ -1034,11 +811,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     write(dir);
   }
 
-  /** Returns all file names referenced by SegmentInfo
-   *  instances matching the provided Directory (ie files
-   *  associated with any "external" segments are skipped).
-   *  The returned collection is recomputed on each
-   *  invocation.  */
+
   public Collection<String> files(Directory dir, boolean includeSegmentsFile) throws IOException {
     HashSet<String> files = new HashSet<>();
     if (includeSegmentsFile) {
@@ -1059,7 +832,6 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     return files;
   }
 
-  /** Returns the committed segments_N filename. */
   final String finishCommit(Directory dir) throws IOException {
     if (pendingSegnOutput == null) {
       throw new IllegalStateException("prepareCommit was not called");
@@ -1116,19 +888,12 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     return fileName;
   }
 
-  /** Writes & syncs to the Directory dir, taking care to
-   *  remove the segments file on exception
-   *  <p>
-   *  Note: {@link #changed()} should be called prior to this
-   *  method if changes have been made to this {@link SegmentInfos} instance
-   *  </p>  
-   **/
+
   final void commit(Directory dir) throws IOException {
     prepareCommit(dir);
     finishCommit(dir);
   }
 
-  /** Returns readable description of this segment. */
   public String toString(Directory directory) {
     StringBuilder buffer = new StringBuilder();
     buffer.append(getSegmentsFileName()).append(": ");
@@ -1143,10 +908,7 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     return buffer.toString();
   }
 
-  /** Return {@code userData} saved with this commit.
-   * 
-   * @see IndexWriter#commit()
-   */
+
   public Map<String,String> getUserData() {
     return userData;
   }
@@ -1159,17 +921,12 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     }
   }
 
-  /** Replaces all segments in this instance, but keeps
-   *  generation, version, counter so that future commits
-   *  remain write once.
-   */
+
   void replace(SegmentInfos other) {
     rollbackSegmentInfos(other.asList());
     lastGeneration = other.lastGeneration;
   }
 
-  /** Returns sum of all segment's docCounts.  Note that
-   *  this does not include deletions */
   public int totalDocCount() {
     long count = 0;
     for(SegmentCommitInfo info : this) {
@@ -1180,13 +937,10 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     return (int) count;
   }
 
-  /** Call this before committing if changes have been made to the
-   *  segments. */
   public void changed() {
     version++;
   }
   
-  /** applies all changes caused by committing a merge to this SegmentInfos */
   void applyMergeChanges(MergePolicy.OneMerge merge, boolean dropSegment) {
     final Set<SegmentCommitInfo> mergedAway = new HashSet<>(merge.segments);
     boolean inserted = false;
@@ -1233,67 +987,50 @@ public final class SegmentInfos implements Cloneable, Iterable<SegmentCommitInfo
     this.addAll(infos);
   }
   
-  /** Returns an <b>unmodifiable</b> {@link Iterator} of contained segments in order. */
   // @Override (comment out until Java 6)
   @Override
   public Iterator<SegmentCommitInfo> iterator() {
     return asList().iterator();
   }
   
-  /** Returns all contained segments as an <b>unmodifiable</b> {@link List} view. */
   public List<SegmentCommitInfo> asList() {
     return Collections.unmodifiableList(segments);
   }
 
-  /** Returns number of {@link SegmentCommitInfo}s. */
   public int size() {
     return segments.size();
   }
 
-  /** Appends the provided {@link SegmentCommitInfo}. */
   public void add(SegmentCommitInfo si) {
     segments.add(si);
   }
   
-  /** Appends the provided {@link SegmentCommitInfo}s. */
   public void addAll(Iterable<SegmentCommitInfo> sis) {
     for (final SegmentCommitInfo si : sis) {
       this.add(si);
     }
   }
   
-  /** Clear all {@link SegmentCommitInfo}s. */
   public void clear() {
     segments.clear();
   }
 
-  /** Remove the provided {@link SegmentCommitInfo}.
-   *
-   * <p><b>WARNING</b>: O(N) cost */
+
   public void remove(SegmentCommitInfo si) {
     segments.remove(si);
   }
   
-  /** Remove the {@link SegmentCommitInfo} at the
-   * provided index.
-   *
-   * <p><b>WARNING</b>: O(N) cost */
+
   void remove(int index) {
     segments.remove(index);
   }
 
-  /** Return true if the provided {@link
-   *  SegmentCommitInfo} is contained.
-   *
-   * <p><b>WARNING</b>: O(N) cost */
+
   boolean contains(SegmentCommitInfo si) {
     return segments.contains(si);
   }
 
-  /** Returns index of the provided {@link
-   *  SegmentCommitInfo}.
-   *
-   * <p><b>WARNING</b>: O(N) cost */
+
   int indexOf(SegmentCommitInfo si) {
     return segments.indexOf(si);
   }

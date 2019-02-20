@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import java.io.Closeable;
 import java.io.FileNotFoundException;
@@ -33,21 +32,12 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.CodecUtil;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.IndexFileNames;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 
-/**
- * Combines multiple files into a single compound file.
- * 
- * @see CompoundFileDirectory
- * @lucene.internal
- */
 final class CompoundFileWriter implements Closeable{
 
   private static final class FileEntry {
-    /** source file */
     String file;
     long length;
-    /** temporary holder for the start of this file's data section */
     long offset;
-    /** the directory which contains the file. */
     Directory dir;
   }
 
@@ -77,13 +67,6 @@ final class CompoundFileWriter implements Closeable{
   final String entryTableName;
   final String dataFileName;
 
-  /**
-   * Create the compound stream in the specified file. The file name is the
-   * entire name (no extensions are added).
-   * 
-   * @throws NullPointerException
-   *           if <code>dir</code> or <code>name</code> is null
-   */
   CompoundFileWriter(Directory dir, String name) {
     if (dir == null)
       throw new NullPointerException("directory cannot be null");
@@ -113,23 +96,14 @@ final class CompoundFileWriter implements Closeable{
     return dataOut;
   }
 
-  /** Returns the directory of the compound file. */
   Directory getDirectory() {
     return directory;
   }
 
-  /** Returns the name of the compound file. */
   String getName() {
     return dataFileName;
   }
 
-  /**
-   * Closes all resources and writes the entry table
-   * 
-   * @throws IllegalStateException
-   *           if close() had been called before or if no file has been added to
-   *           this object
-   */
   @Override
   public void close() throws IOException {
     if (closed) {
@@ -178,10 +152,6 @@ final class CompoundFileWriter implements Closeable{
     }
   }
 
-  /**
-   * Copy the contents of the file with specified extension into the provided
-   * output stream.
-   */
   private final long copyFileEntry(IndexOutput dataOut, FileEntry fileEntry)
       throws IOException {
     final IndexInput is = fileEntry.dir.openInput(fileEntry.file, IOContext.READONCE);

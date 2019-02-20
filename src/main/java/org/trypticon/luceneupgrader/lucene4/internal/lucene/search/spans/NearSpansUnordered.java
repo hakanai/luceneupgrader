@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.AtomicReaderContext;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.Term;
@@ -31,12 +30,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
-/**
- * Similar to {@link NearSpansOrdered}, but for the unordered case.
- * 
- * Expert:
- * Only public for subclassing.  Most implementations should not need this class
- */
 public class NearSpansUnordered extends Spans {
   private SpanNearQuery query;
 
@@ -71,7 +64,6 @@ public class NearSpansUnordered extends Spans {
   }
 
 
-  /** Wraps a Spans, and can be used to form a linked list. */
   private class SpansCell extends Spans {
     private Spans spans;
     private SpansCell next;
@@ -233,11 +225,7 @@ public class NearSpansUnordered extends Spans {
     return more && (atMatch() ||  next());
   }
 
-  /** Check whether two Spans in the same document are ordered with possible overlap.
-   * @return true iff spans1 starts before spans2
-   *              or the spans start at the same position,
-   *              and spans1 ends before spans2.
-   */
+
   static final boolean docSpansOrdered(Spans spans1, Spans spans2) {
     assert spans1.doc() == spans2.doc() : "doc1 " + spans1.doc() + " != doc2 " + spans2.doc();
     int start1 = spans1.start();
@@ -255,11 +243,6 @@ public class NearSpansUnordered extends Spans {
   public int end() { return max.end(); }
 
   // TODO: Remove warning after API has been finalized
-  /**
-   * WARNING: The List is not necessarily in order of the the positions
-   * @return Collection of <code>byte[]</code> payloads
-   * @throws IOException if there is a low-level I/O error
-   */
   @Override
   public Collection<byte[]> getPayload() throws IOException {
     Set<byte[]> matchPayload = new HashSet<>();

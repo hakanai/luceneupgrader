@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,28 +13,21 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
-/** Holds one hit in {@link TopDocs}. */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 public class ScoreDoc implements java.io.Serializable {
 
-  /** The score of this document for the query. */
   public float score;
 
-  /** Expert: A hit document's number.
-   * @see Searcher#doc(int) */
   public int doc;
 
-  /** Only set by {@link TopDocs#merge} */
   public int shardIndex;
 
-  /** Constructs a ScoreDoc. */
   public ScoreDoc(int doc, float score) {
     this(doc, score, -1);
   }
 
-  /** Constructs a ScoreDoc. */
   public ScoreDoc(int doc, float score, int shardIndex) {
     this.doc = doc;
     this.score = score;

@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.standard;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,18 +13,16 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.standard;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.standard;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.TokenFilter;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.TokenStream;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.TypeAttribute;
 
-/** Normalizes tokens extracted with {@link ClassicTokenizer}. */
-
 public class ClassicFilter extends TokenFilter {
 
-  /** Construct filtering <i>in</i>. */
   public ClassicFilter(TokenStream in) {
     super(in);
   }
@@ -38,10 +34,7 @@ public class ClassicFilter extends TokenFilter {
   private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
   private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
   
-  /** Returns the next token in the stream, or null at EOS.
-   * <p>Removes <tt>'s</tt> from the end of words.
-   * <p>Removes dots from acronyms.
-   */
+
   @Override
   public final boolean incrementToken() throws java.io.IOException {
     if (!input.incrementToken()) {

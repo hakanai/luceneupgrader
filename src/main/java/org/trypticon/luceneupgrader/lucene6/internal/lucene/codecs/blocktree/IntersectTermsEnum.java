@@ -35,16 +35,7 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.fst.ByteSequenc
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.fst.FST;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.fst.Outputs;
 
-/** This is used to implement efficient {@link Terms#intersect} for
- *  block-tree.  Note that it cannot seek, except for the initial term on
- *  init.  It just "nexts" through the intersection of the automaton and
- *  the terms.  It does not use the terms index at all: on init, it
- *  loads the root block, and scans its way to the initial term.
- *  Likewise, in next it scans until it finds a term that matches the
- *  current automaton transition.  If the index has auto-prefix terms
- *  (only for DOCS_ONLY fields currently) it will visit these terms
- *  when possible and then skip the real terms that auto-prefix term
- *  matched. */
+
 
 final class IntersectTermsEnum extends TermsEnum {
 
@@ -72,12 +63,10 @@ final class IntersectTermsEnum extends TermsEnum {
 
   final FieldReader fr;
 
-  /** Which state in the automaton accepts all possible suffixes. */
   private final int sinkState;
 
   private BytesRef savedStartTerm;
       
-  /** True if we did return the current auto-prefix term */
   private boolean useAutoPrefixTerm;
 
   // TODO: in some cases we can filter by length?  eg
@@ -714,9 +703,7 @@ final class IntersectTermsEnum extends TermsEnum {
 
   private final Transition scratchTransition = new Transition();
 
-  /** Returns true if, from this state, the automaton accepts any suffix
-   *  starting with a label between start and end, inclusive.  We just
-   *  look for a transition, matching this range, to the sink state.  */
+
   private boolean acceptsSuffixRange(int state, int start, int end) {
 
     int count = automaton.initTransition(state, scratchTransition);

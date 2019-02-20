@@ -38,13 +38,11 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountables;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.bkd.BKDReader;
 
-/** Reads point values previously written with {@link Lucene60PointsWriter} */
 public class Lucene60PointsReader extends PointsReader implements Closeable {
   final IndexInput dataIn;
   final SegmentReadState readState;
   final Map<Integer,BKDReader> readers = new HashMap<>();
 
-  /** Sole constructor */
   public Lucene60PointsReader(SegmentReadState readState) throws IOException {
     this.readState = readState;
 
@@ -114,9 +112,7 @@ public class Lucene60PointsReader extends PointsReader implements Closeable {
     }
   }
 
-  /** Returns the underlying {@link BKDReader}.
-   *
-   * @lucene.internal */
+
   public BKDReader getBKDReader(String fieldName) {
     FieldInfo fieldInfo = readState.fieldInfos.fieldInfo(fieldName);
     if (fieldInfo == null) {

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,21 +13,17 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import java.io.IOException;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
-/** 
- * Simple implementation of {@link ChecksumIndexInput} that wraps
- * another input and delegates calls.
- */
 public class BufferedChecksumIndexInput extends ChecksumIndexInput {
   final IndexInput main;
   final Checksum digest;
 
-  /** Creates a new BufferedChecksumIndexInput */
   public BufferedChecksumIndexInput(IndexInput main) {
     super("BufferedChecksumIndexInput(" + main + ")");
     this.main = main;

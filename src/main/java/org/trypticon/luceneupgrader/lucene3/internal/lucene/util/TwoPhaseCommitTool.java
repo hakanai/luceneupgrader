@@ -1,9 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
-import java.io.IOException;
-import java.util.Map;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,21 +14,13 @@ import java.util.Map;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
- * A utility for executing 2-phase commit on several objects.
- * 
- * @see TwoPhaseCommit
- * @lucene.experimental
- */
+import java.io.IOException;
+import java.util.Map;
+
 public final class TwoPhaseCommitTool {
 
-  /**
-   * A wrapper of a {@link TwoPhaseCommit}, which delegates all calls to the
-   * wrapped object, passing the specified commitData. This object is useful for
-   * use with {@link TwoPhaseCommitTool#execute(TwoPhaseCommit...)} if one would
-   * like to store commitData as part of the commit.
-   */
   public static final class TwoPhaseCommitWrapper implements TwoPhaseCommit {
 
     private final TwoPhaseCommit tpc;
@@ -65,10 +52,6 @@ public final class TwoPhaseCommitTool {
     }
   }
   
-  /**
-   * Thrown by {@link TwoPhaseCommitTool#execute(TwoPhaseCommit...)} when an
-   * object fails to prepareCommit().
-   */
   public static class PrepareCommitFailException extends IOException {
     
     public PrepareCommitFailException(Throwable cause, TwoPhaseCommit obj) {
@@ -78,10 +61,6 @@ public final class TwoPhaseCommitTool {
     
   }
 
-  /**
-   * Thrown by {@link TwoPhaseCommitTool#execute(TwoPhaseCommit...)} when an
-   * object fails to commit().
-   */
   public static class CommitFailException extends IOException {
     
     public CommitFailException(Throwable cause, TwoPhaseCommit obj) {
@@ -91,7 +70,6 @@ public final class TwoPhaseCommitTool {
     
   }
 
-  /** rollback all objects, discarding any exceptions that occur. */
   private static void rollback(TwoPhaseCommit... objects) {
     for (TwoPhaseCommit tpc : objects) {
       // ignore any exception that occurs during rollback - we want to ensure
@@ -104,27 +82,6 @@ public final class TwoPhaseCommitTool {
     }
   }
 
-  /**
-   * Executes a 2-phase commit algorithm by first
-   * {@link TwoPhaseCommit#prepareCommit()} all objects and only if all succeed,
-   * it proceeds with {@link TwoPhaseCommit#commit()}. If any of the objects
-   * fail on either the preparation or actual commit, it terminates and
-   * {@link TwoPhaseCommit#rollback()} all of them.
-   * <p>
-   * <b>NOTE:</b> it may happen that an object fails to commit, after few have
-   * already successfully committed. This tool will still issue a rollback
-   * instruction on them as well, but depending on the implementation, it may
-   * not have any effect.
-   * <p>
-   * <b>NOTE:</b> if any of the objects are {@code null}, this method simply
-   * skips over them.
-   * 
-   * @throws PrepareCommitFailException
-   *           if any of the objects fail to
-   *           {@link TwoPhaseCommit#prepareCommit()}
-   * @throws CommitFailException
-   *           if any of the objects fail to {@link TwoPhaseCommit#commit()}
-   */
   public static void execute(TwoPhaseCommit... objects)
       throws PrepareCommitFailException, CommitFailException {
     TwoPhaseCommit tpc = null;

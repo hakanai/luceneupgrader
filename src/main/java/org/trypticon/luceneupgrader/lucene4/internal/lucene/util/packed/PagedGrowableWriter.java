@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,31 +13,16 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts.Mutable;
 
-/**
- * A {@link PagedGrowableWriter}. This class slices data into fixed-size blocks
- * which have independent numbers of bits per value and grow on-demand.
- * <p>You should use this class instead of the {@link PackedLongValues} related ones only when
- * you need random write-access. Otherwise this class will likely be slower and
- * less memory-efficient.
- * @lucene.internal
- */
 public final class PagedGrowableWriter extends AbstractPagedMutable<PagedGrowableWriter> {
 
   final float acceptableOverheadRatio;
 
-  /**
-   * Create a new {@link PagedGrowableWriter} instance.
-   *
-   * @param size the number of values to store.
-   * @param pageSize the number of values per page
-   * @param startBitsPerValue the initial number of bits per value
-   * @param acceptableOverheadRatio an acceptable overhead ratio
-   */
   public PagedGrowableWriter(long size, int pageSize,
       int startBitsPerValue, float acceptableOverheadRatio) {
     this(size, pageSize, startBitsPerValue, acceptableOverheadRatio, true);

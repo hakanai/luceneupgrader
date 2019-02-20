@@ -22,24 +22,11 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LeafReaderContext;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 
-/** 
- * Constrains search results to only match those which also match a provided
- * query.  
- *
- * <p> This could be used, for example, with a {@link NumericRangeQuery} on a suitably
- * formatted date field to implement date filtering.  One could re-use a single
- * CachingWrapperFilter(QueryWrapperFilter) that matches, e.g., only documents modified 
- * within the last week.  This would only need to be reconstructed once per day.
- * @deprecated You can use {@link Query} objects directly for filtering by using
- * {@link BooleanClause.Occur#FILTER} clauses in a {@link BooleanQuery}.
- */
 @Deprecated
 public class QueryWrapperFilter extends Filter {
   private final Query query;
 
-  /** Constructs a filter which only matches documents matching
-   * <code>query</code>.
-   */
+
   public QueryWrapperFilter(Query query) {
     if (query == null)
       throw new NullPointerException("Query may not be null");
@@ -51,7 +38,6 @@ public class QueryWrapperFilter extends Filter {
     return new BoostQuery(new ConstantScoreQuery(query), 0f);
   }
   
-  /** returns the inner Query */
   public final Query getQuery() {
     return query;
   }

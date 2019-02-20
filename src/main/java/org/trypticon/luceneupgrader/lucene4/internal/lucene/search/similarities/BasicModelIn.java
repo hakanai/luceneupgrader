@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,18 +13,14 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.Explanation;
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities.SimilarityBase.log2;
 
-/**
- * The basic tf-idf model of randomness.
- * @lucene.experimental
- */ 
 public class BasicModelIn extends BasicModel {
   
-  /** Sole constructor: parameter-free */
   public BasicModelIn() {}
 
   @Override

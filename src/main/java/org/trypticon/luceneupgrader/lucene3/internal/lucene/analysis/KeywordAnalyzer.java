@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,14 +13,12 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
 import java.io.Reader;
 
-/**
- * "Tokenizes" the entire stream as a single token. This is useful
- * for data like zip codes, ids, and some product names.
- */
+
 public final class KeywordAnalyzer extends ReusableAnalyzerBase {
   public KeywordAnalyzer() {
   }

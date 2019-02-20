@@ -105,9 +105,7 @@ final class ExactPhraseScorer extends Scorer {
     return docScorer.score(docID(), freq);
   }
 
-  /** Advance the given pos enum to the first doc on or after {@code target}.
-   *  Return {@code false} if the enum was exhausted before reaching
-   *  {@code target} and {@code true} otherwise. */
+
   private static boolean advancePosition(PostingsAndPosition posting, int target) throws IOException {
     while (posting.pos < target) {
       if (posting.upTo == posting.freq) {

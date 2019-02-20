@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
@@ -27,13 +26,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-/** Removes matches which overlap with another SpanQuery. */
 public class SpanNotQuery extends SpanQuery implements Cloneable {
   private SpanQuery include;
   private SpanQuery exclude;
 
-  /** Construct a SpanNotQuery matching spans from <code>include</code> which
-   * have no overlap with spans from <code>exclude</code>.*/
   public SpanNotQuery(SpanQuery include, SpanQuery exclude) {
     this.include = include;
     this.exclude = exclude;
@@ -42,10 +38,8 @@ public class SpanNotQuery extends SpanQuery implements Cloneable {
       throw new IllegalArgumentException("Clauses must have same field.");
   }
 
-  /** Return the SpanQuery whose matches are filtered. */
   public SpanQuery getInclude() { return include; }
 
-  /** Return the SpanQuery whose matches must not overlap those returned. */
   public SpanQuery getExclude() { return exclude; }
 
   @Override
@@ -187,7 +181,6 @@ public class SpanNotQuery extends SpanQuery implements Cloneable {
     }
   }
 
-    /** Returns true iff <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

@@ -1,7 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
-import java.io.IOException;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,38 +14,16 @@ import java.io.IOException;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
-/**
- * An interface for implementations that support 2-phase commit. You can use
- * {@link TwoPhaseCommitTool} to execute a 2-phase commit algorithm over several
- * {@link TwoPhaseCommit}s.
- * 
- * @lucene.experimental
- */
+import java.io.IOException;
+
 public interface TwoPhaseCommit {
 
-  /**
-   * The first stage of a 2-phase commit. Implementations should do as much work
-   * as possible in this method, but avoid actual committing changes. If the
-   * 2-phase commit fails, {@link #rollback()} is called to discard all changes
-   * since last successful commit.
-   */
   public void prepareCommit() throws IOException;
 
-  /**
-   * The second phase of a 2-phase commit. Implementations should ideally do
-   * very little work in this method (following {@link #prepareCommit()}, and
-   * after it returns, the caller can assume that the changes were successfully
-   * committed to the underlying storage.
-   */
   public void commit() throws IOException;
 
-  /**
-   * Discards any changes that have occurred since the last commit. In a 2-phase
-   * commit algorithm, where one of the objects failed to {@link #commit()} or
-   * {@link #prepareCommit()}, this method is used to roll all other objects
-   * back to their previous state.
-   */
   public void rollback() throws IOException;
 
 }

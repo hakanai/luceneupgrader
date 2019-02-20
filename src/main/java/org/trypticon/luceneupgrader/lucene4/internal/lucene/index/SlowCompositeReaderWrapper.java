@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,31 +27,13 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.MultiDocValues
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.MultiDocValues.MultiSortedSetDocValues;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.MultiDocValues.OrdinalMap;
 
-/**
- * This class forces a composite reader (eg a {@link
- * MultiReader} or {@link DirectoryReader}) to emulate an
- * atomic reader.  This requires implementing the postings
- * APIs on-the-fly, using the static methods in {@link
- * MultiFields}, {@link MultiDocValues}, by stepping through
- * the sub-readers to merge fields/terms, appending docs, etc.
- *
- * <p><b>NOTE</b>: this class almost always results in a
- * performance hit.  If this is important to your use case,
- * you'll get better performance by gathering the sub readers using
- * {@link IndexReader#getContext()} to get the
- * atomic leaves and then operate per-AtomicReader,
- * instead of using this class.
- */
 public final class SlowCompositeReaderWrapper extends AtomicReader {
 
   private final CompositeReader in;
   private final Fields fields;
   private final Bits liveDocs;
   
-  /** This method is sugar for getting an {@link AtomicReader} from
-   * an {@link IndexReader} of any kind. If the reader is already atomic,
-   * it is returned unchanged, otherwise wrapped by this class.
-   */
+
   public static AtomicReader wrap(IndexReader reader) throws IOException {
     if (reader instanceof CompositeReader) {
       return new SlowCompositeReaderWrapper((CompositeReader) reader);

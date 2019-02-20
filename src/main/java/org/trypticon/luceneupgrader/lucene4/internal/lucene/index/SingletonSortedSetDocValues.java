@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,29 +13,21 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
-/** 
- * Exposes multi-valued view over a single-valued instance.
- * <p>
- * This can be used if you want to have one multi-valued implementation
- * against e.g. FieldCache.getDocTermOrds that also works for single-valued 
- * fields.
- */
 final class SingletonSortedSetDocValues extends RandomAccessOrds {
   private final SortedDocValues in;
   private long currentOrd;
   private long ord;
   
-  /** Creates a multi-valued view over the provided SortedDocValues */
   public SingletonSortedSetDocValues(SortedDocValues in) {
     this.in = in;
     assert NO_MORE_ORDS == -1; // this allows our nextOrd() to work for missing values without a check
   }
 
-  /** Return the wrapped {@link SortedDocValues} */
   public SortedDocValues getSortedDocValues() {
     return in;
   }

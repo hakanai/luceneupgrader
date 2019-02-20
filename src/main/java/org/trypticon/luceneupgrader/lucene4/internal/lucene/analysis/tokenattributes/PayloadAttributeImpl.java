@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattributes;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,23 +13,17 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattri
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattributes;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeImpl;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
-/** Default implementation of {@link PayloadAttribute}. */
 public class PayloadAttributeImpl extends AttributeImpl implements PayloadAttribute, Cloneable {
   private BytesRef payload;  
   
-  /**
-   * Initialize this attribute with no payload.
-   */
   public PayloadAttributeImpl() {}
   
-  /**
-   * Initialize this attribute with the given payload. 
-   */
   public PayloadAttributeImpl(BytesRef payload) {
     this.payload = payload;
   }

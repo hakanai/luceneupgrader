@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ByteBlockPool.BYTE_BLOCK_SIZE;
 
@@ -33,8 +32,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimat
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedLongValues;
 
-/** Buffers up pending byte[] per doc, deref and sorting via
- *  int ord, then flushes when segment flushes. */
 class SortedDocValuesWriter extends DocValuesWriter {
   final BytesRefHash hash;
   private PackedLongValues.Builder pending;

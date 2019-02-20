@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans;
 
 import java.io.IOException;
 import java.util.Map;
@@ -28,17 +27,10 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.IndexSearcher
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.Weight;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 
-/** Base class for span-based queries. */
 public abstract class SpanQuery extends Query {
-  /** Expert: Returns the matches for this query in an index.  Used internally
-   * to search for spans. */
   public abstract Spans getSpans(AtomicReaderContext context, Bits acceptDocs, Map<Term,TermContext> termContexts) throws IOException;
 
-  /** 
-   * Returns the name of the field matched by this query.
-   * <p>
-   * Note that this may return null if the query matches no terms.
-   */
+
   public abstract String getField();
 
   @Override

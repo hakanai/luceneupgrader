@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton;
 
 // The following code was generated with the moman/finenight pkg
 // This package is available under the MIT License, see NOTICE.txt
@@ -23,8 +22,6 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.LevenshteinAutomata.ParametricDescription;
 
-/** Parametric description for generating a Levenshtein automaton of degree 2, 
-    with transpositions as primitive edits */
 class Lev2TParametricDescription extends ParametricDescription {
   
   @Override

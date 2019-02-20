@@ -13,16 +13,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.DocIdSetIterator;
 
-/** An iterator to iterate over set bits in an OpenBitSet.
- * This is faster than nextSetBit() for iterating over the complete set of bits,
- * especially when the density of the bits set is high.
- */
 public class OpenBitSetIterator extends DocIdSetIterator {
 
   // hmmm, what about an iterator that finds zeros though,
@@ -54,28 +49,6 @@ public class OpenBitSetIterator extends DocIdSetIterator {
     if ((word & 0x000000FF) == 0) { wordShift +=8; word >>>=8; }
     indexArray = BitUtil.bitList((byte) word);
   }
-
-  /***** alternate shift implementations
-  // 32 bit shifts, but a long shift needed at the end
-  private void shift2() {
-    int y = (int)word;
-    if (y==0) {wordShift +=32; y = (int)(word >>>32); }
-    if ((y & 0x0000FFFF) == 0) { wordShift +=16; y>>>=16; }
-    if ((y & 0x000000FF) == 0) { wordShift +=8; y>>>=8; }
-    indexArray = bitlist[y & 0xff];
-    word >>>= (wordShift +1);
-  }
-
-  private void shift3() {
-    int lower = (int)word;
-    int lowByte = lower & 0xff;
-    if (lowByte != 0) {
-      indexArray=bitlist[lowByte];
-      return;
-    }
-    shift();
-  }
-  ******/
 
   @Override
   public int nextDoc() {

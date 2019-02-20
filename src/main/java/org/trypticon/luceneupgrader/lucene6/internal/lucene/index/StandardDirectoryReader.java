@@ -31,7 +31,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.IOUtils;
 
-/** Default implementation of {@link DirectoryReader}. */
 public final class StandardDirectoryReader extends DirectoryReader {
 
   final IndexWriter writer;
@@ -39,7 +38,6 @@ public final class StandardDirectoryReader extends DirectoryReader {
   private final boolean applyAllDeletes;
   private final boolean writeAllDeletes;
   
-  /** called only from static open() methods */
   StandardDirectoryReader(Directory directory, LeafReader[] readers, IndexWriter writer,
                           SegmentInfos sis, boolean applyAllDeletes, boolean writeAllDeletes) throws IOException {
     super(directory, readers);
@@ -49,7 +47,6 @@ public final class StandardDirectoryReader extends DirectoryReader {
     this.writeAllDeletes = writeAllDeletes;
   }
 
-  /** called from DirectoryReader.open(...) methods */
   static DirectoryReader open(final Directory directory, final IndexCommit commit) throws IOException {
     return new SegmentInfos.FindSegmentsFile<DirectoryReader>(directory) {
       @Override
@@ -77,7 +74,6 @@ public final class StandardDirectoryReader extends DirectoryReader {
     }.run(commit);
   }
 
-  /** Used by near real-time search */
   static DirectoryReader open(IndexWriter writer, SegmentInfos infos, boolean applyAllDeletes, boolean writeAllDeletes) throws IOException {
     // IndexWriter synchronizes externally before calling
     // us, which ensures infos will not change; so there's
@@ -135,9 +131,7 @@ public final class StandardDirectoryReader extends DirectoryReader {
     }
   }
 
-  /** This constructor is only used for {@link #doOpenIfChanged(SegmentInfos)}, as well as NRT replication.
-   *
-   *  @lucene.internal */
+
   public static DirectoryReader open(Directory directory, SegmentInfos infos, List<? extends LeafReader> oldReaders) throws IOException {
 
     // we put the old SegmentReaders in a map, that allows us
@@ -337,9 +331,7 @@ public final class StandardDirectoryReader extends DirectoryReader {
     return segmentInfos.getVersion();
   }
 
-  /** Return the {@link SegmentInfos} for this reader.
-   *
-   * @lucene.internal */
+
   public SegmentInfos getSegmentInfos() {
     return segmentInfos;
   }

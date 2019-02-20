@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,9 +35,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Lock;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.LockObtainFailedException;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
 
-/** 
- * An IndexReader which reads indexes with multiple segments.
- */
 class DirectoryReader extends IndexReader implements Cloneable {
   protected Directory directory;
   protected boolean readOnly;
@@ -82,7 +78,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     }.run(commit);
   }
 
-  /** Construct reading the named set of readers. */
   DirectoryReader(Directory directory, SegmentInfos sis, IndexDeletionPolicy deletionPolicy, boolean readOnly, int termInfosIndexDivisor) throws IOException {
     this.directory = directory;
     this.readOnly = readOnly;
@@ -161,7 +156,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     initialize(readers.toArray(new SegmentReader[readers.size()]));
   }
 
-  /** This constructor is only used for {@link #doOpenIfChanged()} */
   DirectoryReader(Directory directory, SegmentInfos infos, SegmentReader[] oldReaders, int[] oldStarts,
                   Map<String,byte[]> oldNormsCache, boolean readOnly, boolean doClone, int termInfosIndexDivisor) throws IOException {
     this.directory = directory;
@@ -288,7 +282,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     }
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     final StringBuilder buffer = new StringBuilder();
@@ -344,7 +337,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     }
   }
 
-  /** {@inheritDoc} */
   @Override @Deprecated
   public final synchronized IndexReader clone(boolean openReadOnly) throws CorruptIndexException, IOException {
     // doOpenIfChanged calls ensureOpen
@@ -375,7 +367,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     return doOpenIfChanged(readOnly, null);
   }
 
-  /** {@inheritDoc} */
   @Override @Deprecated
   protected final IndexReader doOpenIfChanged(boolean openReadOnly) throws CorruptIndexException, IOException {
     return doOpenIfChanged(openReadOnly, null);
@@ -494,7 +485,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     return reader;
   }
 
-  /** Version number when this IndexReader was opened. */
   @Override
   public long getVersion() {
     ensureOpen();
@@ -531,7 +521,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     subReaders[i].getTermFreqVector(docNumber - starts[i], mapper);
   }
 
-  /** {@inheritDoc} */
   @Deprecated
   @Override
   public boolean isOptimized() {
@@ -581,7 +570,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     return hasDeletions;
   }
 
-  /** {@inheritDoc} */
   @Override @Deprecated
   protected void doDelete(int n) throws CorruptIndexException, IOException {
     numDocs = -1;                             // invalidate cache
@@ -590,7 +578,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     hasDeletions = true;
   }
 
-  /** {@inheritDoc} */
   @Override @Deprecated
   protected void doUndeleteAll() throws CorruptIndexException, IOException {
     for (int i = 0; i < subReaders.length; i++)
@@ -666,7 +653,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     }
   }
 
-  /** {@inheritDoc} */
   @Override @Deprecated
   protected void doSetNorm(int n, String field, byte value)
     throws CorruptIndexException, IOException {
@@ -741,18 +727,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     }
   }
 
-  /**
-   * Tries to acquire the WriteLock on this directory. this method is only valid if this IndexReader is directory
-   * owner.
-   *
-   * @throws StaleReaderException  if the index has changed since this reader was opened
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws org.trypticon.luceneupgrader.lucene3.internal.lucene.store.LockObtainFailedException
-   *                               if another writer has this index open (<code>write.lock</code> could not be
-   *                               obtained)
-   * @throws IOException           if there is a low-level IO error
-   * @deprecated
-   */
   @Override @Deprecated
   protected void acquireWriteLock() throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
 
@@ -787,15 +761,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     }
   }
 
-  /**
-   * Commit changes resulting from delete, undeleteAll, or setNorm operations
-   * <p/>
-   * If an exception is hit, then either no changes or all changes will have been committed to the index (transactional
-   * semantics).
-   *
-   * @throws IOException if there is a low-level IO error
-   * @deprecated
-   */
   @Override @Deprecated
   protected void doCommit(Map<String,String> commitUserData) throws IOException {
     if (hasChanges) {
@@ -922,7 +887,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
     return subReaders;
   }
 
-  /** Returns the directory this index resides in. */
   @Override
   public Directory directory() {
     // Don't ensureOpen here -- in certain cases, when a
@@ -937,18 +901,12 @@ class DirectoryReader extends IndexReader implements Cloneable {
     return termInfosIndexDivisor;
   }
 
-  /**
-   * Expert: return the IndexCommit that this reader has opened.
-   * <p/>
-   * @lucene.experimental
-   */
   @Override
   public IndexCommit getIndexCommit() throws IOException {
     ensureOpen();
     return new ReaderCommit(segmentInfos, directory);
   }
 
-  /** @see org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader#listCommits */
   public static Collection<IndexCommit> listCommits(Directory dir) throws IOException {
     final String[] files = dir.listAll();
 
@@ -1223,7 +1181,6 @@ class DirectoryReader extends IndexReader implements Cloneable {
       }
     }
   
-    /** Optimized implementation. */
     public int read(final int[] docs, final int[] freqs) throws IOException {
       while (true) {
         while (current == null) {

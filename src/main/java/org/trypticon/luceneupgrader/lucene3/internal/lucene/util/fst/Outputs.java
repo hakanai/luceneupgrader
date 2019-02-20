@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,23 +13,13 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataOutput;
-
-/**
- * Represents the outputs for an FST, providing the basic
- * algebra required for building and traversing the FST.
- *
- * <p>Note that any operation that returns NO_OUTPUT must
- * return the same singleton object from {@link
- * #getNoOutput}.</p>
- *
- * @lucene.experimental
- */
 
 public abstract class Outputs<T> {
 
@@ -40,22 +28,17 @@ public abstract class Outputs<T> {
   // (new object per byte/char/int) if eg used during
   // analysis
 
-  /** Eg common("foo", "foobar") -> "foo" */
   public abstract T common(T output1, T output2);
 
-  /** Eg subtract("foobar", "foo") -> "bar" */
   public abstract T subtract(T output, T inc);
 
-  /** Eg add("foo", "bar") -> "foobar" */
   public abstract T add(T prefix, T output);
 
   public abstract void write(T output, DataOutput out) throws IOException;
 
   public abstract T read(DataInput in) throws IOException;
 
-  /** NOTE: this output is compared with == so you must
-   *  ensure that all methods return the single object if
-   *  it's really no output */
+
   public abstract T getNoOutput();
 
   public abstract String outputToString(T output);

@@ -24,26 +24,6 @@ import java.util.List;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.LeafReaderContext;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.ArrayUtil;
 
-/**
- * Caches all docs, and optionally also scores, coming from
- * a search, and is then able to replay them to another
- * collector.  You specify the max RAM this class may use.
- * Once the collection is done, call {@link #isCached}. If
- * this returns true, you can use {@link #replay(Collector)}
- * against a new collector.  If it returns false, this means
- * too much RAM was required and you must instead re-run the
- * original search.
- *
- * <p><b>NOTE</b>: this class consumes 4 (or 8 bytes, if
- * scoring is cached) per collected document.  If the result
- * set is large this can easily be a very substantial amount
- * of RAM!
- *
- * <p>See the Lucene <tt>modules/grouping</tt> module for more
- * details including a full code example.</p>
- *
- * @lucene.experimental
- */
 public abstract class CachingCollector extends FilterCollector {
 
   private static final int INITIAL_ARRAY_SIZE = 128;
@@ -176,7 +156,6 @@ public abstract class CachingCollector extends FilterCollector {
       scores.add(coll.cachedScores());
     }
 
-    /** Ensure the scores are collected so they can be replayed, even if the wrapped collector doesn't need them. */
     @Override
     public boolean needsScores() {
       return true;
@@ -292,11 +271,6 @@ public abstract class CachingCollector extends FilterCollector {
     }
   }
 
-  /**
-   * Creates a {@link CachingCollector} which does not wrap another collector.
-   * The cached documents and scores can later be {@link #replay(Collector)
-   * replayed}.
-   */
   public static CachingCollector create(boolean cacheScores, double maxRAMMB) {
     Collector other = new SimpleCollector() {
 
@@ -312,20 +286,6 @@ public abstract class CachingCollector extends FilterCollector {
     return create(other, cacheScores, maxRAMMB);
   }
 
-  /**
-   * Create a new {@link CachingCollector} that wraps the given collector and
-   * caches documents and scores up to the specified RAM threshold.
-   *
-   * @param other
-   *          the Collector to wrap and delegate calls to.
-   * @param cacheScores
-   *          whether to cache scores in addition to document IDs. Note that
-   *          this increases the RAM consumed per doc
-   * @param maxRAMMB
-   *          the maximum RAM in MB to consume for caching the documents and
-   *          scores. If the collector exceeds the threshold, no documents and
-   *          scores are cached.
-   */
   public static CachingCollector create(Collector other, boolean cacheScores, double maxRAMMB) {
     int bytesPerDoc = Integer.BYTES;
     if (cacheScores) {
@@ -335,20 +295,6 @@ public abstract class CachingCollector extends FilterCollector {
     return create(other, cacheScores, maxDocsToCache);
   }
 
-  /**
-   * Create a new {@link CachingCollector} that wraps the given collector and
-   * caches documents and scores up to the specified max docs threshold.
-   *
-   * @param other
-   *          the Collector to wrap and delegate calls to.
-   * @param cacheScores
-   *          whether to cache scores in addition to document IDs. Note that
-   *          this increases the RAM consumed per doc
-   * @param maxDocsToCache
-   *          the maximum number of documents for caching the documents and
-   *          possible the scores. If the collector exceeds the threshold,
-   *          no documents and scores are cached.
-   */
   public static CachingCollector create(Collector other, boolean cacheScores, int maxDocsToCache) {
     return cacheScores ? new ScoreCachingCollector(other, maxDocsToCache) : new NoScoreCachingCollector(other, maxDocsToCache);
   }
@@ -360,25 +306,10 @@ public abstract class CachingCollector extends FilterCollector {
     cached = true;
   }
 
-  /**
-   * Return true is this collector is able to replay collection.
-   */
   public final boolean isCached() {
     return cached;
   }
 
-  /**
-   * Replays the cached doc IDs (and scores) to the given Collector. If this
-   * instance does not cache scores, then Scorer is not set on
-   * {@code other.setScorer} as well as scores are not replayed.
-   *
-   * @throws IllegalStateException
-   *           if this collector is not cached (i.e., if the RAM limits were too
-   *           low for the number of documents + scores to cache).
-   * @throws IllegalArgumentException
-   *           if the given Collect's does not support out-of-order collection,
-   *           while the collector passed to the ctor does.
-   */
   public abstract void replay(Collector other) throws IOException;
 
 }

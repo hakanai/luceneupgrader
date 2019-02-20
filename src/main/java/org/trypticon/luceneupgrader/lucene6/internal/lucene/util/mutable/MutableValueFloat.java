@@ -16,12 +16,6 @@
  */
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.util.mutable;
 
-/**
- * {@link MutableValue} implementation of type <code>float</code>.
- * When mutating instances of this object, the caller is responsible for ensuring 
- * that any instance where <code>exists</code> is set to <code>false</code> must also 
- * <code>value</code> set to <code>0.0F</code> for proper operation.
- */
 public class MutableValueFloat extends MutableValue {
   public float value;
 

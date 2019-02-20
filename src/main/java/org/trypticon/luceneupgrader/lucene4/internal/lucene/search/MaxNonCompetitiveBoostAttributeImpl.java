@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,14 +13,12 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeImpl;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
-/** Implementation class for {@link MaxNonCompetitiveBoostAttribute}.
- * @lucene.internal
- */
 public final class MaxNonCompetitiveBoostAttributeImpl extends AttributeImpl implements MaxNonCompetitiveBoostAttribute {
   private float maxNonCompetitiveBoost = Float.NEGATIVE_INFINITY;
   private BytesRef competitiveTerm = null;

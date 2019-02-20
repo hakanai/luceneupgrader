@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,21 +13,11 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import java.io.IOException;
 import java.util.HashSet;
-
-/**
- * Implements {@link LockFactory} for a single in-process instance,
- * meaning all locking will take place through this one instance.
- * Only use this {@link LockFactory} when you are certain all
- * IndexReaders and IndexWriters for a given index are running
- * against a single shared in-process Directory instance.  This is
- * currently the default locking for RAMDirectory.
- *
- * @see LockFactory
- */
 
 public class SingleInstanceLockFactory extends LockFactory {
 

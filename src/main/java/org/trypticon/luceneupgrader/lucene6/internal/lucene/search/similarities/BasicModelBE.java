@@ -19,19 +19,8 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.search.similarities
 
 import static org.trypticon.luceneupgrader.lucene6.internal.lucene.search.similarities.SimilarityBase.log2;
 
-/**
- * Limiting form of the Bose-Einstein model. The formula used in Lucene differs
- * slightly from the one in the original paper: {@code F} is increased by {@code tfn+1}
- * and {@code N} is increased by {@code F} 
- * @lucene.experimental
- * NOTE: in some corner cases this model may give poor performance or infinite scores with 
- * Normalizations that return large or small values for {@code tfn} such as NormalizationH3. 
- * Consider using the geometric approximation ({@link BasicModelG}) instead, which provides 
- * the same relevance but with less practical problems. 
- */
 public class BasicModelBE extends BasicModel {
   
-  /** Sole constructor: parameter-free */
   public BasicModelBE() {}
 
   @Override
@@ -43,7 +32,6 @@ public class BasicModelBE extends BasicModel {
         + f(N + F - 1, N + F - tfn - 2) - f(F, F - tfn));
   }
   
-  /** The <em>f</em> helper function defined for <em>B<sub>E</sub></em>. */
   private final double f(double n, double m) {
     return (m + 0.5) * log2(n / m) + (n - m) * log2(n);
   }

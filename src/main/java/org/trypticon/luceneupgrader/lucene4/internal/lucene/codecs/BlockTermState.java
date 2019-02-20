@@ -1,4 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,30 +14,19 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
 
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.DocsEnum; // javadocs
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.OrdTermState;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.TermState;
 
-/**
- * Holds all state required for {@link PostingsReaderBase}
- * to produce a {@link DocsEnum} without re-seeking the
- * terms dict.
- */
 public class BlockTermState extends OrdTermState {
-  /** how many docs have this term */
   public int docFreq;
-  /** total number of occurrences of this term */
   public long totalTermFreq;
 
-  /** the term's ord in the current block */
   public int termBlockOrd;
-  /** fp into the terms dict primary file (_X.tim) that holds this term */
   // TODO: update BTR to nuke this
   public long blockFilePointer;
 
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected BlockTermState() {
   }
 

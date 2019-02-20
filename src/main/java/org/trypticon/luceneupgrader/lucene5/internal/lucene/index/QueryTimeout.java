@@ -17,16 +17,8 @@
 package org.trypticon.luceneupgrader.lucene5.internal.lucene.index;
 
 
-/**
- * Base for query timeout implementations, which will provide a {@code shouldExit()} method,
- * used with {@link ExitableDirectoryReader}.
- */
 public interface QueryTimeout {
   
-  /**
-   * Called from {@link ExitableDirectoryReader.ExitableTermsEnum#next()} 
-   * to determine whether to stop processing a query.
-   */
   public abstract boolean shouldExit();
 
 }

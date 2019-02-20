@@ -31,13 +31,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 
-/**
- * IndexReader implementation over a single segment. 
- * <p>
- * Instances pointing to the same segment (but with different deletes, etc)
- * may share the same core data.
- * @lucene.experimental
- */
 public final class SegmentReader extends CodecReader {
        
   private final SegmentCommitInfo si;
@@ -54,11 +47,6 @@ public final class SegmentReader extends CodecReader {
   final DocValuesProducer docValuesProducer;
   final FieldInfos fieldInfos;
   
-  /**
-   * Constructs a new SegmentReader with a new core.
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
   // TODO: why is this public?
   public SegmentReader(SegmentCommitInfo si, IOContext context) throws IOException {
     this.si = si;
@@ -93,19 +81,14 @@ public final class SegmentReader extends CodecReader {
     }
   }
 
-  /** Create new SegmentReader sharing core from a previous
-   *  SegmentReader and loading new live docs from a new
-   *  deletes file.  Used by openIfChanged. */
+
   SegmentReader(SegmentCommitInfo si, SegmentReader sr) throws IOException {
     this(si, sr,
          si.info.getCodec().liveDocsFormat().readLiveDocs(si.info.dir, si, IOContext.READONCE),
          si.info.maxDoc() - si.getDelCount());
   }
 
-  /** Create new SegmentReader sharing core from a previous
-   *  SegmentReader and using the provided in-memory
-   *  liveDocs.  Used by IndexWriter to provide a new NRT
-   *  reader */
+
   SegmentReader(SegmentCommitInfo si, SegmentReader sr, Bits liveDocs, int numDocs) throws IOException {
     if (numDocs > si.info.maxDoc()) {
       throw new IllegalArgumentException("numDocs=" + numDocs + " but maxDoc=" + si.info.maxDoc());
@@ -132,9 +115,6 @@ public final class SegmentReader extends CodecReader {
     }
   }
 
-  /**
-   * init most recent DocValues for the current commit
-   */
   private DocValuesProducer initDocValuesProducer() throws IOException {
     final Directory dir = core.cfsReader != null ? core.cfsReader : si.info.dir;
 
@@ -148,9 +128,6 @@ public final class SegmentReader extends CodecReader {
     }
   }
   
-  /**
-   * init most recent FieldInfos for the current commit
-   */
   private FieldInfos initFieldInfos() throws IOException {
     if (!si.hasFieldUpdates()) {
       return core.coreFieldInfos;
@@ -241,21 +218,14 @@ public final class SegmentReader extends CodecReader {
     return si.toString(si.info.maxDoc() - numDocs - si.getDelCount());
   }
   
-  /**
-   * Return the name of the segment this reader is reading.
-   */
   public String getSegmentName() {
     return si.info.name;
   }
   
-  /**
-   * Return the SegmentInfoPerCommit of the segment this reader is reading.
-   */
   public SegmentCommitInfo getSegmentInfo() {
     return si;
   }
 
-  /** Returns the directory this index resides in. */
   public Directory directory() {
     // Don't ensureOpen here -- in certain cases, when a
     // cloned/reopened reader needs to commit, it may call

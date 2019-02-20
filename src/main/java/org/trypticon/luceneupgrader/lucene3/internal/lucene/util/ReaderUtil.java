@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,12 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
+
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInfo;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInfos;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,25 +26,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInfo;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FieldInfos;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
-
-/**
- * Common util methods for dealing with {@link IndexReader}s.
- *
- * @lucene.internal
- */
 public final class ReaderUtil {
 
   private ReaderUtil() {} // no instance
 
-  /**
-   * Gathers sub-readers from reader into a List.
-   * 
-   * @param allSubReaders
-   * @param reader
-   */
   public static void gatherSubReaders(List<IndexReader> allSubReaders, IndexReader reader) {
     IndexReader[] subReaders = reader.getSequentialSubReaders();
     if (subReaders == null) {
@@ -54,11 +42,7 @@ public final class ReaderUtil {
     }
   }
 
-  /** Recursively visits all sub-readers of a reader.  You
-   *  should subclass this and override the add method to
-   *  gather what you need.
-   *
-   * @lucene.experimental */
+
   public static abstract class Gather {
     private final IndexReader topReader;
 
@@ -94,10 +78,6 @@ public final class ReaderUtil {
     protected abstract void add(int base, IndexReader r) throws IOException;
   }
 
-  /**
-   * Returns index of the searcher/reader for document <code>n</code> in the
-   * array used to construct this searcher/reader.
-   */
   public static int subIndex(int n, int[] docStarts) { // find
     // searcher/reader for doc n:
     int size = docStarts.length;
@@ -130,8 +110,6 @@ public final class ReaderUtil {
     return fields;
   }
 
-  /** Call this to get the (merged) FieldInfos for a
-   *  composite reader */
   public static FieldInfos getMergedFieldInfos(IndexReader reader) {
     final List<IndexReader> subReaders = new ArrayList<IndexReader>();
     ReaderUtil.gatherSubReaders(subReaders, reader);

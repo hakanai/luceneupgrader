@@ -1,20 +1,4 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-/**
- * Copyright 2009 The Apache Software Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,28 +11,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.FieldCache;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.FieldCache.CacheEntry;
 
-/** 
- * Provides methods for sanity checking that entries in the FieldCache 
- * are not wasteful or inconsistent.
- * </p>
- * <p>
- * Lucene 2.9 Introduced numerous enhancements into how the FieldCache 
- * is used by the low levels of Lucene searching (for Sorting and 
- * ValueSourceQueries) to improve both the speed for Sorting, as well 
- * as reopening of IndexReaders.  But these changes have shifted the 
- * usage of FieldCache from "top level" IndexReaders (frequently a 
- * MultiReader or DirectoryReader) down to the leaf level SegmentReaders.  
- * As a result, existing applications that directly access the FieldCache 
- * may find RAM usage increase significantly when upgrading to 2.9 or 
- * Later.  This class provides an API for these applications (or their 
- * Unit tests) to check at run time if the FieldCache contains "insane" 
- * usages of the FieldCache.
- * </p>
- * @lucene.experimental
- * @see FieldCache
- * @see FieldCacheSanityChecker.Insanity
- * @see FieldCacheSanityChecker.InsanityType
- */
 public final class FieldCacheSanityChecker {
 
   private boolean estimateRam;
@@ -57,27 +19,17 @@ public final class FieldCacheSanityChecker {
     /* NOOP */
   }
 
-  /**
-   * If set, estimate size for all CacheEntry objects will be calculateed.
-   */
   public void setRamUsageEstimator(boolean flag) {
     estimateRam = flag;
   }
 
 
-  /** 
-   * Quick and dirty convenience method
-   * @see #check
-   */
+
   public static Insanity[] checkSanity(FieldCache cache) {
     return checkSanity(cache.getCacheEntries());
   }
 
-  /** 
-   * Quick and dirty convenience method that instantiates an instance with 
-   * "good defaults" and uses it to test the CacheEntrys
-   * @see #check
-   */
+
   public static Insanity[] checkSanity(CacheEntry... cacheEntries) {
     FieldCacheSanityChecker sanityChecker = new FieldCacheSanityChecker();
     sanityChecker.setRamUsageEstimator(true);
@@ -85,13 +37,6 @@ public final class FieldCacheSanityChecker {
   }
 
 
-  /**
-   * Tests a CacheEntry[] for indication of "insane" cache usage.
-   * <p>
-   * <B>NOTE:</b>FieldCache CreationPlaceholder objects are ignored.
-   * (:TODO: is this a bad idea? are we masking a real problem?)
-   * </p>
-   */
   public Insanity[] check(CacheEntry... cacheEntries) {
     if (null == cacheEntries || 0 == cacheEntries.length) 
       return new Insanity[0];
@@ -152,13 +97,7 @@ public final class FieldCacheSanityChecker {
     return insanity.toArray(new Insanity[insanity.size()]);
   }
 
-  /** 
-   * Internal helper method used by check that iterates over 
-   * valMismatchKeys and generates a Collection of Insanity 
-   * instances accordingly.  The MapOfSets are used to populate 
-   * the Insanity objects. 
-   * @see InsanityType#VALUEMISMATCH
-   */
+
   private Collection<Insanity> checkValueMismatch(MapOfSets<Integer, CacheEntry> valIdToItems,
                                         MapOfSets<ReaderField, Integer> readerFieldToValIds,
                                         Set<ReaderField> valMismatchKeys) {
@@ -189,14 +128,7 @@ public final class FieldCacheSanityChecker {
     return insanity;
   }
 
-  /** 
-   * Internal helper method used by check that iterates over 
-   * the keys of readerFieldToValIds and generates a Collection 
-   * of Insanity instances whenever two (or more) ReaderField instances are 
-   * found that have an ancestry relationships.  
-   *
-   * @see InsanityType#SUBREADER
-   */
+
   private Collection<Insanity> checkSubreaders( MapOfSets<Integer, CacheEntry>  valIdToItems,
                                       MapOfSets<ReaderField, Integer> readerFieldToValIds) {
 
@@ -268,11 +200,6 @@ public final class FieldCacheSanityChecker {
 
   }
 
-  /**
-   * Checks if the seed is an IndexReader, and if so will walk
-   * the hierarchy of subReaders building up a list of the objects 
-   * returned by obj.getFieldCacheKey()
-   */
   private List<Object> getAllDescendantReaderKeys(Object seed) {
     List<Object> all = new ArrayList<Object>(17); // will grow as we iter
     all.add(seed);
@@ -290,9 +217,6 @@ public final class FieldCacheSanityChecker {
     return all.subList(1, all.size());
   }
 
-  /**
-   * Simple pair object for using "readerKey + fieldName" a Map key
-   */
   private final static class ReaderField {
     public final Object readerKey;
     public final String fieldName;
@@ -318,11 +242,6 @@ public final class FieldCacheSanityChecker {
     }
   }
 
-  /**
-   * Simple container for a collection of related CacheEntry objects that 
-   * in conjunction with each other represent some "insane" usage of the 
-   * FieldCache.
-   */
   public final static class Insanity {
     private final InsanityType type;
     private final String msg;
@@ -341,23 +260,9 @@ public final class FieldCacheSanityChecker {
       this.entries = entries;
       
     }
-    /**
-     * Type of insane behavior this object represents
-     */
     public InsanityType getType() { return type; }
-    /**
-     * Description of hte insane behavior
-     */
     public String getMsg() { return msg; }
-    /**
-     * CacheEntry objects which suggest a problem
-     */
     public CacheEntry[] getCacheEntries() { return entries; }
-    /**
-     * Multi-Line representation of this Insanity object, starting with 
-     * the Type and Msg, followed by each CacheEntry.toString() on it's 
-     * own line prefaced by a tab character
-     */
     @Override
     public String toString() {
       StringBuilder buf = new StringBuilder();
@@ -377,14 +282,6 @@ public final class FieldCacheSanityChecker {
     }
   }
 
-  /**
-   * An Enumeration of the different types of "insane" behavior that 
-   * may be detected in a FieldCache.
-   *
-   * @see InsanityType#SUBREADER
-   * @see InsanityType#VALUEMISMATCH
-   * @see InsanityType#EXPECTED
-   */
   public final static class InsanityType {
     private final String label;
     private InsanityType(final String label) {
@@ -393,36 +290,12 @@ public final class FieldCacheSanityChecker {
     @Override
     public String toString() { return label; }
 
-    /** 
-     * Indicates an overlap in cache usage on a given field 
-     * in sub/super readers.
-     */
-    public final static InsanityType SUBREADER 
+    public final static InsanityType SUBREADER
       = new InsanityType("SUBREADER");
 
-    /** 
-     * <p>
-     * Indicates entries have the same reader+fieldname but 
-     * different cached values.  This can happen if different datatypes, 
-     * or parsers are used -- and while it's not necessarily a bug 
-     * it's typically an indication of a possible problem.
-     * </p>
-     * <p>
-     * <bPNOTE:</b> Only the reader, fieldname, and cached value are actually 
-     * tested -- if two cache entries have different parsers or datatypes but 
-     * the cached values are the same Object (== not just equal()) this method 
-     * does not consider that a red flag.  This allows for subtle variations 
-     * in the way a Parser is specified (null vs DEFAULT_LONG_PARSER, etc...)
-     * </p>
-     */
-    public final static InsanityType VALUEMISMATCH 
+    public final static InsanityType VALUEMISMATCH
       = new InsanityType("VALUEMISMATCH");
 
-    /** 
-     * Indicates an expected bit of "insanity".  This may be useful for 
-     * clients that wish to preserve/log information about insane usage 
-     * but indicate that it was expected. 
-     */
     public final static InsanityType EXPECTED
       = new InsanityType("EXPECTED");
   }

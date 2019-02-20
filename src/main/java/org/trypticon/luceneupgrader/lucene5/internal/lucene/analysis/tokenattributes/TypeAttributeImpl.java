@@ -20,16 +20,13 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.analysis.tokenattri
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.AttributeImpl;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.AttributeReflector;
 
-/** Default implementation of {@link TypeAttribute}. */
 public class TypeAttributeImpl extends AttributeImpl implements TypeAttribute, Cloneable {
   private String type;
   
-  /** Initialize this attribute with {@link TypeAttribute#DEFAULT_TYPE} */
   public TypeAttributeImpl() {
     this(DEFAULT_TYPE); 
   }
   
-  /** Initialize this attribute with <code>type</code> */
   public TypeAttributeImpl(String type) {
     this.type = type;
   }

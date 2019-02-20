@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,13 +25,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.CompiledAutomaton;
 
-/**
- * Exposes flex API, merged from flex API of
- * sub-segments.
- *
- * @lucene.experimental
- */
-
 public final class MultiTerms extends Terms {
   private final Terms[] subs;
   private final ReaderSlice[] subSlices;
@@ -42,12 +34,7 @@ public final class MultiTerms extends Terms {
   private final boolean hasPositions;
   private final boolean hasPayloads;
 
-  /** Sole constructor.
-   *
-   * @param subs The {@link Terms} instances of all sub-readers. 
-   * @param subSlices A parallel array (matching {@code
-   *        subs}) describing the sub-reader slices.
-   */
+
   public MultiTerms(Terms[] subs, ReaderSlice[] subSlices) throws IOException {
     this.subs = subs;
     this.subSlices = subSlices;
@@ -82,12 +69,10 @@ public final class MultiTerms extends Terms {
     hasPayloads = hasPositions && _hasPayloads; // if all subs have pos, and at least one has payloads.
   }
 
-  /** Expert: returns the Terms being merged. */
   public Terms[] getSubTerms() {
     return subs;
   }
 
-  /** Expert: returns  pointers to the sub-readers corresponding to the Terms being merged. */
   public ReaderSlice[] getSubSlices() {
     return subSlices;
   }

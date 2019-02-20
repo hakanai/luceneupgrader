@@ -32,32 +32,23 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.Query;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.TwoPhaseIterator;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ToStringUtils;
 
-/** Removes matches which overlap with another SpanQuery or which are
- * within x tokens before or y tokens after another SpanQuery.
- */
 public final class SpanNotQuery extends SpanQuery {
   private SpanQuery include;
   private SpanQuery exclude;
   private final int pre;
   private final int post;
 
-  /** Construct a SpanNotQuery matching spans from <code>include</code> which
-   * have no overlap with spans from <code>exclude</code>.*/
   public SpanNotQuery(SpanQuery include, SpanQuery exclude) {
      this(include, exclude, 0, 0);
   }
 
 
-  /** Construct a SpanNotQuery matching spans from <code>include</code> which
-   * have no overlap with spans from <code>exclude</code> within
-   * <code>dist</code> tokens of <code>include</code>. */
+
   public SpanNotQuery(SpanQuery include, SpanQuery exclude, int dist) {
      this(include, exclude, dist, dist);
   }
 
-  /** Construct a SpanNotQuery matching spans from <code>include</code> which
-   * have no overlap with spans from <code>exclude</code> within
-   * <code>pre</code> tokens before or <code>post</code> tokens of <code>include</code>. */
+
   public SpanNotQuery(SpanQuery include, SpanQuery exclude, int pre, int post) {
     this.include = Objects.requireNonNull(include);
     this.exclude = Objects.requireNonNull(exclude);
@@ -68,10 +59,8 @@ public final class SpanNotQuery extends SpanQuery {
       throw new IllegalArgumentException("Clauses must have same field.");
   }
 
-  /** Return the SpanQuery whose matches are filtered. */
   public SpanQuery getInclude() { return include; }
 
-  /** Return the SpanQuery whose matches must not overlap those returned. */
   public SpanQuery getExclude() { return exclude; }
 
   @Override
@@ -204,7 +193,6 @@ public final class SpanNotQuery extends SpanQuery {
     }
     return super.rewrite(reader);
   }
-    /** Returns true iff <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object o) {
     if (!super.equals(o))

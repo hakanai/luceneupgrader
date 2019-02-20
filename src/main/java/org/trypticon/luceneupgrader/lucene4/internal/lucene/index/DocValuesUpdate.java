@@ -1,15 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
-import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator.NUM_BYTES_ARRAY_HEADER;
-import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator.NUM_BYTES_CHAR;
-import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator.NUM_BYTES_INT;
-import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator.NUM_BYTES_OBJECT_HEADER;
-import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator.NUM_BYTES_OBJECT_REF;
-
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.document.NumericDocValuesField;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -26,8 +14,13 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimat
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
-/** An in-place update to a DocValues field. */
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
+
+import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator.*;
+
 abstract class DocValuesUpdate {
   
   /* Rough logic: OBJ_HEADER + 3*PTR + INT
@@ -45,13 +38,6 @@ abstract class DocValuesUpdate {
   final Object value;
   int docIDUpto = -1; // unassigned until applied, and confusing that it's here, when it's just used in BufferedDeletes...
 
-  /**
-   * Constructor.
-   * 
-   * @param term the {@link Term} which determines the documents that will be updated
-   * @param field the {@link NumericDocValuesField} to update
-   * @param value the updated value
-   */
   protected DocValuesUpdate(FieldInfo.DocValuesType type, Term term, String field, Object value) {
     this.type = type;
     this.term = term;
@@ -75,7 +61,6 @@ abstract class DocValuesUpdate {
     return "term=" + term + ",field=" + field + ",value=" + value;
   }
   
-  /** An in-place update to a binary DocValues field */
   static final class BinaryDocValuesUpdate extends DocValuesUpdate {
     
     /* Size of BytesRef: 2*INT + ARRAY_HEADER + PTR */
@@ -92,7 +77,6 @@ abstract class DocValuesUpdate {
     
   }
 
-  /** An in-place update to a numeric DocValues field */
   static final class NumericDocValuesUpdate extends DocValuesUpdate {
 
     NumericDocValuesUpdate(Term term, String field, Long value) {

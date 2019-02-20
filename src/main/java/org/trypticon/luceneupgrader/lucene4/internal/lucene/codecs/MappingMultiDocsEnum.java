@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.DocsEnum;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.MergeState;
@@ -23,13 +22,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.MultiDocsEnum;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.MultiDocsEnum.EnumWithSlice;
 
 import java.io.IOException;
-
-/**
- * Exposes flex API, merged from flex API of sub-segments,
- * remapping docIDs (this is used for segment merging).
- *
- * @lucene.experimental
- */
 
 public final class MappingMultiDocsEnum extends DocsEnum {
   private MultiDocsEnum.EnumWithSlice[] subs;
@@ -41,7 +33,6 @@ public final class MappingMultiDocsEnum extends DocsEnum {
   int doc = -1;
   private MergeState mergeState;
 
-  /** Sole constructor. */
   public MappingMultiDocsEnum() {
   }
 
@@ -53,19 +44,14 @@ public final class MappingMultiDocsEnum extends DocsEnum {
     return this;
   }
 
-  /** Sets the {@link MergeState}, which is used to re-map
-   *  document IDs. */
   public void setMergeState(MergeState mergeState) {
     this.mergeState = mergeState;
   }
   
-  /** How many sub-readers we are merging.
-   *  @see #getSubs */
   public int getNumSubs() {
     return numSubs;
   }
 
-  /** Returns sub-readers we are merging. */
   public EnumWithSlice[] getSubs() {
     return subs;
   }

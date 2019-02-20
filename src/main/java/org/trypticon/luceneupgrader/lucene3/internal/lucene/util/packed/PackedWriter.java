@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.packed;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataOutput;
 
@@ -23,12 +22,6 @@ import java.io.IOException;
 
 // Packs high order byte first, to match
 // IndexOutput.writeInt/Long/Short byte order
-
-/**
- * Generic writer for space-optimal packed values. The resulting bits can be
- * used directly by Packed32, Packed64 and PackedDirect* and will always be
- * long-aligned.
- */
 
 class PackedWriter extends PackedInts.Writer {
   private long pending;
@@ -52,9 +45,6 @@ class PackedWriter extends PackedInts.Writer {
     }
   }
 
-  /**
-   * Do not call this after finish
-   */
   @Override
   public void add(long v) throws IOException {
     assert v <= PackedInts.maxValue(bitsPerValue) : "v=" + v

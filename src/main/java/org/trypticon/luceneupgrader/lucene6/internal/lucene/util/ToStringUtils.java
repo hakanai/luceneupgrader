@@ -17,9 +17,6 @@
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.util;
 
 
-/**
- * Helper methods to ease implementing {@link Object#toString()}.
- */
 public final class ToStringUtils {
 
   private ToStringUtils() {} // no instance

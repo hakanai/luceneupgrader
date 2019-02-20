@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,15 +13,11 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
-/** 
- * DataInput backed by a byte array.
- * <b>WARNING:</b> This class omits all low-level checks.
- * @lucene.experimental 
- */
 public final class ByteArrayDataInput extends DataInput {
 
   private byte[] bytes;

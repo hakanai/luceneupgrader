@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,20 +13,14 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
 
-/**
- * Subclass of FilteredTermEnum for enumerating all terms that match the
- * specified wildcard filter term.
- * <p>
- * Term enumerations are always ordered by Term.compareTo().  Each term in
- * the enumeration is greater than all that precede it.
- */
 public class WildcardTermEnum extends FilteredTermEnum {
   final Term searchTerm;
   final String field;
@@ -37,12 +29,6 @@ public class WildcardTermEnum extends FilteredTermEnum {
   final int preLen;
   boolean endEnum = false;
 
-  /**
-   * Creates a new <code>WildcardTermEnum</code>.
-   * <p>
-   * After calling the constructor the enumeration is already pointing to the first 
-   * valid term if such a term exists.
-   */
   public WildcardTermEnum(IndexReader reader, Term term) throws IOException {
     super();
     searchTerm = term;
@@ -87,18 +73,11 @@ public class WildcardTermEnum extends FilteredTermEnum {
     return endEnum;
   }
 
-  /********************************************
-   * String equality with support for wildcards
-   ********************************************/
+
 
   public static final char WILDCARD_STRING = '*';
   public static final char WILDCARD_CHAR = '?';
 
-  /**
-   * Determines if a word matches a wildcard pattern.
-   * <small>Work released by Granta Design Ltd after originally being done on
-   * company time.</small>
-   */
   public static final boolean wildcardEquals(String pattern, int patternIdx,
     String string, int stringIdx)
   {

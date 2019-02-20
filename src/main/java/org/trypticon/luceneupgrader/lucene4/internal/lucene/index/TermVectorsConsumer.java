@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -33,13 +32,10 @@ final class TermVectorsConsumer extends TermsHash {
 
   TermVectorsWriter writer;
 
-  /** Scratch term used by TermVectorsConsumerPerField.finishDocument. */
   final BytesRef flushTerm = new BytesRef();
 
   final DocumentsWriterPerThread docWriter;
 
-  /** Used by TermVectorsConsumerPerField when serializing
-   *  the term vectors. */
   final ByteSliceReader vectorSliceReaderPos = new ByteSliceReader();
   final ByteSliceReader vectorSliceReaderOff = new ByteSliceReader();
 
@@ -72,8 +68,6 @@ final class TermVectorsConsumer extends TermsHash {
     }
   }
 
-  /** Fills in no-term-vectors for all docs we haven't seen
-   *  since the last doc that had term vectors. */
   void fill(int docID) throws IOException {
     while(lastDocID < docID) {
       writer.startDocument(0);

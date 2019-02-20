@@ -24,17 +24,14 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.AttributeReflec
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRefBuilder;
 
-/** Default implementation of {@link CharTermAttribute}. */
 public class CharTermAttributeImpl extends AttributeImpl implements CharTermAttribute, TermToBytesRefAttribute, Cloneable {
   private static int MIN_BUFFER_SIZE = 10;
   
   private char[] termBuffer = new char[ArrayUtil.oversize(MIN_BUFFER_SIZE, Character.BYTES)];
   private int termLength = 0;
   
-  /** May be used by subclasses to convert to different charsets / encodings for implementing {@link #getBytesRef()}. */
   protected BytesRefBuilder builder = new BytesRefBuilder();
   
-  /** Initialize this attribute with empty term text */
   public CharTermAttributeImpl() {}
 
   @Override
@@ -250,15 +247,7 @@ public class CharTermAttributeImpl extends AttributeImpl implements CharTermAttr
     return false;
   }
 
-  /** 
-   * Returns solely the term text as specified by the
-   * {@link CharSequence} interface.
-   * <p>This method changed the behavior with Lucene 3.1,
-   * before it returned a String representation of the whole
-   * term with all attributes.
-   * This affects especially the
-   * {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.Token} subclass.
-   */
+
   @Override
   public String toString() {
     return new String(termBuffer, 0, termLength);

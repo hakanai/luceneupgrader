@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -41,12 +40,7 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 
-/** 
- * Concrete class that reads the 4.0 frq/prox
- * postings format. 
- *  
- *  @see Lucene40PostingsFormat
- *  @deprecated Only for reading old 4.0 segments */
+
 @Deprecated
 public class Lucene40PostingsReader extends PostingsReaderBase {
 
@@ -73,7 +67,6 @@ public class Lucene40PostingsReader extends PostingsReaderBase {
 
   // private String segment;
 
-  /** Sole constructor. */
   public Lucene40PostingsReader(Directory dir, FieldInfos fieldInfos, SegmentInfo segmentInfo, IOContext ioContext, String segmentSuffix) throws IOException {
     boolean success = false;
     IndexInput freqIn = null;
@@ -854,8 +847,6 @@ public class Lucene40PostingsReader extends PostingsReaderBase {
       return -1;
     }
 
-    /** Returns the payload at this position, or null if no
-     *  payload was indexed. */
     @Override
     public BytesRef getPayload() throws IOException {
       return null;
@@ -1131,8 +1122,6 @@ public class Lucene40PostingsReader extends PostingsReaderBase {
       return storeOffsets ? startOffset + offsetLength : -1;
     }
 
-    /** Returns the payload at this position, or null if no
-     *  payload was indexed. */
     @Override
     public BytesRef getPayload() throws IOException {
       if (storePayloads) {

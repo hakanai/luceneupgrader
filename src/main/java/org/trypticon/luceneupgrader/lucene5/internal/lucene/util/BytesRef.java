@@ -20,38 +20,20 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.util;
 import java.util.Arrays;
 import java.util.Comparator;
 
-/** Represents byte[], as a slice (offset + length) into an
- *  existing byte[].  The {@link #bytes} member should never be null;
- *  use {@link #EMPTY_BYTES} if necessary.
- *
- * <p><b>Important note:</b> Unless otherwise noted, Lucene uses this class to
- * represent terms that are encoded as <b>UTF8</b> bytes in the index. To
- * convert them to a Java {@link String} (which is UTF16), use {@link #utf8ToString}.
- * Using code like {@code new String(bytes, offset, length)} to do this
- * is <b>wrong</b>, as it does not respect the correct character set
- * and may return wrong results (depending on the platform's defaults)!
- */
 public final class BytesRef implements Comparable<BytesRef>,Cloneable {
-  /** An empty byte array for convenience */
-  public static final byte[] EMPTY_BYTES = new byte[0]; 
+  public static final byte[] EMPTY_BYTES = new byte[0];
 
-  /** The contents of the BytesRef. Should never be {@code null}. */
   public byte[] bytes;
 
-  /** Offset of first valid byte. */
   public int offset;
 
-  /** Length of used bytes. */
   public int length;
 
-  /** Create a BytesRef with {@link #EMPTY_BYTES} */
   public BytesRef() {
     this(EMPTY_BYTES);
   }
 
-  /** This instance will directly reference bytes w/o making a copy.
-   * bytes should not be null.
-   */
+
   public BytesRef(byte[] bytes, int offset, int length) {
     this.bytes = bytes;
     this.offset = offset;
@@ -59,39 +41,20 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
     assert isValid();
   }
 
-  /** This instance will directly reference bytes w/o making a copy.
-   * bytes should not be null */
   public BytesRef(byte[] bytes) {
     this(bytes, 0, bytes.length);
   }
 
-  /** 
-   * Create a BytesRef pointing to a new array of size <code>capacity</code>.
-   * Offset and length will both be zero.
-   */
+
   public BytesRef(int capacity) {
     this.bytes = new byte[capacity];
   }
 
-  /**
-   * Initialize the byte[] from the UTF8 bytes
-   * for the provided String.  
-   * 
-   * @param text This must be well-formed
-   * unicode text, with no unpaired surrogates.
-   */
   public BytesRef(CharSequence text) {
     this(new byte[UnicodeUtil.MAX_UTF8_BYTES_PER_CHAR * text.length()]);
     length = UnicodeUtil.UTF16toUTF8(text, 0, text.length(), bytes);
   }
   
-  /**
-   * Expert: compares the bytes against another BytesRef,
-   * returning true if the bytes are equal.
-   * 
-   * @param other Another BytesRef, should not be null.
-   * @lucene.internal
-   */
   public boolean bytesEquals(BytesRef other) {
     assert other != null;
     if (length == other.length) {
@@ -109,23 +72,12 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
     }
   }
 
-  /**
-   * Returns a shallow clone of this instance (the underlying bytes are
-   * <b>not</b> copied and will be shared by both the returned object and this
-   * object.
-   * 
-   * @see #deepCopyOf
-   */
   @Override
   public BytesRef clone() {
     return new BytesRef(bytes, offset, length);
   }
   
-  /** Calculates the hash code as required by TermsHash during indexing.
-   *  <p> This is currently implemented as MurmurHash3 (32
-   *  bit), using the seed from {@link
-   *  StringHelper#GOOD_FAST_HASH_SEED}, but is subject to
-   *  change from release to release. */
+
   @Override
   public int hashCode() {
     return StringHelper.murmurhash3_x86_32(this, StringHelper.GOOD_FAST_HASH_SEED);
@@ -142,15 +94,12 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
     return false;
   }
 
-  /** Interprets stored bytes as UTF8 bytes, returning the
-   *  resulting string */
   public String utf8ToString() {
     final char[] ref = new char[length];
     final int len = UnicodeUtil.UTF8toUTF16(bytes, offset, length, ref);
     return new String(ref, 0, len);
   }
 
-  /** Returns hex encoded bytes, eg [0x6c 0x75 0x63 0x65 0x6e 0x65] */
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
@@ -166,7 +115,6 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
     return sb.toString();
   }
 
-  /** Unsigned byte order comparison */
   @Override
   public int compareTo(BytesRef other) {
     return utf8SortedAsUnicodeSortOrder.compare(this, other);
@@ -205,17 +153,14 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
     }    
   }
 
-  /** @deprecated This comparator is only a transition mechanism */
   @Deprecated
   private final static Comparator<BytesRef> utf8SortedAsUTF16SortOrder = new UTF8SortedAsUTF16Comparator();
 
-  /** @deprecated This comparator is only a transition mechanism */
   @Deprecated
   public static Comparator<BytesRef> getUTF8SortedAsUTF16Comparator() {
     return utf8SortedAsUTF16SortOrder;
   }
 
-  /** @deprecated This comparator is only a transition mechanism */
   @Deprecated
   private static class UTF8SortedAsUTF16Comparator implements Comparator<BytesRef> {
     // Only singleton
@@ -269,13 +214,6 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
     }
   }
   
-  /**
-   * Creates a new BytesRef that points to a copy of the bytes from 
-   * <code>other</code>
-   * <p>
-   * The returned BytesRef will have a length of other.length
-   * and an offset of zero.
-   */
   public static BytesRef deepCopyOf(BytesRef other) {
     BytesRef copy = new BytesRef();
     copy.bytes = Arrays.copyOfRange(other.bytes, other.offset, other.offset + other.length);
@@ -284,10 +222,7 @@ public final class BytesRef implements Comparable<BytesRef>,Cloneable {
     return copy;
   }
   
-  /** 
-   * Performs internal consistency checks.
-   * Always returns true (or throws IllegalStateException) 
-   */
+
   public boolean isValid() {
     if (bytes == null) {
       throw new IllegalStateException("bytes is null");

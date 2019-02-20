@@ -19,17 +19,12 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.util;
 
 import java.util.Comparator;
 
-/**
- * A {@link TimSorter} for object arrays.
- * @lucene.internal
- */
 final class ArrayTimSorter<T> extends TimSorter {
 
   private final Comparator<? super T> comparator;
   private final T[] arr;
   private final T[] tmp;
 
-  /** Create a new {@link ArrayTimSorter}. */
   public ArrayTimSorter(T[] arr, Comparator<? super T> comparator, int maxTempSlots) {
     super(maxTempSlots);
     this.arr = arr;

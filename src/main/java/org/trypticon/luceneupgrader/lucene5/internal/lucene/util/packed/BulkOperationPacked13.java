@@ -1,5 +1,3 @@
-// This file has been automatically generated, DO NOT EDIT
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,9 +16,6 @@
  */
 package org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed;
 
-/**
- * Efficient sequential read/write of packed integers.
- */
 final class BulkOperationPacked13 extends BulkOperationPacked {
 
   public BulkOperationPacked13() {

@@ -23,28 +23,12 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.LeafReaderCont
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Bits.MatchNoBits;
 
-/**
- * Base class to build {@link Weight}s that are based on random-access
- * structures such as live docs or doc values. Such weights return a
- * {@link Scorer} which consists of an approximation that matches
- * everything, and a confirmation phase that first checks live docs and
- * then the {@link Bits} returned by {@link #getMatchingDocs(LeafReaderContext)}.
- * @lucene.internal
- */
 public abstract class RandomAccessWeight extends ConstantScoreWeight {
 
-  /** Sole constructor. */
   protected RandomAccessWeight(Query query) {
     super(query);
   }
 
-  /**
-   * Return a {@link Bits} instance representing documents that match this
-   * weight on the given context. A return value of {@code null} indicates
-   * that no documents matched.
-   * Note: it is not needed to care about live docs as they will be checked
-   * before the returned bits.
-   */
   protected abstract Bits getMatchingDocs(LeafReaderContext context) throws IOException;
 
   @Override

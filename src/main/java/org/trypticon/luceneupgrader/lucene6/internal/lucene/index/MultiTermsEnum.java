@@ -26,12 +26,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRefBuilder;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.PriorityQueue;
 
-/**
- * Exposes {@link TermsEnum} API, merged from {@link TermsEnum} API of sub-segments.
- * This does a merge sort, by term text, of the sub-readers.
- *
- * @lucene.experimental
- */
 public final class MultiTermsEnum extends TermsEnum {
 
   private static final Comparator<TermsEnumWithSlice> INDEX_COMPARATOR = new Comparator<TermsEnumWithSlice>() {
@@ -66,20 +60,15 @@ public final class MultiTermsEnum extends TermsEnum {
     }
   }
 
-  /** Returns how many sub-reader slices contain the current
-   *  term.  @see #getMatchArray */
   public int getMatchCount() {
     return numTop;
   }
 
-  /** Returns sub-reader slices positioned to the current term. */
   public TermsEnumWithSlice[] getMatchArray() {
     return top;
   }
 
-  /** Sole constructor.
-   *  @param slices Which sub-reader slices we should
-   *  merge. */
+
   public MultiTermsEnum(ReaderSlice[] slices) {
     queue = new TermMergeQueue(slices.length);
     top = new TermsEnumWithSlice[slices.length];
@@ -98,8 +87,6 @@ public final class MultiTermsEnum extends TermsEnum {
     return current;
   }
 
-  /** The terms array must be newly created TermsEnum, ie
-   *  {@link TermsEnum#next} has not yet been called. */
   public TermsEnum reset(TermsEnumIndex[] termsEnumsIndex) throws IOException {
     assert termsEnumsIndex.length <= top.length;
     numSubs = 0;
@@ -404,8 +391,6 @@ public final class MultiTermsEnum extends TermsEnum {
       return termsA.current.compareTo(termsB.current) < 0;
     }
 
-    /** Add the {@link #top()} slice as well as all slices that are positionned
-     *  on the same term to {@code tops} and return how many of them there are. */
     int fillTop(TermsEnumWithSlice[] tops) {
       final int size = size();
       if (size == 0) {

@@ -26,15 +26,8 @@ import java.util.List;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.spans.Spans;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.CollectionUtil;
 
-/** A conjunction of DocIdSetIterators.
- * This iterates over the doc ids that are present in each given DocIdSetIterator.
- * <br>Public only for use in {@link org.trypticon.luceneupgrader.lucene5.internal.lucene.search.spans}.
- * @lucene.internal
- */
 public class ConjunctionDISI extends DocIdSetIterator {
 
-  /** Create a conjunction over the provided {@link Scorer}s, taking advantage
-   *  of {@link TwoPhaseIterator}. */
   public static ConjunctionDISI intersectScorers(List<Scorer> scorers) {
     if (scorers.size() < 2) {
       throw new IllegalArgumentException("Cannot make a ConjunctionDISI of less than 2 iterators");
@@ -52,7 +45,6 @@ public class ConjunctionDISI extends DocIdSetIterator {
     }
   }
 
-  /** Create a conjunction over the provided DocIdSetIterators. */
   public static ConjunctionDISI intersectIterators(List<DocIdSetIterator> iterators) {
     if (iterators.size() < 2) {
       throw new IllegalArgumentException("Cannot make a ConjunctionDISI of less than 2 iterators");
@@ -70,8 +62,6 @@ public class ConjunctionDISI extends DocIdSetIterator {
     }
   }
 
-  /** Create a conjunction over the provided {@link Scorer}s, taking advantage
-   *  of {@link TwoPhaseIterator}. */
   public static ConjunctionDISI intersectSpans(List<Spans> spanList) {
     if (spanList.size() < 2) {
       throw new IllegalArgumentException("Cannot make a ConjunctionDISI of less than 2 iterators");
@@ -89,7 +79,6 @@ public class ConjunctionDISI extends DocIdSetIterator {
     }
   }
 
-  /** Adds the scorer, possibly splitting up into two phases or collapsing if it is another conjunction */
   private static void addScorer(Scorer scorer, List<DocIdSetIterator> allIterators, List<TwoPhaseIterator> twoPhaseIterators) {
     TwoPhaseIterator twoPhaseIter = scorer.twoPhaseIterator();
     if (twoPhaseIter != null) {
@@ -99,7 +88,6 @@ public class ConjunctionDISI extends DocIdSetIterator {
     }
   }
 
-  /** Adds the Spans. */
   private static void addSpans(Spans spans, List<DocIdSetIterator> allIterators, List<TwoPhaseIterator> twoPhaseIterators) {
     TwoPhaseIterator twoPhaseIter = spans.asTwoPhaseIterator();
     if (twoPhaseIter != null) {
@@ -212,9 +200,6 @@ public class ConjunctionDISI extends DocIdSetIterator {
     return lead.cost(); // overestimate
   }
 
-  /**
-   * {@link TwoPhaseIterator} view of a {@link TwoPhase} conjunction.
-   */
   private static class TwoPhaseConjunctionDISI extends TwoPhaseIterator {
 
     private final TwoPhaseIterator[] twoPhaseIterators;
@@ -259,17 +244,6 @@ public class ConjunctionDISI extends DocIdSetIterator {
 
   }
 
-  /**
-   * A conjunction DISI built on top of approximations. This implementation
-   * verifies that documents actually match by consulting the provided
-   * {@link TwoPhaseIterator}s.
-   *
-   * Another important difference with {@link ConjunctionDISI} is that this
-   * implementation supports approximations too: the approximation of this
-   * impl is the conjunction of the approximations of the wrapped iterators.
-   * This allows eg. {@code +"A B" +C} to be approximated as
-   * {@code +(+A +B) +C}.
-   */
   // NOTE: this is essentially the same as TwoPhaseDocIdSetIterator.asDocIdSetIterator
   // but is its own impl in order to be able to expose a two-phase view
   private static class TwoPhase extends ConjunctionDISI {

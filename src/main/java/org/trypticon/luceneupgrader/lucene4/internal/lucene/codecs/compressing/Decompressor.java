@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,35 +13,18 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
-/**
- * A decompressor.
- */
 public abstract class Decompressor implements Cloneable {
 
-  /** Sole constructor, typically called from sub-classes. */
   protected Decompressor() {}
 
-  /**
-   * Decompress bytes that were stored between offsets <code>offset</code> and
-   * <code>offset+length</code> in the original stream from the compressed
-   * stream <code>in</code> to <code>bytes</code>. After returning, the length
-   * of <code>bytes</code> (<code>bytes.length</code>) must be equal to
-   * <code>length</code>. Implementations of this method are free to resize
-   * <code>bytes</code> depending on their needs.
-   *
-   * @param in the input that stores the compressed stream
-   * @param originalLength the length of the original data (before compression)
-   * @param offset bytes before this offset do not need to be decompressed
-   * @param length bytes after <code>offset+length</code> do not need to be decompressed
-   * @param bytes a {@link BytesRef} where to store the decompressed data
-   */
   public abstract void decompress(DataInput in, int originalLength, int offset, int length, BytesRef bytes) throws IOException;
 
   @Override

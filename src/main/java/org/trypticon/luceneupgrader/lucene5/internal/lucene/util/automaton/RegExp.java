@@ -25,8 +25,7 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene5.internal.lucene.util.automaton;
 
 import java.io.IOException;
@@ -36,328 +35,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Regular Expression extension to <code>Automaton</code>.
- * <p>
- * Regular expressions are built from the following abstract syntax:
- * <table border=0 summary="description of regular expression grammar">
- * <tr>
- * <td><i>regexp</i></td>
- * <td>::=</td>
- * <td><i>unionexp</i></td>
- * <td></td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td></td>
- * <td></td>
- * <td></td>
- * </tr>
- * 
- * <tr>
- * <td><i>unionexp</i></td>
- * <td>::=</td>
- * <td><i>interexp</i>&nbsp;<tt><b>|</b></tt>&nbsp;<i>unionexp</i></td>
- * <td>(union)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><i>interexp</i></td>
- * <td></td>
- * <td></td>
- * </tr>
- * 
- * <tr>
- * <td><i>interexp</i></td>
- * <td>::=</td>
- * <td><i>concatexp</i>&nbsp;<tt><b>&amp;</b></tt>&nbsp;<i>interexp</i></td>
- * <td>(intersection)</td>
- * <td><small>[OPTIONAL]</small></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><i>concatexp</i></td>
- * <td></td>
- * <td></td>
- * </tr>
- * 
- * <tr>
- * <td><i>concatexp</i></td>
- * <td>::=</td>
- * <td><i>repeatexp</i>&nbsp;<i>concatexp</i></td>
- * <td>(concatenation)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><i>repeatexp</i></td>
- * <td></td>
- * <td></td>
- * </tr>
- * 
- * <tr>
- * <td><i>repeatexp</i></td>
- * <td>::=</td>
- * <td><i>repeatexp</i>&nbsp;<tt><b>?</b></tt></td>
- * <td>(zero or one occurrence)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><i>repeatexp</i>&nbsp;<tt><b>*</b></tt></td>
- * <td>(zero or more occurrences)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><i>repeatexp</i>&nbsp;<tt><b>+</b></tt></td>
- * <td>(one or more occurrences)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><i>repeatexp</i>&nbsp;<tt><b>{</b><i>n</i><b>}</b></tt></td>
- * <td>(<tt><i>n</i></tt> occurrences)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><i>repeatexp</i>&nbsp;<tt><b>{</b><i>n</i><b>,}</b></tt></td>
- * <td>(<tt><i>n</i></tt> or more occurrences)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><i>repeatexp</i>&nbsp;<tt><b>{</b><i>n</i><b>,</b><i>m</i><b>}</b></tt></td>
- * <td>(<tt><i>n</i></tt> to <tt><i>m</i></tt> occurrences, including both)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><i>complexp</i></td>
- * <td></td>
- * <td></td>
- * </tr>
- * 
- * <tr>
- * <td><i>complexp</i></td>
- * <td>::=</td>
- * <td><tt><b>~</b></tt>&nbsp;<i>complexp</i></td>
- * <td>(complement)</td>
- * <td><small>[OPTIONAL]</small></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><i>charclassexp</i></td>
- * <td></td>
- * <td></td>
- * </tr>
- * 
- * <tr>
- * <td><i>charclassexp</i></td>
- * <td>::=</td>
- * <td><tt><b>[</b></tt>&nbsp;<i>charclasses</i>&nbsp;<tt><b>]</b></tt></td>
- * <td>(character class)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><tt><b>[^</b></tt>&nbsp;<i>charclasses</i>&nbsp;<tt><b>]</b></tt></td>
- * <td>(negated character class)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><i>simpleexp</i></td>
- * <td></td>
- * <td></td>
- * </tr>
- * 
- * <tr>
- * <td><i>charclasses</i></td>
- * <td>::=</td>
- * <td><i>charclass</i>&nbsp;<i>charclasses</i></td>
- * <td></td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><i>charclass</i></td>
- * <td></td>
- * <td></td>
- * </tr>
- * 
- * <tr>
- * <td><i>charclass</i></td>
- * <td>::=</td>
- * <td><i>charexp</i>&nbsp;<tt><b>-</b></tt>&nbsp;<i>charexp</i></td>
- * <td>(character range, including end-points)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><i>charexp</i></td>
- * <td></td>
- * <td></td>
- * </tr>
- * 
- * <tr>
- * <td><i>simpleexp</i></td>
- * <td>::=</td>
- * <td><i>charexp</i></td>
- * <td></td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><tt><b>.</b></tt></td>
- * <td>(any single character)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><tt><b>#</b></tt></td>
- * <td>(the empty language)</td>
- * <td><small>[OPTIONAL]</small></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><tt><b>@</b></tt></td>
- * <td>(any string)</td>
- * <td><small>[OPTIONAL]</small></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><tt><b>"</b></tt>&nbsp;&lt;Unicode string without double-quotes&gt;&nbsp; <tt><b>"</b></tt></td>
- * <td>(a string)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><tt><b>(</b></tt>&nbsp;<tt><b>)</b></tt></td>
- * <td>(the empty string)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><tt><b>(</b></tt>&nbsp;<i>unionexp</i>&nbsp;<tt><b>)</b></tt></td>
- * <td>(precedence override)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><tt><b>&lt;</b></tt>&nbsp;&lt;identifier&gt;&nbsp;<tt><b>&gt;</b></tt></td>
- * <td>(named automaton)</td>
- * <td><small>[OPTIONAL]</small></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><tt><b>&lt;</b><i>n</i>-<i>m</i><b>&gt;</b></tt></td>
- * <td>(numerical interval)</td>
- * <td><small>[OPTIONAL]</small></td>
- * </tr>
- * 
- * <tr>
- * <td><i>charexp</i></td>
- * <td>::=</td>
- * <td>&lt;Unicode character&gt;</td>
- * <td>(a single non-reserved character)</td>
- * <td></td>
- * </tr>
- * <tr>
- * <td></td>
- * <td>|</td>
- * <td><tt><b>\</b></tt>&nbsp;&lt;Unicode character&gt;&nbsp;</td>
- * <td>(a single character)</td>
- * <td></td>
- * </tr>
- * </table>
- * <p>
- * The productions marked <small>[OPTIONAL]</small> are only allowed if
- * specified by the syntax flags passed to the <code>RegExp</code> constructor.
- * The reserved characters used in the (enabled) syntax must be escaped with
- * backslash (<tt><b>\</b></tt>) or double-quotes (<tt><b>"..."</b></tt>). (In
- * contrast to other regexp syntaxes, this is required also in character
- * classes.) Be aware that dash (<tt><b>-</b></tt>) has a special meaning in
- * <i>charclass</i> expressions. An identifier is a string not containing right
- * angle bracket (<tt><b>&gt;</b></tt>) or dash (<tt><b>-</b></tt>). Numerical
- * intervals are specified by non-negative decimal integers and include both end
- * points, and if <tt><i>n</i></tt> and <tt><i>m</i></tt> have the same number
- * of digits, then the conforming strings must have that length (i.e. prefixed
- * by 0's).
- * 
- * @lucene.experimental
- */
 public class RegExp {
   
   enum Kind {
     REGEXP_UNION, REGEXP_CONCATENATION, REGEXP_INTERSECTION, REGEXP_OPTIONAL, REGEXP_REPEAT, REGEXP_REPEAT_MIN, REGEXP_REPEAT_MINMAX, REGEXP_COMPLEMENT, REGEXP_CHAR, REGEXP_CHAR_RANGE, REGEXP_ANYCHAR, REGEXP_EMPTY, REGEXP_STRING, REGEXP_ANYSTRING, REGEXP_AUTOMATON, REGEXP_INTERVAL
   }
   
-  /**
-   * Syntax flag, enables intersection (<tt>&amp;</tt>).
-   */
   public static final int INTERSECTION = 0x0001;
   
-  /**
-   * Syntax flag, enables complement (<tt>~</tt>).
-   */
   public static final int COMPLEMENT = 0x0002;
   
-  /**
-   * Syntax flag, enables empty language (<tt>#</tt>).
-   */
   public static final int EMPTY = 0x0004;
   
-  /**
-   * Syntax flag, enables anystring (<tt>@</tt>).
-   */
   public static final int ANYSTRING = 0x0008;
   
-  /**
-   * Syntax flag, enables named automata (<tt>&lt;</tt>identifier<tt>&gt;</tt>).
-   */
   public static final int AUTOMATON = 0x0010;
   
-  /**
-   * Syntax flag, enables numerical intervals (
-   * <tt>&lt;<i>n</i>-<i>m</i>&gt;</tt>).
-   */
   public static final int INTERVAL = 0x0020;
   
-  /**
-   * Syntax flag, enables all optional regexp syntax.
-   */
   public static final int ALL = 0xffff;
   
-  /**
-   * Syntax flag, enables no optional regexp syntax.
-   */
   public static final int NONE = 0x0000;
 
   private final String originalString;
@@ -375,27 +72,10 @@ public class RegExp {
     this.originalString = null;
   }
   
-  /**
-   * Constructs new <code>RegExp</code> from a string. Same as
-   * <code>RegExp(s, ALL)</code>.
-   * 
-   * @param s regexp string
-   * @exception IllegalArgumentException if an error occured while parsing the
-   *              regular expression
-   */
   public RegExp(String s) throws IllegalArgumentException {
     this(s, ALL);
   }
   
-  /**
-   * Constructs new <code>RegExp</code> from a string.
-   * 
-   * @param s regexp string
-   * @param syntax_flags boolean 'or' of optional syntax constructs to be
-   *          enabled
-   * @exception IllegalArgumentException if an error occured while parsing the
-   *              regular expression
-   */
   public RegExp(String s, int syntax_flags) throws IllegalArgumentException {
     originalString = s;
     flags = syntax_flags;
@@ -418,70 +98,21 @@ public class RegExp {
     to = e.to;
   }
 
-  /**
-   * Constructs new <code>Automaton</code> from this <code>RegExp</code>. Same
-   * as <code>toAutomaton(null)</code> (empty automaton map).
-   */
   public Automaton toAutomaton() {
     return toAutomaton(null, null, Operations.DEFAULT_MAX_DETERMINIZED_STATES);
   }
 
-  /**
-   * Constructs new <code>Automaton</code> from this <code>RegExp</code>. The
-   * constructed automaton is minimal and deterministic and has no transitions
-   * to dead states.
-   * 
-   * @param maxDeterminizedStates maximum number of states in the resulting
-   *   automata.  If the automata would need more than this many states
-   *   TooComplextToDeterminizeException is thrown.  Higher number require more
-   *   space but can process more complex regexes.
-   * @exception IllegalArgumentException if this regular expression uses a named
-   *              identifier that is not available from the automaton provider
-   * @exception TooComplexToDeterminizeException if determinizing this regexp
-   *   requires more than maxDeterminizedStates states
-   */
   public Automaton toAutomaton(int maxDeterminizedStates)
       throws IllegalArgumentException, TooComplexToDeterminizeException {
     return toAutomaton(null, null, maxDeterminizedStates);
   }
 
-  /**
-   * Constructs new <code>Automaton</code> from this <code>RegExp</code>. The
-   * constructed automaton is minimal and deterministic and has no transitions
-   * to dead states.
-   * 
-   * @param automaton_provider provider of automata for named identifiers
-   * @param maxDeterminizedStates maximum number of states in the resulting
-   *   automata.  If the automata would need more than this many states
-   *   TooComplextToDeterminizeException is thrown.  Higher number require more
-   *   space but can process more complex regexes.
-   * @exception IllegalArgumentException if this regular expression uses a named
-   *   identifier that is not available from the automaton provider
-   * @exception TooComplexToDeterminizeException if determinizing this regexp
-   *   requires more than maxDeterminizedStates states
-   */
   public Automaton toAutomaton(AutomatonProvider automaton_provider,
       int maxDeterminizedStates) throws IllegalArgumentException,
       TooComplexToDeterminizeException {
     return toAutomaton(null, automaton_provider, maxDeterminizedStates);
   }
   
-  /**
-   * Constructs new <code>Automaton</code> from this <code>RegExp</code>. The
-   * constructed automaton is minimal and deterministic and has no transitions
-   * to dead states.
-   * 
-   * @param automata a map from automaton identifiers to automata (of type
-   *          <code>Automaton</code>).
-   * @param maxDeterminizedStates maximum number of states in the resulting
-   *   automata.  If the automata would need more than this many states
-   *   TooComplexToDeterminizeException is thrown.  Higher number require more
-   *   space but can process more complex regexes.
-   * @exception IllegalArgumentException if this regular expression uses a named
-   *   identifier that does not occur in the automaton map
-   * @exception TooComplexToDeterminizeException if determinizing this regexp
-   *   requires more than maxDeterminizedStates states
-   */
   public Automaton toAutomaton(Map<String,Automaton> automata,
       int maxDeterminizedStates) throws IllegalArgumentException,
       TooComplexToDeterminizeException {
@@ -619,16 +250,10 @@ public class RegExp {
     }
   }
 
-  /**
-   * The string that was used to construct the regex.  Compare to toString.
-   */
   public String getOriginalString() {
     return originalString;
   }
 
-  /**
-   * Constructs string from parsed regular expression.
-   */
   @Override
   public String toString() {
     StringBuilder b = new StringBuilder();
@@ -716,9 +341,6 @@ public class RegExp {
     }
   }
 
-  /**
-   * Like to string, but more verbose (shows the higherchy more clearly).
-   */
   public String toStringTree() {
     StringBuilder b = new StringBuilder();
     toStringTree(b, "");
@@ -820,9 +442,6 @@ public class RegExp {
     }
   }
 
-  /**
-   * Returns set of automaton identifiers that occur in this regular expression.
-   */
   public Set<String> getIdentifiers() {
     HashSet<String> set = new HashSet<>();
     getIdentifiers(set);

@@ -41,60 +41,24 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.fst.ByteSequenceOutputs;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.fst.Outputs;
 
-/** A block-based terms index and dictionary that assigns
- *  terms to variable length blocks according to how they
- *  share prefixes.  The terms index is a prefix trie
- *  whose leaves are term blocks.  The advantage of this
- *  approach is that seekExact is often able to
- *  determine a term cannot exist without doing any IO, and
- *  intersection with Automata is very fast.  Note that this
- *  terms dictionary has it's own fixed terms index (ie, it
- *  does not support a pluggable terms index
- *  implementation).
- *
- *  <p><b>NOTE</b>: this terms dictionary supports
- *  min/maxItemsPerBlock during indexing to control how
- *  much memory the terms index uses.</p>
- *
- *  <p>The data structure used by this implementation is very
- *  similar to a burst trie
- *  (http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.18.3499),
- *  but with added logic to break up too-large blocks of all
- *  terms sharing a given prefix into smaller ones.</p>
- *
- *  <p>Use {@link org.trypticon.luceneupgrader.lucene5.internal.lucene.index.CheckIndex} with the <code>-verbose</code>
- *  option to see summary statistics on the blocks in the
- *  dictionary.
- *
- * @lucene.experimental
- * @deprecated Only for 4.x backcompat
- */
 @Deprecated
 public final class Lucene40BlockTreeTermsReader extends FieldsProducer {
 
-  /** Extension of terms file */
   static final String TERMS_EXTENSION = "tim";
   final static String TERMS_CODEC_NAME = "BLOCK_TREE_TERMS_DICT";
 
-  /** Initial terms format. */
   public static final int VERSION_START = 0;
 
-  /** Append-only */
   public static final int VERSION_APPEND_ONLY = 1;
 
-  /** Meta data as array */
   public static final int VERSION_META_ARRAY = 2;
 
-  /** checksums */
   public static final int VERSION_CHECKSUM = 3;
 
-  /** min/max term */
   public static final int VERSION_MIN_MAX_TERMS = 4;
 
-  /** Current terms format. */
   public static final int VERSION_CURRENT = VERSION_MIN_MAX_TERMS;
 
-  /** Extension of terms index file */
   static final String TERMS_INDEX_EXTENSION = "tip";
   final static String TERMS_INDEX_CODEC_NAME = "BLOCK_TREE_TERMS_INDEX";
   static final int OUTPUT_FLAGS_NUM_BITS = 2;
@@ -115,17 +79,14 @@ public final class Lucene40BlockTreeTermsReader extends FieldsProducer {
 
   private final TreeMap<String,Lucene40FieldReader> fields = new TreeMap<>();
 
-  /** File offset where the directory starts in the terms file. */
   private long dirOffset;
 
-  /** File offset where the directory starts in the index file. */
   private long indexDirOffset;
 
   final String segment;
   
   private final int version;
 
-  /** Sole constructor. */
   public Lucene40BlockTreeTermsReader(PostingsReaderBase postingsReader, SegmentReadState state)
     throws IOException {
     
@@ -240,7 +201,6 @@ public final class Lucene40BlockTreeTermsReader extends FieldsProducer {
     return bytes;
   }
 
-  /** Reads terms file header. */
   private int readHeader(IndexInput input) throws IOException {
     int version = CodecUtil.checkHeader(input, TERMS_CODEC_NAME,
                           VERSION_START,
@@ -251,7 +211,6 @@ public final class Lucene40BlockTreeTermsReader extends FieldsProducer {
     return version;
   }
 
-  /** Reads index file header. */
   private int readIndexHeader(IndexInput input) throws IOException {
     int version = CodecUtil.checkHeader(input, TERMS_INDEX_CODEC_NAME,
                           VERSION_START,
@@ -262,7 +221,6 @@ public final class Lucene40BlockTreeTermsReader extends FieldsProducer {
     return version;
   }
 
-  /** Seek {@code input} to the directory offset. */
   private void seekDir(IndexInput input, long dirOffset)
       throws IOException {
     if (version >= VERSION_CHECKSUM) {

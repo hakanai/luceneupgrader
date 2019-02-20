@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,28 +13,15 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.MultiTermQuery;  // javadocs
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
-/**
- * Subclass of FilteredTermsEnum for enumerating a single term.
- * <p>
- * For example, this can be used by {@link MultiTermQuery}s
- * that need only visit one term, but want to preserve
- * MultiTermQuery semantics such as {@link
- * MultiTermQuery#getRewriteMethod}.
- */
 public final class SingleTermsEnum extends FilteredTermsEnum {
   private final BytesRef singleRef;
   
-  /**
-   * Creates a new <code>SingleTermsEnum</code>.
-   * <p>
-   * After calling the constructor the enumeration is already pointing to the term,
-   * if it exists.
-   */
   public SingleTermsEnum(TermsEnum tenum, BytesRef termText) {
     super(tenum);
     singleRef = termText;

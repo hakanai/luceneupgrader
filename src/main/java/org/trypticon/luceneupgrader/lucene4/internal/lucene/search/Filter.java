@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 
@@ -23,38 +22,7 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.AtomicReader; 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.AtomicReaderContext;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 
-/** 
- *  Abstract base class for restricting which documents may
- *  be returned during searching.
- */
 public abstract class Filter {
   
-  /**
-   * Creates a {@link DocIdSet} enumerating the documents that should be
-   * permitted in search results. <b>NOTE:</b> null can be
-   * returned if no documents are accepted by this Filter.
-   * <p>
-   * Note: This method will be called once per segment in
-   * the index during searching.  The returned {@link DocIdSet}
-   * must refer to document IDs for that segment, not for
-   * the top-level reader.
-   * 
-   * @param context a {@link AtomicReaderContext} instance opened on the index currently
-   *         searched on. Note, it is likely that the provided reader info does not
-   *         represent the whole underlying index i.e. if the index has more than
-   *         one segment the given reader only represents a single segment.
-   *         The provided context is always an atomic context, so you can call 
-   *         {@link AtomicReader#fields()}
-   *         on the context's reader, for example.
-   *
-   * @param acceptDocs
-   *          Bits that represent the allowable docs to match (typically deleted docs
-   *          but possibly filtering other documents)
-   *          
-   * @return a DocIdSet that provides the documents which should be permitted or
-   *         prohibited in search results. <b>NOTE:</b> <code>null</code> should be returned if
-   *         the filter doesn't accept any documents otherwise internal optimization might not apply
-   *         in the case an <i>empty</i> {@link DocIdSet} is returned.
-   */
   public abstract DocIdSet getDocIdSet(AtomicReaderContext context, Bits acceptDocs) throws IOException;
 }

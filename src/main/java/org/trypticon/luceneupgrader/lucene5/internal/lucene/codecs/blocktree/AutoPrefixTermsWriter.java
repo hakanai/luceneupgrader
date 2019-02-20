@@ -37,10 +37,7 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.StringHelper;
 // API (used by CheckIndex -verbose) easier to implement since we could
 // just walk this virtual field and gather its stats)
 
-/** Used in the first pass when writing a segment to locate
- *  "appropriate" auto-prefix terms to pre-compile into the index.
- *  This visits every term in the index to find prefixes that
- *  match {@code >= min} and {@code <= max} number of terms. */
+
 
 class AutoPrefixTermsWriter {
 
@@ -49,23 +46,16 @@ class AutoPrefixTermsWriter {
   //static boolean DEBUG2 = BlockTreeTermsWriter.DEBUG2;
   //static boolean DEBUG2 = true;
 
-  /** Describes a range of term-space to match, either a simple prefix
-   *  (foo*) or a floor-block range of a prefix (e.g. foo[a-m]*,
-   *  foo[n-z]*) when there are too many terms starting with foo*. */
+
   public static final class PrefixTerm implements Comparable<PrefixTerm> {
-    /** Common prefix */
     public final byte[] prefix;
 
-    /** If this is -2, this is a normal prefix (foo *), else it's the minimum lead byte of the suffix (e.g. 'd' in foo[d-m]*). */
     public final int floorLeadStart;
 
-    /** The lead byte (inclusive) of the suffix for the term range we match (e.g. 'm' in foo[d-m*]); this is ignored when
-     *  floorLeadStart is -2. */
     public final int floorLeadEnd;
 
     public final BytesRef term;
 
-    /** Sole constructor. */
     public PrefixTerm(byte[] prefix, int floorLeadStart, int floorLeadEnd) {
       this.prefix = prefix;
       this.floorLeadStart = floorLeadStart;
@@ -108,8 +98,6 @@ class AutoPrefixTermsWriter {
       return cmp;
     }
 
-    /** Returns the leading term for this prefix term, e.g. "foo" (for
-     *  the foo* prefix) or "foom" (for the foo[m-z]* case). */
     private static BytesRef toBytesRef(byte[] prefix, int floorLeadStart) {
       BytesRef br;
       if (floorLeadStart != -2) {
@@ -218,7 +206,6 @@ class AutoPrefixTermsWriter {
     Collections.sort(prefixes);
   }
 
-  /** Pushes the new term to the top of the stack, and writes new blocks. */
   private void pushTerm(BytesRef text) throws IOException {
     int limit = Math.min(lastTerm.length(), text.length);
     //if (DEBUG) System.out.println("\nterm: " + text.utf8ToString());

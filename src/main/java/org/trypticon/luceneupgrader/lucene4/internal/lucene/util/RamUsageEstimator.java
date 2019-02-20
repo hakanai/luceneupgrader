@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.PlatformManagedObject;
@@ -24,18 +23,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
 
-/**
- * Estimates the size (memory representation) of Java objects.
- * 
- * @see #shallowSizeOf(Object)
- * @see #shallowSizeOfInstance(Class)
- * 
- * @lucene.internal
- */
 public final class RamUsageEstimator {
-  /**
-   * JVM diagnostic features.
-   */
   public static enum JvmFeature {
     OBJECT_REFERENCE_SIZE("Object reference size estimated using array index scale"),
     ARRAY_HEADER_SIZE("Array header size estimated using array based offset"),
@@ -54,19 +42,14 @@ public final class RamUsageEstimator {
     }
   }
 
-  /** JVM info string for debugging and reports. */
   public final static String JVM_INFO_STRING;
 
-  /** One kilobyte bytes. */
   public static final long ONE_KB = 1024;
   
-  /** One megabyte bytes. */
   public static final long ONE_MB = ONE_KB * ONE_KB;
   
-  /** One gigabyte bytes.*/
   public static final long ONE_GB = ONE_KB * ONE_MB;
 
-  /** No instantiation. */
   private RamUsageEstimator() {}
 
   public final static int NUM_BYTES_BOOLEAN = 1;
@@ -78,30 +61,15 @@ public final class RamUsageEstimator {
   public final static int NUM_BYTES_LONG = 8;
   public final static int NUM_BYTES_DOUBLE = 8;
 
-  /** 
-   * Number of bytes this jvm uses to represent an object reference. 
-   */
+
   public final static int NUM_BYTES_OBJECT_REF;
 
-  /**
-   * Number of bytes to represent an object header (no fields, no alignments).
-   */
   public final static int NUM_BYTES_OBJECT_HEADER;
 
-  /**
-   * Number of bytes to represent an array header (no content, but with alignments).
-   */
   public final static int NUM_BYTES_ARRAY_HEADER;
   
-  /**
-   * A constant specifying the object alignment boundary inside the JVM. Objects will
-   * always take a full multiple of this constant, possibly wasting some space. 
-   */
   public final static int NUM_BYTES_OBJECT_ALIGNMENT;
 
-  /**
-   * Sizes of primitive classes.
-   */
   private static final Map<Class<?>,Integer> primitiveSizes;
   static {
     primitiveSizes = new IdentityHashMap<>();
@@ -115,30 +83,15 @@ public final class RamUsageEstimator {
     primitiveSizes.put(long.class, Integer.valueOf(NUM_BYTES_LONG));
   }
 
-  /**
-   * A handle to <code>sun.misc.Unsafe</code>.
-   */
   private final static Object theUnsafe;
   
-  /**
-   * A handle to <code>sun.misc.Unsafe#fieldOffset(Field)</code>.
-   */
   private final static Method objectFieldOffsetMethod;
 
-  /**
-   * All the supported "internal" JVM features detected at clinit. 
-   */
   private final static EnumSet<JvmFeature> supportedFeatures;
 
-  /**
-   * JVMs typically cache small longs. This tries to find out what the range is.
-   */
   private static final long LONG_CACHE_MIN_VALUE, LONG_CACHE_MAX_VALUE;
   private static final int LONG_SIZE;
 
-  /**
-   * Initialize constants and try to collect information about the JVM internals. 
-   */
   static {
     // Initialize empirically measured defaults. We'll modify them to the current
     // JVM settings later on if possible.
@@ -268,29 +221,17 @@ public final class RamUsageEstimator {
     public long dummy1, dummy2;
   }
   
-  /** 
-   * Returns true, if the current JVM is fully supported by {@code RamUsageEstimator}.
-   * If this method returns {@code false} you are maybe using a 3rd party Java VM
-   * that is not supporting Oracle/Sun private APIs. The memory estimates can be 
-   * imprecise then (no way of detecting compressed references, alignments, etc.). 
-   * Lucene still tries to use sensible defaults.
-   */
+
   public static boolean isSupportedJVM() {
     return supportedFeatures.size() == JvmFeature.values().length;
   }
 
-  /** 
-   * Aligns an object size to be the next multiple of {@link #NUM_BYTES_OBJECT_ALIGNMENT}. 
-   */
+
   public static long alignObjectSize(long size) {
     size += (long) NUM_BYTES_OBJECT_ALIGNMENT - 1L;
     return size - (size % NUM_BYTES_OBJECT_ALIGNMENT);
   }
 
-  /**
-   * Return the size of the provided {@link Long} object, returning 0 if it is
-   * cached by the JVM and its shallow size otherwise.
-   */
   public static long sizeOf(Long value) {
     if (value >= LONG_CACHE_MIN_VALUE && value <= LONG_CACHE_MAX_VALUE) {
       return 0;
@@ -298,59 +239,44 @@ public final class RamUsageEstimator {
     return LONG_SIZE;
   }
 
-  /** Returns the size in bytes of the byte[] object. */
   public static long sizeOf(byte[] arr) {
     return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + arr.length);
   }
   
-  /** Returns the size in bytes of the boolean[] object. */
   public static long sizeOf(boolean[] arr) {
     return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + arr.length);
   }
   
-  /** Returns the size in bytes of the char[] object. */
   public static long sizeOf(char[] arr) {
     return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) NUM_BYTES_CHAR * arr.length);
   }
 
-  /** Returns the size in bytes of the short[] object. */
   public static long sizeOf(short[] arr) {
     return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) NUM_BYTES_SHORT * arr.length);
   }
   
-  /** Returns the size in bytes of the int[] object. */
   public static long sizeOf(int[] arr) {
     return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) NUM_BYTES_INT * arr.length);
   }
   
-  /** Returns the size in bytes of the float[] object. */
   public static long sizeOf(float[] arr) {
     return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) NUM_BYTES_FLOAT * arr.length);
   }
   
-  /** Returns the size in bytes of the long[] object. */
   public static long sizeOf(long[] arr) {
     return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) NUM_BYTES_LONG * arr.length);
   }
   
-  /** Returns the size in bytes of the double[] object. */
   public static long sizeOf(double[] arr) {
     return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) NUM_BYTES_DOUBLE * arr.length);
   }
 
-  /** Returns the shallow size in bytes of the Object[] object. */
   // Use this method instead of #shallowSizeOf(Object) to avoid costly reflection
   public static long shallowSizeOf(Object[] arr) {
     return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) NUM_BYTES_OBJECT_REF * arr.length);
   }
 
-  /** 
-   * Estimates a "shallow" memory usage of the given object. For arrays, this will be the
-   * memory taken by array storage (no subreferences will be followed). For objects, this
-   * will be the memory taken by the fields.
-   * 
-   * JVM object alignments are also applied.
-   */
+
   public static long shallowSizeOf(Object obj) {
     if (obj == null) return 0;
     final Class<?> clz = obj.getClass();
@@ -361,14 +287,6 @@ public final class RamUsageEstimator {
     }
   }
 
-  /**
-   * Returns the shallow instance size in bytes an instance of the given class would occupy.
-   * This works with all conventional classes and primitive types, but not with arrays
-   * (the size then depends on the number of elements and varies from object to object).
-   * 
-   * @see #shallowSizeOf(Object)
-   * @throws IllegalArgumentException if {@code clazz} is an array class. 
-   */
   public static long shallowSizeOfInstance(Class<?> clazz) {
     if (clazz.isArray())
       throw new IllegalArgumentException("This method does not work with array classes.");
@@ -389,9 +307,6 @@ public final class RamUsageEstimator {
     return alignObjectSize(size);    
   }
 
-  /**
-   * Return shallow size of any <code>array</code>.
-   */
   private static long shallowSizeOfArray(Object array) {
     long size = NUM_BYTES_ARRAY_HEADER;
     final int len = Array.getLength(array);
@@ -406,13 +321,6 @@ public final class RamUsageEstimator {
     return alignObjectSize(size);
   }
 
-  /**
-   * This method returns the maximum representation size of an object. <code>sizeSoFar</code>
-   * is the object's size measured so far. <code>f</code> is the field being probed.
-   * 
-   * <p>The returned offset will be the maximum of whatever was measured so far and 
-   * <code>f</code> field's offset and representation size (unaligned).
-   */
   static long adjustForField(long sizeSoFar, final Field f) {
     final Class<?> type = f.getType();
     final int fsize = type.isPrimitive() ? primitiveSizes.get(type) : NUM_BYTES_OBJECT_REF;
@@ -441,29 +349,21 @@ public final class RamUsageEstimator {
     }
   }
 
-  /** Return the set of unsupported JVM features that improve the estimation. */
   public static EnumSet<JvmFeature> getUnsupportedFeatures() {
     EnumSet<JvmFeature> unsupported = EnumSet.allOf(JvmFeature.class);
     unsupported.removeAll(supportedFeatures);
     return unsupported;
   }
 
-  /** Return the set of supported JVM features that improve the estimation. */
   public static EnumSet<JvmFeature> getSupportedFeatures() {
     return EnumSet.copyOf(supportedFeatures);
   }
 
-  /**
-   * Returns <code>size</code> in human-readable units (GB, MB, KB or bytes).
-   */
   public static String humanReadableUnits(long bytes) {
     return humanReadableUnits(bytes, 
         new DecimalFormat("0.#", DecimalFormatSymbols.getInstance(Locale.ROOT)));
   }
 
-  /**
-   * Returns <code>size</code> in human-readable units (GB, MB, KB or bytes). 
-   */
   public static String humanReadableUnits(long bytes, DecimalFormat df) {
     if (bytes / ONE_GB > 0) {
       return df.format((float) bytes / ONE_GB) + " GB";
@@ -476,12 +376,6 @@ public final class RamUsageEstimator {
     }
   }
 
-  /**
-   * Return the size of the provided array of {@link Accountable}s by summing
-   * up the shallow size of the array and the
-   * {@link Accountable#ramBytesUsed() memory usage} reported by each
-   * {@link Accountable}.
-   */
   public static long sizeOf(Accountable[] accountables) {
     long size = shallowSizeOf(accountables);
     for (Accountable accountable : accountables) {

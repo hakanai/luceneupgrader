@@ -1,4 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,6 +14,7 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 
@@ -22,14 +22,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.AtomicReaderCo
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SortedSetDocValues;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
-
-/**
- * A range filter built on top of a cached multi-valued term field (in {@link FieldCache}).
- * 
- * <p>Like {@link FieldCacheRangeFilter}, this is just a specialized range query versus
- *    using a TermRangeQuery with {@link DocTermOrdsRewriteMethod}: it will only do
- *    two ordinal to term lookups.</p>
- */
 
 public abstract class DocTermOrdsRangeFilter extends Filter {
   final String field;
@@ -46,15 +38,9 @@ public abstract class DocTermOrdsRangeFilter extends Filter {
     this.includeUpper = includeUpper;
   }
   
-  /** This method is implemented for each data type */
   @Override
   public abstract DocIdSet getDocIdSet(AtomicReaderContext context, Bits acceptDocs) throws IOException;
   
-  /**
-   * Creates a BytesRef range filter using {@link FieldCache#getTermsIndex}. This works with all
-   * fields containing zero or one term in the field. The range can be half-open by setting one
-   * of the values to <code>null</code>.
-   */
   public static DocTermOrdsRangeFilter newBytesRefRange(String field, BytesRef lowerVal, BytesRef upperVal, boolean includeLower, boolean includeUpper) {
     return new DocTermOrdsRangeFilter(field, lowerVal, upperVal, includeLower, includeUpper) {
       @Override
@@ -150,18 +136,13 @@ public abstract class DocTermOrdsRangeFilter extends Filter {
     return h;
   }
 
-  /** Returns the field name for this filter */
   public String getField() { return field; }
 
-  /** Returns <code>true</code> if the lower endpoint is inclusive */
   public boolean includesLower() { return includeLower; }
   
-  /** Returns <code>true</code> if the upper endpoint is inclusive */
   public boolean includesUpper() { return includeUpper; }
 
-  /** Returns the lower value of this range filter */
   public BytesRef getLowerVal() { return lowerVal; }
 
-  /** Returns the upper value of this range filter */
   public BytesRef getUpperVal() { return upperVal; }
 }

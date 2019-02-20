@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities;
 
 import java.io.IOException;
 
@@ -26,18 +25,9 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.Explanation;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.TermStatistics;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
-/**
- * Implements the CombSUM method for combining evidence from multiple
- * similarity values described in: Joseph A. Shaw, Edward A. Fox. 
- * In Text REtrieval Conference (1993), pp. 243-252
- * @lucene.experimental
- */
 public class MultiSimilarity extends Similarity {
-  /** the sub-similarities used to create the combined score */
   protected final Similarity sims[];
   
-  /** Creates a MultiSimilarity which will sum the scores
-   * of the provided <code>sims</code>. */
   public MultiSimilarity(Similarity sims[]) {
     this.sims = sims;
   }

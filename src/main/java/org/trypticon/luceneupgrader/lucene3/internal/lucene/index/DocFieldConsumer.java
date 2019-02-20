@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -25,19 +24,13 @@ abstract class DocFieldConsumer {
 
   FieldInfos fieldInfos;
 
-  /** Called when DocumentsWriter decides to create a new
-   *  segment */
   abstract void flush(Map<DocFieldConsumerPerThread,Collection<DocFieldConsumerPerField>> threadsAndFields, SegmentWriteState state) throws IOException;
 
-  /** Called when an aborting exception is hit */
   abstract void abort();
 
-  /** Add a new thread */
   abstract DocFieldConsumerPerThread addThread(DocFieldProcessorPerThread docFieldProcessorPerThread) throws IOException;
 
-  /** Called when DocumentsWriter is using too much RAM.
-   *  The consumer should free RAM, if possible, returning
-   *  true if any RAM was in fact freed. */
+
   abstract boolean freeRAM();
 
   void setFieldInfos(FieldInfos fieldInfos) {

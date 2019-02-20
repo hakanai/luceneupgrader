@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,41 +13,32 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattri
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes;
 
 import java.io.Serializable;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Payload;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.AttributeImpl;
 
-/**
- * The payload of a Token. See also {@link Payload}.
- */
+
 public class PayloadAttributeImpl extends AttributeImpl implements PayloadAttribute, Cloneable, Serializable {
   private Payload payload;  
   
-  /**
-   * Initialize this attribute with no payload.
-   */
+
   public PayloadAttributeImpl() {}
   
-  /**
-   * Initialize this attribute with the given payload. 
-   */
+
   public PayloadAttributeImpl(Payload payload) {
     this.payload = payload;
   }
   
-  /**
-   * Returns this Token's payload.
-   */ 
+
   public Payload getPayload() {
     return this.payload;
   }
 
-  /** 
-   * Sets this Token's payload.
-   */
+
   public void setPayload(Payload payload) {
     this.payload = payload;
   }

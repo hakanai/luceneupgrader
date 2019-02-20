@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,40 +13,30 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
 import java.io.IOException;
 
-/** A TokenFilter is a TokenStream whose input is another TokenStream.
-  <p>
-  This is an abstract class; subclasses must override {@link #incrementToken()}.
-  @see TokenStream
-  */
 public abstract class TokenFilter extends TokenStream {
-  /** The source of tokens for this filter. */
   protected final TokenStream input;
 
-  /** Construct a token stream filtering the given input. */
   protected TokenFilter(TokenStream input) {
     super(input);
     this.input = input;
   }
   
-  /** Performs end-of-stream operations, if any, and calls then <code>end()</code> on the
-   * input TokenStream.<p/> 
-   * <b>NOTE:</b> Be sure to call <code>super.end()</code> first when overriding this method.*/
+
   @Override
   public void end() throws IOException {
     input.end();
   }
   
-  /** Close the input TokenStream. */
   @Override
   public void close() throws IOException {
     input.close();
   }
 
-  /** Reset the filter as well as the input TokenStream. */
   @Override
   public void reset() throws IOException {
     input.reset();

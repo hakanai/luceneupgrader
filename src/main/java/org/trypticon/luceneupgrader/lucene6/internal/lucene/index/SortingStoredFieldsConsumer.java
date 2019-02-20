@@ -13,8 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.index;
 
 import java.io.IOException;
@@ -88,9 +87,6 @@ final class SortingStoredFieldsConsumer extends StoredFieldsConsumer {
     }
   }
 
-  /**
-   * A visitor that copies every field it sees in the provided {@link StoredFieldsWriter}.
-   */
   private static class CopyVisitor extends StoredFieldVisitor implements IndexableField {
     final StoredFieldsWriter writer;
     BytesRef binaryValue;

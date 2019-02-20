@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -35,14 +34,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.FixedBitSet;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.FieldCacheSanityChecker;
 
-/**
- * Expert: The default cache implementation, storing all values in memory.
- * A WeakHashMap is used for storage.
- *
- * <p>Created: May 19, 2004 4:40:36 PM
- *
- * @since   lucene 1.4
- */
 class FieldCacheImpl implements FieldCache {
 	
   private Map<Class<?>,Cache> caches;
@@ -128,11 +119,6 @@ class FieldCacheImpl implements FieldCache {
     public Object getValue() { return value; }
   }
 
-  /**
-   * Hack: When thrown from a Parser (NUMERIC_UTILS_* ones), this stops
-   * processing terms and returns the current FieldCache
-   * array.
-   */
   static final class StopFillCacheException extends RuntimeException {
   }
   
@@ -152,7 +138,6 @@ class FieldCacheImpl implements FieldCache {
     }
   };
 
-  /** Expert: Internal cache. */
   abstract static class Cache {
     Cache() {
       this.wrapper = null;
@@ -169,7 +154,6 @@ class FieldCacheImpl implements FieldCache {
     protected abstract Object createValue(IndexReader reader, Entry key, boolean setDocsWithField)
         throws IOException;
 
-    /** Remove this reader from the cache, if present. */
     public void purge(IndexReader r) {
       Object readerKey = r.getCoreCacheKey();
       synchronized(readerCache) {
@@ -177,8 +161,6 @@ class FieldCacheImpl implements FieldCache {
       }
     }
 
-    /** Sets the key to the value for the provided reader;
-     *  if the key is already set then this doesn't change it. */
     public void put(IndexReader reader, Entry key, Object value) {
       final Object readerKey = reader.getCoreCacheKey();
       synchronized (readerCache) {
@@ -269,18 +251,15 @@ class FieldCacheImpl implements FieldCache {
     }
   }
 
-  /** Expert: Every composite-key in the internal cache is of this type. */
   static class Entry {
     final String field;        // which Fieldable
     final Object custom;       // which custom comparator or parser
 
-    /** Creates one of these objects for a custom comparator/parser. */
     Entry (String field, Object custom) {
       this.field = StringHelper.intern(field);
       this.custom = custom;
     }
 
-    /** Two of these are equal iff they reference the same field and type. */
     @Override
     public boolean equals (Object o) {
       if (o instanceof Entry) {
@@ -296,7 +275,6 @@ class FieldCacheImpl implements FieldCache {
       return false;
     }
 
-    /** Composes a hashcode based on the field and type. */
     @Override
     public int hashCode() {
       return field.hashCode() ^ (custom==null ? 0 : custom.hashCode());

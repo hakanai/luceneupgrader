@@ -21,9 +21,6 @@ import java.io.*;
 
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.DataInput;
 
-/**
- * A {@link DataInput} wrapping a plain {@link InputStream}.
- */
 public class InputStreamDataInput extends DataInput implements Closeable {
   private final InputStream is;
   

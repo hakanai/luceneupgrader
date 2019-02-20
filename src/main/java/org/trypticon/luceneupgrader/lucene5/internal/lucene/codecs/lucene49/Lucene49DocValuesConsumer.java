@@ -39,43 +39,27 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.DirectWr
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.MonotonicBlockPackedWriter;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 
-/** 
- * writer for 4.9 docvalues format
- * @deprecated only for old 4.x segments
- */
 @Deprecated
 class Lucene49DocValuesConsumer extends DocValuesConsumer implements Closeable {
 
   static final int BLOCK_SIZE = 16384;
   static final int ADDRESS_INTERVAL = 16;
 
-  /** Compressed using packed blocks of ints. */
   public static final int DELTA_COMPRESSED = 0;
-  /** Compressed by computing the GCD. */
   public static final int GCD_COMPRESSED = 1;
-  /** Compressed by giving IDs to unique values. */
   public static final int TABLE_COMPRESSED = 2;
-  /** Compressed with monotonically increasing values */
   public static final int MONOTONIC_COMPRESSED = 3;
   
-  /** Uncompressed binary, written directly (fixed length). */
   public static final int BINARY_FIXED_UNCOMPRESSED = 0;
-  /** Uncompressed binary, written directly (variable length). */
   public static final int BINARY_VARIABLE_UNCOMPRESSED = 1;
-  /** Compressed binary with shared prefixes */
   public static final int BINARY_PREFIX_COMPRESSED = 2;
 
-  /** Standard storage for sorted set values with 1 level of indirection:
-   *  docId -> address -> ord. */
   public static final int SORTED_WITH_ADDRESSES = 0;
-  /** Single-valued sorted set values, encoded as sorted values, so no level
-   *  of indirection: docId -> ord. */
   public static final int SORTED_SINGLE_VALUED = 1;
 
   IndexOutput data, meta;
   final int maxDoc;
   
-  /** expert: Creates a new writer */
   public Lucene49DocValuesConsumer(SegmentWriteState state, String dataCodec, String dataExtension, String metaCodec, String metaExtension) throws IOException {
     boolean success = false;
     try {
@@ -307,7 +291,6 @@ class Lucene49DocValuesConsumer extends DocValuesConsumer implements Closeable {
     }
   }
   
-  /** expert: writes a value dictionary for a sorted/sortedset field */
   private void addTermsDict(FieldInfo field, final Iterable<BytesRef> values) throws IOException {
     // first check if its a "fixed-length" terms dict
     int minLength = Integer.MAX_VALUE;

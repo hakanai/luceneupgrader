@@ -1,12 +1,16 @@
 package org.trypticon.luceneupgrader.lucene6;
 
-import org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.Analyzer;
-import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.*;
-import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.Directory;
-import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.FSDirectory;
 import org.trypticon.luceneupgrader.InfoStream;
 import org.trypticon.luceneupgrader.VersionUpgrader;
+import org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.Analyzer;
+import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.IndexUpgrader;
+import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.IndexWriterConfig;
+import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.LogByteSizeMergePolicy;
+import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.SerialMergeScheduler;
+import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.Directory;
+import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.FSDirectory;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -14,10 +18,14 @@ import java.nio.file.Path;
  * Upgrades an index to Lucene 6 format.
  */
 public class VersionUpgrader6 implements VersionUpgrader {
+
+    @Nonnull
     private final Path path;
+
+    @Nonnull
     private final InfoStream infoStream;
 
-    public VersionUpgrader6(Path path, InfoStream infoStream) {
+    public VersionUpgrader6(@Nonnull Path path, @Nonnull InfoStream infoStream) {
         this.path = path;
         this.infoStream = infoStream;
     }
@@ -26,8 +34,7 @@ public class VersionUpgrader6 implements VersionUpgrader {
     public void upgrade() throws IOException {
         try (Directory directory = FSDirectory.open(path)) {
             org.trypticon.luceneupgrader.lucene6.internal.lucene.util.InfoStream adaptedInfoStream =
-                infoStream == null ? org.trypticon.luceneupgrader.lucene6.internal.lucene.util.InfoStream.NO_OUTPUT
-                                   : new AdaptedInfoStream(infoStream);
+                    new AdaptedInfoStream(infoStream);
             IndexWriterConfig indexWriterConfig = new IndexWriterConfig(new FailAnalyzer());
             indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
             indexWriterConfig.setMergeScheduler(new SerialMergeScheduler());

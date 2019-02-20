@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,36 +13,15 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 
-/**
- * A {@link Collector} which allows running a search with several
- * {@link Collector}s. It offers a static {@link #wrap} method which accepts a
- * list of collectors and wraps them with {@link MultiCollector}, while
- * filtering out the <code>null</code> null ones.
- */
 public class MultiCollector extends Collector {
 
-  /**
-   * Wraps a list of {@link Collector}s with a {@link MultiCollector}. This
-   * method works as follows:
-   * <ul>
-   * <li>Filters out the <code>null</code> collectors, so they are not used
-   * during search time.
-   * <li>If the input contains 1 real collector (i.e. non-<code>null</code> ),
-   * it is returned.
-   * <li>Otherwise the method returns a {@link MultiCollector} which wraps the
-   * non-<code>null</code> ones.
-   * </ul>
-   * 
-   * @throws IllegalArgumentException
-   *           if either 0 collectors were input, or all collectors are
-   *           <code>null</code>.
-   */
   public static Collector wrap(Collector... collectors) {
     // For the user's convenience, we allow null collectors to be passed.
     // However, to improve performance, these null collectors are found

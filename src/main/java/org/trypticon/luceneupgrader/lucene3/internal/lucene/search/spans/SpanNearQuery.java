@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
 
 import java.io.IOException;
 
@@ -31,9 +30,7 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Query;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ToStringUtils;
 
-/** Matches spans which are near one another.  One can specify <i>slop</i>, the
- * maximum number of intervening unmatched positions, as well as whether
- * matches are required to be in-order. */
+
 public class SpanNearQuery extends SpanQuery implements Cloneable {
   protected List<SpanQuery> clauses;
   protected int slop;
@@ -42,14 +39,7 @@ public class SpanNearQuery extends SpanQuery implements Cloneable {
   protected String field;
   private boolean collectPayloads;
 
-  /** Construct a SpanNearQuery.  Matches spans matching a span from each
-   * clause, with up to <code>slop</code> total unmatched positions between
-   * them.  * When <code>inOrder</code> is true, the spans from each clause
-   * must be * ordered as in <code>clauses</code>.
-   * @param clauses the clauses to find near each other
-   * @param slop The slop value
-   * @param inOrder true if order is important
-   * */
+
   public SpanNearQuery(SpanQuery[] clauses, int slop, boolean inOrder) {
     this(clauses, slop, inOrder, true);     
   }
@@ -72,15 +62,12 @@ public class SpanNearQuery extends SpanQuery implements Cloneable {
     this.inOrder = inOrder;
   }
 
-  /** Return the clauses whose spans are matched. */
   public SpanQuery[] getClauses() {
     return clauses.toArray(new SpanQuery[clauses.size()]);
   }
 
-  /** Return the maximum number of intervening unmatched positions permitted.*/
   public int getSlop() { return slop; }
 
-  /** Return true if matches are required to be in-order.*/
   public boolean isInOrder() { return inOrder; }
 
   @Override
@@ -160,7 +147,6 @@ public class SpanNearQuery extends SpanQuery implements Cloneable {
     return spanNearQuery;
   }
 
-  /** Returns true iff <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

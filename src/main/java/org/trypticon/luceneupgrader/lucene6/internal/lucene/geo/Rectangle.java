@@ -35,20 +35,12 @@ import static org.trypticon.luceneupgrader.lucene6.internal.lucene.util.SloppyMa
 import static org.trypticon.luceneupgrader.lucene6.internal.lucene.util.SloppyMath.toDegrees;
 import static org.trypticon.luceneupgrader.lucene6.internal.lucene.util.SloppyMath.toRadians;
 
-/** Represents a lat/lon rectangle. */
 public class Rectangle {
-  /** maximum longitude value (in degrees) */
   public final double minLat;
-  /** minimum longitude value (in degrees) */
   public final double minLon;
-  /** maximum latitude value (in degrees) */
   public final double maxLat;
-  /** minimum latitude value (in degrees) */
   public final double maxLon;
 
-  /**
-   * Constructs a bounding box by first validating the provided latitude and longitude coordinates
-   */
   public Rectangle(double minLat, double maxLat, double minLon, double maxLon) {
     GeoUtils.checkLatitude(minLat);
     GeoUtils.checkLatitude(maxLat);
@@ -82,12 +74,10 @@ public class Rectangle {
     return b.toString();
   }
 
-  /** Returns true if this bounding box crosses the dateline */
   public boolean crossesDateline() {
     return maxLon < minLon;
   }
 
-  /** Compute Bounding Box for a circle using WGS-84 parameters */
   public static Rectangle fromPointDistance(final double centerLat, final double centerLon, final double radiusMeters) {
     checkLatitude(centerLat);
     checkLongitude(centerLon);
@@ -121,17 +111,8 @@ public class Rectangle {
     return new Rectangle(toDegrees(minLat), toDegrees(maxLat), toDegrees(minLon), toDegrees(maxLon));
   }
 
-  /** maximum error from {@link #axisLat(double, double)}. logic must be prepared to handle this */
   public static final double AXISLAT_ERROR = 0.1D / EARTH_MEAN_RADIUS_METERS * TO_DEGREES;
 
-  /**
-   * Calculate the latitude of a circle's intersections with its bbox meridians.
-   * <p>
-   * <b>NOTE:</b> the returned value will be +/- {@link #AXISLAT_ERROR} of the actual value.
-   * @param centerLat The latitude of the circle center
-   * @param radiusMeters The radius of the circle in meters
-   * @return A latitude
-   */
   public static double axisLat(double centerLat, double radiusMeters) {
     // A spherical triangle with:
     // r is the radius of the circle in radians
@@ -169,7 +150,6 @@ public class Rectangle {
     return toDegrees(l2);
   }
 
-  /** Returns the bounding box over an array of polygons */
   public static Rectangle fromPolygon(Polygon[] polygons) {
     // compute bounding box
     double minLat = Double.POSITIVE_INFINITY;

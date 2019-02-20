@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
 
 import java.io.IOException;
 
@@ -25,12 +24,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.NormsFormat;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentReadState;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentWriteState;
 
-/**
- * Lucene3x ReadOnly NormsFormat implementation
- * @deprecated (4.0) This is only used to read indexes created
- * before 4.0.
- * @lucene.experimental
- */
 @Deprecated
 class Lucene3xNormsFormat extends NormsFormat {
 

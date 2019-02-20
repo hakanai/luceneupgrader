@@ -34,10 +34,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.TermsEnum;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.similarities.Similarity;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.similarities.Similarity.SimScorer;
 
-/**
- * A Query that matches documents containing a term. This may be combined with
- * other terms with a {@link BooleanQuery}.
- */
 public class TermQuery extends Query {
 
   private final Term term;
@@ -106,10 +102,6 @@ public class TermQuery extends Query {
       return new TermScorer(this, docs, similarity.simScorer(stats, context));
     }
 
-    /**
-     * Returns a {@link TermsEnum} positioned at this weights Term or null if
-     * the term does not exist in the given context
-     */
     private TermsEnum getTermsEnum(LeafReaderContext context) throws IOException {
       if (termStates != null) {
         // TermQuery either used as a Query or the term states have been provided at construction time
@@ -165,23 +157,17 @@ public class TermQuery extends Query {
     }
   }
 
-  /** Constructs a query for the term <code>t</code>. */
   public TermQuery(Term t) {
     term = Objects.requireNonNull(t);
     perReaderTermState = null;
   }
 
-  /**
-   * Expert: constructs a TermQuery that will use the provided docFreq instead
-   * of looking up the docFreq against the searcher.
-   */
   public TermQuery(Term t, TermContext states) {
     assert states != null;
     term = Objects.requireNonNull(t);
     perReaderTermState = Objects.requireNonNull(states);
   }
 
-  /** Returns the term of this query. */
   public Term getTerm() {
     return term;
   }
@@ -209,7 +195,6 @@ public class TermQuery extends Query {
     return new TermWeight(searcher, needsScores, termState);
   }
 
-  /** Prints a user-readable version of this query. */
   @Override
   public String toString(String field) {
     StringBuilder buffer = new StringBuilder();
@@ -221,7 +206,6 @@ public class TermQuery extends Query {
     return buffer.toString();
   }
 
-  /** Returns true iff <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object other) {
     return sameClassAs(other) &&

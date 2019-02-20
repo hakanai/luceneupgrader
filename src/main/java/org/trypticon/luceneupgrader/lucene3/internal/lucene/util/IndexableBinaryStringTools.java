@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,44 +13,12 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
 import java.nio.CharBuffer;
 import java.nio.ByteBuffer;
 
-/**
- * Provides support for converting byte sequences to Strings and back again.
- * The resulting Strings preserve the original byte sequences' sort order.
- * <p/>
- * The Strings are constructed using a Base 8000h encoding of the original
- * binary data - each char of an encoded String represents a 15-bit chunk
- * from the byte sequence.  Base 8000h was chosen because it allows for all
- * lower 15 bits of char to be used without restriction; the surrogate range 
- * [U+D8000-U+DFFF] does not represent valid chars, and would require
- * complicated handling to avoid them and allow use of char's high bit.
- * <p/>
- * Although unset bits are used as padding in the final char, the original
- * byte sequence could contain trailing bytes with no set bits (null bytes):
- * padding is indistinguishable from valid information.  To overcome this
- * problem, a char is appended, indicating the number of encoded bytes in the
- * final content char.
- * <p/>
- * Some methods in this class are defined over CharBuffers and ByteBuffers, but
- * these are deprecated in favor of methods that operate directly on byte[] and
- * char[] arrays.  Note that this class calls array() and arrayOffset()
- * on the CharBuffers and ByteBuffers it uses, so only wrapped arrays may be
- * used.  This class interprets the arrayOffset() and limit() values returned 
- * by its input buffers as beginning and end+1 positions on the wrapped array,
- * respectively; similarly, on the output buffer, arrayOffset() is the first
- * position written to, and limit() is set to one past the final output array
- * position.
- * <p/>
- * WARNING: This means that the deprecated Buffer-based methods 
- * only work correctly with buffers that have an offset of 0. For example, they
- * will not correctly interpret buffers returned by {@link ByteBuffer#slice}.  
- *
- * @lucene.experimental
- */
 public final class IndexableBinaryStringTools {
 
   private static final CodingCase[] CODING_CASES = {
@@ -71,17 +37,6 @@ public final class IndexableBinaryStringTools {
   // Export only static methods
   private IndexableBinaryStringTools() {}
 
-  /**
-   * Returns the number of chars required to encode the given byte sequence.
-   * 
-   * @param original The byte sequence to be encoded. Must be backed by an
-   *        array.
-   * @return The number of chars required to encode the given byte sequence
-   * @throws IllegalArgumentException If the given ByteBuffer is not backed by
-   *         an array
-   * @deprecated Use {@link #getEncodedLength(byte[], int, int)} instead. This
-   *             method will be removed in Lucene 4.0
-   */
   @Deprecated
   public static int getEncodedLength(ByteBuffer original)
     throws IllegalArgumentException {
@@ -93,14 +48,6 @@ public final class IndexableBinaryStringTools {
     }
   }
   
-  /**
-   * Returns the number of chars required to encode the given bytes.
-   * 
-   * @param inputArray byte sequence to be encoded
-   * @param inputOffset initial offset into inputArray
-   * @param inputLength number of bytes in inputArray
-   * @return The number of chars required to encode the number of bytes.
-   */
   public static int getEncodedLength(byte[] inputArray, int inputOffset,
       int inputLength) {
     // Use long for intermediaries to protect against overflow
@@ -108,16 +55,6 @@ public final class IndexableBinaryStringTools {
   }
 
 
-  /**
-   * Returns the number of bytes required to decode the given char sequence.
-   * 
-   * @param encoded The char sequence to be decoded. Must be backed by an array.
-   * @return The number of bytes required to decode the given char sequence
-   * @throws IllegalArgumentException If the given CharBuffer is not backed by
-   *         an array
-   * @deprecated Use {@link #getDecodedLength(char[], int, int)} instead. This
-   *             method will be removed in Lucene 4.0
-   */
   @Deprecated
   public static int getDecodedLength(CharBuffer encoded) 
     throws IllegalArgumentException {
@@ -129,14 +66,6 @@ public final class IndexableBinaryStringTools {
     }
   }
   
-  /**
-   * Returns the number of bytes required to decode the given char sequence.
-   * 
-   * @param encoded char sequence to be decoded
-   * @param offset initial offset
-   * @param length number of characters
-   * @return The number of bytes required to decode the given char sequence
-   */
   public static int getDecodedLength(char[] encoded, int offset, int length) {
     final int numChars = length - 1;
     if (numChars <= 0) {
@@ -149,19 +78,6 @@ public final class IndexableBinaryStringTools {
     }
   }
 
-  /**
-   * Encodes the input byte sequence into the output char sequence. Before
-   * calling this method, ensure that the output CharBuffer has sufficient
-   * capacity by calling {@link #getEncodedLength(java.nio.ByteBuffer)}.
-   * 
-   * @param input The byte sequence to encode
-   * @param output Where the char sequence encoding result will go. The limit is
-   *        set to one past the position of the final char.
-   * @throws IllegalArgumentException If either the input or the output buffer
-   *         is not backed by an array
-   * @deprecated Use {@link #encode(byte[], int, int, char[], int, int)}
-   *             instead. This method will be removed in Lucene 4.0
-   */
   @Deprecated
   public static void encode(ByteBuffer input, CharBuffer output) {
     if (input.hasArray() && output.hasArray()) {
@@ -179,18 +95,6 @@ public final class IndexableBinaryStringTools {
     }
   }
   
-  /**
-   * Encodes the input byte sequence into the output char sequence.  Before
-   * calling this method, ensure that the output array has sufficient
-   * capacity by calling {@link #getEncodedLength(byte[], int, int)}.
-   * 
-   * @param inputArray byte sequence to be encoded
-   * @param inputOffset initial offset into inputArray
-   * @param inputLength number of bytes in inputArray
-   * @param outputArray char sequence to store encoded result
-   * @param outputOffset initial offset into outputArray
-   * @param outputLength length of output, must be getEncodedLength
-   */
   public static void encode(byte[] inputArray, int inputOffset,
       int inputLength, char[] outputArray, int outputOffset, int outputLength) {
     assert (outputLength == getEncodedLength(inputArray, inputOffset,
@@ -233,19 +137,6 @@ public final class IndexableBinaryStringTools {
     }
   }
 
-  /**
-   * Decodes the input char sequence into the output byte sequence. Before
-   * calling this method, ensure that the output ByteBuffer has sufficient
-   * capacity by calling {@link #getDecodedLength(java.nio.CharBuffer)}.
-   * 
-   * @param input The char sequence to decode
-   * @param output Where the byte sequence decoding result will go. The limit is
-   *        set to one past the position of the final char.
-   * @throws IllegalArgumentException If either the input or the output buffer
-   *         is not backed by an array
-   * @deprecated Use {@link #decode(char[], int, int, byte[], int, int)}
-   *             instead. This method will be removed in Lucene 4.0
-   */
   @Deprecated
   public static void decode(CharBuffer input, ByteBuffer output) {
     if (input.hasArray() && output.hasArray()) {
@@ -263,19 +154,6 @@ public final class IndexableBinaryStringTools {
     }
   }
 
-  /**
-   * Decodes the input char sequence into the output byte sequence. Before
-   * calling this method, ensure that the output array has sufficient capacity
-   * by calling {@link #getDecodedLength(char[], int, int)}.
-   * 
-   * @param inputArray char sequence to be decoded
-   * @param inputOffset initial offset into inputArray
-   * @param inputLength number of chars in inputArray
-   * @param outputArray byte sequence to store encoded result
-   * @param outputOffset initial offset into outputArray
-   * @param outputLength length of output, must be
-   *        getDecodedLength(inputArray, inputOffset, inputLength)
-   */
   public static void decode(char[] inputArray, int inputOffset,
       int inputLength, byte[] outputArray, int outputOffset, int outputLength) {
     assert (outputLength == getDecodedLength(inputArray, inputOffset,
@@ -330,19 +208,6 @@ public final class IndexableBinaryStringTools {
     }
   }
 
-  /**
-   * Decodes the given char sequence, which must have been encoded by
-   * {@link #encode(java.nio.ByteBuffer)} or
-   * {@link #encode(java.nio.ByteBuffer, java.nio.CharBuffer)}.
-   * 
-   * @param input The char sequence to decode
-   * @return A byte sequence containing the decoding result. The limit is set to
-   *         one past the position of the final char.
-   * @throws IllegalArgumentException If the input buffer is not backed by an
-   *         array
-   * @deprecated Use {@link #decode(char[], int, int, byte[], int, int)}
-   *             instead. This method will be removed in Lucene 4.0
-   */
   @Deprecated
   public static ByteBuffer decode(CharBuffer input) {
     byte[] outputArray = new byte[getDecodedLength(input)];
@@ -351,17 +216,6 @@ public final class IndexableBinaryStringTools {
     return output;
   }
 
-  /**
-   * Encodes the input byte sequence.
-   * 
-   * @param input The byte sequence to encode
-   * @return A char sequence containing the encoding result. The limit is set to
-   *         one past the position of the final char.
-   * @throws IllegalArgumentException If the input buffer is not backed by an
-   *         array
-   * @deprecated Use {@link #encode(byte[], int, int, char[], int, int)}
-   *             instead. This method will be removed in Lucene 4.0
-   */
   @Deprecated
   public static CharBuffer encode(ByteBuffer input) {
     char[] outputArray = new char[getEncodedLength(input)];

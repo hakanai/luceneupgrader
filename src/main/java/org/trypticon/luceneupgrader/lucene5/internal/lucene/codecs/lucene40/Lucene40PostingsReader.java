@@ -42,9 +42,7 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRefBuilder;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 
-/** 
- * Reader for 4.0 postings format
- * @deprecated Only for reading old 4.0 segments */
+
 @Deprecated
 final class Lucene40PostingsReader extends PostingsReaderBase {
 
@@ -69,7 +67,6 @@ final class Lucene40PostingsReader extends PostingsReaderBase {
 
   // private String segment;
 
-  /** Sole constructor. */
   public Lucene40PostingsReader(Directory dir, FieldInfos fieldInfos, SegmentInfo segmentInfo, IOContext ioContext, String segmentSuffix) throws IOException {
     boolean success = false;
     IndexInput freqIn = null;
@@ -761,8 +758,6 @@ final class Lucene40PostingsReader extends PostingsReaderBase {
       return -1;
     }
 
-    /** Returns the payload at this position, or null if no
-     *  payload was indexed. */
     @Override
     public BytesRef getPayload() throws IOException {
       return null;
@@ -1028,8 +1023,6 @@ final class Lucene40PostingsReader extends PostingsReaderBase {
       return storeOffsets ? startOffset + offsetLength : -1;
     }
 
-    /** Returns the payload at this position, or null if no
-     *  payload was indexed. */
     @Override
     public BytesRef getPayload() throws IOException {
       if (storePayloads) {

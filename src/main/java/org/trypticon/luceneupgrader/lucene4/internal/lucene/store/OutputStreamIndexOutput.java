@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -23,7 +22,6 @@ import java.io.OutputStream;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 
-/** Implementation class for buffered {@link IndexOutput} that writes to an {@link OutputStream}. */
 public class OutputStreamIndexOutput extends IndexOutput {
 
   private final CRC32 crc = new CRC32();
@@ -31,11 +29,6 @@ public class OutputStreamIndexOutput extends IndexOutput {
   
   private long bytesWritten = 0L;
 
-  /**
-   * Creates a new {@link OutputStreamIndexOutput} with the given buffer size. 
-   * @param bufferSize the buffer size in bytes used to buffer writes internally.
-   * @throws IllegalArgumentException if the given buffer size is less or equal to <tt>0</tt>
-   */
   public OutputStreamIndexOutput(OutputStream out, int bufferSize) {
     this.os = new BufferedOutputStream(new CheckedOutputStream(out, crc), bufferSize);
   }

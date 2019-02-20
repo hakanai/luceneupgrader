@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -49,12 +48,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.Growable
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedLongValues;
 
-/**
- * Expert: The default cache implementation, storing all values in memory.
- * A WeakHashMap is used for storage.
- *
- * @since   lucene 1.4
- */
 class FieldCacheImpl implements FieldCache {
 
   private Map<Class<?>,Cache> caches;
@@ -144,7 +137,6 @@ class FieldCacheImpl implements FieldCache {
     }
   }
 
-  /** Expert: Internal cache. */
   abstract static class Cache {
 
     Cache(FieldCacheImpl wrapper) {
@@ -158,15 +150,12 @@ class FieldCacheImpl implements FieldCache {
     protected abstract Accountable createValue(AtomicReader reader, CacheKey key, boolean setDocsWithField)
         throws IOException;
 
-    /** Remove this reader from the cache, if present. */
     public void purgeByCacheKey(Object coreCacheKey) {
       synchronized(readerCache) {
         readerCache.remove(coreCacheKey);
       }
     }
 
-    /** Sets the key to the value for the provided reader;
-     *  if the key is already set then this doesn't change it. */
     public void put(AtomicReader reader, CacheKey key, Accountable value) {
       final Object readerKey = reader.getCoreCacheKey();
       synchronized (readerCache) {
@@ -249,18 +238,15 @@ class FieldCacheImpl implements FieldCache {
     }
   }
 
-  /** Expert: Every composite-key in the internal cache is of this type. */
   static class CacheKey {
     final String field;        // which Field
     final Object custom;       // which custom comparator or parser
 
-    /** Creates one of these objects for a custom comparator/parser. */
     CacheKey(String field, Object custom) {
       this.field = field;
       this.custom = custom;
     }
 
-    /** Two of these are equal iff they reference the same field and type. */
     @Override
     public boolean equals (Object o) {
       if (o instanceof CacheKey) {
@@ -276,7 +262,6 @@ class FieldCacheImpl implements FieldCache {
       return false;
     }
 
-    /** Composes a hashcode based on the field and type. */
     @Override
     public int hashCode() {
       return field.hashCode() ^ (custom==null ? 0 : custom.hashCode());

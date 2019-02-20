@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.util.Comparator;
 import java.util.Collection;
@@ -26,15 +25,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Document;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Fieldable;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
-
-/**
- * Gathers all Fieldables for a document under the same
- * name, updates FieldInfos, and calls per-field consumers
- * to process field by field.
- *
- * Currently, only a single thread visits the fields,
- * sequentially, for processing.
- */
 
 final class DocFieldProcessorPerThread extends DocConsumerPerThread {
 
@@ -120,9 +110,6 @@ final class DocFieldProcessorPerThread extends DocConsumerPerThread {
     assert fields.size() == totalFieldCount;
     return fields;
   }
-
-  /** If there are fields we've seen but did not see again
-   *  in the last run, then free them up. */
 
   void trimFields(SegmentWriteState state) {
 

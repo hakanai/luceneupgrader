@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Document;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Fieldable;
@@ -28,11 +27,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper;
 import java.io.IOException;
 import java.util.*;
 
-/** 
- * Collection of {@link FieldInfo}s (accessible by number or by name).
- *
- * @lucene.experimental
- */
 public final class FieldInfos implements Iterable<FieldInfo> {
 
   // Used internally (ie not written to *.fnm files) for pre-2.9 files
@@ -60,13 +54,6 @@ public final class FieldInfos implements Iterable<FieldInfo> {
 
   public FieldInfos() { }
 
-  /**
-   * Construct a FieldInfos object using the directory and the name of the file
-   * IndexInput
-   * @param d The directory to open the IndexInput from
-   * @param name The name of the file to open the IndexInput from in the Directory
-   * @throws IOException
-   */
   public FieldInfos(Directory d, String name) throws IOException {
     IndexInput input = d.openInput(name);
     try {
@@ -104,9 +91,6 @@ public final class FieldInfos implements Iterable<FieldInfo> {
     }
   }
 
-  /**
-   * Returns a deep clone of this FieldInfos instance.
-   */
   @Override
   synchronized public Object clone() {
     FieldInfos fis = new FieldInfos();
@@ -119,7 +103,6 @@ public final class FieldInfos implements Iterable<FieldInfo> {
     return fis;
   }
 
-  /** Adds field info for a Document. */
   synchronized public void add(Document doc) {
     List<Fieldable> fields = doc.getFields();
     for (Fieldable field : fields) {
@@ -128,7 +111,6 @@ public final class FieldInfos implements Iterable<FieldInfo> {
     }
   }
 
-  /** Returns true if any fields do not omitTermFreqAndPositions */
   public boolean hasProx() {
     final int numFields = byNumber.size();
     for(int i=0;i<numFields;i++) {
@@ -140,56 +122,22 @@ public final class FieldInfos implements Iterable<FieldInfo> {
     return false;
   }
   
-  /**
-   * Calls 5 parameter add with false for all TermVector parameters.
-   * 
-   * @param name The name of the Fieldable
-   * @param isIndexed true if the field is indexed
-   * @see #add(String, boolean, boolean)
-   */
   synchronized public void add(String name, boolean isIndexed) {
     add(name, isIndexed, false, false);
   }
 
-  /**
-   * Calls 5 parameter add with false for term vector positions and offsets.
-   * 
-   * @param name The name of the field
-   * @param isIndexed  true if the field is indexed
-   * @param storeTermVector true if the term vector should be stored
-   */
   synchronized public void add(String name, boolean isIndexed, boolean storeTermVector){
     add(name, isIndexed, storeTermVector, false);
   }
   
-  /** If the field is not yet known, adds it. If it is known, checks to make
-   *  sure that the isIndexed flag is the same as was given previously for this
-   *  field. If not - marks it as being indexed.  Same goes for the TermVector
-   * parameters.
-   *
-   * @param name The name of the field
-   * @param isIndexed true if the field is indexed
-   * @param storeTermVector true if the term vector should be stored
-   * @param omitNorms true if the norms for the indexed field should be omitted
-   */
+
   synchronized public void add(String name, boolean isIndexed, boolean storeTermVector,
                                boolean omitNorms) {
     add(name, isIndexed, storeTermVector,
         omitNorms, false, IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);
   }
   
-  /** If the field is not yet known, adds it. If it is known, checks to make
-   *  sure that the isIndexed flag is the same as was given previously for this
-   *  field. If not - marks it as being indexed.  Same goes for the TermVector
-   * parameters.
-   *
-   * @param name The name of the field
-   * @param isIndexed true if the field is indexed
-   * @param storeTermVector true if the term vector should be stored
-   * @param omitNorms true if the norms for the indexed field should be omitted
-   * @param storePayloads true if payloads should be stored for this field
-   * @param indexOptions if term freqs should be omitted for this field
-   */
+
   synchronized public FieldInfo add(String name, boolean isIndexed, boolean storeTermVector,
                        boolean omitNorms, boolean storePayloads, IndexOptions indexOptions) {
     FieldInfo fi = fieldInfo(name);
@@ -218,12 +166,6 @@ public final class FieldInfos implements Iterable<FieldInfo> {
     return fi;
   }
 
-  /**
-   * lookup the number of a field by name.
-   * 
-   * @param fieldName field's name
-   * @return number of field, or -1 if it does not exist.
-   */
   public int fieldNumber(String fieldName) {
     FieldInfo fi = fieldInfo(fieldName);
     return (fi != null) ? fi.number : -1;
@@ -233,24 +175,11 @@ public final class FieldInfos implements Iterable<FieldInfo> {
     return byName.get(fieldName);
   }
 
-  /**
-   * Return the fieldName identified by its number.
-   * 
-   * @param fieldNumber
-   * @return the fieldName or an empty string when the field
-   * with the given number doesn't exist.
-   */  
   public String fieldName(int fieldNumber) {
 	FieldInfo fi = fieldInfo(fieldNumber);
 	return (fi != null) ? fi.name : "";
   }
 
-  /**
-   * Return the fieldinfo object referenced by the fieldNumber.
-   * @param fieldNumber
-   * @return the FieldInfo object or null when the given fieldNumber
-   * doesn't exist.
-   */  
   public FieldInfo fieldInfo(int fieldNumber) {
     return (fieldNumber >= 0) ? byNumber.get(fieldNumber) : null;
   }
@@ -259,16 +188,10 @@ public final class FieldInfos implements Iterable<FieldInfo> {
     return byNumber.iterator();
   }
 
-  /**
-   * @return number of fields
-   */
   public int size() {
     return byNumber.size();
   }
 
-  /**
-   * @return true if at least one field has any vectors
-   */
   public boolean hasVectors() {
     boolean hasVectors = false;
     for (int i = 0; i < size(); i++) {

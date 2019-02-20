@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
 
 import java.io.IOException;
 
@@ -26,10 +25,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder;
 
-/**
- * @lucene.experimental
- * @deprecated (4.0)
- */
 @Deprecated
 final class SegmentTermPositions
 extends SegmentTermDocs  {
@@ -134,7 +129,6 @@ extends SegmentTermDocs  {
   }
 
 
-  /** Called by super.skipTo(). */
   @Override
   protected void skipProx(long proxPointer, int payloadLength) throws IOException {
     // we save the pointer, we might have to skip there lazily

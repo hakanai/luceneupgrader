@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst;
 
 import java.io.IOException;
 
@@ -23,13 +22,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataOutput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IntsRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
-
-/**
- * An FST {@link Outputs} implementation where each output
- * is a sequence of ints.
- *
- * @lucene.experimental
- */
 
 public final class IntSequenceOutputs extends Outputs<IntsRef> {
 

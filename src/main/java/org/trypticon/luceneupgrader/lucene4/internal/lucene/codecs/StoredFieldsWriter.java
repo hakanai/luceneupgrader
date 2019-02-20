@@ -1,21 +1,5 @@
 package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
 
-/**
- * Copyright 2004 The Apache Software Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -27,59 +11,24 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.IndexableField
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.MergeState;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 
-/**
- * Codec API for writing stored fields:
- * <p>
- * <ol>
- *   <li>For every document, {@link #startDocument()} is called,
- *       informing the Codec that a new document has started.
- *   <li>{@link #writeField(FieldInfo, IndexableField)} is called for 
- *       each field in the document.
- *   <li>After all documents have been written, {@link #finish(FieldInfos, int)} 
- *       is called for verification/sanity-checks.
- *   <li>Finally the writer is closed ({@link #close()})
- * </ol>
- * 
- * @lucene.experimental
- */
 public abstract class StoredFieldsWriter implements Closeable {
   
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected StoredFieldsWriter() {
   }
 
-  /** Called before writing the stored fields of the document.
-   *  {@link #writeField(FieldInfo, IndexableField)} will be called
-   *  for each stored field. Note that this is
-   *  called even if the document has no stored fields. */
+
   public abstract void startDocument() throws IOException;
 
-  /** Called when a document and all its fields have been added. */
   public void finishDocument() throws IOException {}
 
-  /** Writes a single stored field. */
   public abstract void writeField(FieldInfo info, IndexableField field) throws IOException;
 
-  /** Aborts writing entirely, implementation should remove
-   *  any partially-written files, etc. */
   public abstract void abort();
   
-  /** Called before {@link #close()}, passing in the number
-   *  of documents that were written. Note that this is 
-   *  intentionally redundant (equivalent to the number of
-   *  calls to {@link #startDocument()}, but a Codec should
-   *  check that this is the case to detect the JRE bug described 
-   *  in LUCENE-1282. */
+
   public abstract void finish(FieldInfos fis, int numDocs) throws IOException;
   
-  /** Merges in the stored fields from the readers in 
-   *  <code>mergeState</code>. The default implementation skips
-   *  over deleted documents, and uses {@link #startDocument()},
-   *  {@link #writeField(FieldInfo, IndexableField)}, and {@link #finish(FieldInfos, int)},
-   *  returning the number of documents that were written.
-   *  Implementations can override this method for more sophisticated
-   *  merging (bulk-byte copying, etc). */
+
   public int merge(MergeState mergeState) throws IOException {
     int docCount = 0;
     for (AtomicReader reader : mergeState.readers) {
@@ -106,7 +55,6 @@ public abstract class StoredFieldsWriter implements Closeable {
     return docCount;
   }
   
-  /** sugar method for startDocument() + writeField() for every stored field in the document */
   protected final void addDocument(Iterable<? extends IndexableField> doc, FieldInfos fieldInfos) throws IOException {
     startDocument();
     for (IndexableField field : doc) {

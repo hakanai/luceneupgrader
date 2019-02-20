@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene49;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene49;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene49;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -49,9 +48,6 @@ import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene49.Lucene49NormsConsumer.TABLE_COMPRESSED;
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene49.Lucene49NormsConsumer.UNCOMPRESSED;
 
-/**
- * Reader for {@link Lucene49NormsFormat}
- */
 class Lucene49NormsProducer extends DocValuesProducer {
   // metadata maps (just file pointers and minimal stuff)
   private final Map<Integer,NormsEntry> norms = new HashMap<>();

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,26 +13,19 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.util.Collections;
 import java.util.List;
 
-/**
- * {@link IndexReaderContext} for {@link AtomicReader} instances.
- */
 public final class AtomicReaderContext extends IndexReaderContext {
-  /** The readers ord in the top-level's leaves array */
   public final int ord;
-  /** The readers absolute doc base */
   public final int docBase;
   
   private final AtomicReader reader;
   private final List<AtomicReaderContext> leaves;
   
-  /**
-   * Creates a new {@link AtomicReaderContext} 
-   */    
   AtomicReaderContext(CompositeReaderContext parent, AtomicReader reader,
       int ord, int docBase, int leafOrd, int leafDocBase) {
     super(parent, ord, docBase);

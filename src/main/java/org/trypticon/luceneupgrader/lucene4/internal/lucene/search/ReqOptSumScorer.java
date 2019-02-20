@@ -1,4 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,27 +14,18 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/** A Scorer for queries with a required part and an optional part.
- * Delays skipTo() on the optional part until a score() is needed.
- * <br>
- * This <code>Scorer</code> implements {@link Scorer#advance(int)}.
- */
 class ReqOptSumScorer extends Scorer {
-  /** The scorers passed from the constructor.
-   * These are set to null as soon as their next() or skipTo() returns false.
-   */
+
   protected Scorer reqScorer;
   protected Scorer optScorer;
 
-  /** Construct a <code>ReqOptScorer</code>.
-   * @param reqScorer The required scorer. This must match.
-   * @param optScorer The optional scorer. This is used for scoring only.
-   */
+
   public ReqOptSumScorer(
       Scorer reqScorer,
       Scorer optScorer)
@@ -62,11 +52,7 @@ class ReqOptSumScorer extends Scorer {
     return reqScorer.docID();
   }
   
-  /** Returns the score of the current document matching the query.
-   * Initially invalid, until {@link #nextDoc()} is called the first time.
-   * @return The score of the required scorer, eventually increased by the score
-   * of the optional scorer when it also matches the current document.
-   */
+
   @Override
   public float score() throws IOException {
     // TODO: sum into a double and cast to float if we ever send required clauses to BS1

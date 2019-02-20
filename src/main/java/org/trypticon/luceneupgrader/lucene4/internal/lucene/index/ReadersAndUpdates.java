@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -138,7 +137,6 @@ class ReadersAndUpdates {
     return true;
   }
 
-  /** Returns a {@link SegmentReader}. */
   public SegmentReader getReader(IOContext context) throws IOException {
     if (reader == null) {
       // We steal returned ref:
@@ -230,10 +228,6 @@ class ReadersAndUpdates {
     decRef();
   }
 
-  /**
-   * Returns a ref to a clone. NOTE: you should decRef() the reader when you're
-   * done (ie do not call close()).
-   */
   public synchronized SegmentReader getReadOnlyClone(IOContext context) throws IOException {
     if (reader == null) {
       getReader(context).decRef();
@@ -649,10 +643,6 @@ class ReadersAndUpdates {
     }
   }
 
-  /**
-   * Returns a reader for merge. This method applies field updates if there are
-   * any and marks that this segment is currently merging.
-   */
   synchronized SegmentReader getReaderForMerge(IOContext context) throws IOException {
     assert Thread.holdsLock(writer);
     // must execute these two statements as atomic operation, otherwise we
@@ -664,16 +654,11 @@ class ReadersAndUpdates {
     return getReader(context);
   }
   
-  /**
-   * Drops all merging updates. Called from IndexWriter after this segment
-   * finished merging (whether successfully or not).
-   */
   public synchronized void dropMergingUpdates() {
     mergingDVUpdates.clear();
     isMerging = false;
   }
   
-  /** Returns updates that came in while this segment was merging. */
   public synchronized Map<String,DocValuesFieldUpdates> getMergingFieldUpdates() {
     return mergingDVUpdates;
   }

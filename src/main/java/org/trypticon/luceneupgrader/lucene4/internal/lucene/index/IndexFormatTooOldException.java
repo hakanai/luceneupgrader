@@ -13,48 +13,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataInput;
 
-/**
- * This exception is thrown when Lucene detects
- * an index that is too old for this Lucene version
- */
 public class IndexFormatTooOldException extends CorruptIndexException {
 
-  /** Creates an {@code IndexFormatTooOldException}.
-   *
-   *  @param resourceDesc describes the file that was too old
-   *  @param version the version of the file that was too old
-   * 
-   * @lucene.internal */
+
   public IndexFormatTooOldException(String resourceDesc, String version) {
     super("Format version is not supported (resource: " + resourceDesc + "): " +
         version + ". This version of Lucene only supports indexes created with release 3.0 and later.");
     assert resourceDesc != null;
   }
 
-  /** Creates an {@code IndexFormatTooOldException}.
-   *
-   *  @param in the open file that's too old
-   *  @param version the version of the file that was too old
-   * 
-   * @lucene.internal */
+
   public IndexFormatTooOldException(DataInput in, String version) {
     this(in.toString(), version);
   }
   
-  /** Creates an {@code IndexFormatTooOldException}.
-   *
-   *  @param resourceDesc describes the file that was too old
-   *  @param version the version of the file that was too old
-   *  @param minVersion the minimum version accepted
-   *  @param maxVersion the maxium version accepted
-   * 
-   * @lucene.internal */
+
   public IndexFormatTooOldException(String resourceDesc, int version, int minVersion, int maxVersion) {
     super("Format version is not supported (resource: " + resourceDesc + "): " +
         version + " (needs to be between " + minVersion + " and " + maxVersion +
@@ -62,14 +40,7 @@ public class IndexFormatTooOldException extends CorruptIndexException {
     assert resourceDesc != null;
   }
 
-  /** Creates an {@code IndexFormatTooOldException}.
-   *
-   *  @param in the open file that's too old
-   *  @param version the version of the file that was too old
-   *  @param minVersion the minimum version accepted
-   *  @param maxVersion the maxium version accepted
-   *
-   * @lucene.internal */
+
   public IndexFormatTooOldException(DataInput in, int version, int minVersion, int maxVersion) {
     this(in.toString(), version, minVersion, maxVersion);
   }

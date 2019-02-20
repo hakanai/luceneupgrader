@@ -32,26 +32,10 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRefHash.Di
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRefHash;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimator;
 
-/** 
- * Base rewrite method that translates each term into a query, and keeps
- * the scores as computed by the query.
- * <p>
- * @lucene.internal Only public to be accessible by spans package. */
+
 public abstract class ScoringRewrite<B> extends TermCollectingRewrite<B> {
 
-  /** A rewrite method that first translates each term into
-   *  {@link BooleanClause.Occur#SHOULD} clause in a
-   *  BooleanQuery, and keeps the scores as computed by the
-   *  query.  Note that typically such scores are
-   *  meaningless to the user, and require non-trivial CPU
-   *  to compute, so it's almost always better to use {@link
-   *  MultiTermQuery#CONSTANT_SCORE_REWRITE} instead.
-   *
-   *  <p><b>NOTE</b>: This rewrite method will hit {@link
-   *  BooleanQuery.TooManyClauses} if the number of terms
-   *  exceeds {@link BooleanQuery#getMaxClauseCount}.
-   *
-   *  @see MultiTermQuery#setRewriteMethod */
+
   public final static ScoringRewrite<BooleanQuery.Builder> SCORING_BOOLEAN_REWRITE = new ScoringRewrite<BooleanQuery.Builder>() {
     @Override
     protected BooleanQuery.Builder getTopLevelBuilder() {
@@ -78,16 +62,7 @@ public abstract class ScoringRewrite<B> extends TermCollectingRewrite<B> {
     }
   };
   
-  /** Like {@link #SCORING_BOOLEAN_REWRITE} except
-   *  scores are not computed.  Instead, each matching
-   *  document receives a constant score equal to the
-   *  query's boost.
-   * 
-   *  <p><b>NOTE</b>: This rewrite method will hit {@link
-   *  BooleanQuery.TooManyClauses} if the number of terms
-   *  exceeds {@link BooleanQuery#getMaxClauseCount}.
-   *
-   *  @see MultiTermQuery#setRewriteMethod */
+
   public final static RewriteMethod CONSTANT_SCORE_BOOLEAN_REWRITE = new RewriteMethod() {
     @Override
     public Query rewrite(IndexReader reader, MultiTermQuery query) throws IOException {
@@ -97,8 +72,6 @@ public abstract class ScoringRewrite<B> extends TermCollectingRewrite<B> {
     }
   };
 
-  /** This method is called after every new term to check if the number of max clauses
-   * (e.g. in BooleanQuery) is not exceeded. Throws the corresponding {@link RuntimeException}. */
   protected abstract void checkMaxClauseCount(int count) throws IOException;
   
   @Override
@@ -155,7 +128,6 @@ public abstract class ScoringRewrite<B> extends TermCollectingRewrite<B> {
     }
   }
   
-  /** Special implementation of BytesStartArray that keeps parallel arrays for boost and docFreq */
   static final class TermFreqBoostByteStart extends DirectBytesStartArray  {
     float[] boost;
     TermContext[] termState;

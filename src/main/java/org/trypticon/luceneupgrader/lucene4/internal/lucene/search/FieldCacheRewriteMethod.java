@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -29,12 +28,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.LongBitSet;
 
-/**
- * Rewrites MultiTermQueries into a filter, using the FieldCache for term enumeration.
- * <p>
- * This can be used to perform these queries against an unindexed docvalues field.
- * @lucene.experimental
- */
 public final class FieldCacheRewriteMethod extends MultiTermQuery.RewriteMethod {
   
   @Override
@@ -48,9 +41,6 @@ public final class FieldCacheRewriteMethod extends MultiTermQuery.RewriteMethod 
     
     protected final MultiTermQuery query;
     
-    /**
-     * Wrap a {@link MultiTermQuery} as a Filter.
-     */
     protected MultiTermQueryFieldCacheWrapperFilter(MultiTermQuery query) {
       this.query = query;
     }
@@ -76,13 +66,8 @@ public final class FieldCacheRewriteMethod extends MultiTermQuery.RewriteMethod 
       return query.hashCode();
     }
     
-    /** Returns the field name for this query */
     public final String getField() { return query.getField(); }
     
-    /**
-     * Returns a DocIdSet with documents that should be permitted in search
-     * results.
-     */
     @Override
     public DocIdSet getDocIdSet(AtomicReaderContext context, final Bits acceptDocs) throws IOException {
       final SortedDocValues fcsi = FieldCache.DEFAULT.getTermsIndex(context.reader(), query.field);

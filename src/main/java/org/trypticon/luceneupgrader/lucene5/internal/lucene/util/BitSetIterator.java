@@ -19,11 +19,6 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.util;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.DocIdSetIterator;
 
-/**
- * A {@link DocIdSetIterator} which iterates over set bits in a
- * bit set.
- * @lucene.internal
- */
 public class BitSetIterator extends DocIdSetIterator {
 
   private static <T extends BitSet> T getBitSet(DocIdSetIterator iterator, Class<? extends T> clazz) {
@@ -37,12 +32,10 @@ public class BitSetIterator extends DocIdSetIterator {
     return null;
   }
 
-  /** If the provided iterator wraps a {@link FixedBitSet}, returns it, otherwise returns null. */
   public static FixedBitSet getFixedBitSetOrNull(DocIdSetIterator iterator) {
     return getBitSet(iterator, FixedBitSet.class);
   }
 
-  /** If the provided iterator wraps a {@link SparseFixedBitSet}, returns it, otherwise returns null. */
   public static SparseFixedBitSet getSparseFixedBitSetOrNull(DocIdSetIterator iterator) {
     return getBitSet(iterator, SparseFixedBitSet.class);
   }
@@ -52,7 +45,6 @@ public class BitSetIterator extends DocIdSetIterator {
   private final long cost;
   private int doc = -1;
 
-  /** Sole constructor. */
   public BitSetIterator(BitSet bits, long cost) {
     this.bits = bits;
     this.length = bits.length();

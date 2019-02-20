@@ -25,15 +25,9 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene5.internal.lucene.util.automaton;
 
-/**
- * Pair of states.
- * 
- * @lucene.experimental
- */
 public class StatePair {
   int s;
   int s1;
@@ -45,25 +39,12 @@ public class StatePair {
     this.s2 = s2;
   }
   
-  /**
-   * Constructs a new state pair.
-   * 
-   * @param s1 first state
-   * @param s2 second state
-   */
   public StatePair(int s1, int s2) {
     this.s1 = s1;
     this.s2 = s2;
     this.s = -1;
   }
   
-  /**
-   * Checks for equality.
-   * 
-   * @param obj object to compare with
-   * @return true if <tt>obj</tt> represents the same pair of states as this
-   *         pair
-   */
   @Override
   public boolean equals(Object obj) {
     if (obj instanceof StatePair) {
@@ -72,11 +53,6 @@ public class StatePair {
     } else return false;
   }
   
-  /**
-   * Returns hash code.
-   * 
-   * @return hash code
-   */
   @Override
   public int hashCode() {
     return s1 ^ s2;

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattributes;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,16 +13,15 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattri
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattributes;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeImpl;
 
-/** Default implementation of {@link OffsetAttribute}. */
 public class OffsetAttributeImpl extends AttributeImpl implements OffsetAttribute, Cloneable {
   private int startOffset;
   private int endOffset;
   
-  /** Initialize this attribute with startOffset and endOffset of 0. */
   public OffsetAttributeImpl() {}
 
   @Override

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,35 +13,18 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.Explanation;
 
-/**
- * This class acts as the base class for the implementations of the term
- * frequency normalization methods in the DFR framework.
- * 
- * @see DFRSimilarity
- * @lucene.experimental
- */
 public abstract class Normalization {
   
-  /**
-   * Sole constructor. (For invocation by subclass 
-   * constructors, typically implicit.)
-   */
   public Normalization() {}
 
-  /** Returns the normalized term frequency.
-   * @param len the field length. */
   public abstract float tfn(BasicStats stats, float tf, float len);
   
-  /** Returns an explanation for the normalized term frequency.
-   * <p>The default normalization methods use the field length of the document
-   * and the average field length to compute the normalized term frequency.
-   * This method provides a generic explanation for such methods.
-   * Subclasses that use other statistics must override this method.</p>
-   */
+
   public Explanation explain(BasicStats stats, float tf, float len) {
     Explanation result = new Explanation();
     result.setDescription(getClass().getSimpleName() + ", computed from: ");
@@ -55,10 +36,8 @@ public abstract class Normalization {
     return result;
   }
 
-  /** Implementation used when there is no normalization. */
   public static final class NoNormalization extends Normalization {
     
-    /** Sole constructor: parameter-free */
     public NoNormalization() {}
     
     @Override
@@ -77,10 +56,6 @@ public abstract class Normalization {
     }
   }
   
-  /**
-   * Subclasses must override this method to return the code of the
-   * normalization formula. Refer to the original paper for the list. 
-   */
   @Override
   public abstract String toString();
 }

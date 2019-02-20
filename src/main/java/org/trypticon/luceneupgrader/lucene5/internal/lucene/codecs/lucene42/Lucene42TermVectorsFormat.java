@@ -27,10 +27,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentInfo;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IOContext;
 
-/**
- * Lucene 4.2 {@link TermVectorsFormat term vectors format}.
- * @deprecated only for reading old segments
- */
 @Deprecated
 public class Lucene42TermVectorsFormat extends TermVectorsFormat {
   // this is actually what 4.2 TVF wrote!

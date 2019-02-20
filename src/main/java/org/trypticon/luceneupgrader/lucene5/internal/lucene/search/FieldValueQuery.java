@@ -25,16 +25,10 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LeafReaderCont
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ToStringUtils;
 
-/**
- * A {@link Query} that matches documents that have a value for a given field
- * as reported by {@link LeafReader#getDocsWithField(String)}.
- */
 public final class FieldValueQuery extends Query {
 
   private final String field;
 
-  /** Create a query that will match that have a value for the given
-   *  {@code field}. */
   public FieldValueQuery(String field) {
     this.field = Objects.requireNonNull(field);
   }

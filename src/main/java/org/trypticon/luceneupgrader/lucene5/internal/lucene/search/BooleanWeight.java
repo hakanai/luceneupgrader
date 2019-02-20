@@ -30,12 +30,7 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.BooleanClause
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.similarities.Similarity;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 
-/**
- * Expert: the Weight for BooleanQuery, used to
- * normalize, score and explain these queries.
- */
 final class BooleanWeight extends Weight {
-  /** The Similarity implementation. */
   final Similarity similarity;
   final BooleanQuery query;
   
@@ -286,8 +281,6 @@ final class BooleanWeight extends Weight {
     return scorer;
   }
 
-  /** Try to build a boolean scorer for this weight. Returns null if {@link BooleanScorer}
-   *  cannot be used. */
   BulkScorer booleanScorer(LeafReaderContext context) throws IOException {
     final int numOptionalClauses = query.getClauses(Occur.SHOULD).size();
     final int numRequiredClauses = query.getClauses(Occur.MUST).size() + query.getClauses(Occur.FILTER).size();
@@ -473,9 +466,7 @@ final class BooleanWeight extends Weight {
     }
   }
 
-  /** Create a new scorer for the given required clauses. Note that
-   *  {@code requiredScoring} is a subset of {@code required} containing
-   *  required clauses that should participate in scoring. */
+
   private Scorer req(List<Scorer> required, List<Scorer> requiredScoring, boolean disableCoord) {
     if (required.size() == 1) {
       Scorer req = required.get(0);

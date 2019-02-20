@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,12 +13,9 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
-/**
- * This exception is thrown when there is an attempt to
- * access something that has already been closed.
- */
 public class AlreadyClosedException extends IllegalStateException {
   public AlreadyClosedException(String message) {
     super(message);

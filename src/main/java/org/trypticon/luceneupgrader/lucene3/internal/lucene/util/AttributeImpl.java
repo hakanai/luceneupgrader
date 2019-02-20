@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -25,52 +24,15 @@ import java.util.LinkedList;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.CharTermAttributeImpl; // deprecated
 
-/**
- * Base class for Attributes that can be added to a 
- * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.util.AttributeSource}.
- * <p>
- * Attributes are used to add data in a dynamic, yet type-safe way to a source
- * of usually streamed objects, e. g. a {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.TokenStream}.
- */
-public abstract class AttributeImpl implements Cloneable, Serializable, Attribute {  
-  /**
-   * Clears the values in this AttributeImpl and resets it to its 
-   * default value. If this implementation implements more than one Attribute interface
-   * it clears all.
-   */
+public abstract class AttributeImpl implements Cloneable, Serializable, Attribute {
   public abstract void clear();
   
-  /**
-   * Returns a string representation of the object. In general, the {@code toString} method
-   * returns a string that &quot;textually represents&quot; this object.
-   *
-   * <p><b>WARNING:</b> For backwards compatibility this method is implemented as
-   * {@code return reflectAsString(false)}. In Lucene 4.0 this default implementation
-   * will be removed. The reason for this is the problem of
-   * {@link CharTermAttributeImpl#toString} that must return a string representation
-   * of the term's char sequence.
-   *
-   * <p>It is recommeneded to use {@link #reflectAsString} or {@link #reflectWith}
-   * to get a well-defined output of AttributeImpl's internals.
-   */
   // TODO: @deprecated remove this method in 4.0
   @Override
   public String toString() {
     return reflectAsString(false);
   }
   
-  /**
-   * This method returns the current attribute values as a string in the following format
-   * by calling the {@link #reflectWith(AttributeReflector)} method:
-   * 
-   * <ul>
-   * <li><em>iff {@code prependAttClass=true}:</em> {@code "AttributeClass#key=value,AttributeClass#key=value"}
-   * <li><em>iff {@code prependAttClass=false}:</em> {@code "key=value,key=value"}
-   * </ul>
-   *
-   * @see #reflectWith(AttributeReflector)
-   * @see #toString()
-   */
   public final String reflectAsString(final boolean prependAttClass) {
     final StringBuilder buffer = new StringBuilder();
     reflectWith(new AttributeReflector() {
@@ -87,26 +49,13 @@ public abstract class AttributeImpl implements Cloneable, Serializable, Attribut
     return buffer.toString();
   }
   
-  /**
-   * @deprecated this will be removed in Lucene 4.0
-   */
   @Deprecated
   private static final VirtualMethod<AttributeImpl> toStringMethod =
     new VirtualMethod<AttributeImpl>(AttributeImpl.class, "toString");
     
-  /**
-   * When {@code true} (default), if a subclass overrides {@link #toString()},
-   * its output is parsed by {@link #reflectWith} and used for attribute reflection.
-   * This is added to enable attribute implementations from Lucene 2.9 or 3.0 to
-   * work correctly with reflection.
-   * @deprecated this will be removed in Lucene 4.0.
-   */
   @Deprecated
   protected boolean enableBackwards = true;
 
-  /**
-   * @deprecated this will be removed in Lucene 4.0
-   */
   @Deprecated
   private boolean assertExternalClass(Class<? extends AttributeImpl> clazz) {
     final String name = clazz.getName();
@@ -114,30 +63,6 @@ public abstract class AttributeImpl implements Cloneable, Serializable, Attribut
       || name.equals("org.apache.lucene.util.TestAttributeSource$TestAttributeImpl");
   }
 
-  /**
-   * This method is for introspection of attributes, it should simply
-   * add the key/values this attribute holds to the given {@link AttributeReflector}.
-   *
-   * <p>The default implementation calls {@link AttributeReflector#reflect} for all
-   * non-static fields from the implementing class, using the field name as key
-   * and the field value as value. The Attribute class is also determined by reflection.
-   * Please note that the default implementation can only handle single-Attribute
-   * implementations.
-   *
-   * <p>Custom implementations look like this (e.g. for a combined attribute implementation):
-   * <pre>
-   *   public void reflectWith(AttributeReflector reflector) {
-   *     reflector.reflect(CharTermAttribute.class, "term", term());
-   *     reflector.reflect(PositionIncrementAttribute.class, "positionIncrement", getPositionIncrement());
-   *   }
-   * </pre>
-   *
-   * <p>If you implement this method, make sure that for each invocation, the same set of {@link Attribute}
-   * interfaces and keys are passed to {@link AttributeReflector#reflect} in the same order, but possibly
-   * different values. So don't automatically exclude e.g. {@code null} properties!
-   *
-   * @see #reflectAsString(boolean)
-   */
   public void reflectWith(AttributeReflector reflector) {
     final Class<? extends AttributeImpl> clazz = this.getClass();
     final LinkedList<WeakReference<Class<? extends Attribute>>> interfaces = AttributeSource.getAttributeInterfaces(clazz);
@@ -178,17 +103,8 @@ public abstract class AttributeImpl implements Cloneable, Serializable, Attribut
     }
   }
   
-  /**
-   * Copies the values from this Attribute into the passed-in
-   * target attribute. The target implementation must support all the
-   * Attributes this implementation supports.
-   */
   public abstract void copyTo(AttributeImpl target);
     
-  /**
-   * Shallow clone. Subclasses must override this if they 
-   * need to clone any members deeply,
-   */
   @Override
   public Object clone() {
     Object clone = null;

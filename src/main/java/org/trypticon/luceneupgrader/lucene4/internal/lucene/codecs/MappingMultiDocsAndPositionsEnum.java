@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.DocsAndPositionsEnum;
@@ -24,13 +23,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.MultiDocsAndPo
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.MultiDocsAndPositionsEnum.EnumWithSlice;
 
 import java.io.IOException;
-
-/**
- * Exposes flex API, merged from flex API of sub-segments,
- * remapping docIDs (this is used for segment merging).
- *
- * @lucene.experimental
- */
 
 public final class MappingMultiDocsAndPositionsEnum extends DocsAndPositionsEnum {
   private MultiDocsAndPositionsEnum.EnumWithSlice[] subs;
@@ -42,7 +34,6 @@ public final class MappingMultiDocsAndPositionsEnum extends DocsAndPositionsEnum
   int doc = -1;
   private MergeState mergeState;
 
-  /** Sole constructor. */
   public MappingMultiDocsAndPositionsEnum() {
   }
 
@@ -54,19 +45,14 @@ public final class MappingMultiDocsAndPositionsEnum extends DocsAndPositionsEnum
     return this;
   }
 
-  /** Sets the {@link MergeState}, which is used to re-map
-   *  document IDs. */
   public void setMergeState(MergeState mergeState) {
     this.mergeState = mergeState;
   }
   
-  /** How many sub-readers we are merging.
-   *  @see #getSubs */
   public int getNumSubs() {
     return numSubs;
   }
 
-  /** Returns sub-readers we are merging. */
   public EnumWithSlice[] getSubs() {
     return subs;
   }

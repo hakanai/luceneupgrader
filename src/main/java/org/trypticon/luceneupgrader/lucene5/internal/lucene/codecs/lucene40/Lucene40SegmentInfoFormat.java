@@ -33,14 +33,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Version;
 
-/**
- * Lucene 4.0 Segment info format.
- * @deprecated Only for reading old 4.0-4.5 segments
- */
 @Deprecated
 public class Lucene40SegmentInfoFormat extends SegmentInfoFormat {
 
-  /** Sole constructor. */
   public Lucene40SegmentInfoFormat() {
   }
   
@@ -91,7 +86,6 @@ public class Lucene40SegmentInfoFormat extends SegmentInfoFormat {
     throw new UnsupportedOperationException("this codec can only be used for reading");
   }
 
-  /** File extension used to store {@link SegmentInfo}. */
   static final String SI_EXTENSION = "si";
   static final String CODEC_NAME = "Lucene40SegmentInfo";
   static final int VERSION_START = 0;

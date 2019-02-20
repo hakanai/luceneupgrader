@@ -17,9 +17,7 @@
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.index;
 
 
-/** Thrown and caught internally in {@link IndexWriter} methods when an {@code IOException} would cause it to
- *  lose previously indexed documents.  When this happens, the {@link IndexWriter} is forcefully 
- *  closed, using {@link IndexWriter#rollback}). */
+
 class AbortingException extends Exception {
   private AbortingException(Throwable cause) {
     super(cause);

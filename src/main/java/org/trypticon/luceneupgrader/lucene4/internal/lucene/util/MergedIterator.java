@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,33 +13,12 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/**
- * Provides a merged sorted view from several sorted iterators.
- * <p>
- * If built with <code>removeDuplicates</code> set to true and an element
- * appears in multiple iterators then it is deduplicated, that is this iterator
- * returns the sorted union of elements.
- * <p>
- * If built with <code>removeDuplicates</code> set to false then all elements
- * in all iterators are returned.
- * <p>
- * Caveats:
- * <ul>
- *   <li>The behavior is undefined if the iterators are not actually sorted.
- *   <li>Null elements are unsupported.
- *   <li>If removeDuplicates is set to true and if a single iterator contains
- *       duplicates then they will not be deduplicated.
- *   <li>When elements are deduplicated it is not defined which one is returned.
- *   <li>If removeDuplicates is set to false then the order in which duplicates
- *       are returned isn't defined.
- * </ul>
- * @lucene.internal
- */
 public final class MergedIterator<T extends Comparable<T>> implements Iterator<T> {
   private T current;
   private final TermMergeQueue<T> queue; 

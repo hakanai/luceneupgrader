@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,16 +13,15 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.TypeAttribute;
 
 import java.io.IOException;
 import java.util.Set;
 
-/**
- * Removes tokens whose types appear in a set of blocked types from a token stream.
- */
+
 public final class TypeTokenFilter extends FilteringTokenFilter {
 
   private final Set<String> stopTypes;
@@ -41,10 +38,7 @@ public final class TypeTokenFilter extends FilteringTokenFilter {
     this(enablePositionIncrements, input, stopTypes, false);
   }
 
-  /**
-   * By default accept the token if its type is not a stop type.
-   * When the useWhiteList parameter is set to true then accept the token if its type is contained in the stopTypes
-   */
+
   @Override
   protected boolean accept() throws IOException {
     return useWhiteList == stopTypes.contains(typeAttribute.type());

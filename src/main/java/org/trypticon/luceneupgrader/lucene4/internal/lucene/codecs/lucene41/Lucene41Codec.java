@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene41;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene41;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene41;
 
 import java.io.IOException;
 
@@ -43,16 +42,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentInfo;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 
-/**
- * Implements the Lucene 4.1 index format, with configurable per-field postings formats.
- * <p>
- * If you want to reuse functionality of this codec in another codec, extend
- * {@link FilterCodec}.
- *
- * @see org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene41 package documentation for file format details.
- * @deprecated Only for reading old 4.0 segments
- * @lucene.experimental
- */
 @Deprecated
 public class Lucene41Codec extends Codec {
   // TODO: slightly evil
@@ -74,7 +63,6 @@ public class Lucene41Codec extends Codec {
     }
   };
 
-  /** Sole constructor. */
   public Lucene41Codec() {
     super("Lucene41");
   }
@@ -110,11 +98,7 @@ public class Lucene41Codec extends Codec {
     return liveDocsFormat;
   }
 
-  /** Returns the postings format that should be used for writing 
-   *  new segments of <code>field</code>.
-   *  
-   *  The default implementation always returns "Lucene41"
-   */
+
   public PostingsFormat getPostingsFormatForField(String field) {
     return defaultFormat;
   }

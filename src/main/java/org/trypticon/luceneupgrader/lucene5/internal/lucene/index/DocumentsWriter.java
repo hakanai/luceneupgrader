@@ -37,64 +37,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.InfoStream;
 
-/**
- * This class accepts multiple added documents and directly
- * writes segment files.
- *
- * Each added document is passed to the indexing chain,
- * which in turn processes the document into the different
- * codec formats.  Some formats write bytes to files
- * immediately, e.g. stored fields and term vectors, while
- * others are buffered by the indexing chain and written
- * only on flush.
- *
- * Once we have used our allowed RAM buffer, or the number
- * of added docs is large enough (in the case we are
- * flushing by doc count instead of RAM usage), we create a
- * real segment and flush it to the Directory.
- *
- * Threads:
- *
- * Multiple threads are allowed into addDocument at once.
- * There is an initial synchronized call to getThreadState
- * which allocates a ThreadState for this thread.  The same
- * thread will get the same ThreadState over time (thread
- * affinity) so that if there are consistent patterns (for
- * example each thread is indexing a different content
- * source) then we make better use of RAM.  Then
- * processDocument is called on that ThreadState without
- * synchronization (most of the "heavy lifting" is in this
- * call).  Finally the synchronized "finishDocument" is
- * called to flush changes to the directory.
- *
- * When flush is called by IndexWriter we forcefully idle
- * all threads and flush only once they are all idle.  This
- * means you can call flush with a given thread even while
- * other threads are actively adding/deleting documents.
- *
- *
- * Exceptions:
- *
- * Because this class directly updates in-memory posting
- * lists, and flushes stored fields and term vectors
- * directly to files in the directory, there are certain
- * limited times when an exception can corrupt this state.
- * For example, a disk full while flushing stored fields
- * leaves this file in a corrupt state.  Or, an OOM
- * exception while appending to the in-memory posting lists
- * can corrupt that posting list.  We call such exceptions
- * "aborting exceptions".  In these cases we must call
- * abort() to discard all docs added since the last flush.
- *
- * All other exceptions ("non-aborting exceptions") can
- * still partially update the index structures.  These
- * updates are consistent, but, they represent only a part
- * of the document seen up until the exception was hit.
- * When this happens, we immediately mark the document as
- * deleted so that the document is always atomically ("all
- * or none") added to the index.
- */
-
 final class DocumentsWriter implements Closeable, Accountable {
   private final Directory directoryOrig; // no wrapping, for infos
   private final Directory directory;
@@ -187,7 +129,6 @@ final class DocumentsWriter implements Closeable, Accountable {
   }
   
 
-  /** Returns how many docs are currently buffered in RAM. */
   int getNumDocs() {
     return numDocsInRAM.get();
   }
@@ -198,10 +139,7 @@ final class DocumentsWriter implements Closeable, Accountable {
     }
   }
 
-  /** Called if we hit an exception at a bad time (when
-   *  updating the index files) and must discard all
-   *  currently buffered docs.  This resets our state,
-   *  discarding any docs added since last flush. */
+
   synchronized void abort(IndexWriter writer) {
     assert !Thread.holdsLock(writer) : "IndexWriter lock should never be hold when aborting";
     boolean success = false;
@@ -230,7 +168,6 @@ final class DocumentsWriter implements Closeable, Accountable {
     }
   }
 
-  /** Returns how many documents were aborted. */
   synchronized long lockAndAbortAll(IndexWriter indexWriter) {
     assert indexWriter.holdsFullFlushLock();
     if (infoStream.isEnabled("DW")) {
@@ -263,7 +200,6 @@ final class DocumentsWriter implements Closeable, Accountable {
     }
   }
   
-  /** Returns how many documents were aborted. */
   private int abortThreadState(final ThreadState perThread) {
     assert perThread.isHeldByCurrentThread();
     if (perThread.isInitialized()) { 

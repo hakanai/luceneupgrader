@@ -1,7 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.payloads;
-
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Explanation;
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,14 +14,10 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Explanation;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.payloads;
 
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Explanation;
 
-/**
- * Returns the maximum payload score seen, else 1 if there are no payloads on the doc.
- * <p/>
- * Is thread safe and completely reusable.
- *
- **/
 public class MaxPayloadFunction extends PayloadFunction {
   @Override
   public float currentScore(int docId, String field, int start, int end, int numPayloadsSeen, float currentScore, float currentPayloadScore) {

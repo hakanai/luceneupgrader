@@ -20,10 +20,6 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.store;
 import java.io.IOException;
 import java.util.Collection;
 
-/** 
- * This class makes a best-effort check that a provided {@link Lock}
- * is valid before any destructive filesystem operation.
- */
 public final class LockValidatingDirectoryWrapper extends FilterDirectory {
   private final Lock writeLock;
 

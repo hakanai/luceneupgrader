@@ -35,16 +35,11 @@ import java.util.Map;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-/**
- * Lucene 4.x compound file format
- * @deprecated only for reading 4.x segments
- */
 @Deprecated
 final class Lucene40CompoundReader extends Directory {
   
   // TODO: would be great to move this read-write stuff out of here into test.
 
-  /** Offset/Length for a slice inside of a compound file */
   public static final class FileEntry {
     long offset;
     long length;
@@ -61,9 +56,6 @@ final class Lucene40CompoundReader extends Directory {
   private int version;
   private boolean isOpen;
   
-  /**
-   * Create a new CompoundFileDirectory.
-   */
   public Lucene40CompoundReader(Directory directory, String fileName, IOContext context, boolean openForWrite) throws IOException {
     this.directory = directory;
     this.fileName = fileName;
@@ -100,7 +92,6 @@ final class Lucene40CompoundReader extends Directory {
     }
   }
 
-  /** Helper method that reads CFS entries from an input stream */
   private final Map<String, FileEntry> readEntries(Directory dir, String name) throws IOException {
     ChecksumIndexInput entriesStream = null;
     Map<String,FileEntry> mapping = null;
@@ -174,7 +165,6 @@ final class Lucene40CompoundReader extends Directory {
     return handle.slice(name, entry.offset, entry.length);
   }
   
-  /** Returns an array of strings, one for each file in the directory. */
   @Override
   public String[] listAll() {
     ensureOpen();
@@ -192,21 +182,15 @@ final class Lucene40CompoundReader extends Directory {
     return res;
   }
   
-  /** Not implemented
-   * @throws UnsupportedOperationException always: not supported by CFS */
   @Override
   public void deleteFile(String name) {
     throw new UnsupportedOperationException();
   }
   
-  /** Not implemented
-   * @throws UnsupportedOperationException always: not supported by CFS */
   public void renameFile(String from, String to) {
     throw new UnsupportedOperationException();
   }
   
-  /** Returns the length of a file in the directory.
-   * @throws IOException if the file does not exist */
   @Override
   public long fileLength(String name) throws IOException {
     ensureOpen();

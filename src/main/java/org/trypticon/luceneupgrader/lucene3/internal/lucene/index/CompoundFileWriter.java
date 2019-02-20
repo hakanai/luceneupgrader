@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
@@ -27,41 +26,15 @@ import java.util.HashSet;
 
 import java.io.IOException;
 
-/**
- * Combines multiple files into a single compound file.
- * The file format:<br>
- * <ul>
- *     <li>VInt fileCount</li>
- *     <li>{Directory}
- *         fileCount entries with the following structure:</li>
- *         <ul>
- *             <li>long dataOffset</li>
- *             <li>String fileName</li>
- *         </ul>
- *     <li>{File Data}
- *         fileCount entries with the raw data of the corresponding file</li>
- * </ul>
- *
- * The fileCount integer indicates how many files are contained in this compound
- * file. The {directory} that follows has that many entries. Each directory entry
- * contains a long pointer to the start of this file's data section, and a String
- * with that file's name.
- * 
- * @lucene.internal
- */
 public final class CompoundFileWriter {
 
     private static final class FileEntry {
-        /** source file */
         String file;
 
-        /** temporary holder for the start of directory entry for this file */
         long directoryOffset;
 
-        /** temporary holder for the start of this file's data section */
         long dataOffset;
         
-        /** the directory which contains the file. */
         Directory dir;
     }
 
@@ -83,10 +56,6 @@ public final class CompoundFileWriter {
     private boolean merged = false;
     private SegmentMerger.CheckAbort checkAbort;
 
-    /** Create the compound stream in the specified file. The file name is the
-     *  entire name (no extensions are added).
-     *  @throws NullPointerException if <code>dir</code> or <code>name</code> is null
-     */
     public CompoundFileWriter(Directory dir, String name) {
       this(dir, name, null);
     }
@@ -103,32 +72,18 @@ public final class CompoundFileWriter {
         entries = new LinkedList<FileEntry>();
     }
 
-    /** Returns the directory of the compound file. */
     public Directory getDirectory() {
         return directory;
     }
 
-    /** Returns the name of the compound file. */
     public String getName() {
         return fileName;
     }
 
-    /** Add a source stream. <code>file</code> is the string by which the 
-     *  sub-stream will be known in the compound stream.
-     * 
-     *  @throws IllegalStateException if this writer is closed
-     *  @throws NullPointerException if <code>file</code> is null
-     *  @throws IllegalArgumentException if a file with the same name
-     *   has been added already
-     */
     public void addFile(String file) {
       addFile(file, directory);
     }
 
-    /**
-     * Same as {@link #addFile(String)}, only for files that are found in an
-     * external {@link Directory}.
-     */
     public void addFile(String file, Directory dir) {
         if (merged)
             throw new IllegalStateException(
@@ -148,12 +103,6 @@ public final class CompoundFileWriter {
         entries.add(entry);
     }
 
-    /** Merge files with the extensions added up to now.
-     *  All files with these extensions are combined sequentially into the
-     *  compound stream.
-     *  @throws IllegalStateException if close() had been called before or
-     *   if no file has been added to this object
-     */
     public void close() throws IOException {
         if (merged)
             throw new IllegalStateException("Merge already performed");
@@ -223,10 +172,6 @@ public final class CompoundFileWriter {
         }
     }
 
-  /**
-   * Copy the contents of the file with specified extension into the provided
-   * output stream.
-   */
   private void copyFile(FileEntry source, IndexOutput os) throws IOException {
     IndexInput is = source.dir.openInput(source.file);
     try {

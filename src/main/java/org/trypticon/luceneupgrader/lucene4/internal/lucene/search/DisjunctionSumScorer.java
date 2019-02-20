@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,22 +13,16 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 
-/** A Scorer for OR like queries, counterpart of <code>ConjunctionScorer</code>.
- * This Scorer implements {@link Scorer#advance(int)} and uses advance() on the given Scorers. 
- */
-final class DisjunctionSumScorer extends DisjunctionScorer { 
+final class DisjunctionSumScorer extends DisjunctionScorer {
   private double score;
   private final float[] coord;
   
-  /** Construct a <code>DisjunctionScorer</code>.
-   * @param weight The weight to be used.
-   * @param subScorers Array of at least two subscorers.
-   * @param coord Table of coordination factors
-   */
+
   DisjunctionSumScorer(Weight weight, Scorer[] subScorers, float[] coord) {
     super(weight, subScorers);
     this.coord = coord;

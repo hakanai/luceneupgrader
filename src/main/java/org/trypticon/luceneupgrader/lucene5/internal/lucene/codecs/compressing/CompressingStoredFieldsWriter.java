@@ -43,16 +43,10 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 
-/**
- * {@link StoredFieldsWriter} impl for {@link CompressingStoredFieldsFormat}.
- * @lucene.experimental
- */
 public final class CompressingStoredFieldsWriter extends StoredFieldsWriter {
 
-  /** Extension of stored fields file */
   public static final String FIELDS_EXTENSION = "fdt";
   
-  /** Extension of stored fields index file */
   public static final String FIELDS_INDEX_EXTENSION = "fdx";
 
   static final int         STRING = 0x00;
@@ -89,7 +83,6 @@ public final class CompressingStoredFieldsWriter extends StoredFieldsWriter {
   private long numChunks; // number of compressed blocks written
   private long numDirtyChunks; // number of incomplete compressed blocks written
 
-  /** Sole constructor. */
   public CompressingStoredFieldsWriter(Directory directory, SegmentInfo si, String segmentSuffix, IOContext context,
       String formatName, CompressionMode compressionMode, int chunkSize, int maxDocsPerChunk, int blockSize) throws IOException {
     assert directory != null;
@@ -317,23 +310,7 @@ public final class CompressingStoredFieldsWriter extends StoredFieldsWriter {
   static final int HOUR_ENCODING = 0x80;
   static final int DAY_ENCODING = 0xC0;
 
-  /** 
-   * Writes a float in a variable-length format.  Writes between one and 
-   * five bytes. Small integral values typically take fewer bytes.
-   * <p>
-   * ZFloat --&gt; Header, Bytes*?
-   * <ul>
-   *    <li>Header --&gt; {@link DataOutput#writeByte Uint8}. When it is
-   *       equal to 0xFF then the value is negative and stored in the next
-   *       4 bytes. Otherwise if the first bit is set then the other bits
-   *       in the header encode the value plus one and no other
-   *       bytes are read. Otherwise, the value is a positive float value
-   *       whose first byte is the header, and 3 bytes need to be read to
-   *       complete it.
-   *    <li>Bytes --&gt; Potential additional bytes to read depending on the
-   *       header.
-   * </ul>
-   */
+
   static void writeZFloat(DataOutput out, float f) throws IOException {
     int intVal = (int) f;
     final int floatBits = Float.floatToIntBits(f);
@@ -354,24 +331,7 @@ public final class CompressingStoredFieldsWriter extends StoredFieldsWriter {
     }
   }
   
-  /** 
-   * Writes a float in a variable-length format.  Writes between one and 
-   * five bytes. Small integral values typically take fewer bytes.
-   * <p>
-   * ZFloat --&gt; Header, Bytes*?
-   * <ul>
-   *    <li>Header --&gt; {@link DataOutput#writeByte Uint8}. When it is
-   *       equal to 0xFF then the value is negative and stored in the next
-   *       8 bytes. When it is equal to 0xFE then the value is stored as a
-   *       float in the next 4 bytes. Otherwise if the first bit is set
-   *       then the other bits in the header encode the value plus one and
-   *       no other bytes are read. Otherwise, the value is a positive float
-   *       value whose first byte is the header, and 7 bytes need to be read
-   *       to complete it.
-   *    <li>Bytes --&gt; Potential additional bytes to read depending on the
-   *       header.
-   * </ul>
-   */
+
   static void writeZDouble(DataOutput out, double d) throws IOException {
     int intVal = (int) d;
     final long doubleBits = Double.doubleToLongBits(d);
@@ -397,31 +357,7 @@ public final class CompressingStoredFieldsWriter extends StoredFieldsWriter {
     }
   }
 
-  /** 
-   * Writes a long in a variable-length format.  Writes between one and 
-   * ten bytes. Small values or values representing timestamps with day,
-   * hour or second precision typically require fewer bytes.
-   * <p>
-   * ZLong --&gt; Header, Bytes*?
-   * <ul>
-   *    <li>Header --&gt; The first two bits indicate the compression scheme:
-   *       <ul>
-   *          <li>00 - uncompressed
-   *          <li>01 - multiple of 1000 (second)
-   *          <li>10 - multiple of 3600000 (hour)
-   *          <li>11 - multiple of 86400000 (day)
-   *       </ul>
-   *       Then the next bit is a continuation bit, indicating whether more
-   *       bytes need to be read, and the last 5 bits are the lower bits of
-   *       the encoded value. In order to reconstruct the value, you need to
-   *       combine the 5 lower bits of the header with a vLong in the next
-   *       bytes (if the continuation bit is set to 1). Then
-   *       {@link BitUtil#zigZagDecode(int) zigzag-decode} it and finally
-   *       multiply by the multiple corresponding to the compression scheme.
-   *    <li>Bytes --&gt; Potential additional bytes to read depending on the
-   *       header.
-   * </ul>
-   */
+
   // T for "timestamp"
   static void writeTLong(DataOutput out, long l) throws IOException {
     int header; 
@@ -611,13 +547,7 @@ public final class CompressingStoredFieldsWriter extends StoredFieldsWriter {
     return docCount;
   }
   
-  /** 
-   * Returns true if we should recompress this reader, even though we could bulk merge compressed data 
-   * <p>
-   * The last chunk written for a segment is typically incomplete, so without recompressing,
-   * in some worst-case situations (e.g. frequent reopen with tiny flushes), over time the 
-   * compression ratio can degrade. This is a safety switch.
-   */
+
   boolean tooDirty(CompressingStoredFieldsReader candidate) {
     // more than 1% dirty, or more than hard limit of 1024 dirty chunks
     return candidate.getNumDirtyChunks() > 1024 || 

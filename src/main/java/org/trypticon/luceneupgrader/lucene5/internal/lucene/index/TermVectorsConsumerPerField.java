@@ -45,10 +45,7 @@ final class TermVectorsConsumerPerField extends TermsHashPerField {
     this.termsWriter = termsWriter;
   }
 
-  /** Called once per field per document if term vectors
-   *  are enabled, to write the vectors to
-   *  RAMOutputStream, which is then quickly flushed to
-   *  the real term vectors files in the Directory. */  @Override
+    @Override
   void finish() {
     if (!doVectors || bytesHash.size() == 0) {
       return;

@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.RAMOutputStream;
@@ -104,8 +103,6 @@ final class TermVectorsTermsWriter extends TermsHashConsumer {
     }
   }
 
-  /** Fills in no-term-vectors for all docs we haven't seen
-   *  since the last doc that had term vectors. */
   void fill(int docID) throws IOException {
     if (lastDocID < docID) {
       final long tvfPosition = tvf.getFilePointer();

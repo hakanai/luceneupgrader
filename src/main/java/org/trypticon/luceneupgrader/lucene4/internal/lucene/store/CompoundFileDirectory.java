@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.Codec; // javadocs
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.CodecUtil;
@@ -31,49 +30,8 @@ import java.util.Map;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-/**
- * Class for accessing a compound stream.
- * This class implements a directory, but is limited to only read operations.
- * Directory methods that would normally modify data throw an exception.
- * <p>
- * All files belonging to a segment have the same name with varying extensions.
- * The extensions correspond to the different file formats used by the {@link Codec}. 
- * When using the Compound File format these files are collapsed into a 
- * single <tt>.cfs</tt> file (except for the {@link LiveDocsFormat}, with a 
- * corresponding <tt>.cfe</tt> file indexing its sub-files.
- * <p>
- * Files:
- * <ul>
- *    <li><tt>.cfs</tt>: An optional "virtual" file consisting of all the other 
- *    index files for systems that frequently run out of file handles.
- *    <li><tt>.cfe</tt>: The "virtual" compound file's entry table holding all 
- *    entries in the corresponding .cfs file.
- * </ul>
- * <p>Description:</p>
- * <ul>
- *   <li>Compound (.cfs) --&gt; Header, FileData <sup>FileCount</sup></li>
- *   <li>Compound Entry Table (.cfe) --&gt; Header, FileCount, &lt;FileName,
- *       DataOffset, DataLength&gt; <sup>FileCount</sup>, Footer</li>
- *   <li>Header --&gt; {@link CodecUtil#writeHeader CodecHeader}</li>
- *   <li>FileCount --&gt; {@link DataOutput#writeVInt VInt}</li>
- *   <li>DataOffset,DataLength --&gt; {@link DataOutput#writeLong UInt64}</li>
- *   <li>FileName --&gt; {@link DataOutput#writeString String}</li>
- *   <li>FileData --&gt; raw file data</li>
- *   <li>Footer --&gt; {@link CodecUtil#writeFooter CodecFooter}</li>
- * </ul>
- * <p>Notes:</p>
- * <ul>
- *   <li>FileCount indicates how many files are contained in this compound file. 
- *       The entry table that follows has that many entries. 
- *   <li>Each directory entry contains a long pointer to the start of this file's data
- *       section, the files length, and a String with that file's name.
- * </ul>
- * 
- * @lucene.experimental
- */
 public final class CompoundFileDirectory extends BaseDirectory {
   
-  /** Offset/Length for a slice inside of a compound file */
   public static final class FileEntry {
     long offset;
     long length;
@@ -89,9 +47,6 @@ public final class CompoundFileDirectory extends BaseDirectory {
   private final IndexInput handle;
   private int version;
   
-  /**
-   * Create a new CompoundFileDirectory.
-   */
   public CompoundFileDirectory(Directory directory, String fileName, IOContext context, boolean openForWrite) throws IOException {
     this.directory = directory;
     this.fileName = fileName;
@@ -133,7 +88,6 @@ public final class CompoundFileDirectory extends BaseDirectory {
   private static final byte CODEC_MAGIC_BYTE3 = (byte) (CodecUtil.CODEC_MAGIC >>> 8);
   private static final byte CODEC_MAGIC_BYTE4 = (byte) CodecUtil.CODEC_MAGIC;
 
-  /** Helper method that reads CFS entries from an input stream */
   private final Map<String, FileEntry> readEntries(
       IndexInput handle, Directory dir, String name) throws IOException {
     IndexInput stream = null; 
@@ -288,7 +242,6 @@ public final class CompoundFileDirectory extends BaseDirectory {
     return handle.slice(name, entry.offset, entry.length);
   }
   
-  /** Returns an array of strings, one for each file in the directory. */
   @Override
   public String[] listAll() {
     ensureOpen();
@@ -306,7 +259,6 @@ public final class CompoundFileDirectory extends BaseDirectory {
     return res;
   }
   
-  /** Returns true iff a file with the given name exists. */
   @Override
   public boolean fileExists(String name) {
     ensureOpen();
@@ -316,21 +268,15 @@ public final class CompoundFileDirectory extends BaseDirectory {
     return entries.containsKey(IndexFileNames.stripSegmentName(name));
   }
   
-  /** Not implemented
-   * @throws UnsupportedOperationException always: not supported by CFS */
   @Override
   public void deleteFile(String name) {
     throw new UnsupportedOperationException();
   }
   
-  /** Not implemented
-   * @throws UnsupportedOperationException always: not supported by CFS */
   public void renameFile(String from, String to) {
     throw new UnsupportedOperationException();
   }
   
-  /** Returns the length of a file in the directory.
-   * @throws IOException if the file does not exist */
   @Override
   public long fileLength(String name) throws IOException {
     ensureOpen();
@@ -354,8 +300,6 @@ public final class CompoundFileDirectory extends BaseDirectory {
     throw new UnsupportedOperationException();
   }
   
-  /** Not implemented
-   * @throws UnsupportedOperationException always: not supported by CFS */
   @Override
   public Lock makeLock(String name) {
     throw new UnsupportedOperationException();

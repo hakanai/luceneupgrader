@@ -10,16 +10,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-/**
- * Clone of bits of {@link IOUtils} accepting {@link Path} instead of {@link File}.
- */
 public class PathIOUtils4 {
-    /**
-     * Ensure that any writes to the given file is written to the storage device that contains it.
-     * @param fileToSync the file to fsync
-     * @param isDir if true, the given file is a directory (we open for read and ignore IOExceptions,
-     *  because not all file systems and operating systems allow to fsync on a directory)
-     */
     public static void fsync(Path fileToSync, boolean isDir) throws IOException {
         IOException exc = null;
 

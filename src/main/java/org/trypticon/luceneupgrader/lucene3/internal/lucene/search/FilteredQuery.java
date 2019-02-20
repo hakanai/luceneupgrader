@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
@@ -25,39 +24,17 @@ import java.io.IOException;
 import java.util.Set;
 
 
-/**
- * A query that applies a filter to the results of another query.
- *
- * <p>Note: the bits are retrieved from the filter each time this
- * query is used in a search - use a CachingWrapperFilter to avoid
- * regenerating the bits every time.
- *
- * <p>Created: Apr 20, 2004 8:58:29 AM
- *
- * @since   1.4
- * @see     CachingWrapperFilter
- */
 public class FilteredQuery
 extends Query {
 
   Query query;
   Filter filter;
 
-  /**
-   * Constructs a new query which applies a filter to the results of the original query.
-   * Filter.getDocIdSet() will be called every time this query is used in a search.
-   * @param query  Query to be filtered, cannot be <code>null</code>.
-   * @param filter Filter to apply to query results, cannot be <code>null</code>.
-   */
   public FilteredQuery (Query query, Filter filter) {
     this.query = query;
     this.filter = filter;
   }
 
-  /**
-   * Returns a Weight that applies the filter to the enclosed query's Weight.
-   * This is accomplished by overriding the Scorer returned by the Weight.
-   */
   @Override
   public Weight createWeight(final Searcher searcher) throws IOException {
     final Weight weight = query.createWeight (searcher);
@@ -119,16 +96,7 @@ extends Query {
     };
   }
   
-  /** Hackidy-Häck-Hack for backwards compatibility, as we cannot change IndexSearcher API in 3.x, but still want
-   * to move the searchWithFilter implementation to this class: to enable access to our scorer() implementation
-   * from IndexSearcher without instantiating a separate {@link Weight}, we make the inner implementation accessible.
-   * @param indexReader the atomic reader
-   * @param similarity the Similarity to use (deprecated)
-   * @param weight the weight to wrap
-   * @param wrapperWeight must be identical to {@code weight} for usage in {@link IndexSearcher}, but it is different inside this query
-   * @param filter the Filter to wrap
-   * @lucene.internal
-   */
+
   static Scorer getFilteredScorer(final IndexReader indexReader, final Similarity similarity,
                                   final Weight weight, final Weight wrapperWeight, final Filter filter) throws IOException {
     assert filter != null;
@@ -213,7 +181,6 @@ extends Query {
     };
   }
 
-  /** Rewrites the wrapped query. */
   @Override
   public Query rewrite(IndexReader reader) throws IOException {
     Query rewritten = query.rewrite(reader);
@@ -240,7 +207,6 @@ extends Query {
       getQuery().extractTerms(terms);
   }
 
-  /** Prints a user-readable version of this query. */
   @Override
   public String toString (String s) {
     StringBuilder buffer = new StringBuilder();
@@ -252,7 +218,6 @@ extends Query {
     return buffer.toString();
   }
 
-  /** Returns true iff <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object o) {
     if (o instanceof FilteredQuery) {
@@ -262,7 +227,6 @@ extends Query {
     return false;
   }
 
-  /** Returns a hash code value for this object. */
   @Override
   public int hashCode() {
     return query.hashCode() ^ filter.hashCode() + Float.floatToRawIntBits(getBoost());

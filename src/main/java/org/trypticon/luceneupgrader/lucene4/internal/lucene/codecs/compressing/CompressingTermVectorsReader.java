@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
 
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing.CompressingTermVectorsWriter.BLOCK_SIZE;
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing.CompressingTermVectorsWriter.CODEC_SFX_DAT;
@@ -63,10 +62,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.BlockPac
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
 
-/**
- * {@link TermVectorsReader} for {@link CompressingTermVectorsFormat}.
- * @lucene.experimental
- */
 public final class CompressingTermVectorsReader extends TermVectorsReader implements Closeable {
 
   private final FieldInfos fieldInfos;
@@ -96,7 +91,6 @@ public final class CompressingTermVectorsReader extends TermVectorsReader implem
     this.closed = false;
   }
 
-  /** Sole constructor. */
   public CompressingTermVectorsReader(Directory d, SegmentInfo si, String segmentSuffix, FieldInfos fn,
       IOContext context, String formatName, CompressionMode compressionMode) throws IOException {
     this.compressionMode = compressionMode;
@@ -180,9 +174,6 @@ public final class CompressingTermVectorsReader extends TermVectorsReader implem
     return vectorsStream;
   }
 
-  /**
-   * @throws AlreadyClosedException if this TermVectorsReader is closed
-   */
   private void ensureOpen() throws AlreadyClosedException {
     if (closed) {
       throw new AlreadyClosedException("this FieldsReader is closed");

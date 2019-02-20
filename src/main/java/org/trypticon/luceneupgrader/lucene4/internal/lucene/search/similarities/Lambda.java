@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,35 +13,18 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.Explanation;
 
-/**
- * The <em>lambda (&lambda;<sub>w</sub>)</em> parameter in information-based
- * models.
- * @see IBSimilarity
- * @lucene.experimental
- */
 public abstract class Lambda {
   
-  /**
-   * Sole constructor. (For invocation by subclass 
-   * constructors, typically implicit.)
-   */
   public Lambda() {}
 
-  /** Computes the lambda parameter. */
   public abstract float lambda(BasicStats stats);
-  /** Explains the lambda parameter. */
   public abstract Explanation explain(BasicStats stats);
   
-  /**
-   * Subclasses must override this method to return the code of the lambda
-   * formula. Since the original paper is not very clear on this matter, and
-   * also uses the DFR naming scheme incorrectly, the codes here were chosen
-   * arbitrarily.
-   */
   @Override
   public abstract String toString();
 }

@@ -21,16 +21,10 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.LeafReaderContext;
 
 
-/**
- * {@link Collector} delegator.
- *
- * @lucene.experimental
- */
 public abstract class FilterCollector implements Collector {
 
   protected final Collector in;
 
-  /** Sole constructor. */
   public FilterCollector(Collector in) {
     this.in = in;
   }

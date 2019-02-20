@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
 import java.io.IOException;
 import java.util.BitSet;
@@ -23,45 +22,18 @@ import java.util.BitSet;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.DocIdSet;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.DocIdSetIterator;
 
-/**
- * Stores and iterate on sorted integers in compressed form in RAM. <br>
- * The code for compressing the differences between ascending integers was
- * borrowed from {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput} and
- * {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexOutput}.
- * <p>
- * <b>NOTE:</b> this class assumes the stored integers are doc Ids (hence why it
- * extends {@link DocIdSet}). Therefore its {@link #iterator()} assumes {@link
- * DocIdSetIterator#NO_MORE_DOCS} can be used as sentinel. If you intent to use
- * this value, then make sure it's not used during search
- * flow.
- *
- * @lucene.internal
- */
 public class SortedVIntList extends DocIdSet {
-  /** When a BitSet has fewer than 1 in BITS2VINTLIST_SIZE bits set,
-   * a SortedVIntList representing the index numbers of the set bits
-   * will be smaller than that BitSet.
-   */
+
   final static int BITS2VINTLIST_SIZE = 8;
 
   private int size;
   private byte[] bytes;
   private int lastBytePos;
     
-  /**
-   *  Create a SortedVIntList from all elements of an array of integers.
-   *
-   * @param  sortedInts  A sorted array of non negative integers.
-   */
   public SortedVIntList(int... sortedInts) {
     this(sortedInts, sortedInts.length);
   }
 
-  /**
-   * Create a SortedVIntList from an array of integers.
-   * @param  sortedInts  An array of sorted non negative integers.
-   * @param  inputSize   The number of integers to be used from the array.
-   */
   public SortedVIntList(int[] sortedInts, int inputSize) {
     SortedVIntListBuilder builder = new SortedVIntListBuilder();
     for (int i = 0; i < inputSize; i++) {
@@ -70,10 +42,6 @@ public class SortedVIntList extends DocIdSet {
     builder.done();
   }
 
-  /**
-   * Create a SortedVIntList from a BitSet.
-   * @param  bits  A bit set representing a set of integers.
-   */
   public SortedVIntList(BitSet bits) {
     SortedVIntListBuilder builder = new SortedVIntListBuilder();
     int nextInt = bits.nextSetBit(0);
@@ -84,13 +52,6 @@ public class SortedVIntList extends DocIdSet {
     builder.done();
   }
 
-  /**
-   * Create a SortedVIntList.
-   * @param  docIdSetIterator  An iterator providing document numbers as a set of integers.
-   *                  This DocIdSetIterator is iterated completely when this constructor
-   *                  is called and it must provide the integers in non
-   *                  decreasing order.
-   */
   public SortedVIntList(DocIdSetIterator docIdSetIterator) throws IOException {
     SortedVIntListBuilder builder = new SortedVIntListBuilder();
     int doc;
@@ -155,29 +116,19 @@ public class SortedVIntList extends DocIdSet {
   private static final int BIT_SHIFT = 7;
   private final int MAX_BYTES_PER_INT = (31 / BIT_SHIFT) + 1;
 
-  /**
-   * @return    The total number of sorted integers.
-   */
   public int size() {
     return size;
   }
 
-  /**
-   * @return The size of the byte array storing the compressed sorted integers.
-   */
   public int getByteSize() {
     return bytes.length;
   }
 
-  /** This DocIdSet implementation is cacheable. */
   @Override
   public boolean isCacheable() {
     return true;
   }
 
-  /**
-   * @return    An iterator over the sorted integers.
-   */
   @Override
   public DocIdSetIterator iterator() {
     return new DocIdSetIterator() {

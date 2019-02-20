@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 import java.util.Set;
@@ -34,9 +33,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities.
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ToStringUtils;
 
-/** A Query that matches documents containing a term.
-  This may be combined with other terms with a {@link BooleanQuery}.
-  */
 public class TermQuery extends Query {
   private final Term term;
   private final int docFreq;
@@ -86,10 +82,6 @@ public class TermQuery extends Query {
       return new TermScorer(this, docs, similarity.simScorer(stats, context));
     }
     
-    /**
-     * Returns a {@link TermsEnum} positioned at this weights Term or null if
-     * the term does not exist in the given context
-     */
     private TermsEnum getTermsEnum(AtomicReaderContext context) throws IOException {
       final TermState state = termStates.get(context.ord);
       if (state == null) { // term is not present in that reader
@@ -129,23 +121,18 @@ public class TermQuery extends Query {
     }
   }
 
-  /** Constructs a query for the term <code>t</code>. */
   public TermQuery(Term t) {
     this(t, -1);
   }
 
-  /** Expert: constructs a TermQuery that will use the
-   *  provided docFreq instead of looking up the docFreq
-   *  against the searcher. */
+
   public TermQuery(Term t, int docFreq) {
     term = t;
     this.docFreq = docFreq;
     perReaderTermState = null;
   }
   
-  /** Expert: constructs a TermQuery that will use the
-   *  provided docFreq instead of looking up the docFreq
-   *  against the searcher. */
+
   public TermQuery(Term t, TermContext states) {
     assert states != null;
     term = t;
@@ -153,7 +140,6 @@ public class TermQuery extends Query {
     perReaderTermState = states;
   }
 
-  /** Returns the term of this query. */
   public Term getTerm() { return term; }
 
   @Override
@@ -180,7 +166,6 @@ public class TermQuery extends Query {
     terms.add(getTerm());
   }
 
-  /** Prints a user-readable version of this query. */
   @Override
   public String toString(String field) {
     StringBuilder buffer = new StringBuilder();
@@ -193,7 +178,6 @@ public class TermQuery extends Query {
     return buffer.toString();
   }
 
-  /** Returns true iff <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof TermQuery))
@@ -203,7 +187,6 @@ public class TermQuery extends Query {
       && this.term.equals(other.term);
   }
 
-  /** Returns a hash code value for this object.*/
   @Override
   public int hashCode() {
     return Float.floatToIntBits(getBoost()) ^ term.hashCode();

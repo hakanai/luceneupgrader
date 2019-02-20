@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,11 +26,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.BooleanQuery.
 /* See the description in BooleanScorer.java, comparing
  * BooleanScorer & BooleanScorer2 */
 
-/** An alternative to BooleanScorer that also allows a minimum number
- * of optional scorers that should match.
- * <br>Implements skipTo(), and has no limitations on the numbers of added scorers.
- * <br>Uses ConjunctionScorer, DisjunctionScorer, ReqOptScorer and ReqExclScorer.
- */
 class BooleanScorer2 extends Scorer {
   
   private final List<Scorer> requiredScorers;
@@ -53,37 +47,13 @@ class BooleanScorer2 extends Scorer {
 
   private final Coordinator coordinator;
 
-  /** The scorer to which all scoring will be delegated,
-   * except for computing and using the coordination factor.
-   */
+
   private final Scorer countingSumScorer;
 
-  /** The number of optionalScorers that need to match (if there are any) */
   private final int minNrShouldMatch;
 
   private int doc = -1;
 
-  /**
-   * Creates a {@link Scorer} with the given similarity and lists of required,
-   * prohibited and optional scorers. In no required scorers are added, at least
-   * one of the optional scorers will have to match during the search.
-   * 
-   * @param weight
-   *          The BooleanWeight to be used.
-   * @param disableCoord
-   *          If this parameter is true, coordination level matching 
-   *          ({@link Similarity#coord(int, int)}) is not used.
-   * @param minNrShouldMatch
-   *          The minimum number of optional added scorers that should match
-   *          during the search. In case no required scorers are added, at least
-   *          one of the optional scorers will have to match during the search.
-   * @param required
-   *          the list of required scorers.
-   * @param prohibited
-   *          the list of prohibited scorers.
-   * @param optional
-   *          the list of optional scorers.
-   */
   public BooleanScorer2(BooleanWeight weight, boolean disableCoord, Similarity similarity, int minNrShouldMatch,
       List<Scorer> required, List<Scorer> prohibited, List<Scorer> optional, int maxCoord) throws IOException {
     super(weight);
@@ -102,7 +72,6 @@ class BooleanScorer2 extends Scorer {
     countingSumScorer = makeCountingSumScorer(disableCoord, similarity);
   }
   
-  /** Count a scorer as a single match. */
   private class SingleMatchScorer extends Scorer {
     private Scorer scorer;
     private int lastScoredDoc = -1;
@@ -209,9 +178,7 @@ class BooleanScorer2 extends Scorer {
     // is used as score.
   }
 
-  /** Returns the scorer to be used for match counting and score summing.
-   * Uses requiredScorers, optionalScorers and prohibitedScorers.
-   */
+
   private Scorer makeCountingSumScorer(boolean disableCoord,
                                        Similarity similarity) throws IOException { // each scorer counted as a single matcher
     return (requiredScorers.size() == 0)
@@ -263,10 +230,7 @@ class BooleanScorer2 extends Scorer {
     }
   }
   
-  /** Returns the scorer to be used for match counting and score summing.
-   * Uses the given required scorer and the prohibitedScorers.
-   * @param requiredCountingSumScorer A required scorer already built.
-   */
+
   private Scorer addProhibitedScorers(Scorer requiredCountingSumScorer) throws IOException
   {
     return (prohibitedScorers.size() == 0)
@@ -277,9 +241,7 @@ class BooleanScorer2 extends Scorer {
                                 : new DisjunctionSumScorer(weight, prohibitedScorers)));
   }
 
-  /** Scores and collects all matching documents.
-   * @param collector The collector to which all matching documents are passed through.
-   */
+
   @Override
   public void score(Collector collector) throws IOException {
     collector.setScorer(this);

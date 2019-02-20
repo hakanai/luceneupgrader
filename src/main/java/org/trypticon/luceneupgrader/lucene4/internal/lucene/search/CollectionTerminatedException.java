@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,18 +13,13 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
-/** Throw this exception in {@link Collector#collect(int)} to prematurely
- *  terminate collection of the current leaf.
- *  <p>Note: IndexSearcher swallows this exception and never re-throws it.
- *  As a consequence, you should not catch it when calling
- *  {@link IndexSearcher#search} as it is unnecessary and might hide misuse
- *  of this exception. */
+
 @SuppressWarnings("serial")
 public final class CollectionTerminatedException extends RuntimeException {
 
-  /** Sole constructor. */
   public CollectionTerminatedException() {
     super();
   }

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -58,23 +57,11 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedIn
 // dead-end state (NON_FINAL_END_NODE=0), the layers above
 // (FSTEnum, Util) have problems with this!!
 
-/** Represents an finite state machine (FST), using a
- *  compact byte[] format.
- *  <p> The format is similar to what's used by Morfologik
- *  (http://sourceforge.net/projects/morfologik).
- *  
- *  <p> See the {@link org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst package
- *      documentation} for some simple examples.
- *
- * @lucene.experimental
- */
 public final class FST<T> implements Accountable {
 
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(FST.class);
   private static final long ARC_SHALLOW_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(Arc.class);
 
-  /** Specifies allowed range of each int input label for
-   *  this FST. */
   public static enum INPUT_TYPE {BYTE1, BYTE2, BYTE4};
   public final INPUT_TYPE inputType;
 
@@ -85,7 +72,6 @@ public final class FST<T> implements Accountable {
   // TODO: we can free up a bit if we can nuke this:
   final static int BIT_STOP_NODE = 1 << 3;
 
-  /** This flag is set if the arc has an output. */
   public final static int BIT_ARC_HAS_OUTPUT = 1 << 4;
 
   final static int BIT_ARC_HAS_FINAL_OUTPUT = 1 << 5;
@@ -102,19 +88,10 @@ public final class FST<T> implements Accountable {
   // illegal by itself ...):
   private final static byte ARCS_AS_FIXED_ARRAY = BIT_ARC_HAS_FINAL_OUTPUT;
 
-  /**
-   * @see #shouldExpand(UnCompiledNode)
-   */
   final static int FIXED_ARRAY_SHALLOW_DISTANCE = 3; // 0 => only root node.
 
-  /**
-   * @see #shouldExpand(UnCompiledNode)
-   */
   final static int FIXED_ARRAY_NUM_ARCS_SHALLOW = 5;
 
-  /**
-   * @see #shouldExpand(UnCompiledNode)
-   */
   final static int FIXED_ARRAY_NUM_ARCS_DEEP = 10;
 
   // Reused temporarily while building the FST:
@@ -124,17 +101,12 @@ public final class FST<T> implements Accountable {
   private final static String FILE_FORMAT_NAME = "FST";
   private final static int VERSION_START = 0;
 
-  /** Changed numBytesPerArc for array'd case from byte to int. */
   private final static int VERSION_INT_NUM_BYTES_PER_ARC = 1;
 
-  /** Write BYTE2 labels as 2-byte short, not vInt. */
   private final static int VERSION_SHORT_BYTE2_LABELS = 2;
 
-  /** Added optional packed format. */
   private final static int VERSION_PACKED = 3;
 
-  /** Changed from int to vInt for encoding arc targets. 
-   *  Also changed maxBytesPerArc from int to vInt in the array case. */
   private final static int VERSION_VINT_TARGET = 4;
 
   private final static int VERSION_CURRENT = VERSION_VINT_TARGET;
@@ -172,14 +144,12 @@ public final class FST<T> implements Accountable {
   private final boolean packed;
   private PackedInts.Reader nodeRefToAddress;
 
-  /** If arc has this label then that arc is final/accepted */
   public static final int END_LABEL = -1;
 
   private final boolean allowArrayArcs;
 
   private Arc<T> cachedRootArcs[];
 
-  /** Represents a single arc. */
   public final static class Arc<T> {
     public int label;
     public T output;
@@ -188,7 +158,6 @@ public final class FST<T> implements Accountable {
     // building an FST w/ willPackFST=true:
     long node;
 
-    /** To node (ord or address) */
     public long target;
 
     byte flags;
@@ -197,24 +166,15 @@ public final class FST<T> implements Accountable {
     // address (into the byte[]), or ord/address if label == END_LABEL
     long nextArc;
 
-    /** Where the first arc in the array starts; only valid if
-     *  bytesPerArc != 0 */
     public long posArcsStart;
     
-    /** Non-zero if this arc is part of an array, which means all
-     *  arcs for the node are encoded with a fixed number of bytes so
-     *  that we can random access by index.  We do when there are enough
-     *  arcs leaving one node.  It wastes some bytes but gives faster
-     *  lookups. */
+
     public int bytesPerArc;
 
-    /** Where we are in the array; only valid if bytesPerArc != 0. */
     public int arcIdx;
 
-    /** How many arcs in the array; only valid if bytesPerArc != 0. */
     public int numArcs;
 
-    /** Returns this */
     public Arc<T> copyFrom(Arc<T> other) {
       node = other.node;
       label = other.label;
@@ -315,13 +275,10 @@ public final class FST<T> implements Accountable {
 
   public static final int DEFAULT_MAX_BLOCK_BITS = Constants.JRE_IS_64BIT ? 30 : 28;
 
-  /** Load a previously saved FST. */
   public FST(DataInput in, Outputs<T> outputs) throws IOException {
     this(in, outputs, DEFAULT_MAX_BLOCK_BITS);
   }
 
-  /** Load a previously saved FST; maxBlockBits allows you to
-   *  control the size of the byte[] pages used to hold the FST bytes. */
   public FST(DataInput in, Outputs<T> outputs, int maxBlockBits) throws IOException {
     this.outputs = outputs;
 
@@ -581,9 +538,6 @@ public final class FST<T> implements Accountable {
     bytes.writeTo(out);
   }
   
-  /**
-   * Writes an automaton to a file. 
-   */
   public void save(final File file) throws IOException {
     boolean success = false;
     OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
@@ -599,9 +553,6 @@ public final class FST<T> implements Accountable {
     }
   }
 
-  /**
-   * Reads an automaton from a file. 
-   */
   public static <T> FST<T> read(File file, Outputs<T> outputs) throws IOException {
     InputStream is = new BufferedInputStream(new FileInputStream(file));
     boolean success = false;
@@ -631,7 +582,6 @@ public final class FST<T> implements Accountable {
     }
   }
 
-  /** Reads one BYTE1/2/4 label from the provided {@link DataInput}. */
   public int readLabel(DataInput in) throws IOException {
     final int v;
     if (inputType == INPUT_TYPE.BYTE1) {
@@ -646,8 +596,6 @@ public final class FST<T> implements Accountable {
     return v;
   }
 
-  /** returns true if the node at this address has any
-   *  outgoing arcs */
   public static<T> boolean targetHasArcs(Arc<T> arc) {
     return arc.target > 0;
   }
@@ -845,8 +793,6 @@ public final class FST<T> implements Accountable {
     return node;
   }
 
-  /** Fills virtual 'start' arc, ie, an empty incoming arc to
-   *  the FST's start node */
   public Arc<T> getFirstArc(Arc<T> arc) {
 
     if (emptyOutput != null) {
@@ -867,12 +813,7 @@ public final class FST<T> implements Accountable {
     return arc;
   }
 
-  /** Follows the <code>follow</code> arc and reads the last
-   *  arc of its target; this changes the provided
-   *  <code>arc</code> (2nd arg) in-place and returns it.
-   * 
-   * @return Returns the second argument
-   * (<code>arc</code>). */
+
   public Arc<T> readLastTargetArc(Arc<T> follow, Arc<T> arc, BytesReader in) throws IOException {
     //System.out.println("readLast");
     if (!targetHasArcs(follow)) {
@@ -941,13 +882,6 @@ public final class FST<T> implements Accountable {
     return target;
   }
 
-  /**
-   * Follow the <code>follow</code> arc and read the first arc of its target;
-   * this changes the provided <code>arc</code> (2nd arg) in-place and returns
-   * it.
-   * 
-   * @return Returns the second argument (<code>arc</code>).
-   */
   public Arc<T> readFirstTargetArc(Arc<T> follow, Arc<T> arc, BytesReader in) throws IOException {
     //int pos = address;
     //System.out.println("    readFirstTarget follow.target=" + follow.target + " isFinal=" + follow.isFinal());
@@ -1000,12 +934,6 @@ public final class FST<T> implements Accountable {
     return readNextRealArc(arc, in);
   }
 
-  /**
-   * Checks if <code>arc</code>'s target state is in expanded (or vector) format. 
-   * 
-   * @return Returns <code>true</code> if <code>arc</code> points to a state in an
-   * expanded array format.
-   */
   boolean isExpandedTarget(Arc<T> follow, BytesReader in) throws IOException {
     if (!targetHasArcs(follow)) {
       return false;
@@ -1015,7 +943,6 @@ public final class FST<T> implements Accountable {
     }
   }
 
-  /** In-place read; returns the arc. */
   public Arc<T> readNextArc(Arc<T> arc, BytesReader in) throws IOException {
     if (arc.label == END_LABEL) {
       // This was a fake inserted "final" arc
@@ -1028,8 +955,6 @@ public final class FST<T> implements Accountable {
     }
   }
 
-  /** Peeks at next arc's label; does not alter arc.  Do
-   *  not call this if arc.isLast()! */
   public int readNextArcLabel(Arc<T> arc, BytesReader in) throws IOException {
     assert !arc.isLast();
 
@@ -1071,8 +996,6 @@ public final class FST<T> implements Accountable {
     return readLabel(in);
   }
 
-  /** Never returns null, but you should never call this if
-   *  arc.isLast() is true. */
   public Arc<T> readNextRealArc(Arc<T> arc, final BytesReader in) throws IOException {
 
     // TODO: can't assert this because we call from readFirstArc
@@ -1188,14 +1111,10 @@ public final class FST<T> implements Accountable {
   // TODO: could we somehow [partially] tableize arc lookups
   // like automaton?
 
-  /** Finds an arc leaving the incoming arc, replacing the arc in place.
-   *  This returns null if the arc was not found, else the incoming arc. */
   public Arc<T> findTargetArc(int labelToMatch, Arc<T> follow, Arc<T> arc, BytesReader in) throws IOException {
     return findTargetArc(labelToMatch, follow, arc, in, true);
   }
 
-  /** Finds an arc leaving the incoming arc, replacing the arc in place.
-   *  This returns null if the arc was not found, else the incoming arc. */
   private Arc<T> findTargetArc(int labelToMatch, Arc<T> follow, Arc<T> arc, BytesReader in, boolean useRootArcCache) throws IOException {
 
     if (labelToMatch == END_LABEL) {
@@ -1337,29 +1256,12 @@ public final class FST<T> implements Accountable {
     return arcWithOutputCount;
   }
 
-  /**
-   * Nodes will be expanded if their depth (distance from the root node) is
-   * &lt;= this value and their number of arcs is &gt;=
-   * {@link #FIXED_ARRAY_NUM_ARCS_SHALLOW}.
-   * 
-   * <p>
-   * Fixed array consumes more RAM but enables binary search on the arcs
-   * (instead of a linear scan) on lookup by arc label.
-   * 
-   * @return <code>true</code> if <code>node</code> should be stored in an
-   *         expanded (array) form.
-   * 
-   * @see #FIXED_ARRAY_NUM_ARCS_DEEP
-   * @see Builder.UnCompiledNode#depth
-   */
   private boolean shouldExpand(UnCompiledNode<T> node) {
     return allowArrayArcs &&
       ((node.depth <= FIXED_ARRAY_SHALLOW_DISTANCE && node.numArcs >= FIXED_ARRAY_NUM_ARCS_SHALLOW) || 
        node.numArcs >= FIXED_ARRAY_NUM_ARCS_DEEP);
   }
   
-  /** Returns a {@link BytesReader} for this FST, positioned at
-   *  position 0. */
   public BytesReader getBytesReader() {
     BytesReader in;
     if (packed) {
@@ -1370,16 +1272,11 @@ public final class FST<T> implements Accountable {
     return in;
   }
 
-  /** Reads bytes stored in an FST. */
   public static abstract class BytesReader extends DataInput {
-    /** Get current read position. */
     public abstract long getPosition();
 
-    /** Set current read position. */
     public abstract void setPosition(long pos);
 
-    /** Returns true if this reader uses reversed bytes
-     *  under-the-hood. */
     public abstract boolean reversed();
   }
 
@@ -1516,18 +1413,7 @@ public final class FST<T> implements Accountable {
     allowArrayArcs = false;
   }
 
-  /** Expert: creates an FST by packing this one.  This
-   *  process requires substantial additional RAM (currently
-   *  up to ~8 bytes per node depending on
-   *  <code>acceptableOverheadRatio</code>), but then should
-   *  produce a smaller FST.
-   *
-   *  <p>The implementation of this method uses ideas from
-   *  <a target="_blank" href="http://www.cs.put.poznan.pl/dweiss/site/publications/download/fsacomp.pdf">Smaller Representation of Finite State Automata</a>,
-   *  which describes techniques to reduce the size of a FST.
-   *  However, this is not a strict implementation of the
-   *  algorithms described in this paper.
-   */
+
   FST<T> pack(int minInCountDeref, int maxDerefNodes, float acceptableOverheadRatio) throws IOException {
 
     // NOTE: maxDerefNodes is intentionally int: we cannot

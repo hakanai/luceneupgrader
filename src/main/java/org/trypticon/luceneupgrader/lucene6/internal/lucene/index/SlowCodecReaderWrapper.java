@@ -29,22 +29,10 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.codecs.TermVectorsRe
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.Sort;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Bits;
 
-/**
- * Wraps arbitrary readers for merging. Note that this can cause slow
- * and memory-intensive merges. Consider using {@link FilterCodecReader}
- * instead.
- */
 public final class SlowCodecReaderWrapper {
   
-  /** No instantiation */
   private SlowCodecReaderWrapper() {}
   
-  /**
-   * Returns a {@code CodecReader} view of reader. 
-   * <p>
-   * If {@code reader} is already a {@code CodecReader}, it is returned
-   * directly. Otherwise, a (slow) view is returned.
-   */
   public static CodecReader wrap(final LeafReader reader) throws IOException {
     if (reader instanceof CodecReader) {
       return (CodecReader) reader;

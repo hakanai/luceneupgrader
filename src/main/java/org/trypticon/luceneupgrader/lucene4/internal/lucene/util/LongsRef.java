@@ -1,7 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
-import java.util.Arrays;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,38 +14,26 @@ import java.util.Arrays;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
-/** Represents long[], as a slice (offset + length) into an
- *  existing long[].  The {@link #longs} member should never be null; use
- *  {@link #EMPTY_LONGS} if necessary.
- *
- *  @lucene.internal */
+import java.util.Arrays;
+
 public final class LongsRef implements Comparable<LongsRef>, Cloneable {
-  /** An empty long array for convenience */
   public static final long[] EMPTY_LONGS = new long[0];
 
-  /** The contents of the LongsRef. Should never be {@code null}. */
   public long[] longs;
-  /** Offset of first valid long. */
   public int offset;
-  /** Length of used longs. */
   public int length;
 
-  /** Create a LongsRef with {@link #EMPTY_LONGS} */
   public LongsRef() {
     longs = EMPTY_LONGS;
   }
 
-  /** 
-   * Create a LongsRef pointing to a new array of size <code>capacity</code>.
-   * Offset and length will both be zero.
-   */
+
   public LongsRef(int capacity) {
     longs = new long[capacity];
   }
 
-  /** This instance will directly reference longs w/o making a copy.
-   * longs should not be null */
   public LongsRef(long[] longs, int offset, int length) {
     this.longs = longs;
     this.offset = offset;
@@ -57,13 +41,6 @@ public final class LongsRef implements Comparable<LongsRef>, Cloneable {
     assert isValid();
   }
 
-  /**
-   * Returns a shallow clone of this instance (the underlying longs are
-   * <b>not</b> copied and will be shared by both the returned object and this
-   * object.
-   * 
-   * @see #deepCopyOf
-   */  
   @Override
   public LongsRef clone() {
     return new LongsRef(longs, offset, length);
@@ -107,7 +84,6 @@ public final class LongsRef implements Comparable<LongsRef>, Cloneable {
     }
   }
 
-  /** Signed int order comparison */
   @Override
   public int compareTo(LongsRef other) {
     if (this == other) return 0;
@@ -148,21 +124,11 @@ public final class LongsRef implements Comparable<LongsRef>, Cloneable {
     return sb.toString();
   }
   
-  /**
-   * Creates a new LongsRef that points to a copy of the longs from 
-   * <code>other</code>
-   * <p>
-   * The returned IntsRef will have a length of other.length
-   * and an offset of zero.
-   */
   public static LongsRef deepCopyOf(LongsRef other) {
     return new LongsRef(Arrays.copyOfRange(other.longs, other.offset, other.offset + other.length), 0, other.length);
   }
   
-  /** 
-   * Performs internal consistency checks.
-   * Always returns true (or throws IllegalStateException) 
-   */
+
   public boolean isValid() {
     if (longs == null) {
       throw new IllegalStateException("longs is null");

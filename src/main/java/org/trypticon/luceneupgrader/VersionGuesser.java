@@ -6,6 +6,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.IOContext;
 import org.apache.lucene.store.IndexInput;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -13,13 +14,13 @@ import java.nio.file.Path;
  * Tries to guess the version of a Lucene text index with minimal effort.
  */
 public class VersionGuesser {
-    public LuceneVersion guess(Path path) throws IOException {
+    public LuceneVersion guess(@Nonnull Path path) throws IOException {
         try (Directory directory = FSDirectory.open(path)) {
             return guess(directory);
         }
     }
 
-    public LuceneVersion guess(Directory directory) throws IOException {
+    public LuceneVersion guess(@Nonnull Directory directory) throws IOException {
         IOContext context = IOContext.DEFAULT;
 
         // Encapsulates logic roughly like:

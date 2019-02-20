@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,282 +50,174 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.LongBitSet;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Version;
 
 
-/**
- * Basic tool and API to check the health of an index and
- * write a new segments file that removes reference to
- * problematic segments.
- * 
- * <p>As this tool checks every byte in the index, on a large
- * index it can take quite a long time to run.
- *
- * @lucene.experimental Please make a complete backup of your
- * index before using this to fix your index!
- */
 public class CheckIndex {
 
   private PrintStream infoStream;
   private Directory dir;
 
-  /**
-   * Returned from {@link #checkIndex()} detailing the health and status of the index.
-   *
-   * @lucene.experimental
-   **/
+
 
   public static class Status {
 
     Status() {
     }
 
-    /** True if no problems were found with the index. */
     public boolean clean;
 
-    /** True if we were unable to locate and load the segments_N file. */
     public boolean missingSegments;
 
-    /** True if we were unable to open the segments_N file. */
     public boolean cantOpenSegments;
 
-    /** True if we were unable to read the version number from segments_N file. */
     public boolean missingSegmentVersion;
 
-    /** Name of latest segments_N file in the index. */
     public String segmentsFileName;
 
-    /** Number of segments in the index. */
     public int numSegments;
 
-    /** Empty unless you passed specific segments list to check as optional 3rd argument.
-     *  @see CheckIndex#checkIndex(List) */
     public List<String> segmentsChecked = new ArrayList<>();
   
-    /** True if the index was created with a newer version of Lucene than the CheckIndex tool. */
     public boolean toolOutOfDate;
 
-    /** List of {@link SegmentInfoStatus} instances, detailing status of each segment. */
     public List<SegmentInfoStatus> segmentInfos = new ArrayList<>();
   
-    /** Directory index is in. */
     public Directory dir;
 
-    /** 
-     * SegmentInfos instance containing only segments that
-     * had no problems (this is used with the {@link CheckIndex#fixIndex} 
-     * method to repair the index. 
-     */
     SegmentInfos newSegments;
 
-    /** How many documents will be lost to bad segments. */
     public int totLoseDocCount;
 
-    /** How many bad segments were found. */
     public int numBadSegments;
 
-    /** True if we checked only specific segments ({@link
-     * #checkIndex(List)}) was called with non-null
-     * argument). */
+
     public boolean partial;
 
-    /** The greatest segment name. */
     public int maxSegmentName;
 
-    /** Whether the SegmentInfos.counter is greater than any of the segments' names. */
-    public boolean validCounter; 
+    public boolean validCounter;
 
-    /** Holds the userData of the last commit in the index */
     public Map<String, String> userData;
 
-    /** Holds the status of each segment in the index.
-     *  See {@link #segmentInfos}.
-     *
-     * @lucene.experimental
-     */
     public static class SegmentInfoStatus {
 
       SegmentInfoStatus() {
       }
 
-      /** Name of the segment. */
       public String name;
 
-      /** Codec used to read this segment. */
       public Codec codec;
 
-      /** Document count (does not take deletions into account). */
       public int docCount;
 
-      /** True if segment is compound file format. */
       public boolean compound;
 
-      /** Number of files referenced by this segment. */
       public int numFiles;
 
-      /** Net size (MB) of the files referenced by this
-       *  segment. */
       public double sizeMB;
 
-      /** Doc store offset, if this segment shares the doc
-       *  store files (stored fields and term vectors) with
-       *  other segments.  This is -1 if it does not share. */
+
       public int docStoreOffset = -1;
     
-      /** String of the shared doc store segment, or null if
-       *  this segment does not share the doc store files. */
       public String docStoreSegment;
 
-      /** True if the shared doc store files are compound file
-       *  format. */
       public boolean docStoreCompoundFile;
 
-      /** True if this segment has pending deletions. */
       public boolean hasDeletions;
 
-      /** Current deletions generation. */
       public long deletionsGen;
     
-      /** Number of deleted documents. */
       public int numDeleted;
 
-      /** True if we were able to open an AtomicReader on this
-       *  segment. */
       public boolean openReaderPassed;
 
-      /** Number of fields in this segment. */
       int numFields;
 
-      /** Map that includes certain
-       *  debugging details that IndexWriter records into
-       *  each segment it creates */
+
       public Map<String,String> diagnostics;
 
-      /** Status for testing of field norms (null if field norms could not be tested). */
       public FieldNormStatus fieldNormStatus;
 
-      /** Status for testing of indexed terms (null if indexed terms could not be tested). */
       public TermIndexStatus termIndexStatus;
 
-      /** Status for testing of stored fields (null if stored fields could not be tested). */
       public StoredFieldStatus storedFieldStatus;
 
-      /** Status for testing of term vectors (null if term vectors could not be tested). */
       public TermVectorStatus termVectorStatus;
       
-      /** Status for testing of DocValues (null if DocValues could not be tested). */
       public DocValuesStatus docValuesStatus;
     }
 
-    /**
-     * Status from testing field norms.
-     */
     public static final class FieldNormStatus {
       private FieldNormStatus() {
       }
 
-      /** Number of fields successfully tested */
       public long totFields = 0L;
 
-      /** Exception thrown during term index test (null on success) */
       public Throwable error = null;
     }
 
-    /**
-     * Status from testing term index.
-     */
     public static final class TermIndexStatus {
 
       TermIndexStatus() {
       }
 
-      /** Number of terms with at least one live doc. */
       public long termCount = 0L;
 
-      /** Number of terms with zero live docs docs. */
       public long delTermCount = 0L;
 
-      /** Total frequency across all terms. */
       public long totFreq = 0L;
       
-      /** Total number of positions. */
       public long totPos = 0L;
 
-      /** Exception thrown during term index test (null on success) */
       public Throwable error = null;
 
-      /** Holds details of block allocations in the block
-       *  tree terms dictionary (this is only set if the
-       *  {@link PostingsFormat} for this segment uses block
-       *  tree. */
+
       public Map<String,Stats> blockTreeStats = null;
     }
 
-    /**
-     * Status from testing stored fields.
-     */
     public static final class StoredFieldStatus {
 
       StoredFieldStatus() {
       }
       
-      /** Number of documents tested. */
       public int docCount = 0;
       
-      /** Total number of stored fields tested. */
       public long totFields = 0;
       
-      /** Exception thrown during stored fields test (null on success) */
       public Throwable error = null;
     }
 
-    /**
-     * Status from testing stored fields.
-     */
     public static final class TermVectorStatus {
       
       TermVectorStatus() {
       }
 
-      /** Number of documents tested. */
       public int docCount = 0;
       
-      /** Total number of term vectors tested. */
       public long totVectors = 0;
       
-      /** Exception thrown during term vector test (null on success) */
       public Throwable error = null;
     }
     
-    /**
-     * Status from testing DocValues
-     */
     public static final class DocValuesStatus {
 
       DocValuesStatus() {
       }
 
-      /** Total number of docValues tested. */
       public long totalValueFields;
       
-      /** Total number of numeric fields */
       public long totalNumericFields;
       
-      /** Total number of binary fields */
       public long totalBinaryFields;
       
-      /** Total number of sorted fields */
       public long totalSortedFields;
       
-      /** Total number of sortednumeric fields */
       public long totalSortedNumericFields;
       
-      /** Total number of sortedset fields */
       public long totalSortedSetFields;
       
-      /** Exception thrown during doc values test (null on success) */
       public Throwable error = null;
     }
   }
 
-  /** Create a new CheckIndex on the directory. */
   public CheckIndex(Directory dir) {
     this.dir = dir;
     infoStream = null;
@@ -334,43 +225,34 @@ public class CheckIndex {
 
   private boolean crossCheckTermVectors;
 
-  /** If true, term vectors are compared against postings to
-   *  make sure they are the same.  This will likely
-   *  drastically increase time it takes to run CheckIndex! */
+
   public void setCrossCheckTermVectors(boolean v) {
     crossCheckTermVectors = v;
   }
 
-  /** See {@link #setCrossCheckTermVectors}. */
   public boolean getCrossCheckTermVectors() {
     return crossCheckTermVectors;
   }
 
   private boolean failFast;
 
-  /** If true, just throw the original exception immediately when
-   *  corruption is detected, rather than continuing to iterate to other
-   *  segments looking for more corruption.  */
+
   public void setFailFast(boolean v) {
     failFast = v;
   }
 
-  /** See {@link #setFailFast}. */
   public boolean getFailFast() {
     return failFast;
   }
 
   private boolean verbose;
 
-  /** Set infoStream where messages should go.  If null, no
-   *  messages are printed.  If verbose is true then more
-   *  details are printed. */
+
   public void setInfoStream(PrintStream out, boolean verbose) {
     infoStream = out;
     this.verbose = verbose;
   }
 
-  /** Set infoStream where messages should go. See {@link #setInfoStream(PrintStream,boolean)}. */
   public void setInfoStream(PrintStream out) {
     setInfoStream(out, false);
   }
@@ -380,31 +262,12 @@ public class CheckIndex {
       out.println(msg);
   }
 
-  /** Returns a {@link Status} instance detailing
-   *  the state of the index.
-   *
-   *  <p>As this method checks every byte in the index, on a large
-   *  index it can take quite a long time to run.
-   *
-   *  <p><b>WARNING</b>: make sure
-   *  you only call this when the index is not opened by any
-   *  writer. */
+
   public Status checkIndex() throws IOException {
     return checkIndex(null);
   }
   
-  /** Returns a {@link Status} instance detailing
-   *  the state of the index.
-   * 
-   *  @param onlySegments list of specific segment names to check
-   *
-   *  <p>As this method checks every byte in the specified
-   *  segments, on a large index it can take quite a long
-   *  time to run.
-   *
-   *  <p><b>WARNING</b>: make sure
-   *  you only call this when the index is not opened by any
-   *  writer. */
+
   public Status checkIndex(List<String> onlySegments) throws IOException {
     NumberFormat nf = NumberFormat.getInstance(Locale.ROOT);
     SegmentInfos sis = new SegmentInfos();
@@ -719,10 +582,6 @@ public class CheckIndex {
     return result;
   }
 
-  /**
-   * Test field norms.
-   * @lucene.experimental
-   */
   public static Status.FieldNormStatus testFieldNorms(AtomicReader reader, PrintStream infoStream, boolean failFast) throws IOException {
     final Status.FieldNormStatus status = new Status.FieldNormStatus();
 
@@ -759,10 +618,6 @@ public class CheckIndex {
     return status;
   }
 
-  /**
-   * checks Fields api is consistent with itself.
-   * searcher is optional, to verify with queries. Can be null.
-   */
   private static Status.TermIndexStatus checkFields(Fields fields, Bits liveDocs, int maxDoc, FieldInfos fieldInfos, boolean doPrint, boolean isVectors, PrintStream infoStream, boolean verbose) throws IOException {
     // TODO: we should probably return our own stats thing...?!
     
@@ -1326,18 +1181,10 @@ public class CheckIndex {
     return status;
   }
 
-  /**
-   * Test the term index.
-   * @lucene.experimental
-   */
   public static Status.TermIndexStatus testPostings(AtomicReader reader, PrintStream infoStream) throws IOException {
     return testPostings(reader, infoStream, false, false);
   }
   
-  /**
-   * Test the term index.
-   * @lucene.experimental
-   */
   public static Status.TermIndexStatus testPostings(AtomicReader reader, PrintStream infoStream, boolean verbose, boolean failFast) throws IOException {
 
     // TODO: we should go and verify term vectors match, if
@@ -1376,10 +1223,6 @@ public class CheckIndex {
     return status;
   }
   
-  /**
-   * Test stored fields.
-   * @lucene.experimental
-   */
   public static Status.StoredFieldStatus testStoredFields(AtomicReader reader, PrintStream infoStream, boolean failFast) throws IOException {
     final Status.StoredFieldStatus status = new Status.StoredFieldStatus();
 
@@ -1421,10 +1264,6 @@ public class CheckIndex {
     return status;
   }
   
-  /**
-   * Test docvalues.
-   * @lucene.experimental
-   */
   public static Status.DocValuesStatus testDocValues(AtomicReader reader,
                                                      PrintStream infoStream,
                                                      boolean failFast) throws IOException {
@@ -1693,18 +1532,10 @@ public class CheckIndex {
     }
   }
 
-  /**
-   * Test term vectors.
-   * @lucene.experimental
-   */
   public static Status.TermVectorStatus testTermVectors(AtomicReader reader, PrintStream infoStream) throws IOException {
     return testTermVectors(reader, infoStream, false, false, false);
   }
 
-  /**
-   * Test term vectors.
-   * @lucene.experimental
-   */
   public static Status.TermVectorStatus testTermVectors(AtomicReader reader, PrintStream infoStream, boolean verbose, boolean crossCheckTermVectors, boolean failFast) throws IOException {
     final Status.TermVectorStatus status = new Status.TermVectorStatus();
     final FieldInfos fieldInfos = reader.getFieldInfos();
@@ -1930,19 +1761,7 @@ public class CheckIndex {
     return status;
   }
 
-  /** Repairs the index using previously returned result
-   *  from {@link #checkIndex}.  Note that this does not
-   *  remove any of the unreferenced files after it's done;
-   *  you must separately open an {@link IndexWriter}, which
-   *  deletes unreferenced files when it's created.
-   *
-   * <p><b>WARNING</b>: this writes a
-   *  new segments file into the index, effectively removing
-   *  all documents in broken segments from the index.
-   *  BE CAREFUL.
-   *
-   * <p><b>WARNING</b>: Make sure you only call this when the
-   *  index is not opened  by any writer. */
+
   public void fixIndex(Status result) throws IOException {
     if (result.partial)
       throw new IllegalArgumentException("can only fix an index that was fully checked (this status checked a subset of segments)");
@@ -1962,38 +1781,6 @@ public class CheckIndex {
     return assertsOn;
   }
 
-  /** Command-line interface to check and fix an index.
-
-    <p>
-    Run it like this:
-    <pre>
-    java -ea:org.apache.lucene... org.apache.lucene.index.CheckIndex pathToIndex [-fix] [-verbose] [-segment X] [-segment Y]
-    </pre>
-    <ul>
-    <li><code>-fix</code>: actually write a new segments_N file, removing any problematic segments
-
-    <li><code>-segment X</code>: only check the specified
-    segment(s).  This can be specified multiple times,
-    to check more than one segment, eg <code>-segment _2
-    -segment _a</code>.  You can't use this with the -fix
-    option.
-    </ul>
-
-    <p><b>WARNING</b>: <code>-fix</code> should only be used on an emergency basis as it will cause
-                       documents (perhaps many) to be permanently removed from the index.  Always make
-                       a backup copy of your index before running this!  Do not run this tool on an index
-                       that is actively being written to.  You have been warned!
-
-    <p>                Run without -fix, this tool will open the index, report version information
-                       and report any exceptions it hits and what action it would take if -fix were
-                       specified.  With -fix, this tool will remove any segments that have issues and
-                       write a new segments_N file.  This means all documents contained in the affected
-                       segments will be removed.
-
-    <p>
-                       This tool exits with exit code 1 if the index cannot be opened or has any
-                       corruption, else 0.
-   */
   public static void main(String[] args) throws IOException, InterruptedException {
 
     boolean doFix = false;

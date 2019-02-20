@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.document;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,24 +13,17 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.document;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.document;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.FieldInfo.IndexOptions;
 
-/** A field that is indexed but not tokenized: the entire
- *  String value is indexed as a single token.  For example
- *  this might be used for a 'country' field or an 'id'
- *  field, or any field that you intend to use for sorting
- *  or access through the field cache. */
+
 
 public final class StringField extends Field {
 
-  /** Indexed, not tokenized, omits norms, indexes
-   *  DOCS_ONLY, not stored. */
   public static final FieldType TYPE_NOT_STORED = new FieldType();
 
-  /** Indexed, not tokenized, omits norms, indexes
-   *  DOCS_ONLY, stored */
   public static final FieldType TYPE_STORED = new FieldType();
 
   static {
@@ -50,12 +41,7 @@ public final class StringField extends Field {
     TYPE_STORED.freeze();
   }
 
-  /** Creates a new StringField. 
-   *  @param name field name
-   *  @param value String value
-   *  @param stored Store.YES if the content should also be stored
-   *  @throws IllegalArgumentException if the field name or value is null.
-   */
+
   public StringField(String name, String value, Store stored) {
     super(name, value, stored == Store.YES ? TYPE_STORED : TYPE_NOT_STORED);
   }

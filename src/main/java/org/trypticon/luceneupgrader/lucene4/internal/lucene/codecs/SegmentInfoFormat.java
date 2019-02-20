@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,29 +13,16 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentInfo;
 
-/**
- * Expert: Controls the format of the 
- * {@link SegmentInfo} (segment metadata file).
- * <p>
- * 
- * @see SegmentInfo
- * @lucene.experimental
- */
 public abstract class SegmentInfoFormat {
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected SegmentInfoFormat() {
   }
 
-  /** Returns the {@link SegmentInfoReader} for reading
-   *  {@link SegmentInfo} instances. */
   public abstract SegmentInfoReader getSegmentInfoReader();
 
-  /** Returns the {@link SegmentInfoWriter} for writing
-   *  {@link SegmentInfo} instances. */
   public abstract SegmentInfoWriter getSegmentInfoWriter();
 }

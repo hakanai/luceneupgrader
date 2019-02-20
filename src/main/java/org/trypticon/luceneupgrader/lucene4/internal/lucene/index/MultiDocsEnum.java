@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,18 +13,12 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 
 import java.io.IOException;
 import java.util.Arrays;
-
-/**
- * Exposes {@link DocsEnum}, merged from {@link DocsEnum}
- * API of sub-segments.
- *
- * @lucene.experimental
- */
 
 public final class MultiDocsEnum extends DocsEnum {
   private final MultiTermsEnum parent;
@@ -38,9 +30,7 @@ public final class MultiDocsEnum extends DocsEnum {
   int currentBase;
   int doc = -1;
 
-  /** Sole constructor
-   * @param parent The {@link MultiTermsEnum} that created us.
-   * @param subReaderCount How many sub-readers are being merged. */
+
   public MultiDocsEnum(MultiTermsEnum parent, int subReaderCount) {
     this.parent = parent;
     subDocsEnum = new DocsEnum[subReaderCount];
@@ -63,19 +53,14 @@ public final class MultiDocsEnum extends DocsEnum {
     return this;
   }
 
-  /** Returns {@code true} if this instance can be reused by
-   *  the provided {@link MultiTermsEnum}. */
   public boolean canReuse(MultiTermsEnum parent) {
     return this.parent == parent;
   }
 
-  /** How many sub-readers we are merging.
-   *  @see #getSubs */
   public int getNumSubs() {
     return numSubs;
   }
 
-  /** Returns sub-readers we are merging. */
   public EnumWithSlice[] getSubs() {
     return subs;
   }
@@ -149,17 +134,12 @@ public final class MultiDocsEnum extends DocsEnum {
   }
 
   // TODO: implement bulk read more efficiently than super
-  /** Holds a {@link DocsEnum} along with the
-   *  corresponding {@link ReaderSlice}. */
   public final static class EnumWithSlice {
     EnumWithSlice() {
     }
 
-    /** {@link DocsEnum} of this sub-reader. */
     public DocsEnum docsEnum;
 
-    /** {@link ReaderSlice} describing how this sub-reader
-     *  fits into the composite reader. */
     public ReaderSlice slice;
     
     @Override

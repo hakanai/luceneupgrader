@@ -24,14 +24,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.DocValuesForm
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentReadState;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentWriteState;
 
-/**
- * Lucene 4.9 DocValues format.
- * @deprecated only for old 4.x segments
- */
 @Deprecated
 public class Lucene49DocValuesFormat extends DocValuesFormat {
 
-  /** Sole Constructor */
   public Lucene49DocValuesFormat() {
     super("Lucene49");
   }

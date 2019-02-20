@@ -25,8 +25,7 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.util.automaton;
 
 import java.util.*;
@@ -34,27 +33,16 @@ import java.util.*;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.StringHelper;
 
-/**
- * Construction of basic automata.
- * 
- * @lucene.experimental
- */
 final public class Automata {
   
   private Automata() {}
   
-  /**
-   * Returns a new (deterministic) automaton with the empty language.
-   */
   public static Automaton makeEmpty() {
     Automaton a = new Automaton();
     a.finishState();
     return a;
   }
   
-  /**
-   * Returns a new (deterministic) automaton that accepts only the empty string.
-   */
   public static Automaton makeEmptyString() {
     Automaton a = new Automaton();
     a.createState();
@@ -62,9 +50,6 @@ final public class Automata {
     return a;
   }
   
-  /**
-   * Returns a new (deterministic) automaton that accepts all strings.
-   */
   public static Automaton makeAnyString() {
     Automaton a = new Automaton();
     int s = a.createState();
@@ -74,9 +59,6 @@ final public class Automata {
     return a;
   }
 
-  /**
-   * Returns a new (deterministic) automaton that accepts all binary terms.
-   */
   public static Automaton makeAnyBinary() {
     Automaton a = new Automaton();
     int s = a.createState();
@@ -86,39 +68,26 @@ final public class Automata {
     return a;
   }
   
-  /**
-   * Returns a new (deterministic) automaton that accepts any single codepoint.
-   */
   public static Automaton makeAnyChar() {
     return makeCharRange(Character.MIN_CODE_POINT, Character.MAX_CODE_POINT);
   }
 
-  /** Accept any single character starting from the specified state, returning the new state */
   public static int appendAnyChar(Automaton a, int state) {
     int newState = a.createState();
     a.addTransition(state, newState, Character.MIN_CODE_POINT, Character.MAX_CODE_POINT);
     return newState;
   }
 
-  /**
-   * Returns a new (deterministic) automaton that accepts a single codepoint of
-   * the given value.
-   */
   public static Automaton makeChar(int c) {
     return makeCharRange(c, c);
   }
 
-  /** Appends the specified character to the specified state, returning a new state. */
   public static int appendChar(Automaton a, int state, int c) {
     int newState = a.createState();
     a.addTransition(state, newState, c, c);
     return newState;
   }
 
-  /**
-   * Returns a new (deterministic) automaton that accepts a single codepoint whose
-   * value is in the given interval (including both end points).
-   */
   public static Automaton makeCharRange(int min, int max) {
     if (min > max) {
       return makeEmpty();
@@ -132,10 +101,6 @@ final public class Automata {
     return a;
   }
   
-  /**
-   * Constructs sub-automaton corresponding to decimal numbers of length
-   * x.substring(n).length().
-   */
   private static int anyOfRightLength(Automaton.Builder builder, String x, int n) {
     int s = builder.createState();
     if (x.length() == n) {
@@ -146,10 +111,6 @@ final public class Automata {
     return s;
   }
   
-  /**
-   * Constructs sub-automaton corresponding to decimal numbers of value at least
-   * x.substring(n) and length x.substring(n).length().
-   */
   private static int atLeast(Automaton.Builder builder, String x, int n, Collection<Integer> initials,
       boolean zeros) {
     int s = builder.createState();
@@ -168,10 +129,6 @@ final public class Automata {
     return s;
   }
   
-  /**
-   * Constructs sub-automaton corresponding to decimal numbers of value at most
-   * x.substring(n) and length x.substring(n).length().
-   */
   private static int atMost(Automaton.Builder builder, String x, int n) {
     int s = builder.createState();
     if (x.length() == n) {
@@ -186,11 +143,6 @@ final public class Automata {
     return s;
   }
   
-  /**
-   * Constructs sub-automaton corresponding to decimal numbers of value between
-   * x.substring(n) and y.substring(n) and of length x.substring(n).length()
-   * (which must be equal to y.substring(n).length()).
-   */
   private static int between(Automaton.Builder builder,
       String x, String y, int n,
       Collection<Integer> initials, boolean zeros) {
@@ -227,13 +179,7 @@ final public class Automata {
     return true;
   }
 
-  /** Creates a new deterministic, minimal automaton accepting
-   *  all binary terms in the specified interval.  Note that unlike
-   *  {@link #makeDecimalInterval}, the returned automaton is infinite,
-   *  because terms behave like floating point numbers leading with
-   *  a decimal point.  However, in the special case where min == max,
-   *  and both are inclusive, the automata will be finite and accept
-   *  exactly one term. */
+
   public static Automaton makeBinaryInterval(BytesRef min, boolean minInclusive, BytesRef max, boolean maxInclusive) {
 
     if (min == null && minInclusive == false) {
@@ -435,20 +381,6 @@ final public class Automata {
     return a;
   }
 
-  /**
-   * Returns a new automaton that accepts strings representing decimal (base 10)
-   * non-negative integers in the given interval.
-   * 
-   * @param min minimal value of interval
-   * @param max maximal value of interval (both end points are included in the
-   *          interval)
-   * @param digits if &gt; 0, use fixed number of digits (strings must be prefixed
-   *          by 0's to obtain the right length) - otherwise, the number of
-   *          digits is not fixed (any number of leading 0s is accepted)
-   * @exception IllegalArgumentException if min &gt; max or if numbers in the
-   *              interval cannot be expressed with the given fixed number of
-   *              digits
-   */
   public static Automaton makeDecimalInterval(int min, int max, int digits)
       throws IllegalArgumentException {
     String x = Integer.toString(min);
@@ -496,10 +428,6 @@ final public class Automata {
     return a1;
   }
   
-  /**
-   * Returns a new (deterministic) automaton that accepts the single given
-   * string.
-   */
   public static Automaton makeString(String s) {
     Automaton a = new Automaton();
     int lastState = a.createState();
@@ -519,10 +447,6 @@ final public class Automata {
     return a;
   }
 
-  /**
-   * Returns a new (deterministic) automaton that accepts the single given
-   * binary term.
-   */
   public static Automaton makeBinary(BytesRef term) {
     Automaton a = new Automaton();
     int lastState = a.createState();
@@ -542,10 +466,6 @@ final public class Automata {
     return a;
   }
   
-  /**
-   * Returns a new (deterministic) automaton that accepts the single given
-   * string from the specified unicode code points.
-   */
   public static Automaton makeString(int[] word, int offset, int length) {
     Automaton a = new Automaton();
     a.createState();
@@ -561,19 +481,6 @@ final public class Automata {
     return a;
   }
 
-  /**
-   * Returns a new (deterministic and minimal) automaton that accepts the union
-   * of the given collection of {@link BytesRef}s representing UTF-8 encoded
-   * strings.
-   * 
-   * @param utf8Strings
-   *          The input strings, UTF-8 encoded. The collection must be in sorted
-   *          order.
-   * 
-   * @return An {@link Automaton} accepting all input strings. The resulting
-   *         automaton is codepoint based (full unicode codepoints on
-   *         transitions).
-   */
   public static Automaton makeStringUnion(Collection<BytesRef> utf8Strings) {
     if (utf8Strings.isEmpty()) {
       return makeEmpty();

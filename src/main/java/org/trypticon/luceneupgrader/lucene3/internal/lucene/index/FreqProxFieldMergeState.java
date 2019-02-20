@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 
@@ -26,8 +25,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.FreqProxTermsW
 // should factor it out so other consumers don't have to
 // duplicate this code
 
-/** Used by DocumentsWriter to merge the postings from
- *  multiple ThreadStates when creating a segment */
 final class FreqProxFieldMergeState {
 
   final FreqProxTermsWriterPerField field;

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.blocktree;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.blocktree;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.blocktree;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -37,7 +36,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimat
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst.FST;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst.Util;
 
-/** Iterates through terms in this field */
 final class SegmentTermsEnum extends TermsEnum {
 
   // Lazy init:
@@ -118,8 +116,6 @@ final class SegmentTermsEnum extends TermsEnum {
     }
   }
 
-  /** Runs next() through the entire terms dict,
-   *  computing aggregate statistics. */
   public Stats computeBlockStats() throws IOException {
 
     Stats stats = new Stats(fr.parent.segment, fr.fieldInfo.name);

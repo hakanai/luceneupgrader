@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 
@@ -45,28 +44,20 @@ class ConstantScoreAutoRewrite extends TermCollectingRewrite<BooleanQuery> {
   private int termCountCutoff = DEFAULT_TERM_COUNT_CUTOFF;
   private double docCountPercent = DEFAULT_DOC_COUNT_PERCENT;
 
-  /** If the number of terms in this query is equal to or
-   *  larger than this setting then {@link
-   *  MultiTermQuery#CONSTANT_SCORE_FILTER_REWRITE} is used. */
+
   public void setTermCountCutoff(int count) {
     termCountCutoff = count;
   }
 
-  /** @see #setTermCountCutoff */
   public int getTermCountCutoff() {
     return termCountCutoff;
   }
 
-  /** If the number of documents to be visited in the
-   *  postings exceeds this specified percentage of the
-   *  maxDoc() for the index, then {@link
-   *  MultiTermQuery#CONSTANT_SCORE_FILTER_REWRITE} is used.
-   *  @param percent 0.0 to 100.0 */
+
   public void setDocCountPercent(double percent) {
     docCountPercent = percent;
   }
 
-  /** @see #setDocCountPercent */
   public double getDocCountPercent() {
     return docCountPercent;
   }
@@ -182,7 +173,6 @@ class ConstantScoreAutoRewrite extends TermCollectingRewrite<BooleanQuery> {
     return true;
   }
   
-  /** Special implementation of BytesStartArray that keeps parallel arrays for {@link TermContext} */
   static final class TermStateByteStart extends DirectBytesStartArray  {
     TermContext[] termState;
     

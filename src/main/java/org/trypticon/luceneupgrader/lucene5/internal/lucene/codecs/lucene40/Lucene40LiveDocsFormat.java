@@ -28,17 +28,11 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.MutableBits;
 
-/**
- * Lucene 4.0 Live Documents Format.
- * @deprecated Only for reading old 4.x segments
- */
 @Deprecated
 public final class Lucene40LiveDocsFormat extends LiveDocsFormat {
 
-  /** Extension of deletes */
   static final String DELETES_EXTENSION = "del";
 
-  /** Sole constructor. */
   public Lucene40LiveDocsFormat() {
   }
   

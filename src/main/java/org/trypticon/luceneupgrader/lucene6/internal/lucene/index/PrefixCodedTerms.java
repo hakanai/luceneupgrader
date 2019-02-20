@@ -27,12 +27,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRefBuilder;
 
-/**
- * Prefix codes term instances (prefixes are shared). This is expected to be
- * faster to build than a FST and might also be more compact if there are no
- * common suffixes.
- * @lucene.internal
- */
 public class PrefixCodedTerms implements Accountable {
   final RAMFile buffer;
   private final long size;
@@ -48,12 +42,10 @@ public class PrefixCodedTerms implements Accountable {
     return buffer.ramBytesUsed() + 2 * Long.BYTES;
   }
 
-  /** Records del gen for this packet. */
   public void setDelGen(long delGen) {
     this.delGen = delGen;
   }
   
-  /** Builds a PrefixCodedTerms: call add repeatedly, then finish. */
   public static class Builder {
     private RAMFile buffer = new RAMFile();
     private RAMOutputStream output = new RAMOutputStream(buffer, false);
@@ -61,15 +53,12 @@ public class PrefixCodedTerms implements Accountable {
     private BytesRefBuilder lastTermBytes = new BytesRefBuilder();
     private long size;
 
-    /** Sole constructor. */
     public Builder() {}
 
-    /** add a term */
     public void add(Term term) {
       add(term.field(), term.bytes());
     }
 
-    /** add a term.  This fully consumes in the incoming {@link BytesRef}. */
     public void add(String field, BytesRef bytes) {
       assert lastTerm.equals(new Term("")) || new Term(field, bytes).compareTo(lastTerm) > 0;
 
@@ -93,7 +82,6 @@ public class PrefixCodedTerms implements Accountable {
       }
     }
     
-    /** return finalized form */
     public PrefixCodedTerms finish() {
       try {
         output.close();
@@ -118,7 +106,6 @@ public class PrefixCodedTerms implements Accountable {
     }
   }
 
-  /** An iterator over the list of terms stored in a {@link PrefixCodedTerms}. */
   public static class TermIterator extends FieldTermIterator {
     final IndexInput input;
     final BytesRefBuilder builder = new BytesRefBuilder();
@@ -177,12 +164,10 @@ public class PrefixCodedTerms implements Accountable {
     }
   }
 
-  /** Return an iterator over the terms stored in this {@link PrefixCodedTerms}. */
   public TermIterator iterator() {
     return new TermIterator(delGen, buffer);
   }
 
-  /** Return the number of terms stored in this {@link PrefixCodedTerms}. */
   public long size() {
     return size;
   }

@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -29,8 +28,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.DirectoryReade
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.DirectoryReader.MultiTermPositions;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Similarity;
 
-/** An IndexReader which reads multiple indexes, appending
- * their content. */
 public class MultiReader extends IndexReader implements Cloneable {
   protected final IndexReader[] subReaders;
   protected final int[] starts;                           // 1st docno for each segment
@@ -40,25 +37,10 @@ public class MultiReader extends IndexReader implements Cloneable {
   private int numDocs = -1;
   private boolean hasDeletions = false;
   
- /**
-  * <p>Construct a MultiReader aggregating the named set of (sub)readers.
-  * Directory locking for delete, undeleteAll, and setNorm operations is
-  * left to the subreaders. </p>
-  * <p>Note that all subreaders are closed if this Multireader is closed.</p>
-  * @param subReaders set of (sub)readers
-  */
   public MultiReader(IndexReader... subReaders) {
     this(subReaders, true);
   }
 
-  /**
-   * <p>Construct a MultiReader aggregating the named set of (sub)readers.
-   * Directory locking for delete, undeleteAll, and setNorm operations is
-   * left to the subreaders. </p>
-   * @param closeSubReaders indicates whether the subreaders should be closed
-   * when this MultiReader is closed
-   * @param subReaders set of (sub)readers
-   */
   public MultiReader(IndexReader[] subReaders, boolean closeSubReaders) {
     this(subReaders.clone(), new boolean[subReaders.length]);
     for (int i = 0; i < subReaders.length; i++) {
@@ -97,11 +79,6 @@ public class MultiReader extends IndexReader implements Cloneable {
     return doReopen(false);
   }
   
-  /**
-   * @throws UnsupportedOperationException MultiReaders cannot support changing the readOnly flag
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@link #doOpenIfChanged()} instead.
-   */
   @Deprecated @Override
   protected IndexReader doOpenIfChanged(boolean openReadOnly) throws CorruptIndexException, IOException {
     throw new UnsupportedOperationException("MultiReader does not support reopening with changing readOnly flag. "+
@@ -117,24 +94,12 @@ public class MultiReader extends IndexReader implements Cloneable {
     }
   }
   
-  /**
-   * @throws UnsupportedOperationException MultiReaders cannot support changing the readOnly flag
-   * @deprecated Write support will be removed in Lucene 4.0.
-   * Use {@link #clone()} instead.
-   */
   @Override @Deprecated
   public IndexReader clone(boolean openReadOnly) throws CorruptIndexException, IOException {
     throw new UnsupportedOperationException("MultiReader does not support cloning with changing readOnly flag. "+
       "Use IndexReader.clone() instead.");
   }
 
-  /**
-   * If clone is true then we clone each of the subreaders
-   * @param doClone
-   * @return New IndexReader, or null if open/clone is not necessary
-   * @throws CorruptIndexException
-   * @throws IOException
-   */
   private IndexReader doReopen(boolean doClone) throws CorruptIndexException, IOException {
     ensureOpen();
     
@@ -216,7 +181,6 @@ public class MultiReader extends IndexReader implements Cloneable {
     subReaders[i].getTermFreqVector(docNumber - starts[i], mapper);
   }
 
-  /** {@inheritDoc} */
   @Deprecated
   @Override
   public boolean isOptimized() {
@@ -265,7 +229,6 @@ public class MultiReader extends IndexReader implements Cloneable {
     return hasDeletions;
   }
 
-  /** {@inheritDoc} */
   @Override @Deprecated
   protected void doDelete(int n) throws CorruptIndexException, IOException {
     numDocs = -1;                             // invalidate cache
@@ -274,7 +237,6 @@ public class MultiReader extends IndexReader implements Cloneable {
     hasDeletions = true;
   }
 
-  /** {@inheritDoc} */
   @Override @Deprecated
   protected void doUndeleteAll() throws CorruptIndexException, IOException {
     for (int i = 0; i < subReaders.length; i++)
@@ -332,7 +294,6 @@ public class MultiReader extends IndexReader implements Cloneable {
     }
   }
 
-  /** {@inheritDoc} */
   @Override @Deprecated
   protected void doSetNorm(int n, String field, byte value)
     throws CorruptIndexException, IOException {
@@ -407,7 +368,6 @@ public class MultiReader extends IndexReader implements Cloneable {
     }
   }
 
-  /** {@inheritDoc} */
   @Override @Deprecated
   protected void doCommit(Map<String,String> commitUserData) throws IOException {
     for (int i = 0; i < subReaders.length; i++)
@@ -432,9 +392,6 @@ public class MultiReader extends IndexReader implements Cloneable {
     if (ioe != null) throw ioe;
   }
   
-  /**
-   * Checks recursively if all subreaders are up to date. 
-   */
   @Override
   public boolean isCurrent() throws CorruptIndexException, IOException {
     ensureOpen();
@@ -448,9 +405,7 @@ public class MultiReader extends IndexReader implements Cloneable {
     return true;
   }
   
-  /** Not implemented.
-   * @throws UnsupportedOperationException
-   */
+
   @Override
   public long getVersion() {
     throw new UnsupportedOperationException("MultiReader does not support this method.");

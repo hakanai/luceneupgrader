@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 class SegmentTermPositionVector extends SegmentTermVector implements TermPositionVector {
   protected int[][] positions;
@@ -28,13 +27,6 @@ class SegmentTermPositionVector extends SegmentTermVector implements TermPositio
     this.positions = positions;
   }
 
-  /**
-   * Returns an array of TermVectorOffsetInfo in which the term is found.
-   *
-   * @param index The position in the array to get the offsets from
-   * @return An array of TermVectorOffsetInfo objects or the empty list
-   * @see org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.Token
-   */
   public TermVectorOffsetInfo[] getOffsets(int index) {
     TermVectorOffsetInfo[] result = TermVectorOffsetInfo.EMPTY_OFFSET_INFO;
     if(offsets == null)
@@ -46,11 +38,6 @@ class SegmentTermPositionVector extends SegmentTermVector implements TermPositio
     return result;
   }
   
-  /**
-   * Returns an array of positions in which the term is found.
-   * Terms are identified by the index at which its number appears in the
-   * term String array obtained from the <code>indexOf</code> method.
-   */
   public int[] getTermPositions(int index) {
     int[] result = EMPTY_TERM_POS;
     if(positions == null)

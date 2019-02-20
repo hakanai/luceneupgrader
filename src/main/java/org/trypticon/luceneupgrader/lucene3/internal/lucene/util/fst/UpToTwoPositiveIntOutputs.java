@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,31 +13,16 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.DataOutput;
 
-/**
- * An FST {@link Outputs} implementation where each output
- * is one or two non-negative long values.  If it's a
- * single output, Long is returned; else, TwoLongs.  Order
- * is preserved in the TwoLongs case, ie .first is the first
- * input/output added to Builder, and .second is the
- * second.  You cannot store 0 output with this (that's
- * reserved to mean "no output")!
- *
- * NOTE: the resulting FST is not guaranteed to be minimal!
- * See {@link Builder}.
- *
- * @lucene.experimental
- */
-
 public final class UpToTwoPositiveIntOutputs extends Outputs<Object> {
 
-  /** Holds two long outputs. */
   public final static class TwoLongs {
     public final long first;
     public final long second;

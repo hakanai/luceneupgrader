@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.search.DocIdSet.EMPTY;
 
@@ -32,39 +31,20 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.WAH8DocIdSet;
 
-/**
- * Wraps another {@link Filter}'s result and caches it.  The purpose is to allow
- * filters to simply filter, and then wrap with this class
- * to add caching.
- */
 public class CachingWrapperFilter extends Filter implements Accountable {
   private final Filter filter;
   private final Map<Object,DocIdSet> cache = Collections.synchronizedMap(new WeakHashMap<Object,DocIdSet>());
 
-  /** Wraps another filter's result and caches it.
-   * @param filter Filter to cache results of
-   */
+
   public CachingWrapperFilter(Filter filter) {
     this.filter = filter;
   }
 
-  /**
-   * Gets the contained filter.
-   * @return the contained filter.
-   */
   public Filter getFilter() {
     return filter;
   }
 
-  /** 
-   *  Provide the DocIdSet to be cached, using the DocIdSet provided
-   *  by the wrapped Filter. <p>This implementation returns the given {@link DocIdSet},
-   *  if {@link DocIdSet#isCacheable} returns <code>true</code>, else it calls
-   *  {@link #cacheImpl(DocIdSetIterator,AtomicReader)}
-   *  <p>Note: This method returns {@linkplain DocIdSet#EMPTY} if the given docIdSet
-   *  is <code>null</code> or if {@link DocIdSet#iterator()} return <code>null</code>. The empty
-   *  instance is use as a placeholder in the cache instead of the <code>null</code> value.
-   */
+
   protected DocIdSet docIdSetToCache(DocIdSet docIdSet, AtomicReader reader) throws IOException {
     if (docIdSet == null) {
       // this is better than returning null, as the nonnull result can be cached
@@ -84,9 +64,6 @@ public class CachingWrapperFilter extends Filter implements Accountable {
     }
   }
   
-  /**
-   * Default cache implementation: uses {@link WAH8DocIdSet}.
-   */
   protected DocIdSet cacheImpl(DocIdSetIterator iterator, AtomicReader reader) throws IOException {
     WAH8DocIdSet.Builder builder = new WAH8DocIdSet.Builder();
     builder.add(iterator);

@@ -25,8 +25,7 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene5.internal.lucene.util.automaton;
 
 import java.util.ArrayList;
@@ -34,22 +33,10 @@ import java.util.BitSet;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-/**
- * Operations for minimizing automata.
- * 
- * @lucene.experimental
- */
 final public class MinimizationOperations {
   
   private MinimizationOperations() {}
 
-  /**
-   * Minimizes (and determinizes if not already deterministic) the given
-   * automaton using Hopcroft's algorighm.
-   * @param maxDeterminizedStates maximum number of states determinizing the
-   *  automaton can result in.  Set higher to allow more complex queries and
-   *  lower to prevent memory exhaustion.
-   */
   public static Automaton minimize(Automaton a, int maxDeterminizedStates) {
     if (a.getNumStates() == 0 || (a.isAccept(0) == false && a.getNumTransitions(0) == 0)) {
       // Fastmatch for common case

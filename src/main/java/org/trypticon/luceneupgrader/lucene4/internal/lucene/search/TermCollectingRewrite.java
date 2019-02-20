@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -34,10 +33,8 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 abstract class TermCollectingRewrite<Q extends Query> extends MultiTermQuery.RewriteMethod {
   
   
-  /** Return a suitable top-level Query for holding all expanded terms. */
   protected abstract Q getTopLevelQuery() throws IOException;
   
-  /** Add a MultiTermQuery term to the top-level query */
   protected final void addClause(Q topLevel, Term term, int docCount, float boost) throws IOException {
     addClause(topLevel, term, docCount, boost, null);
   }
@@ -91,13 +88,10 @@ abstract class TermCollectingRewrite<Q extends Query> extends MultiTermQuery.Rew
       this.readerContext = readerContext;
       this.topReaderContext = topReaderContext;
     }
-    /** attributes used for communication with the enum */
     public final AttributeSource attributes = new AttributeSource();
   
-    /** return false to stop collecting */
     public abstract boolean collect(BytesRef bytes) throws IOException;
     
-    /** the next segment's {@link TermsEnum} that is used to collect terms */
     public abstract void setNextEnum(TermsEnum termsEnum) throws IOException;
   }
 }

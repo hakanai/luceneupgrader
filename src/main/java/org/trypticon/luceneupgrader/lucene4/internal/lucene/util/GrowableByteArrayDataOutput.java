@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,22 +13,16 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataOutput;
 
-/**
- * A {@link DataOutput} that can be used to build a byte[].
- * @lucene.internal
- */
 public final class GrowableByteArrayDataOutput extends DataOutput {
 
-  /** The bytes */
   public byte[] bytes;
-  /** The length */
   public int length;
 
-  /** Create a {@link GrowableByteArrayDataOutput} with the given initial capacity. */
   public GrowableByteArrayDataOutput(int cp) {
     this.bytes = new byte[ArrayUtil.oversize(cp, 1)];
     this.length = 0;

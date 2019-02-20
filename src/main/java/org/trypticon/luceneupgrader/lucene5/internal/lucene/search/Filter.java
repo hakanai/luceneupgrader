@@ -22,45 +22,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LeafReaderContext;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 
-/**
- *  Convenient base class for building queries that only perform matching, but
- *  no scoring. The scorer produced by such queries always returns 0 as score.
- *
- *  @deprecated Use {@link Query} objects instead: when queries are wrapped in a
- *  {@link ConstantScoreQuery} or in a {@link BooleanClause.Occur#FILTER} clause,
- *  they automatically disable the score computation so the {@link Filter} class
- *  does not provide benefits compared to queries anymore.
- */
 @Deprecated
 public abstract class Filter extends Query {
 
-  /**
-   * Creates a {@link DocIdSet} enumerating the documents that should be
-   * permitted in search results. <b>NOTE:</b> null can be
-   * returned if no documents are accepted by this Filter.
-   * <p>
-   * Note: This method will be called once per segment in
-   * the index during searching.  The returned {@link DocIdSet}
-   * must refer to document IDs for that segment, not for
-   * the top-level reader.
-   *
-   * @param context a {@link org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LeafReaderContext} instance opened on the index currently
-   *         searched on. Note, it is likely that the provided reader info does not
-   *         represent the whole underlying index i.e. if the index has more than
-   *         one segment the given reader only represents a single segment.
-   *         The provided context is always an atomic context, so you can call
-   *         {@link org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LeafReader#fields()}
-   *         on the context's reader, for example.
-   *
-   * @param acceptDocs
-   *          Bits that represent the allowable docs to match (typically deleted docs
-   *          but possibly filtering other documents)
-   *
-   * @return a DocIdSet that provides the documents which should be permitted or
-   *         prohibited in search results. <b>NOTE:</b> <code>null</code> should be returned if
-   *         the filter doesn't accept any documents otherwise internal optimization might not apply
-   *         in the case an <i>empty</i> {@link DocIdSet} is returned.
-   */
   public abstract DocIdSet getDocIdSet(LeafReaderContext context, Bits acceptDocs) throws IOException;
 
   //

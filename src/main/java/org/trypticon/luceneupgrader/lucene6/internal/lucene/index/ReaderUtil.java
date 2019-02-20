@@ -20,19 +20,10 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.index;
 import java.util.List;
 
 
-/**
- * Common util methods for dealing with {@link IndexReader}s and {@link IndexReaderContext}s.
- *
- * @lucene.internal
- */
 public final class ReaderUtil {
 
   private ReaderUtil() {} // no instance
 
-  /**
-   * Walks up the reader tree and return the given context's top level reader
-   * context, or in other words the reader tree's root context.
-   */
   public static IndexReaderContext getTopLevelContext(IndexReaderContext context) {
     while (context.parent != null) {
       context = context.parent;
@@ -40,10 +31,6 @@ public final class ReaderUtil {
     return context;
   }
 
-  /**
-   * Returns index of the searcher/reader for document <code>n</code> in the
-   * array used to construct this searcher/reader.
-   */
   public static int subIndex(int n, int[] docStarts) { // find
     // searcher/reader for doc n:
     int size = docStarts.length;
@@ -66,10 +53,6 @@ public final class ReaderUtil {
     return hi;
   }
   
-  /**
-   * Returns index of the searcher/reader for document <code>n</code> in the
-   * array used to construct this searcher/reader.
-   */
   public static int subIndex(int n, List<LeafReaderContext> leaves) { // find
     // searcher/reader for doc n:
     int size = leaves.size();

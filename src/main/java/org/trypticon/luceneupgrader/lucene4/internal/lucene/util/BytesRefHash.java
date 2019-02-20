@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -27,22 +26,6 @@ import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ByteBloc
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ByteBlockPool.BYTE_BLOCK_SHIFT;
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ByteBlockPool.BYTE_BLOCK_SIZE;
 
-/**
- * {@link BytesRefHash} is a special purpose hash-map like data-structure
- * optimized for {@link BytesRef} instances. BytesRefHash maintains mappings of
- * byte arrays to ids (Map&lt;BytesRef,int&gt;) storing the hashed bytes
- * efficiently in continuous storage. The mapping to the id is
- * encapsulated inside {@link BytesRefHash} and is guaranteed to be increased
- * for each added {@link BytesRef}.
- * 
- * <p>
- * Note: The maximum capacity {@link BytesRef} instance passed to
- * {@link #add(BytesRef)} must not be longer than {@link ByteBlockPool#BYTE_BLOCK_SIZE}-2. 
- * The internal storage is limited to 2GB total byte storage.
- * </p>
- * 
- * @lucene.internal
- */
 public final class BytesRefHash {
 
   public static final int DEFAULT_CAPACITY = 16;
@@ -62,24 +45,14 @@ public final class BytesRefHash {
   private final BytesStartArray bytesStartArray;
   private Counter bytesUsed;
 
-  /**
-   * Creates a new {@link BytesRefHash} with a {@link ByteBlockPool} using a
-   * {@link DirectAllocator}.
-   */
-  public BytesRefHash() { 
+  public BytesRefHash() {
     this(new ByteBlockPool(new DirectAllocator()));
   }
   
-  /**
-   * Creates a new {@link BytesRefHash}
-   */
   public BytesRefHash(ByteBlockPool pool) {
     this(pool, DEFAULT_CAPACITY, new DirectBytesStartArray(DEFAULT_CAPACITY));
   }
 
-  /**
-   * Creates a new {@link BytesRefHash}
-   */
   public BytesRefHash(ByteBlockPool pool, int capacity, BytesStartArray bytesStartArray) {
     hashSize = capacity;
     hashHalfSize = hashSize >> 1;
@@ -93,30 +66,10 @@ public final class BytesRefHash {
     bytesUsed.addAndGet(hashSize * RamUsageEstimator.NUM_BYTES_INT);
   }
 
-  /**
-   * Returns the number of {@link BytesRef} values in this {@link BytesRefHash}.
-   * 
-   * @return the number of {@link BytesRef} values in this {@link BytesRefHash}.
-   */
   public int size() {
     return count;
   }
 
-  /**
-   * Populates and returns a {@link BytesRef} with the bytes for the given
-   * bytesID.
-   * <p>
-   * Note: the given bytesID must be a positive integer less than the current
-   * size ({@link #size()})
-   * 
-   * @param bytesID
-   *          the id
-   * @param ref
-   *          the {@link BytesRef} to populate
-   * 
-   * @return the given BytesRef instance populated with the bytes for the given
-   *         bytesID
-   */
   public BytesRef get(int bytesID, BytesRef ref) {
     assert bytesStart != null : "bytesStart is null - not initialized";
     assert bytesID < bytesStart.length: "bytesID exceeds byteStart len: " + bytesStart.length;
@@ -124,14 +77,6 @@ public final class BytesRefHash {
     return ref;
   }
 
-  /**
-   * Returns the ids array in arbitrary order. Valid ids start at offset of 0
-   * and end at a limit of {@link #size()} - 1
-   * <p>
-   * Note: This is a destructive operation. {@link #clear()} must be called in
-   * order to reuse this {@link BytesRefHash} instance.
-   * </p>
-   */
   int[] compact() {
     assert bytesStart != null : "bytesStart is null - not initialized";
     int upto = 0;
@@ -150,16 +95,6 @@ public final class BytesRefHash {
     return ids;
   }
 
-  /**
-   * Returns the values array sorted by the referenced byte values.
-   * <p>
-   * Note: This is a destructive operation. {@link #clear()} must be called in
-   * order to reuse this {@link BytesRefHash} instance.
-   * </p>
-   * 
-   * @param comp
-   *          the {@link Comparator} used for sorting
-   */
   public int[] sort(final Comparator<BytesRef> comp) {
     final int[] compact = compact();
     new IntroSorter() {
@@ -225,9 +160,6 @@ public final class BytesRefHash {
     }
   }
 
-  /**
-   * Clears the {@link BytesRef} which maps to the given {@link BytesRef}
-   */
   public void clear(boolean resetPool) {
     lastCount = count;
     count = 0;
@@ -246,29 +178,12 @@ public final class BytesRefHash {
     clear(true);
   }
   
-  /**
-   * Closes the BytesRefHash and releases all internally used memory
-   */
   public void close() {
     clear(true);
     ids = null;
     bytesUsed.addAndGet(RamUsageEstimator.NUM_BYTES_INT * -hashSize);
   }
 
-  /**
-   * Adds a new {@link BytesRef}
-   * 
-   * @param bytes
-   *          the bytes to hash
-   * @return the id the given bytes are hashed if there was no mapping for the
-   *         given bytes, otherwise <code>(-(id)-1)</code>. This guarantees
-   *         that the return value will always be &gt;= 0 if the given bytes
-   *         haven't been hashed before.
-   * 
-   * @throws MaxBytesLengthExceededException
-   *           if the given bytes are > 2 +
-   *           {@link ByteBlockPool#BYTE_BLOCK_SIZE}
-   */
   public int add(BytesRef bytes) {
     assert bytesStart != null : "Bytesstart is null - not initialized";
     final int length = bytes.length;
@@ -327,15 +242,6 @@ public final class BytesRefHash {
     return -(e + 1);
   }
   
-  /**
-   * Returns the id of the given {@link BytesRef}.
-   * 
-   * @param bytes
-   *          the bytes to look for
-   * 
-   * @return the id of the given bytes, or {@code -1} if there is no mapping for the
-   *         given bytes.
-   */
   public int find(BytesRef bytes) {
     return ids[findHash(bytes)];
   }
@@ -361,12 +267,7 @@ public final class BytesRefHash {
     return hashPos;
   }
 
-  /** Adds a "arbitrary" int offset instead of a BytesRef
-   *  term.  This is used in the indexer to hold the hash for term
-   *  vectors, because they do not redundantly store the byte[] term
-   *  directly and instead reference the byte[] term
-   *  already stored by the postings BytesRefHash.  See
-   *  add(int textStart) in TermsHashPerField. */
+
   public int addByPoolOffset(int offset) {
     assert bytesStart != null : "Bytesstart is null - not initialized";
     // final position
@@ -402,10 +303,6 @@ public final class BytesRefHash {
     return -(e + 1);
   }
 
-  /**
-   * Called when hash is too small (> 50% occupied) or too large (< 20%
-   * occupied).
-   */
   private void rehash(final int newSize, boolean hashOnData) {
     final int newMask = newSize - 1;
     bytesUsed.addAndGet(RamUsageEstimator.NUM_BYTES_INT * (newSize));
@@ -460,11 +357,6 @@ public final class BytesRefHash {
     return StringHelper.murmurhash3_x86_32(bytes, offset, length, StringHelper.GOOD_FAST_HASH_SEED);
   }
 
-  /**
-   * reinitializes the {@link BytesRefHash} after a previous {@link #clear()}
-   * call. If {@link #clear()} has not been called previously this method has no
-   * effect.
-   */
   public void reinit() {
     if (bytesStart == null) {
       bytesStart = bytesStartArray.init();
@@ -476,25 +368,12 @@ public final class BytesRefHash {
     }
   }
 
-  /**
-   * Returns the bytesStart offset into the internally used
-   * {@link ByteBlockPool} for the given bytesID
-   * 
-   * @param bytesID
-   *          the id to look up
-   * @return the bytesStart offset into the internally used
-   *         {@link ByteBlockPool} for the given id
-   */
   public int byteStart(int bytesID) {
     assert bytesStart != null : "bytesStart is null - not initialized";
     assert bytesID >= 0 && bytesID < count : bytesID;
     return bytesStart[bytesID];
   }
 
-  /**
-   * Thrown if a {@link BytesRef} exceeds the {@link BytesRefHash} limit of
-   * {@link ByteBlockPool#BYTE_BLOCK_SIZE}-2.
-   */
   @SuppressWarnings("serial")
   public static class MaxBytesLengthExceededException extends RuntimeException {
     MaxBytesLengthExceededException(String message) {
@@ -502,43 +381,17 @@ public final class BytesRefHash {
     }
   }
 
-  /** Manages allocation of the per-term addresses. */
   public abstract static class BytesStartArray {
-    /**
-     * Initializes the BytesStartArray. This call will allocate memory
-     * 
-     * @return the initialized bytes start array
-     */
     public abstract int[] init();
 
-    /**
-     * Grows the {@link BytesStartArray}
-     * 
-     * @return the grown array
-     */
     public abstract int[] grow();
 
-    /**
-     * clears the {@link BytesStartArray} and returns the cleared instance.
-     * 
-     * @return the cleared instance, this might be <code>null</code>
-     */
     public abstract int[] clear();
 
-    /**
-     * A {@link Counter} reference holding the number of bytes used by this
-     * {@link BytesStartArray}. The {@link BytesRefHash} uses this reference to
-     * track it memory usage
-     * 
-     * @return a {@link AtomicLong} reference holding the number of bytes used
-     *         by this {@link BytesStartArray}.
-     */
     public abstract Counter bytesUsed();
   }
 
-  /** A simple {@link BytesStartArray} that tracks
-   *  memory allocation using a private {@link Counter}
-   *  instance.  */
+
   public static class DirectBytesStartArray extends BytesStartArray {
     // TODO: can't we just merge this w/
     // TrackingDirectBytesStartArray...?  Just add a ctor

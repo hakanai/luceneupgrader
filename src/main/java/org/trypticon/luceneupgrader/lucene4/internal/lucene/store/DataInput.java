@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -26,17 +25,6 @@ import java.util.Set;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BitUtil;
 
-/**
- * Abstract base class for performing read operations of Lucene's low-level
- * data types.
- *
- * <p>{@code DataInput} may only be used from one thread, because it is not
- * thread safe (it keeps internal state like file position). To allow
- * multithreaded use, every {@code DataInput} instance must be cloned before
- * used in another thread. Subclasses must therefore implement {@link #clone()},
- * returning a new {@code DataInput} which operates on the same underlying
- * resource, but positioned independently.
- */
 public abstract class DataInput implements Cloneable {
 
   private static final int SKIP_BUFFER_SIZE = 1024;
@@ -51,32 +39,14 @@ public abstract class DataInput implements Cloneable {
    */
   private byte[] skipBuffer;
 
-  /** Reads and returns a single byte.
-   * @see DataOutput#writeByte(byte)
-   */
+
   public abstract byte readByte() throws IOException;
 
-  /** Reads a specified number of bytes into an array at the specified offset.
-   * @param b the array to read bytes into
-   * @param offset the offset in the array to start storing bytes
-   * @param len the number of bytes to read
-   * @see DataOutput#writeBytes(byte[],int)
-   */
+
   public abstract void readBytes(byte[] b, int offset, int len)
     throws IOException;
 
-  /** Reads a specified number of bytes into an array at the
-   * specified offset with control over whether the read
-   * should be buffered (callers who have their own buffer
-   * should pass in "false" for useBuffer).  Currently only
-   * {@link BufferedIndexInput} respects this parameter.
-   * @param b the array to read bytes into
-   * @param offset the offset in the array to start storing bytes
-   * @param len the number of bytes to read
-   * @param useBuffer set to false if the caller will handle
-   * buffering.
-   * @see DataOutput#writeBytes(byte[],int)
-   */
+
   public void readBytes(byte[] b, int offset, int len, boolean useBuffer)
     throws IOException
   {
@@ -84,29 +54,18 @@ public abstract class DataInput implements Cloneable {
     readBytes(b, offset, len);
   }
 
-  /** Reads two bytes and returns a short.
-   * @see DataOutput#writeByte(byte)
-   */
+
   public short readShort() throws IOException {
     return (short) (((readByte() & 0xFF) <<  8) |  (readByte() & 0xFF));
   }
 
-  /** Reads four bytes and returns an int.
-   * @see DataOutput#writeInt(int)
-   */
+
   public int readInt() throws IOException {
     return ((readByte() & 0xFF) << 24) | ((readByte() & 0xFF) << 16)
          | ((readByte() & 0xFF) <<  8) |  (readByte() & 0xFF);
   }
 
-  /** Reads an int stored in variable-length format.  Reads between one and
-   * five bytes.  Smaller values take fewer bytes.  Negative numbers are not
-   * supported.
-   * <p>
-   * The format is described further in {@link DataOutput#writeVInt(int)}.
-   * 
-   * @see DataOutput#writeVInt(int)
-   */
+
   public int readVInt() throws IOException {
     /* This is the original code of this method,
      * but a Hotspot bug (see LUCENE-2975) corrupts the for-loop if
@@ -138,30 +97,16 @@ public abstract class DataInput implements Cloneable {
     throw new IOException("Invalid vInt detected (too many bits)");
   }
 
-  /**
-   * Read a {@link BitUtil#zigZagDecode(int) zig-zag}-encoded
-   * {@link #readVInt() variable-length} integer.
-   * @see DataOutput#writeZInt(int)
-   */
   public int readZInt() throws IOException {
     return BitUtil.zigZagDecode(readVInt());
   }
 
-  /** Reads eight bytes and returns a long.
-   * @see DataOutput#writeLong(long)
-   */
+
   public long readLong() throws IOException {
     return (((long)readInt()) << 32) | (readInt() & 0xFFFFFFFFL);
   }
 
-  /** Reads a long stored in variable-length format.  Reads between one and
-   * nine bytes.  Smaller values take fewer bytes.  Negative numbers are not
-   * supported.
-   * <p>
-   * The format is described further in {@link DataOutput#writeVInt(int)}.
-   * 
-   * @see DataOutput#writeVLong(long)
-   */
+
   public long readVLong() throws IOException {
     return readVLong(false);
   }
@@ -215,19 +160,11 @@ public abstract class DataInput implements Cloneable {
     }
   }
 
-  /**
-   * Read a {@link BitUtil#zigZagDecode(long) zig-zag}-encoded
-   * {@link #readVLong() variable-length} integer. Reads between one and ten
-   * bytes.
-   * @see DataOutput#writeZLong(long)
-   */
   public long readZLong() throws IOException {
     return BitUtil.zigZagDecode(readVLong(true));
   }
 
-  /** Reads a string.
-   * @see DataOutput#writeString(String)
-   */
+
   public String readString() throws IOException {
     int length = readVInt();
     final byte[] bytes = new byte[length];
@@ -235,15 +172,7 @@ public abstract class DataInput implements Cloneable {
     return new String(bytes, 0, length, StandardCharsets.UTF_8);
   }
 
-  /** Returns a clone of this stream.
-   *
-   * <p>Clones of a stream access the same data, and are positioned at the same
-   * point as the stream they were cloned from.
-   *
-   * <p>Expert: Subclasses must ensure that clones may be positioned at
-   * different points in the input from each other and from the stream they
-   * were cloned from.
-   */
+
   @Override
   public DataInput clone() {
     try {
@@ -253,8 +182,6 @@ public abstract class DataInput implements Cloneable {
     }
   }
 
-  /** Reads a Map&lt;String,String&gt; previously written
-   *  with {@link DataOutput#writeStringStringMap(Map)}. */
   public Map<String,String> readStringStringMap() throws IOException {
     final Map<String,String> map = new HashMap<>();
     final int count = readInt();
@@ -267,8 +194,6 @@ public abstract class DataInput implements Cloneable {
     return map;
   }
 
-  /** Reads a Set&lt;String&gt; previously written
-   *  with {@link DataOutput#writeStringSet(Set)}. */
   public Set<String> readStringSet() throws IOException {
     final Set<String> set = new HashSet<>();
     final int count = readInt();
@@ -279,12 +204,6 @@ public abstract class DataInput implements Cloneable {
     return set;
   }
 
-  /**
-   * Skip over <code>numBytes</code> bytes. The contract on this method is that it
-   * should have the same behavior as reading the same number of bytes into a
-   * buffer and discarding its content. Negative values of <code>numBytes</code>
-   * are not supported.
-   */
   public void skipBytes(final long numBytes) throws IOException {
     if (numBytes < 0) {
       throw new IllegalArgumentException("numBytes must be >= 0, got " + numBytes);

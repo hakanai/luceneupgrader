@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,24 +13,15 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 
-/** Represents hits returned by {@link
- * Searcher#search(Query,Filter,int,Sort)}.
- */
 public class TopFieldDocs
 extends TopDocs {
 
-	/** The fields which were used to sort results by. */
 	public SortField[] fields;
         
-	/** Creates one of these objects.
-	 * @param totalHits  Total number of hits for the query.
-	 * @param scoreDocs  The top hits for the query.
-	 * @param fields     The sort criteria used to find the top hits.
-	 * @param maxScore   The maximum score encountered.
-	 */
         public TopFieldDocs (int totalHits, ScoreDoc[] scoreDocs, SortField[] fields, float maxScore) {
 	  super (totalHits, scoreDocs, maxScore);
 	  this.fields = fields;

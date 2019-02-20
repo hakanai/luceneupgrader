@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -53,10 +52,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.StringHelper;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.BlockPackedWriter;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
-/**
- * {@link TermVectorsWriter} for {@link CompressingTermVectorsFormat}.
- * @lucene.experimental
- */
 public final class CompressingTermVectorsWriter extends TermVectorsWriter {
 
   // hard limit on the maximum number of documents per chunk
@@ -89,7 +84,6 @@ public final class CompressingTermVectorsWriter extends TermVectorsWriter {
   private final Compressor compressor;
   private final int chunkSize;
 
-  /** a pending doc */
   private class DocData {
     final int numFields;
     final Deque<FieldData> fields;
@@ -139,7 +133,6 @@ public final class CompressingTermVectorsWriter extends TermVectorsWriter {
     return doc;
   }
 
-  /** a pending field */
   private class FieldData {
     final boolean hasPositions, hasOffsets, hasPayloads;
     final int fieldNum, flags, numTerms;
@@ -206,7 +199,6 @@ public final class CompressingTermVectorsWriter extends TermVectorsWriter {
   private final GrowableByteArrayDataOutput payloadBytes; // buffered term payloads
   private final BlockPackedWriter writer;
 
-  /** Sole constructor. */
   public CompressingTermVectorsWriter(Directory directory, SegmentInfo si, String segmentSuffix, IOContext context,
       String formatName, CompressionMode compressionMode, int chunkSize) throws IOException {
     assert directory != null;
@@ -397,7 +389,6 @@ public final class CompressingTermVectorsWriter extends TermVectorsWriter {
     }
   }
 
-  /** Returns a sorted array containing unique field numbers */
   private int[] flushFieldNums() throws IOException {
     SortedSet<Integer> fieldNums = new TreeSet<>();
     for (DocData dd : pendingDocs) {

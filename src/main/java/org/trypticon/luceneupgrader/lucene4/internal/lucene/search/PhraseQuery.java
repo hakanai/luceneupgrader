@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,11 +38,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ToStringUtils;
 
-/** A Query that matches documents containing a particular sequence of terms.
- * A PhraseQuery is built by QueryParser for input like <code>"new york"</code>.
- * 
- * <p>This query may be combined with other terms or queries with a {@link BooleanQuery}.
- */
 public class PhraseQuery extends Query {
   private String field;
   private ArrayList<Term> terms = new ArrayList<>(4);
@@ -51,36 +45,16 @@ public class PhraseQuery extends Query {
   private int maxPosition = 0;
   private int slop = 0;
 
-  /** Constructs an empty phrase query. */
   public PhraseQuery() {}
 
-  /** Sets the number of other words permitted between words in query phrase.
-    If zero, then this is an exact phrase search.  For larger values this works
-    like a <code>WITHIN</code> or <code>NEAR</code> operator.
-
-    <p>The slop is in fact an edit-distance, where the units correspond to
-    moves of terms in the query phrase out of position.  For example, to switch
-    the order of two words requires two moves (the first move places the words
-    atop one another), so to permit re-orderings of phrases, the slop must be
-    at least two.
-
-    <p>More exact matches are scored higher than sloppier matches, thus search
-    results are sorted by exactness.
-
-    <p>The slop is zero by default, requiring exact matches.*/
   public void setSlop(int s) {
     if (s < 0) {
       throw new IllegalArgumentException("slop value cannot be negative");
     }
     slop = s; 
   }
-  /** Returns the slop.  See setSlop(). */
   public int getSlop() { return slop; }
 
-  /**
-   * Adds a term to the end of the query phrase.
-   * The relative position of the term is the one immediately after the last term added.
-   */
   public void add(Term term) {
     int position = 0;
     if(positions.size() > 0)
@@ -89,13 +63,6 @@ public class PhraseQuery extends Query {
     add(term, position);
   }
 
-  /**
-   * Adds a term to the end of the query phrase.
-   * The relative position of the term within the phrase is specified explicitly.
-   * This allows e.g. phrases with more than one term at the same position
-   * or phrases with gaps (e.g. in connection with stopwords).
-   * 
-   */
   public void add(Term term, int position) {
     if (terms.size() == 0) {
       field = term.field();
@@ -108,14 +75,10 @@ public class PhraseQuery extends Query {
     if (position > maxPosition) maxPosition = position;
   }
 
-  /** Returns the set of terms in this phrase. */
   public Term[] getTerms() {
     return terms.toArray(new Term[0]);
   }
 
-  /**
-   * Returns the relative positions of terms in this phrase.
-   */
   public int[] getPositions() {
       int[] result = new int[positions.size()];
       for(int i = 0; i < positions.size(); i++)
@@ -323,15 +286,11 @@ public class PhraseQuery extends Query {
     return new PhraseWeight(searcher);
   }
 
-  /**
-   * @see org.trypticon.luceneupgrader.lucene4.internal.lucene.search.Query#extractTerms(Set)
-   */
   @Override
   public void extractTerms(Set<Term> queryTerms) {
     queryTerms.addAll(terms);
   }
 
-  /** Prints a user-readable version of this query. */
   @Override
   public String toString(String f) {
     StringBuilder buffer = new StringBuilder();
@@ -375,7 +334,6 @@ public class PhraseQuery extends Query {
     return buffer.toString();
   }
 
-  /** Returns true iff <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof PhraseQuery))
@@ -387,7 +345,6 @@ public class PhraseQuery extends Query {
       && this.positions.equals(other.positions);
   }
 
-  /** Returns a hash code value for this object.*/
   @Override
   public int hashCode() {
     return Float.floatToIntBits(getBoost())

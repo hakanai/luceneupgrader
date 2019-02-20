@@ -21,14 +21,8 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.LeafReaderContext;
 
-/**
- * Base {@link FieldComparator} implementation that is used for all contexts.
- *
- * @lucene.experimental
- */
 public abstract class SimpleFieldComparator<T> extends FieldComparator<T> implements LeafFieldComparator {
 
-  /** This method is called before collecting <code>context</code>. */
   protected abstract void doSetNextReader(LeafReaderContext context) throws IOException;
 
   @Override

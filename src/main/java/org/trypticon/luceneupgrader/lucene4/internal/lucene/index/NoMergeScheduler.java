@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,21 +13,11 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
-/**
- * A {@link MergeScheduler} which never executes any merges. It is also a
- * singleton and can be accessed through {@link NoMergeScheduler#INSTANCE}. Use
- * it if you want to prevent an {@link IndexWriter} from ever executing merges,
- * regardless of the {@link MergePolicy} used. Note that you can achieve the
- * same thing by using {@link NoMergePolicy}, however with
- * {@link NoMergeScheduler} you also ensure that no unnecessary code of any
- * {@link MergeScheduler} implementation is ever executed. Hence it is
- * recommended to use both if you want to disable merges from ever happening.
- */
 public final class NoMergeScheduler extends MergeScheduler {
 
-  /** The single instance of {@link NoMergeScheduler} */
   public static final MergeScheduler INSTANCE = new NoMergeScheduler();
 
   private NoMergeScheduler() {

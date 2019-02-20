@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,25 +13,17 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.compressing;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataOutput;
 
-/**
- * A data compressor.
- */
 public abstract class Compressor {
 
-  /** Sole constructor, typically called from sub-classes. */
   protected Compressor() {}
 
-  /**
-   * Compress bytes into <code>out</code>. It it the responsibility of the
-   * compressor to add all necessary information so that a {@link Decompressor}
-   * will know when to stop decompressing bytes from the stream.
-   */
   public abstract void compress(byte[] bytes, int off, int len, DataOutput out) throws IOException;
 
 }

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -27,28 +26,8 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.AttributeSource
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
-/**  A <code>FilterAtomicReader</code> contains another AtomicReader, which it
- * uses as its basic source of data, possibly transforming the data along the
- * way or providing additional functionality. The class
- * <code>FilterAtomicReader</code> itself simply implements all abstract methods
- * of <code>IndexReader</code> with versions that pass all requests to the
- * contained index reader. Subclasses of <code>FilterAtomicReader</code> may
- * further override some of these methods and may also provide additional
- * methods and fields.
- * <p><b>NOTE</b>: If you override {@link #getLiveDocs()}, you will likely need
- * to override {@link #numDocs()} as well and vice-versa.
- * <p><b>NOTE</b>: If this {@link FilterAtomicReader} does not change the
- * content the contained reader, you could consider overriding
- * {@link #getCoreCacheKey()} so that {@link FieldCache} and
- * {@link CachingWrapperFilter} share the same entries for this atomic reader
- * and the wrapped one. {@link #getCombinedCoreAndDeletesKey()} could be
- * overridden as well if the {@link #getLiveDocs() live docs} are not changed
- * either.
- */
 public class FilterAtomicReader extends AtomicReader {
 
-  /** Get the wrapped instance by <code>reader</code> as long as this reader is
-   *  an intance of {@link FilterAtomicReader}.  */
   public static AtomicReader unwrap(AtomicReader reader) {
     while (reader instanceof FilterAtomicReader) {
       reader = ((FilterAtomicReader) reader).in;
@@ -56,16 +35,9 @@ public class FilterAtomicReader extends AtomicReader {
     return reader;
   }
 
-  /** Base class for filtering {@link Fields}
-   *  implementations. */
   public static class FilterFields extends Fields {
-    /** The underlying Fields instance. */
     protected final Fields in;
 
-    /**
-     * Creates a new FilterFields.
-     * @param in the underlying Fields instance.
-     */
     public FilterFields(Fields in) {
       this.in = in;
     }
@@ -86,19 +58,10 @@ public class FilterAtomicReader extends AtomicReader {
     }
   }
 
-  /** Base class for filtering {@link Terms} implementations.
-   * <p><b>NOTE</b>: If the order of terms and documents is not changed, and if
-   * these terms are going to be intersected with automata, you could consider
-   * overriding {@link #intersect} for better performance.
-   */
+
   public static class FilterTerms extends Terms {
-    /** The underlying Terms instance. */
     protected final Terms in;
 
-    /**
-     * Creates a new FilterTerms
-     * @param in the underlying Terms instance.
-     */
     public FilterTerms(Terms in) {
       this.in = in;
     }
@@ -154,15 +117,9 @@ public class FilterAtomicReader extends AtomicReader {
     }
   }
 
-  /** Base class for filtering {@link TermsEnum} implementations. */
   public static class FilterTermsEnum extends TermsEnum {
-    /** The underlying TermsEnum instance. */
     protected final TermsEnum in;
 
-    /**
-     * Creates a new FilterTermsEnum
-     * @param in the underlying TermsEnum instance.
-     */
     public FilterTermsEnum(TermsEnum in) { this.in = in; }
 
     @Override
@@ -221,15 +178,9 @@ public class FilterAtomicReader extends AtomicReader {
     }
   }
 
-  /** Base class for filtering {@link DocsEnum} implementations. */
   public static class FilterDocsEnum extends DocsEnum {
-    /** The underlying DocsEnum instance. */
     protected final DocsEnum in;
 
-    /**
-     * Create a new FilterDocsEnum
-     * @param in the underlying DocsEnum instance.
-     */
     public FilterDocsEnum(DocsEnum in) {
       this.in = in;
     }
@@ -265,15 +216,9 @@ public class FilterAtomicReader extends AtomicReader {
     }
   }
 
-  /** Base class for filtering {@link DocsAndPositionsEnum} implementations. */
   public static class FilterDocsAndPositionsEnum extends DocsAndPositionsEnum {
-    /** The underlying DocsAndPositionsEnum instance. */
     protected final DocsAndPositionsEnum in;
 
-    /**
-     * Create a new FilterDocsAndPositionsEnum
-     * @param in the underlying DocsAndPositionsEnum instance.
-     */
     public FilterDocsAndPositionsEnum(DocsAndPositionsEnum in) {
       this.in = in;
     }
@@ -329,14 +274,8 @@ public class FilterAtomicReader extends AtomicReader {
     }
   }
 
-  /** The underlying AtomicReader. */
   protected final AtomicReader in;
 
-  /**
-   * <p>Construct a FilterAtomicReader based on the specified base reader.
-   * <p>Note that base reader is closed if this FilterAtomicReader is closed.</p>
-   * @param in specified base reader.
-   */
   public FilterAtomicReader(AtomicReader in) {
     super();
     this.in = in;

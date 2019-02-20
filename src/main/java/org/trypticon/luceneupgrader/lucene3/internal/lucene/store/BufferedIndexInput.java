@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,15 +13,14 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
 import java.io.EOFException;
 import java.io.IOException;
 
-/** Base implementation class for buffered {@link IndexInput}. */
 public abstract class BufferedIndexInput extends IndexInput {
 
-  /** Default buffer size */
   public static final int BUFFER_SIZE = 1024;
 
   private int bufferSize = BUFFER_SIZE;
@@ -41,7 +38,6 @@ public abstract class BufferedIndexInput extends IndexInput {
     return buffer[bufferPosition++];
   }
 
-  /** @deprecated please pass resourceDesc */
   @Deprecated
   public BufferedIndexInput() {
     this("anonymous BuffereIndexInput");
@@ -51,21 +47,17 @@ public abstract class BufferedIndexInput extends IndexInput {
     this(resourceDesc, BUFFER_SIZE);
   }
 
-  /** Inits BufferedIndexInput with a specific bufferSize
-   *  @deprecated please pass resourceDesc */
   @Deprecated
   public BufferedIndexInput(int bufferSize) {
     this("anonymous BuffereIndexInput", bufferSize);
   }
 
-  /** Inits BufferedIndexInput with a specific bufferSize */
   public BufferedIndexInput(String resourceDesc, int bufferSize) {
     super(resourceDesc);
     checkBufferSize(bufferSize);
     this.bufferSize = bufferSize;
   }
 
-  /** Change the buffer size used by this IndexInput */
   public final void setBufferSize(int newSize) {
     assert buffer == null || bufferSize == buffer.length: "buffer=" + buffer + " bufferSize=" + bufferSize + " buffer.length=" + (buffer != null ? buffer.length : 0);
     if (newSize != bufferSize) {
@@ -96,7 +88,6 @@ public abstract class BufferedIndexInput extends IndexInput {
     buffer = newBuffer;
   }
 
-  /** Returns buffer size.  @see #setBufferSize */
   public final int getBufferSize() {
     return bufferSize;
   }
@@ -273,12 +264,7 @@ public abstract class BufferedIndexInput extends IndexInput {
     bufferPosition = 0;
   }
 
-  /** Expert: implements buffer refill.  Reads bytes from the current position
-   * in the input.
-   * @param b the array to read bytes into
-   * @param offset the offset in the array to start storing bytes
-   * @param length the number of bytes to read
-   */
+
   protected abstract void readInternal(byte[] b, int offset, int length)
           throws IOException;
 
@@ -297,10 +283,7 @@ public abstract class BufferedIndexInput extends IndexInput {
     }
   }
 
-  /** Expert: implements seek.  Sets current position in this file, where the
-   * next {@link #readInternal(byte[],int,int)} will occur.
-   * @see #readInternal(byte[],int,int)
-   */
+
   protected abstract void seekInternal(long pos) throws IOException;
 
   @Override
@@ -315,15 +298,6 @@ public abstract class BufferedIndexInput extends IndexInput {
     return clone;
   }
 
-  /**
-   * Flushes the in-memory bufer to the given output, copying at most
-   * <code>numBytes</code>.
-   * <p>
-   * <b>NOTE:</b> this method does not refill the buffer, however it does
-   * advance the buffer position.
-   * 
-   * @return the number of bytes actually flushed from the in-memory buffer.
-   */
   protected final int flushBuffer(IndexOutput out, long numBytes) throws IOException {
     int toCopy = bufferLength - bufferPosition;
     if (toCopy > numBytes) {

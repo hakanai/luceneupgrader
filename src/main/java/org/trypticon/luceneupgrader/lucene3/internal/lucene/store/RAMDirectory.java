@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
 import java.io.IOException;
 import java.io.FileNotFoundException;
@@ -30,23 +29,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexFileNameFilter;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ThreadInterruptedException;
 
-/**
- * A memory-resident {@link Directory} implementation.  Locking
- * implementation is by default the {@link SingleInstanceLockFactory}
- * but can be changed with {@link #setLockFactory}.
- * 
- * <p><b>Warning:</b> This class is not intended to work with huge
- * indexes. Everything beyond several hundred megabytes will waste
- * resources (GC cycles), because it uses an internal buffer size
- * of 1024 bytes, producing millions of {@code byte[1024]} arrays.
- * This class is optimized for small memory-resident indexes.
- * It also has bad concurrency on multithreaded environments.
- * 
- * <p>It is recommended to materialize large indexes on disk and use
- * {@link MMapDirectory}, which is a high-performance directory
- * implementation working directly on the file system cache of the
- * operating system, so copying data to Java heap space is not useful.
- */
 public class RAMDirectory extends Directory implements Serializable {
 
   private static final long serialVersionUID = 1l;
@@ -58,7 +40,6 @@ public class RAMDirectory extends Directory implements Serializable {
   // Lock acquisition sequence:  RAMDirectory, then RAMFile
   // *****
 
-  /** Constructs an empty {@link Directory}. */
   public RAMDirectory() {
     try {
       setLockFactory(new SingleInstanceLockFactory());
@@ -67,32 +48,6 @@ public class RAMDirectory extends Directory implements Serializable {
     }
   }
 
-  /**
-   * Creates a new <code>RAMDirectory</code> instance from a different
-   * <code>Directory</code> implementation.  This can be used to load
-   * a disk-based index into memory.
-   * 
-   * <p><b>Warning:</b> This class is not intended to work with huge
-   * indexes. Everything beyond several hundred megabytes will waste
-   * resources (GC cycles), because it uses an internal buffer size
-   * of 1024 bytes, producing millions of {@code byte[1024]} arrays.
-   * This class is optimized for small memory-resident indexes.
-   * It also has bad concurrency on multithreaded environments.
-   * 
-   * <p>For disk-based indexes it is recommended to use
-   * {@link MMapDirectory}, which is a high-performance directory
-   * implementation working directly on the file system cache of the
-   * operating system, so copying data to Java heap space is not useful.
-   * 
-   * <p>Note that the resulting <code>RAMDirectory</code> instance is fully
-   * independent from the original <code>Directory</code> (it is a
-   * complete copy).  Any subsequent changes to the
-   * original <code>Directory</code> will not be visible in the
-   * <code>RAMDirectory</code> instance.
-   *
-   * @param dir a <code>Directory</code> value
-   * @exception IOException if an error occurs
-   */
   public RAMDirectory(Directory dir) throws IOException {
     this(dir, false);
   }
@@ -122,16 +77,13 @@ public class RAMDirectory extends Directory implements Serializable {
     return names.toArray(new String[names.size()]);
   }
 
-  /** Returns true iff the named file exists in this directory. */
   @Override
   public final boolean fileExists(String name) {
     ensureOpen();
     return fileMap.containsKey(name);
   }
 
-  /** Returns the time the named file was last modified.
-   * @throws IOException if the file does not exist
-   */
+
   @Override
   public final long fileModified(String name) throws IOException {
     ensureOpen();
@@ -142,10 +94,7 @@ public class RAMDirectory extends Directory implements Serializable {
     return file.getLastModified();
   }
 
-  /** Set the modified time of an existing file to now.
-   * @throws IOException if the file does not exist
-   *  @deprecated Lucene never uses this API; it will be
-   *  removed in 4.0. */
+
   @Override
   @Deprecated
   public void touchFile(String name) throws IOException {
@@ -168,9 +117,7 @@ public class RAMDirectory extends Directory implements Serializable {
     file.setLastModified(ts2);
   }
 
-  /** Returns the length in bytes of a file in the directory.
-   * @throws IOException if the file does not exist
-   */
+
   @Override
   public final long fileLength(String name) throws IOException {
     ensureOpen();
@@ -181,18 +128,12 @@ public class RAMDirectory extends Directory implements Serializable {
     return file.getLength();
   }
   
-  /**
-   * Return total size in bytes of all files in this directory. This is
-   * currently quantized to RAMOutputStream.BUFFER_SIZE.
-   */
   public final long sizeInBytes() {
     ensureOpen();
     return sizeInBytes.get();
   }
   
-  /** Removes an existing file in the directory.
-   * @throws IOException if the file does not exist
-   */
+
   @Override
   public void deleteFile(String name) throws IOException {
     ensureOpen();
@@ -205,7 +146,6 @@ public class RAMDirectory extends Directory implements Serializable {
     }
   }
 
-  /** Creates a new, empty file in the directory with the given name. Returns a stream writing this file. */
   @Override
   public IndexOutput createOutput(String name) throws IOException {
     ensureOpen();
@@ -219,16 +159,10 @@ public class RAMDirectory extends Directory implements Serializable {
     return new RAMOutputStream(file);
   }
 
-  /**
-   * Returns a new {@link RAMFile} for storing data. This method can be
-   * overridden to return different {@link RAMFile} impls, that e.g. override
-   * {@link RAMFile#newBuffer(int)}.
-   */
   protected RAMFile newRAMFile() {
     return new RAMFile(this);
   }
 
-  /** Returns a stream reading an existing file. */
   @Override
   public IndexInput openInput(String name) throws IOException {
     ensureOpen();
@@ -239,7 +173,6 @@ public class RAMDirectory extends Directory implements Serializable {
     return new RAMInputStream(name, file);
   }
 
-  /** Closes the store to future operations, releasing associated memory. */
   @Override
   public void close() {
     isOpen = false;

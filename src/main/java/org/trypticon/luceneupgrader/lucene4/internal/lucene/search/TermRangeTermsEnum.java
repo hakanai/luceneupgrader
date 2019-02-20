@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.util.Comparator;
 
@@ -23,13 +22,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.FilteredTermsE
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.TermsEnum;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 
-/**
- * Subclass of FilteredTermEnum for enumerating all terms that match the
- * specified range parameters.
- * <p>Term enumerations are always ordered by
- * {@link #getComparator}.  Each term in the enumeration is
- * greater than all that precede it.</p>
- */
 public class TermRangeTermsEnum extends FilteredTermsEnum {
 
   final private boolean includeLower;
@@ -38,27 +30,7 @@ public class TermRangeTermsEnum extends FilteredTermsEnum {
   final private BytesRef upperBytesRef;
   private final Comparator<BytesRef> termComp;
 
-  /**
-   * Enumerates all terms greater/equal than <code>lowerTerm</code>
-   * but less/equal than <code>upperTerm</code>. 
-   * 
-   * If an endpoint is null, it is said to be "open". Either or both 
-   * endpoints may be open.  Open endpoints may not be exclusive 
-   * (you can't select all but the first or last term without 
-   * explicitly specifying the term to exclude.)
-   * 
-   * @param tenum
-   *          TermsEnum to filter
-   * @param lowerTerm
-   *          The term text at the lower end of the range
-   * @param upperTerm
-   *          The term text at the upper end of the range
-   * @param includeLower
-   *          If true, the <code>lowerTerm</code> is included in the range.
-   * @param includeUpper
-   *          If true, the <code>upperTerm</code> is included in the range.
-   */
-  public TermRangeTermsEnum(TermsEnum tenum, BytesRef lowerTerm, BytesRef upperTerm, 
+  public TermRangeTermsEnum(TermsEnum tenum, BytesRef lowerTerm, BytesRef upperTerm,
     boolean includeLower, boolean includeUpper) {
     super(tenum);
 

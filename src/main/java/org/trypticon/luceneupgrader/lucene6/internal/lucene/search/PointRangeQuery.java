@@ -32,19 +32,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.DocIdSetBuilder
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.FixedBitSet;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.StringHelper;
 
-/** 
- * Abstract class for range queries against single or multidimensional points such as
- * {@link IntPoint}.
- * <p>
- * This is for subclasses and works on the underlying binary encoding: to
- * create range queries for lucene's standard {@code Point} types, refer to factory
- * methods on those classes, e.g. {@link IntPoint#newRangeQuery IntPoint.newRangeQuery()} for 
- * fields indexed with {@link IntPoint}.
- * <p>
- * For a single-dimensional field this query is a simple range query; in a multi-dimensional field it's a box shape.
- * @see PointValues
- * @lucene.experimental
- */
 public abstract class PointRangeQuery extends Query {
   final String field;
   final int numDims;
@@ -52,15 +39,7 @@ public abstract class PointRangeQuery extends Query {
   final byte[] lowerPoint;
   final byte[] upperPoint;
 
-  /** 
-   * Expert: create a multidimensional range query for point values.
-   *
-   * @param field field name. must not be {@code null}.
-   * @param lowerPoint lower portion of the range (inclusive).
-   * @param upperPoint upper portion of the range (inclusive).
-   * @param numDims number of dimensions.
-   * @throws IllegalArgumentException if {@code field} is null, or if {@code lowerValue.length != upperValue.length}
-   */
+
   protected PointRangeQuery(String field, byte[] lowerPoint, byte[] upperPoint, int numDims) {
     checkArgs(field, lowerPoint, upperPoint);
     this.field = field;
@@ -83,10 +62,7 @@ public abstract class PointRangeQuery extends Query {
     this.upperPoint = upperPoint;
   }
 
-  /** 
-   * Check preconditions for all factory methods
-   * @throws IllegalArgumentException if {@code field}, {@code lowerPoint} or {@code upperPoint} are null.
-   */
+
   public static void checkArgs(String field, Object lowerPoint, Object upperPoint) {
     if (field == null) {
       throw new IllegalArgumentException("field must not be null");
@@ -166,9 +142,6 @@ public abstract class PointRangeQuery extends Query {
         };
       }
 
-      /**
-       * Create a visitor that clears documents that do NOT match the range.
-       */
       private IntersectVisitor getInverseIntersectVisitor(FixedBitSet result, int[] cost) {
         return new IntersectVisitor() {
 
@@ -399,13 +372,5 @@ public abstract class PointRangeQuery extends Query {
     return sb.toString();
   }
 
-  /**
-   * Returns a string of a single value in a human-readable format for debugging.
-   * This is used by {@link #toString()}.
-   *
-   * @param dimension dimension of the particular value
-   * @param value single value, never null
-   * @return human readable value for debugging
-   */
   protected abstract String toString(int dimension, byte[] value);
 }

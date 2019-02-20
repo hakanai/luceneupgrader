@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.payloads;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.payloads;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.payloads;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.AtomicReaderContext;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.ComplexExplanation;
@@ -41,20 +40,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
-/**
- * This class is very similar to
- * {@link org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans.SpanNearQuery} except that it factors
- * in the value of the payloads located at each of the positions where the
- * {@link org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans.TermSpans} occurs.
- * <p/>
- * NOTE: In order to take advantage of this with the default scoring implementation
- * ({@link DefaultSimilarity}), you must override {@link DefaultSimilarity#scorePayload(int, int, int, BytesRef)},
- * which returns 1 by default.
- * <p/>
- * Payload scores are aggregated using a pluggable {@link PayloadFunction}.
- * 
- * @see org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities.Similarity.SimScorer#computePayloadFactor(int, int, int, BytesRef)
- */
 public class PayloadNearQuery extends SpanNearQuery {
   protected String fieldName;
   protected PayloadFunction function;
@@ -216,16 +201,6 @@ public class PayloadNearQuery extends SpanNearQuery {
     // TODO change the whole spans api to use bytesRef, or nuke spans
     BytesRef scratch = new BytesRef();
 
-    /**
-     * By default, uses the {@link PayloadFunction} to score the payloads, but
-     * can be overridden to do other things.
-     * 
-     * @param payLoads The payloads
-     * @param start The start position of the span being scored
-     * @param end The end position of the span being scored
-     * 
-     * @see Spans
-     */
     protected void processPayloads(Collection<byte[]> payLoads, int start, int end) {
       for (final byte[] thePayload : payLoads) {
         scratch.bytes = thePayload;

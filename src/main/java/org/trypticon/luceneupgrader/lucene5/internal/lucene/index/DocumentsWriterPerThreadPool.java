@@ -23,34 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * {@link DocumentsWriterPerThreadPool} controls {@link ThreadState} instances
- * and their thread assignments during indexing. Each {@link ThreadState} holds
- * a reference to a {@link DocumentsWriterPerThread} that is once a
- * {@link ThreadState} is obtained from the pool exclusively used for indexing a
- * single document by the obtaining thread. Each indexing thread must obtain
- * such a {@link ThreadState} to make progress. Depending on the
- * {@link DocumentsWriterPerThreadPool} implementation {@link ThreadState}
- * assignments might differ from document to document.
- * <p>
- * Once a {@link DocumentsWriterPerThread} is selected for flush the thread pool
- * is reusing the flushing {@link DocumentsWriterPerThread}s ThreadState with a
- * new {@link DocumentsWriterPerThread} instance.
- * </p>
- */
 final class DocumentsWriterPerThreadPool {
   
-  /**
-   * {@link ThreadState} references and guards a
-   * {@link DocumentsWriterPerThread} instance that is used during indexing to
-   * build a in-memory index segment. {@link ThreadState} also holds all flush
-   * related per-thread data controlled by {@link DocumentsWriterFlushControl}.
-   * <p>
-   * A {@link ThreadState}, its methods and members should only accessed by one
-   * thread a time. Users must acquire the lock via {@link ThreadState#lock()}
-   * and release the lock in a finally block via {@link ThreadState#unlock()}
-   * before accessing the state.
-   */
   @SuppressWarnings("serial")
   final static class ThreadState extends ReentrantLock {
     DocumentsWriterPerThread dwpt;
@@ -77,29 +51,18 @@ final class DocumentsWriterPerThreadPool {
       return dwpt != null;
     }
     
-    /**
-     * Returns the number of currently active bytes in this ThreadState's
-     * {@link DocumentsWriterPerThread}
-     */
     public long getBytesUsedPerThread() {
       assert this.isHeldByCurrentThread();
       // public for FlushPolicy
       return bytesUsed;
     }
     
-    /**
-     * Returns this {@link ThreadState}s {@link DocumentsWriterPerThread}
-     */
     public DocumentsWriterPerThread getDocumentsWriterPerThread() {
       assert this.isHeldByCurrentThread();
       // public for FlushPolicy
       return dwpt;
     }
     
-    /**
-     * Returns <code>true</code> iff this {@link ThreadState} is marked as flush
-     * pending otherwise <code>false</code>
-     */
     public boolean isFlushPending() {
       return flushPending;
     }
@@ -111,9 +74,6 @@ final class DocumentsWriterPerThreadPool {
 
   private boolean aborted;
 
-  /**
-   * Returns the active number of {@link ThreadState} instances.
-   */
   synchronized int getActiveThreadStateCount() {
     return threadStates.size();
   }
@@ -127,16 +87,6 @@ final class DocumentsWriterPerThreadPool {
     notifyAll();
   }
 
-  /**
-   * Returns a new {@link ThreadState} iff any new state is available otherwise
-   * <code>null</code>.
-   * <p>
-   * NOTE: the returned {@link ThreadState} is already locked iff non-
-   * <code>null</code>.
-   * 
-   * @return a new {@link ThreadState} iff any new state is available otherwise
-   *         <code>null</code>
-   */
   private synchronized ThreadState newThreadState() {
     while (aborted) {
       try {
@@ -162,7 +112,6 @@ final class DocumentsWriterPerThreadPool {
     // don't recycle DWPT by default
   }
 
-  /** This method is used by DocumentsWriter/FlushControl to obtain a ThreadState to do an indexing operation (add/updateDocument). */
   ThreadState getAndLock(Thread requestingThread, DocumentsWriter documentsWriter) {
     ThreadState threadState = null;
     synchronized (this) {
@@ -213,15 +162,6 @@ final class DocumentsWriterPerThreadPool {
     }
   }
   
-  /**
-   * Returns the <i>i</i>th active {@link ThreadState} where <i>i</i> is the
-   * given ord.
-   * 
-   * @param ord
-   *          the ordinal of the {@link ThreadState}
-   * @return the <i>i</i>th active {@link ThreadState} where <i>i</i> is the
-   *         given ord.
-   */
   synchronized ThreadState getThreadState(int ord) {
     return threadStates.get(ord);
   }
@@ -230,11 +170,6 @@ final class DocumentsWriterPerThreadPool {
     return threadStates.size();
   }
 
-  /**
-   * Returns the ThreadState with the minimum estimated number of threads
-   * waiting to acquire its lock or <code>null</code> if no {@link ThreadState}
-   * is yet visible to the calling thread.
-   */
   ThreadState minContendedThreadState() {
     ThreadState minThreadState = null;
     for (ThreadState state : threadStates) {

@@ -19,15 +19,6 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.util;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ByteBlockPool.Allocator;
 
 
-/**
- * A {@link ByteBlockPool.Allocator} implementation that recycles unused byte
- * blocks in a buffer and reuses them in subsequent calls to
- * {@link #getByteBlock()}.
- * <p>
- * Note: This class is not thread-safe
- * </p>
- * @lucene.internal
- */
 public final class RecyclingByteBlockAllocator extends ByteBlockPool.Allocator {
   private byte[][] freeByteBlocks;
   private final int maxBufferedBlocks;
@@ -35,16 +26,6 @@ public final class RecyclingByteBlockAllocator extends ByteBlockPool.Allocator {
   private final Counter bytesUsed;
   public static final int DEFAULT_BUFFERED_BLOCKS = 64;
 
-  /**
-   * Creates a new {@link RecyclingByteBlockAllocator}
-   * 
-   * @param blockSize
-   *          the block size in bytes
-   * @param maxBufferedBlocks
-   *          maximum number of buffered byte block
-   * @param bytesUsed
-   *          {@link Counter} reference counting internally allocated bytes
-   */
   public RecyclingByteBlockAllocator(int blockSize, int maxBufferedBlocks,
       Counter bytesUsed) {
     super(blockSize);
@@ -53,24 +34,10 @@ public final class RecyclingByteBlockAllocator extends ByteBlockPool.Allocator {
     this.bytesUsed = bytesUsed;
   }
 
-  /**
-   * Creates a new {@link RecyclingByteBlockAllocator}.
-   * 
-   * @param blockSize
-   *          the block size in bytes
-   * @param maxBufferedBlocks
-   *          maximum number of buffered byte block
-   */
   public RecyclingByteBlockAllocator(int blockSize, int maxBufferedBlocks) {
     this(blockSize, maxBufferedBlocks, Counter.newCounter(false));
   }
 
-  /**
-   * Creates a new {@link RecyclingByteBlockAllocator} with a block size of
-   * {@link ByteBlockPool#BYTE_BLOCK_SIZE}, upper buffered docs limit of
-   * {@link #DEFAULT_BUFFERED_BLOCKS} ({@value #DEFAULT_BUFFERED_BLOCKS}).
-   * 
-   */
   public RecyclingByteBlockAllocator() {
     this(ByteBlockPool.BYTE_BLOCK_SIZE, 64, Counter.newCounter(false));
   }
@@ -108,34 +75,18 @@ public final class RecyclingByteBlockAllocator extends ByteBlockPool.Allocator {
     assert bytesUsed.get() >= 0;
   }
 
-  /**
-   * @return the number of currently buffered blocks
-   */
   public int numBufferedBlocks() {
     return freeBlocks;
   }
 
-  /**
-   * @return the number of bytes currently allocated by this {@link Allocator}
-   */
   public long bytesUsed() {
     return bytesUsed.get();
   }
 
-  /**
-   * @return the maximum number of buffered byte blocks
-   */
   public int maxBufferedBlocks() {
     return maxBufferedBlocks;
   }
 
-  /**
-   * Removes the given number of byte blocks from the buffer if possible.
-   * 
-   * @param num
-   *          the number of byte blocks to remove
-   * @return the number of actually removed buffers
-   */
   public int freeBlocks(int num) {
     assert num >= 0 : "free blocks must be >= 0 but was: "+ num;
     final int stop;

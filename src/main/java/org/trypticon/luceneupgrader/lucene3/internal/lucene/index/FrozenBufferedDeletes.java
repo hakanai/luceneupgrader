@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -25,10 +24,7 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.BufferedDeletesStream.QueryAndLimit;
 
-/** Holds buffered deletes by term or query, once pushed.
- *  Pushed deletes are write-once, so we shift to more
- *  memory efficient data structure to hold them.  We don't
- *  hold docIDs because these are applied on flush. */
+
 
 class FrozenBufferedDeletes {
 

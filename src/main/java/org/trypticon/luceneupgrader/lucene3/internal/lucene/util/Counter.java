@@ -1,8 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
-import java.util.concurrent.atomic.AtomicLong;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,46 +14,20 @@ import java.util.concurrent.atomic.AtomicLong;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
-/**
- * Simple counter class
- * 
- * @lucene.internal
- * @lucene.experimental
- */
+import java.util.concurrent.atomic.AtomicLong;
+
 public abstract class Counter {
 
-  /**
-   * Adds the given delta to the counters current value
-   * 
-   * @param delta
-   *          the delta to add
-   * @return the counters updated value
-   */
   public abstract long addAndGet(long delta);
 
-  /**
-   * Returns the counters current value
-   * 
-   * @return the counters current value
-   */
   public abstract long get();
 
-  /**
-   * Returns a new counter. The returned counter is not thread-safe.
-   */
   public static Counter newCounter() {
     return newCounter(false);
   }
 
-  /**
-   * Returns a new counter.
-   * 
-   * @param threadSafe
-   *          <code>true</code> if the returned counter can be used by multiple
-   *          threads concurrently.
-   * @return a new counter.
-   */
   public static Counter newCounter(boolean threadSafe) {
     return threadSafe ? new AtomicCounter() : new SerialCounter();
   }

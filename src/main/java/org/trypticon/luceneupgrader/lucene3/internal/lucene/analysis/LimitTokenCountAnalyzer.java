@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,24 +13,20 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Fieldable;
 
 import java.io.Reader;
 import java.io.IOException;
 
-/**
- * This Analyzer limits the number of tokens while indexing. It is
- * a replacement for the maximum field length setting inside {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexWriter}.
- */
+
 public final class LimitTokenCountAnalyzer extends Analyzer {
   private final Analyzer delegate;
   private final int maxTokenCount;
 
-  /**
-   * Build an analyzer that limits the maximum number of tokens per field.
-   */
+
   public LimitTokenCountAnalyzer(Analyzer delegate, int maxTokenCount) {
     this.delegate = delegate;
     this.maxTokenCount = maxTokenCount;

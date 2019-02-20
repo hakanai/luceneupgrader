@@ -21,14 +21,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/** Scorer for conjunctions, sets of queries, all of which are required. */
 class ConjunctionScorer extends Scorer {
 
   final DocIdSetIterator disi;
   final Scorer[] scorers;
   final float coord;
 
-  /** Create a new {@link ConjunctionScorer}, note that {@code scorers} must be a subset of {@code required}. */
   ConjunctionScorer(Weight weight, Collection<Scorer> required, Collection<Scorer> scorers, float coord) {
     super(weight);
     assert required.containsAll(scorers);

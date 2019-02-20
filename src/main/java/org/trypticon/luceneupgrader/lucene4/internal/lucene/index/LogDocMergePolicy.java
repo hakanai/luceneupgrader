@@ -1,7 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
-import java.io.IOException;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,18 +14,14 @@ import java.io.IOException;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
-/** This is a {@link LogMergePolicy} that measures size of a
- *  segment as the number of documents (not taking deletions
- *  into account). */
+import java.io.IOException;
 
 public class LogDocMergePolicy extends LogMergePolicy {
 
-  /** Default minimum segment size.  @see setMinMergeDocs */
   public static final int DEFAULT_MIN_MERGE_DOCS = 1000;
 
-  /** Sole constructor, setting all settings to their
-   *  defaults. */
   public LogDocMergePolicy() {
     minMergeSize = DEFAULT_MIN_MERGE_DOCS;
     
@@ -44,22 +36,12 @@ public class LogDocMergePolicy extends LogMergePolicy {
     return sizeDocs(info, writer);
   }
 
-  /** Sets the minimum size for the lowest level segments.
-   * Any segments below this size are considered to be on
-   * the same level (even if they vary drastically in size)
-   * and will be merged whenever there are mergeFactor of
-   * them.  This effectively truncates the "long tail" of
-   * small segments that would otherwise be created into a
-   * single level.  If you set this too large, it could
-   * greatly increase the merging cost during indexing (if
-   * you flush many small segments). */
+
   public void setMinMergeDocs(int minMergeDocs) {
     minMergeSize = minMergeDocs;
   }
 
-  /** Get the minimum size for a segment to remain
-   *  un-merged.
-   *  @see #setMinMergeDocs **/
+
   public int getMinMergeDocs() {
     return (int) minMergeSize;
   }

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
 
 import java.io.IOException;
 
@@ -25,27 +24,15 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.PostingsForma
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentWriteState;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentReadState;
 
-/** Codec that reads the pre-flex-indexing postings
- *  format.  It does not provide a writer because newly
- *  written segments should use the Codec configured on IndexWriter.
- *
- * @deprecated (4.0) This is only used to read indexes created
- * before 4.0.
- * @lucene.experimental
- */
 @Deprecated
 class Lucene3xPostingsFormat extends PostingsFormat {
 
-  /** Extension of terms file */
   public static final String TERMS_EXTENSION = "tis";
 
-  /** Extension of terms index file */
   public static final String TERMS_INDEX_EXTENSION = "tii";
 
-  /** Extension of freq postings file */
   public static final String FREQ_EXTENSION = "frq";
 
-  /** Extension of prox postings file */
   public static final String PROX_EXTENSION = "prx";
 
   public Lucene3xPostingsFormat() {

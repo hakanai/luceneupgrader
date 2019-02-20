@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,35 +13,19 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 import java.io.IOException;
 
-/** 
- * Random Access Index API.
- * Unlike {@link IndexInput}, this has no concept of file position, all reads
- * are absolute. However, like IndexInput, it is only intended for use by a single thread.
- */
 public interface RandomAccessInput {
   
-  /** 
-   * Reads a byte at the given position in the file
-   * @see DataInput#readByte
-   */
+
   public byte readByte(long pos) throws IOException;
-  /** 
-   * Reads a short at the given position in the file
-   * @see DataInput#readShort
-   */
+
   public short readShort(long pos) throws IOException;
-  /** 
-   * Reads an integer at the given position in the file
-   * @see DataInput#readInt
-   */
+
   public int readInt(long pos) throws IOException;
-  /** 
-   * Reads a long at the given position in the file
-   * @see DataInput#readLong
-   */
+
   public long readLong(long pos) throws IOException;
 }

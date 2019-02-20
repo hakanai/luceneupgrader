@@ -16,11 +16,6 @@
  */
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.util.mutable;
 
-/**
- * Base class for all mutable values.
- *  
- * @lucene.internal 
- */
 public abstract class MutableValue implements Comparable<MutableValue> {
   public boolean exists = true;
 

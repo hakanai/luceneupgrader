@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,12 +24,7 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ByteBlockPool;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Counter;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IntBlockPool;
 
-/** This class is passed each token produced by the analyzer
- *  on each field during indexing, and it stores these
- *  tokens in a hash table, and allocates separate byte
- *  streams per token.  Consumers of this class, eg {@link
- *  FreqProxTermsWriter} and {@link TermVectorsConsumer},
- *  write their own byte streams under each term. */
+
 abstract class TermsHash {
 
   final TermsHash nextTermsHash;

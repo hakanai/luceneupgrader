@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,29 +13,17 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.MultiTermQuery.RewriteMethod;
 
-/** @lucene.internal Only public to be accessible by spans package. */
 public abstract class ScoringRewrite<Q extends Query> extends TermCollectingRewrite<Q> {
 
-  /** A rewrite method that first translates each term into
-   *  {@link BooleanClause.Occur#SHOULD} clause in a
-   *  BooleanQuery, and keeps the scores as computed by the
-   *  query.  Note that typically such scores are
-   *  meaningless to the user, and require non-trivial CPU
-   *  to compute, so it's almost always better to use {@link
-   *  MultiTermQuery#CONSTANT_SCORE_AUTO_REWRITE_DEFAULT} instead.
-   *
-   *  <p><b>NOTE</b>: This rewrite method will hit {@link
-   *  BooleanQuery.TooManyClauses} if the number of terms
-   *  exceeds {@link BooleanQuery#getMaxClauseCount}.
-   *
-   *  @see #setRewriteMethod */
+
   public final static ScoringRewrite<BooleanQuery> SCORING_BOOLEAN_QUERY_REWRITE = new ScoringRewrite<BooleanQuery>() {
     @Override
     protected BooleanQuery getTopLevelQuery() {
@@ -57,16 +43,7 @@ public abstract class ScoringRewrite<Q extends Query> extends TermCollectingRewr
     }    
   };
   
-  /** Like {@link #SCORING_BOOLEAN_QUERY_REWRITE} except
-   *  scores are not computed.  Instead, each matching
-   *  document receives a constant score equal to the
-   *  query's boost.
-   * 
-   *  <p><b>NOTE</b>: This rewrite method will hit {@link
-   *  BooleanQuery.TooManyClauses} if the number of terms
-   *  exceeds {@link BooleanQuery#getMaxClauseCount}.
-   *
-   *  @see #setRewriteMethod */
+
   public final static RewriteMethod CONSTANT_SCORE_BOOLEAN_QUERY_REWRITE = new RewriteMethod() {
     @Override
     public Query rewrite(IndexReader reader, MultiTermQuery query) throws IOException {

@@ -30,51 +30,35 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.InfoStream;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedLongValues;
 
-/** Holds common state used during segment merging.
- *
- * @lucene.experimental */
+
 public class MergeState {
 
-  /** {@link SegmentInfo} of the newly merged segment. */
   public final SegmentInfo segmentInfo;
 
-  /** {@link FieldInfos} of the newly merged segment. */
   public FieldInfos mergeFieldInfos;
 
-  /** Stored field producers being merged */
   public final StoredFieldsReader[] storedFieldsReaders;
 
-  /** Term vector producers being merged */
   public final TermVectorsReader[] termVectorsReaders;
 
-  /** Norms producers being merged */
   public final NormsProducer[] normsProducers;
 
-  /** DocValues producers being merged */
   public final DocValuesProducer[] docValuesProducers;
 
-  /** FieldInfos being merged */
   public final FieldInfos[] fieldInfos;
 
-  /** Live docs for each reader */
   public final Bits[] liveDocs;
 
-  /** Maps docIDs around deletions. */
   public final DocMap[] docMaps;
 
-  /** Postings to merge */
   public final FieldsProducer[] fieldsProducers;
 
-  /** New docID base per reader. */
   public final int[] docBase;
 
-  /** Max docs per reader */
   public final int[] maxDocs;
 
-  /** InfoStream for debugging messages. */
   public final InfoStream infoStream;
 
-  /** Sole constructor. */
   MergeState(List<CodecReader> readers, SegmentInfo segmentInfo, InfoStream infoStream) throws IOException {
 
     int numReaders = readers.size();
@@ -142,35 +126,24 @@ public class MergeState {
     segmentInfo.setMaxDoc(docBase);
   }
 
-  /**
-   * Remaps docids around deletes during merge
-   */
   public static abstract class DocMap {
 
     DocMap() {}
 
-    /** Returns the mapped docID corresponding to the provided one. */
     public abstract int get(int docID);
 
-    /** Returns the total number of documents, ignoring
-     *  deletions. */
     public abstract int maxDoc();
 
-    /** Returns the number of not-deleted documents. */
     public final int numDocs() {
       return maxDoc() - numDeletedDocs();
     }
 
-    /** Returns the number of deleted documents. */
     public abstract int numDeletedDocs();
 
-    /** Returns true if there are any deletions. */
     public boolean hasDeletions() {
       return numDeletedDocs() > 0;
     }
 
-    /** Creates a {@link DocMap} instance appropriate for
-     *  this reader. */
     public static DocMap build(CodecReader reader) {
       final int maxDoc = reader.maxDoc();
       if (!reader.hasDeletions()) {

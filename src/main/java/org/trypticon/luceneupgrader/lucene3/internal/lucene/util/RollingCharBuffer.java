@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,18 +13,13 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
 import java.io.IOException;
 import java.io.Reader;
 
-/** Acts like a forever growing char[] as you read
- *  characters into it from the provided reader, but
- *  internally it uses a circular buffer to only hold the
- *  characters that haven't been freed yet.  This is like a
- *  PushbackReader, except you don't have to specify
- *  up-front the max size of the buffer, but you do have to
- *  periodically call {@link #freeBefore}. */
+
 
 public final class RollingCharBuffer {
 
@@ -46,7 +39,6 @@ public final class RollingCharBuffer {
   // True if we hit EOF
   private boolean end;
     
-  /** Clear array and switch to new reader. */
   public void reset(Reader reader) {
     this.reader = reader;
     nextPos = 0;
@@ -135,8 +127,6 @@ public final class RollingCharBuffer {
     return result;
   }
 
-  /** Call this to notify us that no chars before this
-   *  absolute position are needed anymore. */
   public void freeBefore(int pos) {
     assert pos >= 0;
     assert pos <= nextPos;

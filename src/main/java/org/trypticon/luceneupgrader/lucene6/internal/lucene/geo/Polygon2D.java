@@ -23,37 +23,19 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.geo.Polygon;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.PointValues.Relation;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.ArrayUtil;
 
-/**
- * 2D polygon implementation represented as a balanced interval tree of edges.
- * <p>
- * Construction takes {@code O(n log n)} time for sorting and tree construction.
- * {@link #contains contains()} and {@link #relate relate()} are {@code O(n)}, but for most 
- * practical polygons are much faster than brute force.
- * <p>
- * Loosely based on the algorithm described in <a href="http://www-ma2.upc.es/geoc/Schirra-pointPolygon.pdf">
- * http://www-ma2.upc.es/geoc/Schirra-pointPolygon.pdf</a>.
- * @lucene.internal
- */
 // Both Polygon.contains() and Polygon.crossesSlowly() loop all edges, and first check that the edge is within a range.
 // we just organize the edges to do the same computations on the same subset of edges more efficiently. 
 public final class Polygon2D {
-  /** minimum latitude of this polygon's bounding box area */
   public final double minLat;
-  /** maximum latitude of this polygon's bounding box area */
   public final double maxLat;
-  /** minimum longitude of this polygon's bounding box area */
   public final double minLon;
-  /** maximum longitude of this polygon's bounding box area */
   public final double maxLon;
   
   // each component/hole is a node in an augmented 2d kd-tree: we alternate splitting between latitude/longitude,
   // and pull up max values for both dimensions to each parent node (regardless of split).
 
-  /** maximum latitude of this component or any of its children */
   private double maxY;
-  /** maximum longitude of this component or any of its children */
   private double maxX;
-  /** which dimension was this node split on */
   // TODO: its implicit based on level, but boolean keeps code simple
   private boolean splitX;
 
@@ -61,10 +43,8 @@ public final class Polygon2D {
   private Polygon2D left;
   private Polygon2D right;
   
-  /** tree of holes, or null */
   private final Polygon2D holes;
   
-  /** root node of edge tree */
   private final Edge tree;
 
   private Polygon2D(Polygon polygon, Polygon2D holes) {
@@ -80,12 +60,7 @@ public final class Polygon2D {
     this.tree = createTree(polygon.getPolyLats(), polygon.getPolyLons());
   }
 
-  /** 
-   * Returns true if the point is contained within this polygon.
-   * <p>
-   * See <a href="https://www.ecse.rpi.edu/~wrf/Research/Short_Notes/pnpoly.html">
-   * https://www.ecse.rpi.edu/~wrf/Research/Short_Notes/pnpoly.html</a> for more information.
-   */
+
   public boolean contains(double latitude, double longitude) {
     if (latitude <= maxY && longitude <= maxX) {
       if (componentContains(latitude, longitude)) {
@@ -105,7 +80,6 @@ public final class Polygon2D {
     return false;
   }
   
-  /** Returns true if the point is contained within this polygon component. */
   private boolean componentContains(double latitude, double longitude) {
     // check bounding box
     if (latitude < minLat || latitude > maxLat || longitude < minLon || longitude > maxLon) {
@@ -122,7 +96,6 @@ public final class Polygon2D {
     return false;
   }
   
-  /** Returns relation to the provided rectangle */
   public Relation relate(double minLat, double maxLat, double minLon, double maxLon) {
     if (minLat <= maxY && minLon <= maxX) {
       Relation relation = componentRelate(minLat, maxLat, minLon, maxLon);
@@ -145,7 +118,6 @@ public final class Polygon2D {
     return Relation.CELL_OUTSIDE_QUERY;
   }
 
-  /** Returns relation to the provided rectangle for this component */
   private Relation componentRelate(double minLat, double maxLat, double minLon, double maxLon) {
     // if the bounding boxes are disjoint then the shape does not cross
     if (maxLon < this.minLon || minLon > this.maxLon || maxLat < this.minLat || minLat > this.maxLat) {
@@ -207,7 +179,6 @@ public final class Polygon2D {
     return containsCount;
   }
   
-  /** Creates tree from sorted components (with range low and high inclusive) */
   private static Polygon2D createTree(Polygon2D components[], int low, int high, boolean splitX) {
     if (low > high) {
       return null;
@@ -252,7 +223,6 @@ public final class Polygon2D {
     return newNode;
   }
   
-  /** Builds a Polygon2D from multipolygon */
   public static Polygon2D create(Polygon... polygons) {
     Polygon2D components[] = new Polygon2D[polygons.length];
     for (int i = 0; i < components.length; i++) {
@@ -267,23 +237,15 @@ public final class Polygon2D {
     return createTree(components, 0, components.length - 1, false);
   }
 
-  /** 
-   * Internal tree node: represents polygon edge from lat1,lon1 to lat2,lon2.
-   * The sort value is {@code low}, which is the minimum latitude of the edge.
-   * {@code max} stores the maximum latitude of this edge or any children.
-   */
+
   static final class Edge {
     // lat-lon pair (in original order) of the two vertices
     final double lat1, lat2;
     final double lon1, lon2;
-    /** min of this edge */
     final double low;
-    /** max latitude of this edge or any children */
     double max;
     
-    /** left child edge, or null */
     Edge left;
-    /** right child edge, or null */
     Edge right;
 
     Edge(double lat1, double lon1, double lat2, double lon2, double low, double max) {
@@ -295,12 +257,6 @@ public final class Polygon2D {
       this.max = max;
     }
     
-    /** 
-     * Returns true if the point crosses this edge subtree an odd number of times
-     * <p>
-     * See <a href="https://www.ecse.rpi.edu/~wrf/Research/Short_Notes/pnpoly.html">
-     * https://www.ecse.rpi.edu/~wrf/Research/Short_Notes/pnpoly.html</a> for more information.
-     */
     // ported to java from https://www.ecse.rpi.edu/~wrf/Research/Short_Notes/pnpoly.html
     // original code under the BSD license (https://www.ecse.rpi.edu/~wrf/Research/Short_Notes/pnpoly.html#License%20to%20Use)
     //
@@ -344,7 +300,6 @@ public final class Polygon2D {
       return res;
     }
     
-    /** Returns true if the box crosses any edge in this edge subtree */
     boolean crosses(double minLat, double maxLat, double minLon, double maxLon) {
       // we just have to cross one edge to answer the question, so we descend the tree and return when we do.
       if (minLat <= max) {
@@ -410,10 +365,7 @@ public final class Polygon2D {
     }
   }
 
-  /** 
-   * Creates an edge interval tree from a set of polygon vertices.
-   * @return root node of the tree.
-   */
+
   private static Edge createTree(double polyLats[], double polyLons[]) {
     Edge edges[] = new Edge[polyLats.length - 1];
     for (int i = 1; i < polyLats.length; i++) {
@@ -434,7 +386,6 @@ public final class Polygon2D {
     return createTree(edges, 0, edges.length - 1);
   }
 
-  /** Creates tree from sorted edges (with range low and high inclusive) */
   private static Edge createTree(Edge edges[], int low, int high) {
     if (low > high) {
       return null;
@@ -455,10 +406,6 @@ public final class Polygon2D {
     return newNode;
   }
 
-  /**
-   * Returns a positive value if points a, b, and c are arranged in counter-clockwise order,
-   * negative value if clockwise, zero if collinear.
-   */
   // see the "Orient2D" method described here:
   // http://www.cs.berkeley.edu/~jrs/meshpapers/robnotes.pdf
   // https://www.cs.cmu.edu/~quake/robust.html

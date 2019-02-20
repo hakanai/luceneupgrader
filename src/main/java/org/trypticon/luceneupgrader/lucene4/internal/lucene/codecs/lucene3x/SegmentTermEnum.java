@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -26,10 +25,7 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.CorruptIndexEx
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.IndexFormatTooOldException;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.IndexFormatTooNewException;
 
-/**
- * @deprecated (4.0) No longer used with flex indexing, except for
- * reading old segments 
- * @lucene.experimental */
+
 
 @Deprecated
 class SegmentTermEnum implements Cloneable,Closeable {
@@ -133,7 +129,6 @@ class SegmentTermEnum implements Cloneable,Closeable {
     first = p == -1;
   }
 
-  /** Increments the enumeration to the next element.  True if one exists.*/
   public final boolean next() throws IOException {
     prevBuffer.set(termBuffer);
     //System.out.println("  ste setPrev=" + prev() + " this=" + this);
@@ -183,31 +178,22 @@ class SegmentTermEnum implements Cloneable,Closeable {
     return count;
   }
 
-  /** Returns the current Term in the enumeration.
-   Initially invalid, valid after next() called for the first time.*/
   public final Term term() {
     return termBuffer.toTerm();
   }
 
-  /** Returns the previous Term enumerated. Initially null.*/
   final Term prev() {
     return prevBuffer.toTerm();
   }
 
-  /** Returns the current TermInfo in the enumeration.
-   Initially invalid, valid after next() called for the first time.*/
   final TermInfo termInfo() {
     return new TermInfo(termInfo);
   }
 
-  /** Sets the argument to the current TermInfo in the enumeration.
-   Initially invalid, valid after next() called for the first time.*/
   final void termInfo(TermInfo ti) {
     ti.set(termInfo);
   }
 
-  /** Returns the docFreq from the current TermInfo in the enumeration.
-   Initially invalid, valid after next() called for the first time.*/
   public final int docFreq() {
     return termInfo.docFreq;
   }
@@ -224,7 +210,6 @@ class SegmentTermEnum implements Cloneable,Closeable {
     return termInfo.proxPointer;
   }
 
-  /** Closes the enumeration to further activity, freeing resources. */
   public final void close() throws IOException {
     input.close();
   }

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene42;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene42;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene42;
 
 import java.io.IOException;
 
@@ -26,41 +25,15 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentReadSta
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentWriteState;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PackedInts;
 
-/**
- * Lucene 4.2 score normalization format.
- * <p>
- * NOTE: this uses the same format as {@link Lucene42DocValuesFormat}
- * Numeric DocValues, but with different file extensions, and passing
- * {@link PackedInts#FASTEST} for uncompressed encoding: trading off
- * space for performance.
- * <p>
- * Files:
- * <ul>
- *   <li><tt>.nvd</tt>: DocValues data</li>
- *   <li><tt>.nvm</tt>: DocValues metadata</li>
- * </ul>
- * @see Lucene42DocValuesFormat
- */
 public class Lucene42NormsFormat extends NormsFormat {
   final float acceptableOverheadRatio;
 
-  /** 
-   * Calls {@link #Lucene42NormsFormat(float) 
-   * Lucene42DocValuesFormat(PackedInts.FASTEST)} 
-   */
+
   public Lucene42NormsFormat() {
     // note: we choose FASTEST here (otherwise our norms are half as big but 15% slower than previous lucene)
     this(PackedInts.FASTEST);
   }
   
-  /**
-   * Creates a new Lucene42DocValuesFormat with the specified
-   * <code>acceptableOverheadRatio</code> for NumericDocValues.
-   * @param acceptableOverheadRatio compression parameter for numerics. 
-   *        Currently this is only used when the number of unique values is small.
-   *        
-   * @lucene.experimental
-   */
   public Lucene42NormsFormat(float acceptableOverheadRatio) {
     this.acceptableOverheadRatio = acceptableOverheadRatio;
   }

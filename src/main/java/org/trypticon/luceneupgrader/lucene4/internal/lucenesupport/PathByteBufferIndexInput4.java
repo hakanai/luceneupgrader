@@ -13,9 +13,6 @@ import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.util.Iterator;
 
-/**
- * Clone of {@code ByteBufferIndexInput} accepting {@link Path} instead of {@link File}.
- */
 public class PathByteBufferIndexInput4 extends IndexInput implements RandomAccessInput {
     protected final BufferCleaner cleaner;
     protected final long length;
@@ -246,9 +243,6 @@ public class PathByteBufferIndexInput4 extends IndexInput implements RandomAcces
         return clone;
     }
 
-    /**
-     * Creates a slice of this index input, with the given description, offset, and length. The slice is seeked to the beginning.
-     */
     @Override
     public final PathByteBufferIndexInput4 slice(String sliceDescription, long offset, long length) {
         if (offset < 0 || length < 0 || offset+length > this.length) {
@@ -258,7 +252,6 @@ public class PathByteBufferIndexInput4 extends IndexInput implements RandomAcces
         return buildSlice(sliceDescription, offset, length);
     }
 
-    /** Builds the actual sliced IndexInput (may apply extra offset in subclasses). **/
     protected PathByteBufferIndexInput4 buildSlice(String sliceDescription, long offset, long length) {
         if (buffers == null) {
             throw new AlreadyClosedException("Already closed: " + this);
@@ -279,7 +272,6 @@ public class PathByteBufferIndexInput4 extends IndexInput implements RandomAcces
         return clone;
     }
 
-    /** Factory method that creates a suitable implementation of this class for the given ByteBuffers. */
     @SuppressWarnings("resource")
     protected PathByteBufferIndexInput4 newCloneInstance(String newResourceDescription, ByteBuffer[] newBuffers, int offset, long length) {
         if (newBuffers.length == 1) {
@@ -292,9 +284,7 @@ public class PathByteBufferIndexInput4 extends IndexInput implements RandomAcces
         }
     }
 
-    /** Returns a sliced view from a set of already-existing buffers:
-     *  the last buffer's limit() will be correct, but
-     *  you must deal with offset separately (the first buffer will not be adjusted) */
+
     private ByteBuffer[] buildSlice(ByteBuffer[] buffers, long offset, long length) {
         final long sliceEnd = offset + length;
 
@@ -346,33 +336,22 @@ public class PathByteBufferIndexInput4 extends IndexInput implements RandomAcces
         }
     }
 
-    /**
-     * Called to remove all references to byte buffers, so we can throw AlreadyClosed on NPE.
-     */
     private void unsetBuffers() {
         buffers = null;
         curBuf = null;
         curBufIndex = 0;
     }
 
-    /**
-     * Called when the contents of a buffer will be no longer needed.
-     */
     private void freeBuffer(ByteBuffer b) throws IOException {
         if (cleaner != null) {
             cleaner.freeBuffer(this, b);
         }
     }
 
-    /**
-     * Pass in an implementation of this interface to cleanup ByteBuffers.
-     * MMapDirectory implements this to allow unmapping of bytebuffers with private Java APIs.
-     */
     static interface BufferCleaner {
         void freeBuffer(PathByteBufferIndexInput4 parent, ByteBuffer b) throws IOException;
     }
 
-    /** Default implementation of PathByteBufferIndexInput4, supporting multiple buffers, but no offset. */
     static final class DefaultImpl extends PathByteBufferIndexInput4 {
 
         DefaultImpl(String resourceDescription, ByteBuffer[] buffers, long length, int chunkSizePower,
@@ -387,7 +366,6 @@ public class PathByteBufferIndexInput4 extends IndexInput implements RandomAcces
 
     }
 
-    /** Optimization of PathByteBufferIndexInput4 for when there is only one buffer */
     static final class SingleBufferImpl extends PathByteBufferIndexInput4 {
 
         SingleBufferImpl(String resourceDescription, ByteBuffer buffer, long length, int chunkSizePower,
@@ -485,7 +463,6 @@ public class PathByteBufferIndexInput4 extends IndexInput implements RandomAcces
         }
     }
 
-    /** This class adds offset support to PathByteBufferIndexInput4, which is needed for slices. */
     static final class WithOffsetImpl extends PathByteBufferIndexInput4 {
         private final int offset;
 

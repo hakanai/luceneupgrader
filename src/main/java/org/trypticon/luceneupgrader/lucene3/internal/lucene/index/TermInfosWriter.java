@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 
 import java.io.Closeable;
@@ -27,11 +26,7 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.UnicodeUtil;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 
 
-/** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
-  Directory.  A TermInfos can be written once, in order.  */
-
 final class TermInfosWriter implements Closeable {
-  /** The file format version, a negative number. */
   public static final int FORMAT = -3;
 
   // Changed strings to true utf8 with length-in-bytes not
@@ -53,23 +48,13 @@ final class TermInfosWriter implements Closeable {
   // values work better.  Note that both of these values are stored in the
   // segment, so that it's safe to change these w/o rebuilding all indexes.
 
-  /** Expert: The fraction of terms in the "dictionary" which should be stored
-   * in RAM.  Smaller values use more memory, but make searching slightly
-   * faster, while larger values use less memory and make searching slightly
-   * slower.  Searching is typically not dominated by dictionary lookup, so
-   * tweaking this is rarely useful.*/
+
   int indexInterval = 128;
 
-  /** Expert: The fraction of {@link TermDocs} entries stored in skip tables,
-   * used to accelerate {@link TermDocs#skipTo(int)}.  Larger values result in
-   * smaller indexes, greater acceleration, but fewer accelerable cases, while
-   * smaller values result in bigger indexes, less acceleration and more
-   * accelerable cases. More detailed experiments would be useful here. */
+
   int skipInterval = 16;
   
-  /** Expert: The maximum number of skip levels. Smaller values result in 
-   * slightly smaller indexes, but slower skipping in big posting lists.
-   */
+
   int maxSkipLevels = 10;
 
   private long lastIndexPointer;
@@ -175,9 +160,6 @@ final class TermInfosWriter implements Closeable {
     return utf16Result1.length - utf16Result2.length;
   }
 
-  /** Adds a new <<fieldNumber, termBytes>, TermInfo> pair to the set.
-    Term must be lexicographically greater than all previous Terms added.
-    TermInfo pointers must be positive and greater than all previous.*/
   void add(int fieldNumber, byte[] termBytes, int termBytesLength, TermInfo ti)
     throws IOException {
 
@@ -238,7 +220,6 @@ final class TermInfosWriter implements Closeable {
     lastTermBytesLength = termBytesLength;
   }
 
-  /** Called to complete TermInfos creation. */
   public void close() throws IOException {
     try {
       output.seek(4);          // write size after format

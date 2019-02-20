@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -26,38 +25,17 @@ import java.util.TreeSet;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ThreadInterruptedException;
 
-/**
- * Filter caching singleton. It can be used to save filters locally for reuse.
- * This class makes it possible to cache Filters even when using RMI, as it
- * keeps the cache on the searcher side of the RMI connection.
- * 
- * Also could be used as a persistent storage for any filter as long as the
- * filter provides a proper hashCode(), as that is used as the key in the cache.
- * 
- * The cache is periodically cleaned up from a separate thread to ensure the
- * cache doesn't exceed the maximum size.
- * 
- * @deprecated used by remote package which is deprecated as well. You should
- *             use {@link CachingWrapperFilter} if you wish to cache
- *             {@link Filter}s.
- */
 @Deprecated
 public class FilterManager {
 
   protected static FilterManager manager;
   
-  /** The default maximum number of Filters in the cache */
   protected static final int  DEFAULT_CACHE_CLEAN_SIZE = 100;
-  /** The default frequency of cache cleanup */
   protected static final long DEFAULT_CACHE_SLEEP_TIME = 1000 * 60 * 10;
 
-  /** The cache itself */
   protected Map<Integer,FilterItem>           cache;
-  /** Maximum allowed cache size */
   protected int           cacheCleanSize;
-  /** Cache cleaning frequency */
   protected long          cleanSleepTime;
-  /** Cache cleaner that runs in a separate thread */
   protected FilterCleaner filterCleaner;
 
   public synchronized static FilterManager getInstance() {
@@ -67,9 +45,6 @@ public class FilterManager {
     return manager;
   }
 
-  /**
-   * Sets up the FilterManager singleton.
-   */
   protected FilterManager() {
     cache            = new HashMap<Integer,FilterItem>();
     cacheCleanSize   = DEFAULT_CACHE_CLEAN_SIZE; // Let the cache get to 100 items
@@ -82,30 +57,14 @@ public class FilterManager {
     fcThread.start();
   }
   
-  /**
-   * Sets the max size that cache should reach before it is cleaned up
-   * @param cacheCleanSize maximum allowed cache size
-   */
   public void setCacheSize(int cacheCleanSize) {
     this.cacheCleanSize = cacheCleanSize;
   }
 
-  /**
-   * Sets the cache cleaning frequency in milliseconds.
-   * @param cleanSleepTime cleaning frequency in milliseconds
-   */
   public void setCleanThreadSleepTime(long cleanSleepTime) {
     this.cleanSleepTime  = cleanSleepTime;
   }
 
-  /**
-   * Returns the cached version of the filter.  Allows the caller to pass up
-   * a small filter but this will keep a persistent version around and allow
-   * the caching filter to do its job.
-   * 
-   * @param filter The input filter
-   * @return The cached version of the filter
-   */
   public Filter getFilter(Filter filter) {
     synchronized(cache) {
       FilterItem fi = null;
@@ -119,11 +78,6 @@ public class FilterManager {
     }
   }
 
-  /**
-   * Holds the filter and the last time the filter was used, to make LRU-based
-   * cache cleaning possible.
-   * TODO: Clean this up when we switch to Java 1.5
-   */
   protected class FilterItem {
     public Filter filter;
     public long   timestamp;
@@ -135,20 +89,6 @@ public class FilterManager {
   }
 
 
-  /**
-   * Keeps the cache from getting too big.
-   * If we were using Java 1.5, we could use LinkedHashMap and we would not need this thread
-   * to clean out the cache.
-   * 
-   * The SortedSet sortedFilterItems is used only to sort the items from the cache,
-   * so when it's time to clean up we have the TreeSet sort the FilterItems by
-   * timestamp.
-   * 
-   * Removes 1.5 * the numbers of items to make the cache smaller.
-   * For example:
-   * If cache clean size is 10, and the cache is at 15, we would remove (15 - 10) * 1.5 = 7.5 round up to 8.
-   * This way we clean the cache a bit more, and avoid having the cache cleaner having to do it frequently.
-   */
   protected class FilterCleaner implements Runnable  {
 
     private boolean running = true;

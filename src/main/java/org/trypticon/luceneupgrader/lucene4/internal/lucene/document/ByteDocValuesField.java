@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.document;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,36 +13,17 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.document;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.document;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.NumericDocValues;
 
-/**
- * <p>
- * Field that stores a per-document <code>byte</code> value for scoring, 
- * sorting or value retrieval. Here's an example usage:
- * 
- * <pre class="prettyprint">
- *   document.add(new ByteDocValuesField(name, (byte) 22));
- * </pre>
- * 
- * <p>
- * If you also need to store the value, you should add a
- * separate {@link StoredField} instance.
- * 
- * @see NumericDocValues
- * @deprecated use {@link NumericDocValuesField} instead.
- * */
+
 
 @Deprecated
 public class ByteDocValuesField extends NumericDocValuesField {
 
-  /** 
-   * Creates a new DocValues field with the specified 8-bit byte value 
-   * @param name field name
-   * @param value 8-bit byte value
-   * @throws IllegalArgumentException if the field name is null.
-   */
+
   public ByteDocValuesField(String name, byte value) {
     super(name, value);
   }

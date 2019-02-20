@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -24,16 +23,10 @@ import java.util.List;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.AtomicReaderContext;
 
-/**
- * A {@link Rescorer} that re-sorts according to a provided
- * Sort.
- */
-
 public class SortRescorer extends Rescorer {
 
   private final Sort sort;
 
-  /** Sole constructor. */
   public SortRescorer(Sort sort) {
     this.sort = sort;
   }

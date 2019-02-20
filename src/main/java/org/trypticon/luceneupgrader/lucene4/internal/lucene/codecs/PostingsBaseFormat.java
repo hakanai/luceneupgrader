@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,18 +13,15 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentWriteState;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentReadState;
 
-/** 
- * Provides a {@link PostingsReaderBase} and {@link
- * PostingsWriterBase}.
- *
- * @lucene.experimental */
+
 
 // TODO: find a better name; this defines the API that the
 // terms dict impls use to talk to a postings impl.
@@ -36,20 +31,13 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.SegmentReadSta
 // refactor some of these classes and use covariant return?
 public abstract class PostingsBaseFormat {
 
-  /** Unique name that's used to retrieve this codec when
-   *  reading the index */
   public final String name;
   
-  /** Sole constructor. */
   protected PostingsBaseFormat(String name) {
     this.name = name;
   }
 
-  /** Creates the {@link PostingsReaderBase} for this
-   *  format. */
   public abstract PostingsReaderBase postingsReaderBase(SegmentReadState state) throws IOException;
 
-  /** Creates the {@link PostingsWriterBase} for this
-   *  format. */
   public abstract PostingsWriterBase postingsWriterBase(SegmentWriteState state) throws IOException;
 }

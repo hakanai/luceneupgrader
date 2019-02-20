@@ -30,12 +30,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.Query;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.RamUsageEstimator;
 
-/**
- * Holds buffered deletes and updates by term or query, once pushed. Pushed
- * deletes/updates are write-once, so we shift to more memory efficient data
- * structure to hold them. We don't hold docIDs because these are applied on
- * flush.
- */
 class FrozenBufferedUpdates {
 
   /* Query we often undercount (say 24 bytes), plus int. */

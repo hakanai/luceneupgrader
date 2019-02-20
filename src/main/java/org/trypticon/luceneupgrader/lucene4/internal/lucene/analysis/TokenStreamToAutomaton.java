@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis;
 
 import java.io.IOException;
 
@@ -29,30 +28,20 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton.Autom
 
 // TODO: maybe also toFST?  then we can translate atts into FST outputs/weights
 
-/** Consumes a TokenStream and creates an {@link Automaton}
- *  where the transition labels are UTF8 bytes (or Unicode 
- *  code points if unicodeArcs is true) from the {@link
- *  TermToBytesRefAttribute}.  Between tokens we insert
- *  POS_SEP and for holes we insert HOLE.
- *
- * @lucene.experimental */
+
 public class TokenStreamToAutomaton {
 
   private boolean preservePositionIncrements;
   private boolean unicodeArcs;
 
-  /** Sole constructor. */
   public TokenStreamToAutomaton() {
     this.preservePositionIncrements = true;
   }
 
-  /** Whether to generate holes in the automaton for missing positions, <code>true</code> by default. */
   public void setPreservePositionIncrements(boolean enablePositionIncrements) {
     this.preservePositionIncrements = enablePositionIncrements;
   }
 
-  /** Whether to make transition labels Unicode code points instead of UTF8 bytes, 
-   *  <code>false</code> by default */
   public void setUnicodeArcs(boolean unicodeArcs) {
     this.unicodeArcs = unicodeArcs;
   }
@@ -78,24 +67,16 @@ public class TokenStreamToAutomaton {
     }
   }
 
-  /** Subclass & implement this if you need to change the
-   *  token (such as escaping certain bytes) before it's
-   *  turned into a graph. */ 
+
   protected BytesRef changeToken(BytesRef in) {
     return in;
   }
 
-  /** We create transition between two adjacent tokens. */
   public static final int POS_SEP = 0x001f;
 
-  /** We add this arc to represent a hole. */
   public static final int HOLE = 0x001e;
 
-  /** Pulls the graph (including {@link
-   *  PositionLengthAttribute}) from the provided {@link
-   *  TokenStream}, and creates the corresponding
-   *  automaton where arcs are bytes (or Unicode code points 
-   *  if unicodeArcs = true) from each term. */
+
   public Automaton toAutomaton(TokenStream in) throws IOException {
     final Automaton.Builder builder = new Automaton.Builder();
     builder.createState();

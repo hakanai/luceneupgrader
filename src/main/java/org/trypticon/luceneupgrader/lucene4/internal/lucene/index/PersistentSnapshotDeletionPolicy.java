@@ -33,27 +33,8 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexOutput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 
-/**
- * A {@link SnapshotDeletionPolicy} which adds a persistence layer so that
- * snapshots can be maintained across the life of an application. The snapshots
- * are persisted in a {@link Directory} and are committed as soon as
- * {@link #snapshot()} or {@link #release(IndexCommit)} is called.
- * <p>
- * <b>NOTE:</b> Sharing {@link PersistentSnapshotDeletionPolicy}s that write to
- * the same directory across {@link IndexWriter}s will corrupt snapshots. You
- * should make sure every {@link IndexWriter} has its own
- * {@link PersistentSnapshotDeletionPolicy} and that they all write to a
- * different {@link Directory}.  It is OK to use the same
- * Directory that holds the index.
- *
- * <p> This class adds a {@link #release(long)} method to
- * release commits from a previous snapshot's {@link IndexCommit#getGeneration}.
- *
- * @lucene.experimental
- */
 public class PersistentSnapshotDeletionPolicy extends SnapshotDeletionPolicy {
 
-  /** Prefix used for the save file. */
   public static final String SNAPSHOTS_PREFIX = "snapshots_";
   private static final int VERSION_START = 0;
   private static final int VERSION_CURRENT = VERSION_START;
@@ -64,41 +45,11 @@ public class PersistentSnapshotDeletionPolicy extends SnapshotDeletionPolicy {
 
   private final Directory dir;
 
-  /**
-   * {@link PersistentSnapshotDeletionPolicy} wraps another
-   * {@link IndexDeletionPolicy} to enable flexible
-   * snapshotting, passing {@link OpenMode#CREATE_OR_APPEND}
-   * by default.
-   * 
-   * @param primary
-   *          the {@link IndexDeletionPolicy} that is used on non-snapshotted
-   *          commits. Snapshotted commits, by definition, are not deleted until
-   *          explicitly released via {@link #release}.
-   * @param dir
-   *          the {@link Directory} which will be used to persist the snapshots
-   *          information.
-   */
   public PersistentSnapshotDeletionPolicy(IndexDeletionPolicy primary,
       Directory dir) throws IOException {
     this(primary, dir, OpenMode.CREATE_OR_APPEND);
   }
 
-  /**
-   * {@link PersistentSnapshotDeletionPolicy} wraps another
-   * {@link IndexDeletionPolicy} to enable flexible snapshotting.
-   * 
-   * @param primary
-   *          the {@link IndexDeletionPolicy} that is used on non-snapshotted
-   *          commits. Snapshotted commits, by definition, are not deleted until
-   *          explicitly released via {@link #release}.
-   * @param dir
-   *          the {@link Directory} which will be used to persist the snapshots
-   *          information.
-   * @param mode
-   *          specifies whether a new index should be created, deleting all
-   *          existing snapshots information (immediately), or open an existing
-   *          index, initializing the class with the snapshots information.
-   */
   public PersistentSnapshotDeletionPolicy(IndexDeletionPolicy primary,
       Directory dir, OpenMode mode) throws IOException {
     super(primary);
@@ -116,12 +67,6 @@ public class PersistentSnapshotDeletionPolicy extends SnapshotDeletionPolicy {
     }
   }
 
-  /**
-   * Snapshots the last commit. Once this method returns, the
-   * snapshot information is persisted in the directory.
-   * 
-   * @see SnapshotDeletionPolicy#snapshot
-   */
   @Override
   public synchronized IndexCommit snapshot() throws IOException {
     IndexCommit ic = super.snapshot();
@@ -141,12 +86,6 @@ public class PersistentSnapshotDeletionPolicy extends SnapshotDeletionPolicy {
     return ic;
   }
 
-  /**
-   * Deletes a snapshotted commit. Once this method returns, the snapshot
-   * information is persisted in the directory.
-   * 
-   * @see SnapshotDeletionPolicy#release
-   */
   @Override
   public synchronized void release(IndexCommit commit) throws IOException {
     super.release(commit);
@@ -165,13 +104,6 @@ public class PersistentSnapshotDeletionPolicy extends SnapshotDeletionPolicy {
     }
   }
 
-  /**
-   * Deletes a snapshotted commit by generation. Once this method returns, the snapshot
-   * information is persisted in the directory.
-   * 
-   * @see IndexCommit#getGeneration
-   * @see SnapshotDeletionPolicy#release
-   */
   public synchronized void release(long gen) throws IOException {
     super.releaseGen(gen);
     persist();
@@ -217,8 +149,6 @@ public class PersistentSnapshotDeletionPolicy extends SnapshotDeletionPolicy {
     }
   }
 
-  /** Returns the file name the snapshots are currently
-   *  saved to, or null if no snapshots have been saved. */
   public String getLastSaveFile() {
     if (nextWriteGen == 0) {
       return null;
@@ -227,12 +157,6 @@ public class PersistentSnapshotDeletionPolicy extends SnapshotDeletionPolicy {
     }
   }
 
-  /**
-   * Reads the snapshots information from the given {@link Directory}. This
-   * method can be used if the snapshots information is needed, however you
-   * cannot instantiate the deletion policy (because e.g., some other process
-   * keeps a lock on the snapshots directory).
-   */
   private synchronized void loadPriorSnapshots() throws IOException {
     long genLoaded = -1;
     IOException ioe = null;

@@ -22,34 +22,14 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.RandomAccessInput;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.LongValues;
 
-/** 
- * Retrieves an instance previously written by {@link DirectWriter} 
- * <p>
- * Example usage:
- * <pre class="prettyprint">
- *   int bitsPerValue = 100;
- *   IndexInput in = dir.openInput("packed", IOContext.DEFAULT);
- *   LongValues values = DirectReader.getInstance(in.randomAccessSlice(start, end), bitsPerValue);
- *   for (int i = 0; i &lt; numValues; i++) {
- *     long value = values.get(i);
- *   }
- * </pre>
- * @see DirectWriter
- */
 public class DirectReader {
   
-  /** 
-   * Retrieves an instance from the specified slice written decoding
-   * {@code bitsPerValue} for each value 
-   */
+
   public static LongValues getInstance(RandomAccessInput slice, int bitsPerValue) {
     return getInstance(slice, bitsPerValue, 0);
   }
 
-  /** 
-   * Retrieves an instance from the specified {@code offset} of the given slice
-   * decoding {@code bitsPerValue} for each value 
-   */
+
   public static LongValues getInstance(RandomAccessInput slice, int bitsPerValue, long offset) {
     switch (bitsPerValue) {
       case 1: return new DirectPackedReader1(slice, offset);

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattributes;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,36 +13,17 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattri
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattributes;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Attribute;
 
-/** Determines how many positions this
- *  token spans.  Very few analyzer components actually
- *  produce this attribute, and indexing ignores it, but
- *  it's useful to express the graph structure naturally
- *  produced by decompounding, word splitting/joining,
- *  synonym filtering, etc.
- *
- * <p>NOTE: this is optional, and most analyzers
- *  don't change the default value (1). */
+
 
 public interface PositionLengthAttribute extends Attribute {
-  /**
-   * Set the position length of this Token.
-   * <p>
-   * The default value is one. 
-   * @param positionLength how many positions this token
-   *  spans. 
-   * @throws IllegalArgumentException if <code>positionLength</code> 
-   *         is zero or negative.
-   * @see #getPositionLength()
-   */
   public void setPositionLength(int positionLength);
 
-  /** Returns the position length of this Token.
-   * @see #setPositionLength
-   */
+
   public int getPositionLength();
 }
 

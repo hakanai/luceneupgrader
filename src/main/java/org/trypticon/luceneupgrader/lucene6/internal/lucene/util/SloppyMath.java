@@ -29,61 +29,22 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.util;
  * =============================================================================
  */
 
-/** Math functions that trade off accuracy for speed. */
 public class SloppyMath {
   
-  /**
-   * Returns the Haversine distance in meters between two points
-   * specified in decimal degrees (latitude/longitude).  This works correctly
-   * even if the dateline is between the two points.
-   * <p>
-   * Error is at most 4E-1 (40cm) from the actual haversine distance, but is typically
-   * much smaller for reasonable distances: around 1E-5 (0.01mm) for distances less than
-   * 1000km.
-   *
-   * @param lat1 Latitude of the first point.
-   * @param lon1 Longitude of the first point.
-   * @param lat2 Latitude of the second point.
-   * @param lon2 Longitude of the second point.
-   * @return distance in meters.
-   */
   public static double haversinMeters(double lat1, double lon1, double lat2, double lon2) {
     return haversinMeters(haversinSortKey(lat1, lon1, lat2, lon2));
   }
   
-  /**
-   * Returns the Haversine distance in meters between two points
-   * given the previous result from {@link #haversinSortKey(double, double, double, double)}
-   * @return distance in meters.
-   */
   public static double haversinMeters(double sortKey) {
     return TO_METERS * 2 * asin(Math.min(1, Math.sqrt(sortKey * 0.5)));
   }
   
-  /**
-   * Returns the Haversine distance in kilometers between two points
-   * specified in decimal degrees (latitude/longitude).  This works correctly
-   * even if the dateline is between the two points.
-   *
-   * @param lat1 Latitude of the first point.
-   * @param lon1 Longitude of the first point.
-   * @param lat2 Latitude of the second point.
-   * @param lon2 Longitude of the second point.
-   * @return distance in kilometers.
-   * @deprecated Use {@link #haversinMeters(double, double, double, double) instead}
-   */
   @Deprecated
   public static double haversinKilometers(double lat1, double lon1, double lat2, double lon2) {
     double h = haversinSortKey(lat1, lon1, lat2, lon2);
     return TO_KILOMETERS * 2 * asin(Math.min(1, Math.sqrt(h * 0.5)));
   }
   
-  /**
-   * Returns a sort key for distance. This is less expensive to compute than 
-   * {@link #haversinMeters(double, double, double, double)}, but it always compares the same.
-   * This can be converted into an actual distance with {@link #haversinMeters(double)}, which
-   * effectively does the second half of the computation.
-   */
   public static double haversinSortKey(double lat1, double lon1, double lat2, double lon2) {
     double x1 = lat1 * TO_RADIANS;
     double x2 = lat2 * TO_RADIANS;
@@ -94,19 +55,6 @@ public class SloppyMath {
     return Double.longBitsToDouble(Double.doubleToRawLongBits(h) & 0xFFFFFFFFFFFFFFF8L);
   }
 
-  /**
-   * Returns the trigonometric cosine of an angle.
-   * <p>
-   * Error is around 1E-15.
-   * <p>
-   * Special cases:
-   * <ul>
-   *  <li>If the argument is {@code NaN} or an infinity, then the result is {@code NaN}.
-   * </ul>
-   * @param a an angle, in radians.
-   * @return the cosine of the argument.
-   * @see Math#cos(double)
-   */
   public static double cos(double a) {
     if (a < 0.0) {
       a = -a;
@@ -125,20 +73,6 @@ public class SloppyMath {
     return indexCos + delta * (-indexSin + delta * (-indexCos * ONE_DIV_F2 + delta * (indexSin * ONE_DIV_F3 + delta * indexCos * ONE_DIV_F4)));
   }
 
-  /**
-   * Returns the arc sine of a value.
-   * <p>
-   * The returned angle is in the range <i>-pi</i>/2 through <i>pi</i>/2. 
-   * Error is around 1E-7.
-   * <p>
-   * Special cases:
-   * <ul>
-   *  <li>If the argument is {@code NaN} or its absolute value is greater than 1, then the result is {@code NaN}.
-   * </ul>
-   * @param a the value whose arc sine is to be returned.
-   * @return arc sine of the argument
-   * @see Math#asin(double)
-   */
   // because asin(-x) = -asin(x), asin(x) only needs to be computed on [0,1].
   // ---> we only have to compute asin(x) on [0,1].
   // For values not close to +-1, we use look-up tables;
@@ -176,20 +110,10 @@ public class SloppyMath {
     }
   }
 
-  /**
-   * Convert to degrees.
-   * @param radians radians to convert to degrees
-   * @return degrees
-   */
   public static double toDegrees(final double radians) {
     return radians * TO_DEGREES;
   }
   
-  /**
-   * Convert to radians.
-   * @param degrees degrees to convert to radians
-   * @return radians
-   */
   public static double toRadians(final double degrees) {
     return degrees * TO_RADIANS;
   }
@@ -251,7 +175,6 @@ public class SloppyMath {
   private static final double ASIN_QS3 = Double.longBitsToDouble(0xbfe6066c1b8d0159L); // -6.88283971605453293030e-01
   private static final double ASIN_QS4 = Double.longBitsToDouble(0x3fb3b8c5b12e9282L); //  7.70381505559019352791e-02
   
-  /** Initializes look-up tables. */
   static {
     // sin and cos
     final int SIN_COS_PI_INDEX = (SIN_COS_TABS_SIZE-1)/2;

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,17 +13,13 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.fst;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
-
-/** Can next() and advance() through the terms in an FST
- *
-  * @lucene.experimental
-*/
 
 abstract class FSTEnum<T> {
   protected final FST<T> fst;
@@ -41,9 +35,7 @@ abstract class FSTEnum<T> {
   protected int upto;
   protected int targetLength;
 
-  /** doFloor controls the behavior of advance: if it's true
-   *  doFloor is true, advance positions to the biggest
-   *  term before target.  */
+
   protected FSTEnum(FST<T> fst) {
     this.fst = fst;
     fstReader = fst.getBytesReader();
@@ -58,8 +50,6 @@ abstract class FSTEnum<T> {
   protected abstract void setCurrentLabel(int label);
   protected abstract void grow();
 
-  /** Rewinds enum state to match the shared prefix between
-   *  current term and target term */
   protected final void rewindPrefix() throws IOException {
     if (upto == 0) {
       //System.out.println("  init");
@@ -114,7 +104,6 @@ abstract class FSTEnum<T> {
   // TODO: should we return a status here (SEEK_FOUND / SEEK_NOT_FOUND /
   // SEEK_END)?  saves the eq check above?
 
-  /** Seeks to smallest term that's >= target. */
   protected void doSeekCeil() throws IOException {
 
     //System.out.println("    advance len=" + target.length + " curlen=" + current.length);
@@ -256,7 +245,6 @@ abstract class FSTEnum<T> {
 
   // TODO: should we return a status here (SEEK_FOUND / SEEK_NOT_FOUND /
   // SEEK_END)?  saves the eq check above?
-  /** Seeks to largest term that's <= target. */
   protected void doSeekFloor() throws IOException {
 
     // TODO: possibly caller could/should provide common
@@ -416,7 +404,6 @@ abstract class FSTEnum<T> {
     }
   }
 
-  /** Seeks to exactly target term. */
   protected boolean doSeekExact() throws IOException {
 
     // TODO: possibly caller could/should provide common

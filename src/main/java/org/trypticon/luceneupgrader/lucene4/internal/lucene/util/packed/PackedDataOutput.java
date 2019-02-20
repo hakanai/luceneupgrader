@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,36 +13,25 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataOutput;
 
-/**
- * A {@link DataOutput} wrapper to write unaligned, variable-length packed
- * integers.
- * @see PackedDataInput
- * @lucene.internal
- */
 public final class PackedDataOutput {
 
   final DataOutput out;
   long current;
   int remainingBits;
 
-  /**
-   * Create a new instance that wraps <code>out</code>.
-   */
   public PackedDataOutput(DataOutput out) {
     this.out = out;
     current = 0;
     remainingBits = 8;
   }
 
-  /**
-   * Write a value using exactly <code>bitsPerValue</code> bits.
-   */
   public void writeLong(long value, int bitsPerValue) throws IOException {
     assert bitsPerValue == 64 || (value >= 0 && value <= PackedInts.maxValue(bitsPerValue));
     while (bitsPerValue > 0) {
@@ -60,9 +47,6 @@ public final class PackedDataOutput {
     }
   }
 
-  /**
-   * Flush pending bits to the underlying {@link DataOutput}.
-   */
   public void flush() throws IOException {
     if (remainingBits < 8) {
       out.writeByte((byte) current);

@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene41;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene41;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene41;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,26 +22,6 @@ import java.util.Arrays;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexOutput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.MultiLevelSkipListWriter;
 
-/**
- * Write skip lists with multiple levels, and support skip within block ints.
- *
- * Assume that docFreq = 28, skipInterval = blockSize = 12
- *
- *  |       block#0       | |      block#1        | |vInts|
- *  d d d d d d d d d d d d d d d d d d d d d d d d d d d d (posting list)
- *                          ^                       ^       (level 0 skip point)
- *
- * Note that skipWriter will ignore first document in block#0, since 
- * it is useless as a skip point.  Also, we'll never skip into the vInts
- * block, only record skip data at the start its start point(if it exist).
- *
- * For each skip point, we will record: 
- * 1. docID in former position, i.e. for position 12, record docID[11], etc.
- * 2. its related file points(position, payload), 
- * 3. related numbers or uptos(position, payload).
- * 4. start offset.
- *
- */
 final class Lucene41SkipWriter extends MultiLevelSkipListWriter {
   // private boolean DEBUG = Lucene41PostingsReader.DEBUG;
   
@@ -128,9 +107,6 @@ final class Lucene41SkipWriter extends MultiLevelSkipListWriter {
     }
   }
 
-  /**
-   * Sets the values for the current skip data. 
-   */
   public void bufferSkip(int doc, int numDocs, long posFP, long payFP, int posBufferUpto, int payloadByteUpto) throws IOException {
     initSkip();
     this.curDoc = doc;

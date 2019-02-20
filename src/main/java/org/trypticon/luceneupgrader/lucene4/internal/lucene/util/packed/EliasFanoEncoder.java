@@ -13,8 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
 
 import java.util.Arrays;
@@ -24,65 +23,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.FixedBitSet; //
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ToStringUtils;
 
-
-/** Encode a non decreasing sequence of non negative whole numbers in the Elias-Fano encoding
- * that was introduced in the 1970's by Peter Elias and Robert Fano.
- * <p>
- * The Elias-Fano encoding is a high bits / low bits representation of
- * a monotonically increasing sequence of <code>numValues > 0</code> natural numbers <code>x[i]</code>
- * <p>
- * <code>0 <= x[0] <= x[1] <= ... <= x[numValues-2] <= x[numValues-1] <= upperBound</code>
- * <p>
- * where <code>upperBound > 0</code> is an upper bound on the last value.
- * <br>
- * The Elias-Fano encoding uses less than half a bit per encoded number more
- * than the smallest representation
- * that can encode any monotone sequence with the same bounds.
- * <p>
- * The lower <code>L</code> bits of each <code>x[i]</code> are stored explicitly and contiguously
- * in the lower-bits array, with <code>L</code> chosen as (<code>log()</code> base 2):
- * <p>
- * <code>L = max(0, floor(log(upperBound/numValues)))</code>
- * <p>
- * The upper bits are stored in the upper-bits array as a sequence of unary-coded gaps (<code>x[-1] = 0</code>):
- * <p>
- * <code>(x[i]/2**L) - (x[i-1]/2**L)</code>
- * <p>
- * The unary code encodes a natural number <code>n</code> by <code>n</code> 0 bits followed by a 1 bit:
- * <code>0...01</code>. <br>
- * In the upper bits the total the number of 1 bits is <code>numValues</code>
- * and the total number of 0 bits is:<p>
- * <code>floor(x[numValues-1]/2**L) <= upperBound/(2**max(0, floor(log(upperBound/numValues)))) <= 2*numValues</code>
- * <p>
- * The Elias-Fano encoding uses at most
- * <p>
- * <code>2 + ceil(log(upperBound/numValues))</code>
- * <p>
- * bits per encoded number. With <code>upperBound</code> in these bounds (<code>p</code> is an integer):
- * <p>
- * <code>2**p < x[numValues-1] <= upperBound <= 2**(p+1)</code>
- * <p>
- * the number of bits per encoded number is minimized.
- * <p>
- * In this implementation the values in the sequence can be given as <code>long</code>,
- * <code>numValues = 0</code> and <code>upperBound = 0</code> are allowed,
- * and each of the upper and lower bit arrays should fit in a <code>long[]</code>.
- * <br>
- * An index of positions of zero's in the upper bits is also built.
- * <p>
- * This implementation is based on this article:
- * <br>
- * Sebastiano Vigna, "Quasi Succinct Indices", June 19, 2012, sections 3, 4 and 9.
- * Retrieved from http://arxiv.org/pdf/1206.4300 .
- *
- * <p>The articles originally describing the Elias-Fano representation are:
- * <br>Peter Elias, "Efficient storage and retrieval by content and address of static files",
- * J. Assoc. Comput. Mach., 21(2):246–260, 1974.
- * <br>Robert M. Fano, "On the number of bits required to implement an associative memory",
- *  Memorandum 61, Computer Structures Group, Project MAC, MIT, Cambridge, Mass., 1971.
- *
- * @lucene.internal
- */
 
 public class EliasFanoEncoder implements Accountable {
 
@@ -99,46 +39,16 @@ public class EliasFanoEncoder implements Accountable {
   long numEncoded = 0L;
   long lastEncoded = 0L;
 
-  /** The default index interval for zero upper bits. */
   public static final long DEFAULT_INDEX_INTERVAL = 256;
   final long numIndexEntries;
   final long indexInterval;
   final int nIndexEntryBits;
-  /** upperZeroBitPositionIndex[i] (filled using packValue) will contain the bit position
-   *  just after the zero bit ((i+1) * indexInterval) in the upper bits.
-   */
+
   final long[] upperZeroBitPositionIndex;
   long currentEntryIndex; // also indicates how many entries in the index are valid.
 
 
 
-  /**
-   * Construct an Elias-Fano encoder.
-   * After construction, call {@link #encodeNext} <code>numValues</code> times to encode
-   * a non decreasing sequence of non negative numbers.
-   * @param numValues The number of values that is to be encoded.
-   * @param upperBound  At least the highest value that will be encoded.
-   *                For space efficiency this should not exceed the power of two that equals
-   *                or is the first higher than the actual maximum.
-   *                <br>When <code>numValues >= (upperBound/3)</code>
-   *                a {@link FixedBitSet} will take less space.
-   * @param indexInterval The number of high zero bits for which a single index entry is built.
-   *                The index will have at most <code>2 * numValues / indexInterval</code> entries
-   *                and each index entry will use at most <code>ceil(log2(3 * numValues))</code> bits,
-   *                see {@link EliasFanoEncoder}.
-   * @throws IllegalArgumentException when:
-   *         <ul>
-   *         <li><code>numValues</code> is negative, or
-   *         <li><code>numValues</code> is non negative and <code>upperBound</code> is negative, or
-   *         <li>the low bits do not fit in a <code>long[]</code>:
-   *             <code>(L * numValues / 64) > Integer.MAX_VALUE</code>, or
-   *         <li>the high bits do not fit in a <code>long[]</code>:
-   *             <code>(2 * numValues / 64) > Integer.MAX_VALUE</code>, or
-   *         <li><code>indexInterval < 2</code>,
-   *         <li>the index bits do not fit in a <code>long[]</code>:
-   *             <code>(numValues / indexInterval * ceil(2log(3 * numValues)) / 64) > Integer.MAX_VALUE</code>.
-   *         </ul>
-   */
   public EliasFanoEncoder(long numValues, long upperBound, long indexInterval) {
     if (numValues < 0L) {
       throw new IllegalArgumentException("numValues should not be negative: " + numValues);
@@ -192,9 +102,6 @@ public class EliasFanoEncoder implements Accountable {
     this.indexInterval = indexInterval;
   }
 
-  /**
-  * Construct an Elias-Fano encoder using {@link #DEFAULT_INDEX_INTERVAL}.
-  */
   public EliasFanoEncoder(long numValues, long upperBound) {
     this(numValues, upperBound, DEFAULT_INDEX_INTERVAL);
   }
@@ -204,15 +111,7 @@ public class EliasFanoEncoder implements Accountable {
     return (numBits + (Long.SIZE-1)) >>> LOG2_LONG_SIZE;
   }
 
-  /** Call at most <code>numValues</code> times to encode a non decreasing sequence of non negative numbers.
-   * @param x The next number to be encoded.
-   * @throws IllegalStateException when called more than <code>numValues</code> times.
-   * @throws IllegalArgumentException when:
-   *         <ul>
-   *         <li><code>x</code> is smaller than an earlier encoded value, or
-   *         <li><code>x</code> is larger than <code>upperBound</code>.
-   *         </ul>
-   */
+
   public void encodeNext(long x) {
     if (numEncoded >= numValues) {
       throw new IllegalStateException("encodeNext called more than " + numValues + " times.");
@@ -259,18 +158,7 @@ public class EliasFanoEncoder implements Accountable {
     }
   }
 
-  /** Provide an indication that it is better to use an {@link EliasFanoEncoder} than a {@link FixedBitSet}
-   *  to encode document identifiers.
-   *  This indication is not precise and may change in the future.
-   *  <br>An EliasFanoEncoder is favoured when the size of the encoding by the EliasFanoEncoder
-   *  (including some space for its index) is at most about 5/6 of the size of the FixedBitSet,
-   *  this is the same as comparing estimates of the number of bits accessed by a pair of FixedBitSets and
-   *  by a pair of non indexed EliasFanoDocIdSets when determining the intersections of the pairs.
-   *  <br>A bit set is preferred when <code>upperbound <= 256</code>.
-   *  <br>It is assumed that {@link #DEFAULT_INDEX_INTERVAL} is used.
-   *  @param numValues The number of document identifiers that is to be encoded. Should be non negative.
-   *  @param upperBound The maximum possible value for a document identifier. Should be at least <code>numValues</code>.
-   */
+
   public static boolean sufficientlySmallerThanBitSet(long numValues, long upperBound) {
     /* When (upperBound / 6) == numValues,
      * the number of bits per entry for the EliasFanoEncoder is 2 + ceil(2log(upperBound/numValues)) == 5.
@@ -283,26 +171,19 @@ public class EliasFanoEncoder implements Accountable {
             && (upperBound / 7) > numValues; // 6 + 1 to allow some room for the index.
   }
 
-  /**
-   * Returns an {@link EliasFanoDecoder} to access the encoded values.
-   * Perform all calls to {@link #encodeNext} before calling {@link #getDecoder}.
-   */
   public EliasFanoDecoder getDecoder() {
     // decode as far as currently encoded as determined by numEncoded.
     return new EliasFanoDecoder(this);
   }
 
-  /** Expert. The low bits. */
   public long[] getLowerBits() {
     return lowerLongs;
   }
 
-  /** Expert. The high bits. */
   public long[] getUpperBits() {
     return upperLongs;
   }
   
-  /** Expert. The index bits. */
   public long[] getIndexBits() {
     return upperZeroBitPositionIndex;
   }

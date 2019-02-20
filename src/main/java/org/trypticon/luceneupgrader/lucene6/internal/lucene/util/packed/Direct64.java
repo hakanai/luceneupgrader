@@ -1,5 +1,3 @@
-// This file has been automatically generated, DO NOT EDIT
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -24,10 +22,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.RamUsageEstimat
 import java.io.IOException;
 import java.util.Arrays;
 
-/**
- * Direct wrapping of 64-bits values to a backing array.
- * @lucene.internal
- */
 final class Direct64 extends PackedInts.MutableImpl {
   final long[] values;
 

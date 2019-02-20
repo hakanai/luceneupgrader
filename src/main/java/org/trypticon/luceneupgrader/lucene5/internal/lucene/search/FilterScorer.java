@@ -19,33 +19,14 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.search;
 
 import java.io.IOException;
 
-/** 
- * A {@code FilterScorer} contains another {@code Scorer}, which it
- * uses as its basic source of data, possibly transforming the data along the
- * way or providing additional functionality. The class
- * {@code FilterScorer} itself simply implements all abstract methods
- * of {@code Scorer} with versions that pass all requests to the
- * contained scorer. Subclasses of {@code FilterScorer} may
- * further override some of these methods and may also provide additional
- * methods and fields.
- */
 public abstract class FilterScorer extends Scorer {
   protected final Scorer in;
 
-  /**
-   * Create a new FilterScorer
-   * @param in the {@link Scorer} to wrap
-   */
   public FilterScorer(Scorer in) {
     super(in.weight);
     this.in = in;
   }
 
-  /**
-   * Create a new FilterScorer with a specific weight
-   * @param in the {@link Scorer} to wrap
-   * @param weight a {@link Weight}
-   */
   public FilterScorer(Scorer in, Weight weight) {
     super(weight);
     if (in == null) {

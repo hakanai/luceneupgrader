@@ -22,22 +22,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 import java.io.IOException;
 import java.util.Arrays;
 
-/**
- * Maintains a {@link IndexReader} {@link TermState} view over
- * {@link IndexReader} instances containing a single term. The
- * {@link TermContext} doesn't track if the given {@link TermState}
- * objects are valid, neither if the {@link TermState} instances refer to the
- * same terms in the associated readers.
- * 
- * @lucene.experimental
- */
 public final class TermContext {
 
-  /** Holds the {@link IndexReaderContext} of the top-level
-   *  {@link IndexReader}, used internally only for
-   *  asserting.
-   *
-   *  @lucene.internal */
+
   public final IndexReaderContext topReaderContext;
   private final TermState[] states;
   private int docFreq;
@@ -45,9 +32,6 @@ public final class TermContext {
 
   //public static boolean DEBUG = BlockTreeTermsWriter.DEBUG;
 
-  /**
-   * Creates an empty {@link TermContext} from a {@link IndexReaderContext}
-   */
   public TermContext(IndexReaderContext context) {
     assert context != null && context.isTopLevel;
     topReaderContext = context;
@@ -62,23 +46,11 @@ public final class TermContext {
     states = new TermState[len];
   }
   
-  /**
-   * Creates a {@link TermContext} with an initial {@link TermState},
-   * {@link IndexReader} pair.
-   */
   public TermContext(IndexReaderContext context, TermState state, int ord, int docFreq, long totalTermFreq) {
     this(context);
     register(state, ord, docFreq, totalTermFreq);
   }
 
-  /**
-   * Creates a {@link TermContext} from a top-level {@link IndexReaderContext} and the
-   * given {@link Term}. This method will lookup the given term in all context's leaf readers 
-   * and register each of the readers containing the term in the returned {@link TermContext}
-   * using the leaf reader's ordinal.
-   * <p>
-   * Note: the given context must be a top-level context.
-   */
   public static TermContext build(IndexReaderContext context, Term term)
       throws IOException {
     assert context != null && context.isTopLevel;
@@ -101,31 +73,17 @@ public final class TermContext {
     return perReaderTermState;
   }
 
-  /**
-   * Clears the {@link TermContext} internal state and removes all
-   * registered {@link TermState}s
-   */
   public void clear() {
     docFreq = 0;
     totalTermFreq = 0;
     Arrays.fill(states, null);
   }
 
-  /**
-   * Registers and associates a {@link TermState} with an leaf ordinal. The leaf ordinal
-   * should be derived from a {@link IndexReaderContext}'s leaf ord.
-   */
   public void register(TermState state, final int ord, final int docFreq, final long totalTermFreq) {
     register(state, ord);
     accumulateStatistics(docFreq, totalTermFreq);
   }
 
-  /**
-   * Expert: Registers and associates a {@link TermState} with an leaf ordinal. The
-   * leaf ordinal should be derived from a {@link IndexReaderContext}'s leaf ord.
-   * On the contrary to {@link #register(TermState, int, int, long)} this method
-   * does NOT update term statistics.
-   */
   public void register(TermState state, final int ord) {
     assert state != null : "state must not be null";
     assert ord >= 0 && ord < states.length;
@@ -134,7 +92,6 @@ public final class TermContext {
     states[ord] = state;
   }
 
-  /** Expert: Accumulate term statistics. */
   public void accumulateStatistics(final int docFreq, final long totalTermFreq) {
     this.docFreq += docFreq;
     if (this.totalTermFreq >= 0 && totalTermFreq >= 0)
@@ -143,43 +100,20 @@ public final class TermContext {
       this.totalTermFreq = -1;
   }
 
-  /**
-   * Returns the {@link TermState} for an leaf ordinal or <code>null</code> if no
-   * {@link TermState} for the ordinal was registered.
-   * 
-   * @param ord
-   *          the readers leaf ordinal to get the {@link TermState} for.
-   * @return the {@link TermState} for the given readers ord or <code>null</code> if no
-   *         {@link TermState} for the reader was registered
-   */
   public TermState get(int ord) {
     assert ord >= 0 && ord < states.length;
     return states[ord];
   }
 
-  /**
-   *  Returns the accumulated document frequency of all {@link TermState}
-   *         instances passed to {@link #register(TermState, int, int, long)}.
-   * @return the accumulated document frequency of all {@link TermState}
-   *         instances passed to {@link #register(TermState, int, int, long)}.
-   */
   public int docFreq() {
     return docFreq;
   }
   
-  /**
-   *  Returns the accumulated term frequency of all {@link TermState}
-   *         instances passed to {@link #register(TermState, int, int, long)}.
-   * @return the accumulated term frequency of all {@link TermState}
-   *         instances passed to {@link #register(TermState, int, int, long)}.
-   */
   public long totalTermFreq() {
     return totalTermFreq;
   }
 
-  /** Returns true if all terms stored here are real (e.g., not auto-prefix terms).
-   *
-   *  @lucene.internal */
+
   public boolean hasOnlyRealTerms() {
     for (TermState termState : states) {
       if (termState != null && termState.isRealTerm() == false) {

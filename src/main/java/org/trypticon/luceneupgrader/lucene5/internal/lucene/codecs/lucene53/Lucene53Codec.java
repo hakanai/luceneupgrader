@@ -25,16 +25,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.perfield.PerF
 
 import java.util.Objects;
 
-/**
- * Implements the Lucene 5.3 index format, with configurable per-field postings
- * and docvalues formats.
- * <p>
- * If you want to reuse functionality of this codec in another codec, extend
- * {@link FilterCodec}.
- *
- * @see org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.lucene53 package documentation for file format details.
- * @deprecated Only for reading old 5.3 segments
- */
 @Deprecated
 public class Lucene53Codec extends Codec {
   private final TermVectorsFormat vectorsFormat = new Lucene50TermVectorsFormat();
@@ -59,19 +49,12 @@ public class Lucene53Codec extends Codec {
   
   private final StoredFieldsFormat storedFieldsFormat;
 
-  /** 
-   * Instantiates a new codec.
-   */
+
   public Lucene53Codec() {
     this(Mode.BEST_SPEED);
   }
   
-  /** 
-   * Instantiates a new codec, specifying the stored fields compression
-   * mode to use.
-   * @param mode stored fields compression mode to use for newly 
-   *             flushed/merged segments.
-   */
+
   public Lucene53Codec(Mode mode) {
     super("Lucene53");
     this.storedFieldsFormat = new Lucene50StoredFieldsFormat(Objects.requireNonNull(mode));
@@ -112,28 +95,12 @@ public class Lucene53Codec extends Codec {
     return compoundFormat;
   }
 
-  /** Returns the postings format that should be used for writing 
-   *  new segments of <code>field</code>.
-   *  
-   *  The default implementation always returns "Lucene50".
-   *  <p>
-   *  <b>WARNING:</b> if you subclass, you are responsible for index 
-   *  backwards compatibility: future version of Lucene are only 
-   *  guaranteed to be able to read the default implementation. 
-   */
+
   public PostingsFormat getPostingsFormatForField(String field) {
     return defaultFormat;
   }
   
-  /** Returns the docvalues format that should be used for writing 
-   *  new segments of <code>field</code>.
-   *  
-   *  The default implementation always returns "Lucene50".
-   *  <p>
-   *  <b>WARNING:</b> if you subclass, you are responsible for index 
-   *  backwards compatibility: future version of Lucene are only 
-   *  guaranteed to be able to read the default implementation. 
-   */
+
   public DocValuesFormat getDocValuesFormatForField(String field) {
     return defaultDVFormat;
   }

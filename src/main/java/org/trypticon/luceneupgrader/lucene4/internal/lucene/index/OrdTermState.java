@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,19 +13,12 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
-/**
- * An ordinal based {@link TermState}
- * 
- * @lucene.experimental
- */
 public class OrdTermState extends TermState {
-  /** Term ordinal, i.e. it's position in the full list of
-   *  sorted terms. */
   public long ord;
 
-  /** Sole constructor. */
   public OrdTermState() {
   }
   

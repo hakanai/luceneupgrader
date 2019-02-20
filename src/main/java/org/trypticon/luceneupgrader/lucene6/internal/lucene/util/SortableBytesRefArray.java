@@ -13,19 +13,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.util;
 
 import java.util.Comparator;
 
 interface SortableBytesRefArray {
-  /** Append a new value */
   int append(BytesRef bytes);
-  /** Clear all previously stored values */
   void clear();
-  /** Returns the number of values appended so far */
   int size();
-  /** Sort all values by the provided comparator and return an iterator over the sorted values */
   BytesRefIterator iterator(final Comparator<BytesRef> comp);
 }

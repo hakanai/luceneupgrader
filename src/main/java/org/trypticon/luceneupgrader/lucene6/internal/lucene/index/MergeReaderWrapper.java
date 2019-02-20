@@ -13,8 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.index;
 
 import java.io.IOException;
@@ -27,7 +26,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.codecs.TermVectorsRe
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.Sort;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Bits;
 
-/** This is a hack to make index sorting fast, with a {@link LeafReader} that always returns merge instances when you ask for the codec readers. */
 class MergeReaderWrapper extends LeafReader {
   final CodecReader in;
   final FieldsProducer fields;

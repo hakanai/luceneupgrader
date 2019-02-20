@@ -25,26 +25,11 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.TermsEnum;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BitDocIdSet;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 
-/**
- * A wrapper for {@link MultiTermQuery}, that exposes its
- * functionality as a {@link Filter}.
- * <P>
- * <code>MultiTermQueryWrapperFilter</code> is not designed to
- * be used by itself. Normally you subclass it to provide a Filter
- * counterpart for a {@link MultiTermQuery} subclass.
- * <P>
- * For example, {@link TermRangeFilter} and {@link PrefixFilter} extend
- * <code>MultiTermQueryWrapperFilter</code>.
- * @deprecated Use {@link MultiTermQueryConstantScoreWrapper} instead
- */
 @Deprecated
 public class MultiTermQueryWrapperFilter<Q extends MultiTermQuery> extends Filter {
 
   protected final Q query;
 
-  /**
-   * Wrap a {@link MultiTermQuery} as a Filter.
-   */
   protected MultiTermQueryWrapperFilter(Q query) {
       this.query = query;
   }
@@ -70,13 +55,8 @@ public class MultiTermQueryWrapperFilter<Q extends MultiTermQuery> extends Filte
     return 31 * super.hashCode() + query.hashCode();
   }
 
-  /** Returns the field name for this query */
   public final String getField() { return query.getField(); }
 
-  /**
-   * Returns a DocIdSet with documents that should be permitted in search
-   * results.
-   */
   @Override
   public DocIdSet getDocIdSet(LeafReaderContext context, Bits acceptDocs) throws IOException {
     final Terms terms = context.reader().terms(query.field);

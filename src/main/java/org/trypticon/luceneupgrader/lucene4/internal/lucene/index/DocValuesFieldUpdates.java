@@ -1,11 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.DocIdSetIterator;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PagedGrowableWriter;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -22,43 +14,23 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.PagedGro
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
-/**
- * Holds updates of a single DocValues field, for a set of documents.
- * 
- * @lucene.experimental
- */
+import java.util.HashMap;
+import java.util.Map;
+
 abstract class DocValuesFieldUpdates {
   
   protected static final int PAGE_SIZE = 1024;
 
-  /**
-   * An iterator over documents and their updated values. Only documents with
-   * updates are returned by this iterator, and the documents are returned in
-   * increasing order.
-   */
   static abstract class Iterator {
     
-    /**
-     * Returns the next document which has an update, or
-     * {@link DocIdSetIterator#NO_MORE_DOCS} if there are no more documents to
-     * return.
-     */
     abstract int nextDoc();
     
-    /** Returns the current document this iterator is on. */
     abstract int doc();
     
-    /**
-     * Returns the value of the document returned from {@link #nextDoc()}. A
-     * {@code null} value means that it was unset for this document.
-     */
     abstract Object value();
     
-    /**
-     * Reset the iterator's state. Should be called before {@link #nextDoc()}
-     * and {@link #value()}.
-     */
     abstract void reset();
     
   }
@@ -139,37 +111,18 @@ abstract class DocValuesFieldUpdates {
     this.type = type;
   }
   
-  /**
-   * Returns the estimated capacity of a {@link PagedGrowableWriter} given the
-   * actual number of stored elements.
-   */
   protected static int estimateCapacity(int size) {
     return (int) Math.ceil((double) size / PAGE_SIZE) * PAGE_SIZE;
   }
   
-  /**
-   * Add an update to a document. For unsetting a value you should pass
-   * {@code null}.
-   */
   public abstract void add(int doc, Object value);
   
-  /**
-   * Returns an {@link Iterator} over the updated documents and their
-   * values.
-   */
   public abstract Iterator iterator();
   
-  /**
-   * Merge with another {@link DocValuesFieldUpdates}. This is called for a
-   * segment which received updates while it was being merged. The given updates
-   * should override whatever updates are in that instance.
-   */
   public abstract void merge(DocValuesFieldUpdates other);
 
-  /** Returns true if this instance contains any updates. */
   public abstract boolean any();
   
-  /** Returns approximate RAM bytes used per document. */
   public abstract long ramBytesPerDoc();
 
 }

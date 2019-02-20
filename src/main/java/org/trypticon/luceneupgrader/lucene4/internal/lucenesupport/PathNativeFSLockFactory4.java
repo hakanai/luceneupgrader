@@ -17,38 +17,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Clone of {@link NativeFSLockFactory} accepting {@link Path} instead of {@link File}.
- */
 public class PathNativeFSLockFactory4 extends PathFSLockFactory4 {
 
-    /**
-     * Create a PathNativeFSLockFactory4 instance, with null (unset)
-     * lock directory. When you pass this factory to a {@link PathFSDirectory4}
-     * subclass, the lock directory is automatically set to the
-     * directory itself. Be sure to create one instance for each directory
-     * your create!
-     */
     public PathNativeFSLockFactory4() {
         this((Path) null);
     }
 
-    /**
-     * Create a PathNativeFSLockFactory4 instance, storing lock
-     * files into the specified lockDirName:
-     *
-     * @param lockDirName where lock files are created.
-     */
     public PathNativeFSLockFactory4(String lockDirName) {
         this(Paths.get(lockDirName));
     }
 
-    /**
-     * Create a PathNativeFSLockFactory4 instance, storing lock
-     * files into the specified lockDir:
-     *
-     * @param lockDir where lock files are created.
-     */
     public PathNativeFSLockFactory4(Path lockDir) {
         setLockDir(lockDir);
     }

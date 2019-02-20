@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,20 +13,16 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
-/** Internal document-at-a-time scorers used to deal with stupid coord() computation */
 class BooleanTopLevelScorers {
   
-  /** 
-   * Used when there is more than one scorer in a query, but a segment
-   * only had one non-null scorer. This just wraps that scorer directly
-   * to factor in coord().
-   */
+
   static class BoostedScorer extends FilterScorer {
     private final float boost;
     
@@ -48,11 +42,7 @@ class BooleanTopLevelScorers {
     }
   }
   
-  /** 
-   * Used when there are both mandatory and optional clauses, but minShouldMatch
-   * dictates that some of the optional clauses must match. The query is a conjunction,
-   * but must compute coord based on how many optional subscorers matched (freq).
-   */
+
   static class CoordinatingConjunctionScorer extends ConjunctionScorer {
     private final float coords[];
     private final int reqCount;
@@ -73,10 +63,7 @@ class BooleanTopLevelScorers {
     }
   }
   
-  /** 
-   * Used when there are mandatory clauses with one optional clause: we compute
-   * coord based on whether the optional clause matched or not.
-   */
+
   static class ReqSingleOptScorer extends ReqOptSumScorer {
     // coord factor if just the required part matches
     private final float coordReq;
@@ -107,10 +94,7 @@ class BooleanTopLevelScorers {
     }
   }
 
-  /** 
-   * Used when there are mandatory clauses with optional clauses: we compute
-   * coord based on how many optional subscorers matched (freq).
-   */
+
   static class ReqMultiOptScorer extends ReqOptSumScorer {
     private final int requiredCount;
     private final float coords[];

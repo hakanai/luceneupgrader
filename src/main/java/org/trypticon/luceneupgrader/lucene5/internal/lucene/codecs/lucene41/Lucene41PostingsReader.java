@@ -45,10 +45,6 @@ import static org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.lucene
 import static org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.lucene41.ForUtil.MAX_ENCODED_SIZE;
 import static org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.lucene41.Lucene41PostingsFormat.BLOCK_SIZE;
 
-/**
- * Lucene 4.1 postings format.
- * @deprecated only for reading old 4.x segments
- */
 @Deprecated
 public final class Lucene41PostingsReader extends PostingsReaderBase {
 
@@ -63,7 +59,6 @@ public final class Lucene41PostingsReader extends PostingsReaderBase {
 
   // public static boolean DEBUG = false;
 
-  /** Sole constructor. */
   public Lucene41PostingsReader(Directory dir, FieldInfos fieldInfos, SegmentInfo segmentInfo, IOContext ioContext, String segmentSuffix) throws IOException {
     boolean success = false;
     IndexInput docIn = null;
@@ -138,9 +133,6 @@ public final class Lucene41PostingsReader extends PostingsReaderBase {
     }
   }
 
-  /**
-   * Read values that have been written using variable-length encoding instead of bit-packing.
-   */
   static void readVIntBlock(IndexInput docIn, int[] docBuffer,
       int[] freqBuffer, int num, boolean indexHasFreq) throws IOException {
     if (indexHasFreq) {

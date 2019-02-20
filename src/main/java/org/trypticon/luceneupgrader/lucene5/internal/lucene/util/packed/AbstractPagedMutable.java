@@ -28,10 +28,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.LongValues;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimator;
 
-/**
- * Base implementation for {@link PagedMutable} and {@link PagedGrowableWriter}.
- * @lucene.internal
- */
 abstract class AbstractPagedMutable<T extends AbstractPagedMutable<T>> extends LongValues implements Accountable {
 
   static final int MIN_BLOCK_SIZE = 1 << 6;
@@ -72,7 +68,6 @@ abstract class AbstractPagedMutable<T extends AbstractPagedMutable<T>> extends L
     return pageMask + 1;
   }
 
-  /** The number of values. */
   public final long size() {
     return size;
   }
@@ -93,7 +88,6 @@ abstract class AbstractPagedMutable<T extends AbstractPagedMutable<T>> extends L
     return subMutables[pageIndex].get(indexInPage);
   }
 
-  /** Set value at <code>index</code>. */
   public final void set(long index, long value) {
     assert index >= 0 && index < size;
     final int pageIndex = pageIndex(index);
@@ -125,9 +119,7 @@ abstract class AbstractPagedMutable<T extends AbstractPagedMutable<T>> extends L
 
   protected abstract T newUnfilledCopy(long newSize);
 
-  /** Create a new copy of size <code>newSize</code> based on the content of
-   *  this buffer. This method is much more efficient than creating a new
-   *  instance and copying values one by one. */
+
   public final T resize(long newSize) {
     final T copy = newUnfilledCopy(newSize);
     final int numCommonPages = Math.min(copy.subMutables.length, subMutables.length);
@@ -144,7 +136,6 @@ abstract class AbstractPagedMutable<T extends AbstractPagedMutable<T>> extends L
     return copy;
   }
 
-  /** Similar to {@link ArrayUtil#grow(long[], int)}. */
   public final T grow(long minSize) {
     assert minSize >= 0;
     if (minSize <= size()) {
@@ -160,7 +151,6 @@ abstract class AbstractPagedMutable<T extends AbstractPagedMutable<T>> extends L
     return resize(newSize);
   }
 
-  /** Similar to {@link ArrayUtil#grow(long[])}. */
   public final T grow() {
     return grow(size() + 1);
   }

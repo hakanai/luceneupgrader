@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
@@ -120,7 +119,6 @@ final class SegmentTermEnum extends TermEnum implements Cloneable {
     first = p == -1;
   }
 
-  /** Increments the enumeration to the next element.  True if one exists.*/
   @Override
   public final boolean next() throws IOException {
     if (position++ >= size - 1) {
@@ -177,32 +175,23 @@ final class SegmentTermEnum extends TermEnum implements Cloneable {
     return count;
   }
 
-  /** Returns the current Term in the enumeration.
-   Initially invalid, valid after next() called for the first time.*/
   @Override
   public final Term term() {
     return termBuffer.toTerm();
   }
 
-  /** Returns the previous Term enumerated. Initially null.*/
   final Term prev() {
     return prevBuffer.toTerm();
   }
 
-  /** Returns the current TermInfo in the enumeration.
-   Initially invalid, valid after next() called for the first time.*/
   final TermInfo termInfo() {
     return new TermInfo(termInfo);
   }
 
-  /** Sets the argument to the current TermInfo in the enumeration.
-   Initially invalid, valid after next() called for the first time.*/
   final void termInfo(TermInfo ti) {
     ti.set(termInfo);
   }
 
-  /** Returns the docFreq from the current TermInfo in the enumeration.
-   Initially invalid, valid after next() called for the first time.*/
   @Override
   public final int docFreq() {
     return termInfo.docFreq;
@@ -220,7 +209,6 @@ final class SegmentTermEnum extends TermEnum implements Cloneable {
     return termInfo.proxPointer;
   }
 
-  /** Closes the enumeration to further activity, freeing resources. */
   @Override
   public final void close() throws IOException {
     input.close();

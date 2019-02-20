@@ -43,73 +43,29 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ToStringUtils;
 
-/** A Query that matches documents containing a particular sequence of terms.
- * A PhraseQuery is built by QueryParser for input like <code>"new york"</code>.
- * 
- * <p>This query may be combined with other terms or queries with a {@link BooleanQuery}.
- *
- * <p><b>NOTE</b>:
- * All terms in the phrase must match, even those at the same position. If you
- * have terms at the same position, perhaps synonyms, you probably want {@link MultiPhraseQuery}
- * instead which only requires one term at a position to match.
- * <br >Also, Leading holes don't have any particular meaning for this query
- * and will be ignored. For instance this query:
- * <pre class="prettyprint">
- * PhraseQuery.Builder builder = new PhraseQuery.Builder();
- * builder.add(new Term("body", "one"), 4);
- * builder.add(new Term("body", "two"), 5);
- * PhraseQuery pq = builder.build();
- * </pre>
- * is equivalent to the below query:
- * <pre class="prettyprint">
- * PhraseQuery.Builder builder = new PhraseQuery.Builder();
- * builder.add(new Term("body", "one"), 0);
- * builder.add(new Term("body", "two"), 1);
- * PhraseQuery pq = builder.build();
- * </pre>
- */
 public class PhraseQuery extends Query {
 
-  /** A builder for phrase queries. */
   public static class Builder {
 
     private int slop;
     private final List<Term> terms;
     private final List<Integer> positions;
 
-    /** Sole constructor. */
     public Builder() {
       slop = 0;
       terms = new ArrayList<>();
       positions = new ArrayList<>();
     }
 
-    /**
-     * Set the slop.
-     * @see PhraseQuery#getSlop()
-     */
     public Builder setSlop(int slop) {
       this.slop = slop;
       return this;
     }
 
-    /**
-     * Adds a term to the end of the query phrase.
-     * The relative position of the term is the one immediately after the last term added.
-     */
     public Builder add(Term term) {
       return add(term, positions.isEmpty() ? 0 : 1 + positions.get(positions.size() - 1));
     }
 
-    /**
-     * Adds a term to the end of the query phrase.
-     * The relative position of the term within the phrase is specified explicitly, but must be greater than
-     * or equal to that of the previously added term.
-     * A greater position allows phrases with gaps (e.g. in connection with stopwords).
-     * If the position is equal, you most likely should be using
-     * {@link MultiPhraseQuery} instead which only requires one term at each position to match; this class requires
-     * all of them.
-     */
     public Builder add(Term term, int position) {
       if (position < 0) {
         throw new IllegalArgumentException("Positions must be >= 0, got " + position);
@@ -128,9 +84,6 @@ public class PhraseQuery extends Query {
       return this;
     }
 
-    /**
-     * Build a phrase query based on the terms that have been added.
-     */
     public PhraseQuery build() {
       Term[] terms = this.terms.toArray(new Term[this.terms.size()]);
       int[] positions = new int[this.positions.size()];
@@ -205,72 +158,28 @@ public class PhraseQuery extends Query {
     return terms;
   }
 
-  /**
-   * Create a phrase query which will match documents that contain the given
-   * list of terms at consecutive positions in {@code field}, and at a
-   * maximum edit distance of {@code slop}. For more complicated use-cases,
-   * use {@link PhraseQuery.Builder}.
-   * @see #getSlop()
-   */
   public PhraseQuery(int slop, String field, String... terms) {
     this(slop, toTerms(field, terms), incrementalPositions(terms.length));
   }
 
-  /**
-   * Create a phrase query which will match documents that contain the given
-   * list of terms at consecutive positions in {@code field}.
-   */
   public PhraseQuery(String field, String... terms) {
     this(0, field, terms);
   }
 
-  /**
-   * Create a phrase query which will match documents that contain the given
-   * list of terms at consecutive positions in {@code field}, and at a
-   * maximum edit distance of {@code slop}. For more complicated use-cases,
-   * use {@link PhraseQuery.Builder}.
-   * @see #getSlop()
-   */
   public PhraseQuery(int slop, String field, BytesRef... terms) {
     this(slop, toTerms(field, terms), incrementalPositions(terms.length));
   }
 
-  /**
-   * Create a phrase query which will match documents that contain the given
-   * list of terms at consecutive positions in {@code field}.
-   */
   public PhraseQuery(String field, BytesRef... terms) {
     this(0, field, terms);
   }
 
-  /**
-   * Return the slop for this {@link PhraseQuery}.
-   *
-   * <p>The slop is an edit distance between respective positions of terms as
-   * defined in this {@link PhraseQuery} and the positions of terms in a
-   * document.
-   *
-   * <p>For instance, when searching for {@code "quick fox"}, it is expected that
-   * the difference between the positions of {@code fox} and {@code quick} is 1.
-   * So {@code "a quick brown fox"} would be at an edit distance of 1 since the
-   * difference of the positions of {@code fox} and {@code quick} is 2.
-   * Similarly, {@code "the fox is quick"} would be at an edit distance of 3
-   * since the difference of the positions of {@code fox} and {@code quick} is -2.
-   * The slop defines the maximum edit distance for a document to match.
-   *
-   * <p>More exact matches are scored higher than sloppier matches, thus search
-   * results are sorted by exactness.
-   */
   public int getSlop() { return slop; }
 
-  /** Returns the list of terms in this phrase. */
   public Term[] getTerms() {
     return terms.toArray(new Term[0]);
   }
 
-  /**
-   * Returns the relative positions of terms in this phrase.
-   */
   public int[] getPositions() {
     int[] result = new int[positions.size()];
     for(int i = 0; i < positions.size(); i++)
@@ -489,33 +398,13 @@ public class PhraseQuery extends Query {
     }
   }
 
-  /** A guess of
-   * the average number of simple operations for the initial seek and buffer refill
-   * per document for the positions of a term.
-   * See also {@link Lucene50PostingsReader.BlockPostingsEnum#nextPosition()}.
-   * <p>
-   * Aside: Instead of being constant this could depend among others on
-   * {@link Lucene50PostingsFormat#BLOCK_SIZE},
-   * {@link TermsEnum#docFreq()},
-   * {@link TermsEnum#totalTermFreq()},
-   * {@link DocIdSetIterator#cost()} (expected number of matching docs),
-   * {@link LeafReader#maxDoc()} (total number of docs in the segment),
-   * and the seek time and block size of the device storing the index.
-   */
+
   private static final int TERM_POSNS_SEEK_OPS_PER_DOC = 128;
 
-  /** Number of simple operations in {@link Lucene50PostingsReader.BlockPostingsEnum#nextPosition()}
-   *  when no seek or buffer refill is done.
-   */
+
   private static final int TERM_OPS_PER_POS = 7;
 
-  /** Returns an expected cost in simple operations
-   *  of processing the occurrences of a term
-   *  in a document that contains the term.
-   *  This is for use by {@link TwoPhaseIterator#matchCost} implementations.
-   *  <br>This may be inaccurate when {@link TermsEnum#totalTermFreq()} is not available.
-   *  @param termsEnum The term is the term at which this TermsEnum is positioned.
-   */
+
   static float termPositionsCost(TermsEnum termsEnum) throws IOException {
     int docFreq = termsEnum.docFreq();
     assert docFreq > 0;
@@ -530,7 +419,6 @@ public class PhraseQuery extends Query {
     return new PhraseWeight(searcher, needsScores);
   }
 
-  /** Prints a user-readable version of this query. */
   @Override
   public String toString(String f) {
     final Term[] terms = getTerms();
@@ -582,7 +470,6 @@ public class PhraseQuery extends Query {
     return buffer.toString();
   }
 
-  /** Returns true iff <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object o) {
     if (super.equals(o) == false) {
@@ -594,7 +481,6 @@ public class PhraseQuery extends Query {
         && positions.equals(that.positions);
   }
 
-  /** Returns a hash code value for this object.*/
   @Override
   public int hashCode() {
     int h = super.hashCode();
@@ -606,9 +492,7 @@ public class PhraseQuery extends Query {
 
   // Backward compatibility for pre-5.3 PhraseQuery APIs
 
-  /** Constructs an empty phrase query.
-   * @deprecated Use the {@link Builder} class to build phrase queries.
-   */
+
   @Deprecated
   public PhraseQuery() {
     this.terms = new ArrayList<>();
@@ -624,12 +508,6 @@ public class PhraseQuery extends Query {
     }
   }
 
-  /**
-   * Set the slop.
-   * @see #getSlop()
-   * @deprecated Phrase queries should be created once with {@link Builder}
-   *             and then considered immutable. See {@link Builder#setSlop(int)}.
-   */
   @Deprecated
   public void setSlop(int s) {
     ensureMutable("setSlop");
@@ -639,12 +517,6 @@ public class PhraseQuery extends Query {
     slop = s; 
   }
 
-  /**
-   * Adds a term to the end of the query phrase.
-   * The relative position of the term is the one immediately after the last term added.
-   * @deprecated Phrase queries should be created once with {@link Builder}
-   *             and then considered immutable. See {@link Builder#add(Term)}.
-   */
   @Deprecated
   public void add(Term term) {
     int position = 0;
@@ -655,14 +527,6 @@ public class PhraseQuery extends Query {
     add(term, position);
   }
 
-  /**
-   * Adds a term to the end of the query phrase.
-   * The relative position of the term within the phrase is specified explicitly.
-   * This allows e.g. phrases with more than one term at the same position
-   * or phrases with gaps (e.g. in connection with stopwords).
-   * @deprecated Phrase queries should be created once with {@link Builder}
-   *             and then considered immutable. See {@link Builder#add(Term, int)}.
-   */
   @Deprecated
   public void add(Term term, int position) {
     ensureMutable("add");

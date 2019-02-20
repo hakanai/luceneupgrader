@@ -24,39 +24,14 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRefBuilder;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.automaton.CompiledAutomaton;
 
-/**
- * Access to the terms in a specific field.  See {@link Fields}.
- * @lucene.experimental
- */
-
 public abstract class Terms {
 
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected Terms() {
   }
 
-  /** Returns an iterator that will step through all
-   *  terms. This method will not return null. */
   public abstract TermsEnum iterator() throws IOException;
 
-  /** Returns a TermsEnum that iterates over all terms and
-   *  documents that are accepted by the provided {@link
-   *  CompiledAutomaton}.  If the <code>startTerm</code> is
-   *  provided then the returned enum will only return terms
-   *  {@code > startTerm}, but you still must call
-   *  next() first to get to the first term.  Note that the
-   *  provided <code>startTerm</code> must be accepted by
-   *  the automaton.
-   *
-   * <p><b>NOTE</b>: the returned TermsEnum cannot
-   * seek</p>.
-   *
-   *  <p><b>NOTE</b>: the terms dictionary is free to
-   *  return arbitrary terms as long as the resulted visited
-   *  docs is the same.  E.g., {@link BlockTreeTermsWriter}
-   *  creates auto-prefix terms during indexing to reduce the
-   *  number of terms visited. */
+
   public TermsEnum intersect(CompiledAutomaton compiled, final BytesRef startTerm) throws IOException {
     
     // TODO: could we factor out a common interface b/w
@@ -90,62 +65,34 @@ public abstract class Terms {
     }
   }
 
-  /** Returns the number of terms for this field, or -1 if this 
-   *  measure isn't stored by the codec. Note that, just like 
-   *  other term measures, this measure does not take deleted 
-   *  documents into account. */
+
   public abstract long size() throws IOException;
   
-  /** Returns the sum of {@link TermsEnum#totalTermFreq} for
-   *  all terms in this field, or -1 if this measure isn't
-   *  stored by the codec (or if this fields omits term freq
-   *  and positions).  Note that, just like other term
-   *  measures, this measure does not take deleted documents
-   *  into account. */
+
   public abstract long getSumTotalTermFreq() throws IOException;
 
-  /** Returns the sum of {@link TermsEnum#docFreq()} for
-   *  all terms in this field, or -1 if this measure isn't
-   *  stored by the codec.  Note that, just like other term
-   *  measures, this measure does not take deleted documents
-   *  into account. */
+
   public abstract long getSumDocFreq() throws IOException;
 
-  /** Returns the number of documents that have at least one
-   *  term for this field, or -1 if this measure isn't
-   *  stored by the codec.  Note that, just like other term
-   *  measures, this measure does not take deleted documents
-   *  into account. */
+
   public abstract int getDocCount() throws IOException;
 
-  /** Returns true if documents in this field store
-   *  per-document term frequency ({@link PostingsEnum#freq}). */
   public abstract boolean hasFreqs();
 
-  /** Returns true if documents in this field store offsets. */
   public abstract boolean hasOffsets();
   
-  /** Returns true if documents in this field store positions. */
   public abstract boolean hasPositions();
   
-  /** Returns true if documents in this field store payloads. */
   public abstract boolean hasPayloads();
 
-  /** Zero-length array of {@link Terms}. */
   public final static Terms[] EMPTY_ARRAY = new Terms[0];
   
-  /** Returns the smallest term (in lexicographic order) in the field. 
-   *  Note that, just like other term measures, this measure does not 
-   *  take deleted documents into account.  This returns
-   *  null when there are no terms. */
+
   public BytesRef getMin() throws IOException {
     return iterator().next();
   }
 
-  /** Returns the largest term (in lexicographic order) in the field. 
-   *  Note that, just like other term measures, this measure does not 
-   *  take deleted documents into account.  This returns
-   *  null when there are no terms. */
+
   @SuppressWarnings("fallthrough")
   public BytesRef getMax() throws IOException {
     long size = size();
@@ -209,10 +156,7 @@ public abstract class Terms {
     }
   }
   
-  /** 
-   * Expert: returns additional information about this Terms instance
-   * for debugging purposes.
-   */
+
   public Object getStats() throws IOException {
     StringBuilder sb = new StringBuilder();
     sb.append("impl=" + getClass().getSimpleName());

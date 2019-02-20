@@ -1,4 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,6 +14,7 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans;
 
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ToStringUtils;
@@ -22,11 +22,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ToStringUtils;
 import java.io.IOException;
 
 
-/**
- * Checks to see if the {@link #getMatch()} lies between a start and end position
- *
- * @see org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans.SpanFirstQuery for a derivation that is optimized for the case where start position is 0
- */
 public class SpanPositionRangeQuery extends SpanPositionCheckQuery {
   protected int start = 0;
   protected int end;
@@ -50,16 +45,10 @@ public class SpanPositionRangeQuery extends SpanPositionCheckQuery {
   }
 
 
-  /**
-   * @return The minimum position permitted in a match
-   */
   public int getStart() {
     return start;
   }
 
-  /**
-   * @return the maximum end position permitted in a match.
-   */
   public int getEnd() {
     return end;
   }

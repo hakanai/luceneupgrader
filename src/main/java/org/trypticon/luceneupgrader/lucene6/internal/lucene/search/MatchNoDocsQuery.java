@@ -23,20 +23,15 @@ import java.util.Set;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.LeafReaderContext;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.Term;
 
-/**
- * A query that matches no documents.
- */
 
 public class MatchNoDocsQuery extends Query {
 
   private final String reason;
 
-  /** Default constructor */
   public MatchNoDocsQuery() {
     this("");
   }
 
-  /** Provides a reason explaining why this query was used */
   public MatchNoDocsQuery(String reason) {
     this.reason = reason;
   }
@@ -67,17 +62,14 @@ public class MatchNoDocsQuery extends Query {
       public void normalize(float norm, float boost) {
       }
 
-      /** Return the normalization factor for this weight. */
       protected final float queryNorm() {
         return 0;
       }
 
-      /** Return the boost for this weight. */
       protected final float boost() {
         return 0;
       }
 
-      /** Return the score produced by this {@link Weight}. */
       protected final float score() {
         return 0;
       }

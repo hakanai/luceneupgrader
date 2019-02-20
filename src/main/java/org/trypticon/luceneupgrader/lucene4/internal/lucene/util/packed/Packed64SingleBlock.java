@@ -1,5 +1,3 @@
-// This file has been automatically generated, DO NOT EDIT
-
 package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
 
 /*
@@ -25,11 +23,6 @@ import java.util.Arrays;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 
-/**
- * This class is similar to {@link Packed64} except that it trades space for
- * speed by ensuring that a single block needs to be read/written in order to
- * read/write a value.
- */
 abstract class Packed64SingleBlock extends PackedInts.MutableImpl {
 
   public static final int MAX_SUPPORTED_BITS_PER_VALUE = 32;

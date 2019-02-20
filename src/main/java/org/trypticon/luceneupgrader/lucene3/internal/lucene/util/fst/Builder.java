@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst;
 
 import java.io.IOException;
 
@@ -23,23 +22,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IntsRef;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.fst.FST.INPUT_TYPE; // javadoc
-
-/**
- * Builds a minimal FST (maps an IntsRef term to an arbitrary
- * output) from pre-sorted terms with outputs.  The FST
- * becomes an FSA if you use NoOutputs.  The FST is written
- * on-the-fly into a compact serialized format byte array, which can
- * be saved to / loaded from a Directory or used directly
- * for traversal.  The FST is always finite (no cycles).
- *
- * <p>NOTE: The algorithm is described at
- * http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.24.3698</p>
- *
- * The parameterized type T is the output type.  See the
- * subclasses of {@link Outputs}.
- *
- * @lucene.experimental
- */
 
 public class Builder<T> {
   private final NodeHash<T> dedupHash;
@@ -68,66 +50,16 @@ public class Builder<T> {
   // current "frontier"
   private UnCompiledNode<T>[] frontier;
 
-  /** Expert: this is invoked by Builder whenever a suffix
-   *  is serialized. */
   public static abstract class FreezeTail<T> {
     public abstract void freeze(final UnCompiledNode<T>[] frontier, int prefixLenPlus1, IntsRef prevInput) throws IOException;
   }
 
   private final FreezeTail<T> freezeTail;
 
-  /**
-   * Instantiates an FST/FSA builder without any pruning. A shortcut
-   * to {@link #Builder(FST.INPUT_TYPE, int, int, boolean,
-   * boolean, int, Outputs, FreezeTail, boolean)} with
-   * pruning options turned off.
-   */
   public Builder(FST.INPUT_TYPE inputType, Outputs<T> outputs) {
     this(inputType, 0, 0, true, true, Integer.MAX_VALUE, outputs, null, false);
   }
 
-  /**
-   * Instantiates an FST/FSA builder with all the possible tuning and construction
-   * tweaks. Read parameter documentation carefully.
-   * 
-   * @param inputType 
-   *    The input type (transition labels). Can be anything from {@link INPUT_TYPE}
-   *    enumeration. Shorter types will consume less memory. Strings (character sequences) are 
-   *    represented as {@link INPUT_TYPE#BYTE4} (full unicode codepoints). 
-   *     
-   * @param minSuffixCount1
-   *    If pruning the input graph during construction, this threshold is used for telling
-   *    if a node is kept or pruned. If transition_count(node) &gt;= minSuffixCount1, the node
-   *    is kept. 
-   *    
-   * @param minSuffixCount2
-   *    (Note: only Mike McCandless knows what this one is really doing...) 
-   * 
-   * @param doShareSuffix 
-   *    If <code>true</code>, the shared suffixes will be compacted into unique paths.
-   *    This requires an additional hash map for lookups in memory. Setting this parameter to
-   *    <code>false</code> creates a single path for all input sequences. This will result in a larger
-   *    graph, but may require less memory and will speed up construction.  
-   *
-   * @param doShareNonSingletonNodes
-   *    Only used if doShareSuffix is true.  Set this to
-   *    true to ensure FST is fully minimal, at cost of more
-   *    CPU and more RAM during building.
-   *
-   * @param shareMaxTailLength
-   *    Only used if doShareSuffix is true.  Set this to
-   *    Integer.MAX_VALUE to ensure FST is fully minimal, at cost of more
-   *    CPU and more RAM during building.
-   *
-   * @param outputs The output type for each input sequence. Applies only if building an FST. For
-   *    FSA, use {@link NoOutputs#getSingleton()} and {@link NoOutputs#getNoOutput()} as the
-   *    singleton output object.
-   *
-   * @param willPackFST Pass true if you will pack the FST before saving.  This
-   *    causes the FST to create additional data structures internally to facilitate packing, but
-   *    it means the resulting FST cannot be saved: it must
-   *    first be packed using {@link FST#pack(int, int)}}.
-   */
   public Builder(FST.INPUT_TYPE inputType, int minSuffixCount1, int minSuffixCount2, boolean doShareSuffix,
                  boolean doShareNonSingletonNodes, int shareMaxTailLength, Outputs<T> outputs,
                  FreezeTail<T> freezeTail, boolean willPackFST) {
@@ -164,9 +96,7 @@ public class Builder<T> {
     return dedupHash == null ? 0 : fst.nodeCount;
   }
 
-  /** Pass false to disable the array arc optimization
-   *  while building the FST; this will make the resulting
-   *  FST smaller but slower to traverse. */
+
   public void setAllowArrayArcs(boolean b) {
     fst.setAllowArrayArcs(b);
   }
@@ -302,9 +232,7 @@ public class Builder<T> {
   }
   */
 
-  /** It's OK to add the same input twice in a row with
-   *  different outputs, as long as outputs impls the merge
-   *  method. */
+
   public void add(IntsRef input, T output) throws IOException {
     /*
     if (DEBUG) {
@@ -429,8 +357,6 @@ public class Builder<T> {
     return output == NO_OUTPUT || !output.equals(NO_OUTPUT);
   }
 
-  /** Returns final FST.  NOTE: this will return null if
-   *  nothing is accepted by the FST. */
   public FST<T> finish() throws IOException {
 
     final UnCompiledNode<T> root = frontier[0];
@@ -470,7 +396,6 @@ public class Builder<T> {
     }
   }
 
-  /** Expert: holds a pending (seen but not yet serialized) arc. */
   public static class Arc<T> {
     public int label;                             // really an "unsigned" byte
     public Node target;
@@ -494,7 +419,6 @@ public class Builder<T> {
     }
   }
 
-  /** Expert: holds a pending (seen but not yet serialized) Node. */
   public static final class UnCompiledNode<T> implements Node {
     final Builder<T> owner;
     public int numArcs;
@@ -507,15 +431,8 @@ public class Builder<T> {
     public boolean isFinal;
     public long inputCount;
 
-    /** This node's depth, starting from the automaton root. */
     public final int depth;
 
-    /**
-     * @param depth
-     *          The node's depth starting from the automaton root. Needed for
-     *          LUCENE-2934 (node expansion based on conditions other than the
-     *          fanout size).
-     */
     @SuppressWarnings({"rawtypes","unchecked"})
     public UnCompiledNode(Builder<T> owner, int depth) {
       this.owner = owner;

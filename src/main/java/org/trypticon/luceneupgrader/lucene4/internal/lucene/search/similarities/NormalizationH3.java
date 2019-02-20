@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,26 +13,16 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities;
 
-/**
- * Dirichlet Priors normalization
- * @lucene.experimental
- */
 public class NormalizationH3 extends Normalization {
   private final float mu;
   
-  /**
-   * Calls {@link #NormalizationH3(float) NormalizationH3(800)}
-   */
   public NormalizationH3() {
     this(800F);
   }
   
-  /**
-   * Creates NormalizationH3 with the supplied parameter <code>&mu;</code>.
-   * @param mu smoothing parameter <code>&mu;</code>
-   */
   public NormalizationH3(float mu) {
     this.mu = mu;
   }
@@ -49,10 +37,6 @@ public class NormalizationH3 extends Normalization {
     return "3(" + mu + ")";
   }
   
-  /**
-   * Returns the parameter <code>&mu;</code>
-   * @see #NormalizationH3(float)
-   */
   public float getMu() {
     return mu;
   }

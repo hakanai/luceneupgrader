@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -30,11 +29,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Similarity;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.IOUtils;
 
 // TODO FI: norms could actually be stored as doc store
-
-/** Writes norms.  Each thread X field accumulates the norms
- *  for the doc/fields it saw, then the flush method below
- *  merges all of these together into a single _X.nrm file.
- */
 
 final class NormsWriter extends InvertedDocEndConsumer {
 
@@ -56,8 +50,6 @@ final class NormsWriter extends InvertedDocEndConsumer {
     this.fieldInfos = fieldInfos;
   }
 
-  /** Produce _X.nrm if any document had a field with norms
-   *  not disabled */
   @Override
   public void flush(Map<InvertedDocEndConsumerPerThread,Collection<InvertedDocEndConsumerPerField>> threadsAndFields, SegmentWriteState state) throws IOException {
 

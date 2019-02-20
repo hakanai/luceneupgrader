@@ -19,31 +19,13 @@ package org.trypticon.luceneupgrader.lucene5.internal.lucene.search.similarities
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.Explanation;
 
-/**
- * This class acts as the base class for the implementations of the term
- * frequency normalization methods in the DFR framework.
- * 
- * @see DFRSimilarity
- * @lucene.experimental
- */
 public abstract class Normalization {
   
-  /**
-   * Sole constructor. (For invocation by subclass 
-   * constructors, typically implicit.)
-   */
   public Normalization() {}
 
-  /** Returns the normalized term frequency.
-   * @param len the field length. */
   public abstract float tfn(BasicStats stats, float tf, float len);
   
-  /** Returns an explanation for the normalized term frequency.
-   * <p>The default normalization methods use the field length of the document
-   * and the average field length to compute the normalized term frequency.
-   * This method provides a generic explanation for such methods.
-   * Subclasses that use other statistics must override this method.</p>
-   */
+
   public Explanation explain(BasicStats stats, float tf, float len) {
     return Explanation.match(
         tfn(stats, tf, len),
@@ -53,10 +35,8 @@ public abstract class Normalization {
         Explanation.match(len, "len"));
   }
 
-  /** Implementation used when there is no normalization. */
   public static final class NoNormalization extends Normalization {
     
-    /** Sole constructor: parameter-free */
     public NoNormalization() {}
     
     @Override
@@ -75,10 +55,6 @@ public abstract class Normalization {
     }
   }
   
-  /**
-   * Subclasses must override this method to return the code of the
-   * normalization formula. Refer to the original paper for the list. 
-   */
   @Override
   public abstract String toString();
 }

@@ -21,18 +21,11 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.FieldInfo;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.MergeState;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentReader;
 
-/** 
- * Computes which segments have identical field name to number mappings,
- * which allows stored fields and term vectors in this codec to be bulk-merged.
- */
 class MatchingReaders {
   
-  /** {@link SegmentReader}s that have identical field
-   * name/number mapping, so their stored fields and term
-   * vectors may be bulk merged. */
+
   final boolean[] matchingReaders;
 
-  /** How many {@link #matchingReaders} are set. */
   final int count;
   
   MatchingReaders(MergeState mergeState) {

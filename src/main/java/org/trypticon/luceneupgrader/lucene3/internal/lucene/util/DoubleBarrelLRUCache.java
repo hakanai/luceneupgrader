@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,37 +13,16 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Map;
 
-/**
- * Simple concurrent LRU cache, using a "double barrel"
- * approach where two ConcurrentHashMaps record entries.
- *
- * <p>At any given time, one hash is primary and the other
- * is secondary.  {@link #get} first checks primary, and if
- * that's a miss, checks secondary.  If secondary has the
- * entry, it's promoted to primary (<b>NOTE</b>: the key is
- * cloned at this point).  Once primary is full, the
- * secondary is cleared and the two are swapped.</p>
- *
- * <p>This is not as space efficient as other possible
- * concurrent approaches (see LUCENE-2075): to achieve
- * perfect LRU(N) it requires 2*N storage.  But, this
- * approach is relatively simple and seems in practice to
- * not grow unbounded in size when under hideously high
- * load.</p>
- *
- * @lucene.internal
- */
-
 final public class DoubleBarrelLRUCache<K extends DoubleBarrelLRUCache.CloneableKey,V> {
 
-  /** Object providing clone(); the key class must subclass this. */
-  public static abstract class CloneableKey {
+    public static abstract class CloneableKey {
     @Override
     abstract public Object clone();
   }

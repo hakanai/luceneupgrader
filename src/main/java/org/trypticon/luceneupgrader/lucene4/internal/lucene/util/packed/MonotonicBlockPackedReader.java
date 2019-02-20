@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed;
 
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BitUtil.zigZagDecode;
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.util.packed.AbstractBlockPackedWriter.MAX_BLOCK_SIZE;
@@ -30,11 +29,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.LongValues;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.RamUsageEstimator;
 
-/**
- * Provides random access to a stream written with
- * {@link MonotonicBlockPackedWriter}.
- * @lucene.internal
- */
 public class MonotonicBlockPackedReader extends LongValues implements Accountable {
 
   static long expected(long origin, float average, int index) {
@@ -47,7 +41,6 @@ public class MonotonicBlockPackedReader extends LongValues implements Accountabl
   final float[] averages;
   final PackedInts.Reader[] subReaders;
 
-  /** Sole constructor. */
   public static MonotonicBlockPackedReader of(IndexInput in, int packedIntsVersion, int blockSize, long valueCount, boolean direct) throws IOException {
     if (packedIntsVersion < PackedInts.VERSION_MONOTONIC_WITHOUT_ZIGZAG) {
       return new MonotonicBlockPackedReader(in, packedIntsVersion, blockSize, valueCount, direct) {
@@ -106,7 +99,6 @@ public class MonotonicBlockPackedReader extends LongValues implements Accountabl
     return delta;
   }
 
-  /** Returns the number of values */
   public long size() {
     return valueCount;
   }

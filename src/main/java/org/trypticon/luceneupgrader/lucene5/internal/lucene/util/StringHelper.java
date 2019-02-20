@@ -24,21 +24,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Properties;
 
-/**
- * Methods for manipulating strings.
- *
- * @lucene.internal
- */
 public abstract class StringHelper {
 
-  /**
-   * Compares two {@link BytesRef}, element by element, and returns the
-   * number of elements common to both arrays (from the start of each).
-   *
-   * @param left The first {@link BytesRef} to compare
-   * @param right The second {@link BytesRef} to compare
-   * @return The number of common elements (from the start of each).
-   */
   public static int bytesDifference(BytesRef left, BytesRef right) {
     int len = left.length < right.length ? left.length : right.length;
     final byte[] bytesLeft = left.bytes;
@@ -51,11 +38,7 @@ public abstract class StringHelper {
     return len;
   }
   
-  /** 
-   * Returns the length of {@code currentTerm} needed for use as a sort key.
-   * so that {@link BytesRef#compareTo(BytesRef)} still returns the same result.
-   * This method assumes currentTerm comes after priorTerm.
-   */
+
   public static int sortKeyLength(final BytesRef priorTerm, final BytesRef currentTerm) {
     final int currentTermOffset = currentTerm.offset;
     final int priorTermOffset = priorTerm.offset;
@@ -71,17 +54,6 @@ public abstract class StringHelper {
   private StringHelper() {
   }
 
-  /**
-   * Returns <code>true</code> iff the ref starts with the given prefix.
-   * Otherwise <code>false</code>.
-   * 
-   * @param ref
-   *         the {@code byte[]} to test
-   * @param prefix
-   *         the expected prefix
-   * @return Returns <code>true</code> iff the ref starts with the given prefix.
-   *         Otherwise <code>false</code>.
-   */
   public static boolean startsWith(byte[] ref, BytesRef prefix) {
     if (ref.length < prefix.length) {
       return false;
@@ -96,32 +68,10 @@ public abstract class StringHelper {
     return true;
   }
 
-  /**
-   * Returns <code>true</code> iff the ref starts with the given prefix.
-   * Otherwise <code>false</code>.
-   * 
-   * @param ref
-   *          the {@link BytesRef} to test
-   * @param prefix
-   *          the expected prefix
-   * @return Returns <code>true</code> iff the ref starts with the given prefix.
-   *         Otherwise <code>false</code>.
-   */
   public static boolean startsWith(BytesRef ref, BytesRef prefix) {
     return sliceEquals(ref, prefix, 0);
   }
 
-  /**
-   * Returns <code>true</code> iff the ref ends with the given suffix. Otherwise
-   * <code>false</code>.
-   * 
-   * @param ref
-   *          the {@link BytesRef} to test
-   * @param suffix
-   *          the expected suffix
-   * @return Returns <code>true</code> iff the ref ends with the given suffix.
-   *         Otherwise <code>false</code>.
-   */
   public static boolean endsWith(BytesRef ref, BytesRef suffix) {
     return sliceEquals(ref, suffix, ref.length - suffix.length);
   }
@@ -143,8 +93,6 @@ public abstract class StringHelper {
     return true;
   }
 
-  /** Pass this as the seed to {@link #murmurhash3_x86_32}. */
-
   // Poached from Guava: set a different salt/seed
   // for each JVM instance, to frustrate hash key collision
   // denial of service attacks, and to catch any places that
@@ -163,9 +111,7 @@ public abstract class StringHelper {
     }
   }
 
-  /** Returns the MurmurHash3_x86_32 hash.
-   * Original source/tests at https://github.com/yonik/java_util/
-   */
+
   @SuppressWarnings("fallthrough")
   public static int murmurhash3_x86_32(byte[] data, int offset, int len, int seed) {
 
@@ -298,10 +244,8 @@ public abstract class StringHelper {
     nextId = unsignedX0.shiftLeft(64).or(unsignedX1);
   }
   
-  /** length in bytes of an ID */
   public static final int ID_LENGTH = 16;
 
-  /** Generates a non-cryptographic globally unique id. */
   public static byte[] randomId() {
 
     // NOTE: we don't use Java's UUID.randomUUID() implementation here because:
@@ -336,14 +280,7 @@ public abstract class StringHelper {
     }
   }
   
-  /** 
-   * Helper method to render an ID as a string, for debugging
-   * <p>
-   * Returns the string {@code (null)} if the id is null.
-   * Otherwise, returns a string representation for debugging.
-   * Never throws an exception. The returned string may
-   * indicate if the id is definitely invalid.
-   */
+
   public static String idToString(byte id[]) {
     if (id == null) {
       return "(null)";
@@ -357,9 +294,7 @@ public abstract class StringHelper {
     }
   }
   
-  /** Just converts each int in the incoming {@link IntsRef} to each byte
-   *  in the returned {@link BytesRef}, throwing {@code IllegalArgumentException}
-   *  if any int value is out of bounds for a byte. */
+
   public static BytesRef intsRefToBytesRef(IntsRef ints) {
     byte[] bytes = new byte[ints.length];
     for(int i=0;i<ints.length;i++) {

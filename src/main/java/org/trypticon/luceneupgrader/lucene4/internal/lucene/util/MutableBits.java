@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,17 +13,10 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
-/**
- * Extension of Bits for live documents.
- */
 public interface MutableBits extends Bits {
-  /** 
-   * Sets the bit specified by <code>index</code> to false. 
-   * @param index index, should be non-negative and &lt; {@link #length()}.
-   *        The result of passing negative or out of bounds values is undefined
-   *        by this interface, <b>just don't do it!</b>
-   */
+
   public void clear(int index);
 }

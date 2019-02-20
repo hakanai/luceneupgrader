@@ -28,19 +28,8 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.DataOutput;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 
-/**
- * A compression mode. Tells how much effort should be spent on compression and
- * decompression of stored fields.
- * @lucene.experimental
- */
 public abstract class CompressionMode {
 
-  /**
-   * A compression mode that trades compression ratio for speed. Although the
-   * compression ratio might remain high, compression and decompression are
-   * very fast. Use this mode with indices that have a high update rate but
-   * should be able to load documents from disk quickly.
-   */
   public static final CompressionMode FAST = new CompressionMode() {
 
     @Override
@@ -60,12 +49,6 @@ public abstract class CompressionMode {
 
   };
 
-  /**
-   * A compression mode that trades speed for compression ratio. Although
-   * compression and decompression might be slow, this compression mode should
-   * provide a good compression ratio. This mode might be interesting if/when
-   * your index size is much bigger than your OS cache.
-   */
   public static final CompressionMode HIGH_COMPRESSION = new CompressionMode() {
 
     @Override
@@ -88,12 +71,6 @@ public abstract class CompressionMode {
 
   };
 
-  /**
-   * This compression mode is similar to {@link #FAST} but it spends more time
-   * compressing in order to improve the compression ratio. This compression
-   * mode is best used with indices that have a low update rate but should be
-   * able to load documents from disk quickly.
-   */
   public static final CompressionMode FAST_DECOMPRESSION = new CompressionMode() {
 
     @Override
@@ -113,17 +90,10 @@ public abstract class CompressionMode {
 
   };
 
-  /** Sole constructor. */
   protected CompressionMode() {}
 
-  /**
-   * Create a new {@link Compressor} instance.
-   */
   public abstract Compressor newCompressor();
 
-  /**
-   * Create a new {@link Decompressor} instance.
-   */
   public abstract Decompressor newDecompressor();
 
   private static final Decompressor LZ4_DECOMPRESSOR = new Decompressor() {

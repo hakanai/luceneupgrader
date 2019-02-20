@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,17 +13,14 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 
-/** A {@link MergeScheduler} that simply does each merge
- *  sequentially, using the current thread. */
 public class SerialMergeScheduler extends MergeScheduler {
 
-  /** Just do the merges in sequence. We do this
-   * "synchronized" so that even if the application is using
-   * multiple threads, only one merge may run at a time. */
+
   @Override
   synchronized public void merge(IndexWriter writer)
     throws CorruptIndexException, IOException {

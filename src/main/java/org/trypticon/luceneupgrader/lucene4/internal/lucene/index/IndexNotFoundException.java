@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,18 +13,13 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.io.FileNotFoundException;
 
-/**
- * Signals that no index was found in the Directory. Possibly because the
- * directory is empty, however can also indicate an index corruption.
- */
 public final class IndexNotFoundException extends FileNotFoundException {
 
-  /** Creates IndexFileNotFoundException with the
-   *  description message. */
   public IndexNotFoundException(String msg) {
     super(msg);
   }

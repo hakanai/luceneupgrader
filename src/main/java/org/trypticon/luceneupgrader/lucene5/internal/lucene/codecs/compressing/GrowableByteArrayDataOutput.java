@@ -23,24 +23,16 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.DataOutput;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.UnicodeUtil;
 
-/**
- * A {@link DataOutput} that can be used to build a byte[].
- * @lucene.internal
- */
 public final class GrowableByteArrayDataOutput extends DataOutput {
 
-  /** Minimum utf8 byte size of a string over which double pass over string is to save memory during encode */
   static final int MIN_UTF8_SIZE_TO_ENABLE_DOUBLE_PASS_ENCODING = 65536;
 
-  /** The bytes */
   public byte[] bytes;
-  /** The length */
   public int length;
 
   // scratch for utf8 encoding of small strings
   byte[] scratchBytes = new byte[16];
 
-  /** Create a {@link GrowableByteArrayDataOutput} with the given initial capacity. */
   public GrowableByteArrayDataOutput(int cp) {
     this.bytes = new byte[ArrayUtil.oversize(cp, 1)];
     this.length = 0;

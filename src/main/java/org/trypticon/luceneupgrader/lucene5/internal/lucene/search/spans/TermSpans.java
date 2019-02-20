@@ -24,11 +24,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.Term;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.DocIdSetIterator;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.similarities.Similarity;
 
-/**
- * Expert:
- * Public for extension only.
- * This does not work correctly for terms that indexed at position Integer.MAX_VALUE.
- */
 public class TermSpans extends Spans {
   protected final PostingsEnum postings;
   protected final Term term;

@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,23 +13,16 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ToStringUtils;
 
 import java.io.IOException;
 
-/** Matches spans near the beginning of a field.
- * <p/> 
- * This class is a simple extension of {@link SpanPositionRangeQuery} in that it assumes the
- * start to be zero and only checks the end boundary.
- *
- *
- *  */
+
 public class SpanFirstQuery extends SpanPositionRangeQuery {
 
-  /** Construct a SpanFirstQuery matching spans in <code>match</code> whose end
-   * position is less than or equal to <code>end</code>. */
   public SpanFirstQuery(SpanQuery match, int end) {
     super(match, 0, end);
   }

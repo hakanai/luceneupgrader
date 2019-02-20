@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene40;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,13 +22,6 @@ import java.util.Arrays;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.MultiLevelSkipListReader;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
 
-/**
- * Implements the skip list reader for the 4.0 posting list format
- * that stores positions and payloads.
- * 
- * @see Lucene40PostingsFormat
- * @deprecated Only for reading old 4.0 segments
- */
 @Deprecated
 public class Lucene40SkipListReader extends MultiLevelSkipListReader {
   private boolean currentFieldStoresPayloads;
@@ -44,7 +36,6 @@ public class Lucene40SkipListReader extends MultiLevelSkipListReader {
   private int lastPayloadLength;
   private int lastOffsetLength;
                            
-  /** Sole constructor. */
   public Lucene40SkipListReader(IndexInput skipStream, int maxSkipLevels, int skipInterval) {
     super(skipStream, maxSkipLevels, skipInterval);
     freqPointer = new long[maxSkipLevels];
@@ -53,7 +44,6 @@ public class Lucene40SkipListReader extends MultiLevelSkipListReader {
     offsetLength = new int[maxSkipLevels];
   }
 
-  /** Per-term initialization. */
   public void init(long skipPointer, long freqBasePointer, long proxBasePointer, int df, boolean storesPayloads, boolean storesOffsets) {
     super.init(skipPointer, df);
     this.currentFieldStoresPayloads = storesPayloads;
@@ -67,28 +57,20 @@ public class Lucene40SkipListReader extends MultiLevelSkipListReader {
     Arrays.fill(offsetLength, 0);
   }
 
-  /** Returns the freq pointer of the doc to which the last call of 
-   * {@link MultiLevelSkipListReader#skipTo(int)} has skipped.  */
   public long getFreqPointer() {
     return lastFreqPointer;
   }
 
-  /** Returns the prox pointer of the doc to which the last call of 
-   * {@link MultiLevelSkipListReader#skipTo(int)} has skipped.  */
   public long getProxPointer() {
     return lastProxPointer;
   }
   
-  /** Returns the payload length of the payload stored just before 
-   * the doc to which the last call of {@link MultiLevelSkipListReader#skipTo(int)} 
-   * has skipped.  */
+
   public int getPayloadLength() {
     return lastPayloadLength;
   }
   
-  /** Returns the offset length (endOffset-startOffset) of the position stored just before 
-   * the doc to which the last call of {@link MultiLevelSkipListReader#skipTo(int)} 
-   * has skipped.  */
+
   public int getOffsetLength() {
     return lastOffsetLength;
   }

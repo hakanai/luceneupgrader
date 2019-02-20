@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,19 +13,13 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities;
 
 import static org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities.SimilarityBase.log2;
 
-/**
- * Geometric as limiting form of the Bose-Einstein model.  The formula used in Lucene differs
- * slightly from the one in the original paper: {@code F} is increased by {@code 1}
- * and {@code N} is increased by {@code F}.
- * @lucene.experimental
- */
 public class BasicModelG extends BasicModel {
   
-  /** Sole constructor: parameter-free */
   public BasicModelG() {}
 
   @Override

@@ -23,23 +23,13 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.FieldInfo;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.MergeState;
 
-/** Abstract API to write points
- *
- * @lucene.experimental
- */
-
 public abstract class PointsWriter implements Closeable {
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected PointsWriter() {
   }
 
-  /** Write all values contained in the provided reader */
   public abstract void writeField(FieldInfo fieldInfo, PointsReader values) throws IOException;
 
-  /** Default naive merge implementation for one field: it just re-indexes all the values
-   *  from the incoming segment.  The default codec overrides this for 1D fields and uses
-   *  a faster but more complex implementation. */
+
   protected void mergeOneField(MergeState mergeState, FieldInfo fieldInfo) throws IOException {
     long maxPointCount = 0;
     int docCount = 0;
@@ -158,8 +148,6 @@ public abstract class PointsWriter implements Closeable {
                });
   }
 
-  /** Default merge implementation to merge incoming points readers by visiting all their points and
-   *  adding to this writer */
   public void merge(MergeState mergeState) throws IOException {
     // check each incoming reader
     for (PointsReader reader : mergeState.pointsReaders) {
@@ -176,6 +164,5 @@ public abstract class PointsWriter implements Closeable {
     finish();
   }
 
-  /** Called once at the end before close */
   public abstract void finish() throws IOException;
 }

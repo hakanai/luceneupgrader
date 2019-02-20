@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,27 +13,19 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
-/** A Scorer for queries with a required subscorer
- * and an excluding (prohibited) sub DocIdSetIterator.
- * <br>
- * This <code>Scorer</code> implements {@link Scorer#advance(int)},
- * and it uses the skipTo() on the given scorers.
- */
 class ReqExclScorer extends Scorer {
   private Scorer reqScorer;
   private DocIdSetIterator exclDisi;
   private int doc = -1;
 
-  /** Construct a <code>ReqExclScorer</code>.
-   * @param reqScorer The scorer that must match, except where
-   * @param exclDisi indicates exclusion.
-   */
+
   public ReqExclScorer(Scorer reqScorer, DocIdSetIterator exclDisi) {
     super(reqScorer.weight);
     this.reqScorer = reqScorer;
@@ -58,17 +48,7 @@ class ReqExclScorer extends Scorer {
     return doc = toNonExcluded();
   }
   
-  /** Advance to non excluded doc.
-   * <br>On entry:
-   * <ul>
-   * <li>reqScorer != null,
-   * <li>exclScorer != null,
-   * <li>reqScorer was advanced once via next() or skipTo()
-   *      and reqScorer.doc() may still be excluded.
-   * </ul>
-   * Advances reqScorer a non excluded required doc, if any.
-   * @return true iff there is a non excluded required doc.
-   */
+
   private int toNonExcluded() throws IOException {
     int exclDoc = exclDisi.docID();
     int reqDoc = reqScorer.docID(); // may be excluded
@@ -95,10 +75,7 @@ class ReqExclScorer extends Scorer {
     return doc;
   }
 
-  /** Returns the score of the current document matching the query.
-   * Initially invalid, until {@link #nextDoc()} is called the first time.
-   * @return The score of the required scorer.
-   */
+
   @Override
   public float score() throws IOException {
     return reqScorer.score(); // reqScorer may be null when next() or skipTo() already return false

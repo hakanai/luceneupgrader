@@ -26,13 +26,8 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.Term;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.TermContext;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.IndexSearcher;
 
-/** Keep matches that contain another Spans. */
 public final class SpanContainingQuery extends SpanContainQuery {
-  /** Construct a SpanContainingQuery matching spans from <code>big</code>
-   * that contain at least one spans from <code>little</code>.
-   * This query has the boost of <code>big</code>.
-   * <code>big</code> and <code>little</code> must be in the same field.
-   */
+
   public SpanContainingQuery(SpanQuery big, SpanQuery little) {
     super(big, little);
   }
@@ -57,10 +52,6 @@ public final class SpanContainingQuery extends SpanContainQuery {
       super(searcher, terms, bigWeight, littleWeight);
     }
 
-    /**
-     * Return spans from <code>big</code> that contain at least one spans from <code>little</code>.
-     * The payload is from the spans of <code>big</code>.
-     */
     @Override
     public Spans getSpans(final LeafReaderContext context, Postings requiredPostings) throws IOException {
       ArrayList<Spans> containerContained = prepareConjunction(context, requiredPostings);

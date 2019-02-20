@@ -22,40 +22,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * A utility for keeping backwards compatibility on previously abstract methods
- * (or similar replacements).
- * <p>Before the replacement method can be made abstract, the old method must kept deprecated.
- * If somebody still overrides the deprecated method in a non-final class,
- * you must keep track, of this and maybe delegate to the old method in the subclass.
- * The cost of reflection is minimized by the following usage of this class:</p>
- * <p>Define <strong>static final</strong> fields in the base class ({@code BaseClass}),
- * where the old and new method are declared:</p>
- * <pre class="prettyprint">
- *  static final VirtualMethod&lt;BaseClass&gt; newMethod =
- *   new VirtualMethod&lt;BaseClass&gt;(BaseClass.class, "newName", parameters...);
- *  static final VirtualMethod&lt;BaseClass&gt; oldMethod =
- *   new VirtualMethod&lt;BaseClass&gt;(BaseClass.class, "oldName", parameters...);
- * </pre>
- * <p>This enforces the singleton status of these objects, as the maintenance of the cache would be too costly else.
- * If you try to create a second instance of for the same method/{@code baseClass} combination, an exception is thrown.
- * <p>To detect if e.g. the old method was overridden by a more far subclass on the inheritance path to the current
- * instance's class, use a <strong>non-static</strong> field:</p>
- * <pre class="prettyprint">
- *  final boolean isDeprecatedMethodOverridden =
- *   oldMethod.getImplementationDistance(this.getClass()) &gt; newMethod.getImplementationDistance(this.getClass());
- *
- *  <em>// alternatively (more readable):</em>
- *  final boolean isDeprecatedMethodOverridden =
- *   VirtualMethod.compareImplementationDistance(this.getClass(), oldMethod, newMethod) &gt; 0
- * </pre> 
- * <p>{@link #getImplementationDistance} returns the distance of the subclass that overrides this method.
- * The one with the larger distance should be used preferable.
- * This way also more complicated method rename scenarios can be handled
- * (think of 2.9 {@code TokenStream} deprecations).</p>
- *
- * @lucene.internal
- */
 public final class VirtualMethod<C> {
 
   private static final Set<Method> singletonSet = Collections.synchronizedSet(new HashSet<Method>());
@@ -70,12 +36,6 @@ public final class VirtualMethod<C> {
     }
   };
 
-  /**
-   * Creates a new instance for the given {@code baseClass} and method declaration.
-   * @throws UnsupportedOperationException if you create a second instance of the same
-   *  {@code baseClass} and method declaration combination. This enforces the singleton status.
-   * @throws IllegalArgumentException if {@code baseClass} does not declare the given method.
-   */
   public VirtualMethod(Class<C> baseClass, String method, Class<?>... parameters) {
     this.baseClass = baseClass;
     this.method = method;
@@ -91,22 +51,10 @@ public final class VirtualMethod<C> {
     }
   }
   
-  /**
-   * Returns the distance from the {@code baseClass} in which this method is overridden/implemented
-   * in the inheritance path between {@code baseClass} and the given subclass {@code subclazz}.
-   * @return 0 iff not overridden, else the distance to the base class
-   */
   public int getImplementationDistance(final Class<? extends C> subclazz) {
     return distanceOfClass.get(subclazz).intValue();
   }
   
-  /**
-   * Returns, if this method is overridden/implemented in the inheritance path between
-   * {@code baseClass} and the given subclass {@code subclazz}.
-   * <p>You can use this method to detect if a method that should normally be final was overridden
-   * by the given instance's class.
-   * @return {@code false} iff not overridden
-   */
   public boolean isOverriddenAsOf(final Class<? extends C> subclazz) {
     return getImplementationDistance(subclazz) > 0;
   }
@@ -132,14 +80,6 @@ public final class VirtualMethod<C> {
     return distance;
   }
   
-  /**
-   * Utility method that compares the implementation/override distance of two methods.
-   * @return <ul>
-   *  <li>&gt; 1, iff {@code m1} is overridden/implemented in a subclass of the class overriding/declaring {@code m2}
-   *  <li>&lt; 1, iff {@code m2} is overridden in a subclass of the class overriding/declaring {@code m1}
-   *  <li>0, iff both methods are overridden in the same class (or are not overridden at all)
-   * </ul>
-   */
   public static <C> int compareImplementationDistance(final Class<? extends C> clazz,
     final VirtualMethod<C> m1, final VirtualMethod<C> m2)
   {

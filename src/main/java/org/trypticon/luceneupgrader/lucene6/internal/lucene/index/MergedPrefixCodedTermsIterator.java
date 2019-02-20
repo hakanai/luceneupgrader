@@ -23,7 +23,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.PrefixCodedTer
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.PriorityQueue;
 
-/** Merges multiple {@link FieldTermIterator}s */
 class MergedPrefixCodedTermsIterator extends FieldTermIterator {
 
   private static class TermMergeQueue extends PriorityQueue<TermIterator> {

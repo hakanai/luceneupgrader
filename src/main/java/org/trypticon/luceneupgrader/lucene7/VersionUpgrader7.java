@@ -7,6 +7,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.trypticon.luceneupgrader.InfoStream;
 import org.trypticon.luceneupgrader.VersionUpgrader;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -14,10 +15,14 @@ import java.nio.file.Path;
  * Upgrades an index to Lucene 7 format.
  */
 public class VersionUpgrader7 implements VersionUpgrader {
+
+    @Nonnull
     private final Path path;
+
+    @Nonnull
     private final InfoStream infoStream;
 
-    public VersionUpgrader7(Path path, InfoStream infoStream) {
+    public VersionUpgrader7(@Nonnull Path path, @Nonnull InfoStream infoStream) {
         this.path = path;
         this.infoStream = infoStream;
     }
@@ -25,9 +30,7 @@ public class VersionUpgrader7 implements VersionUpgrader {
     @Override
     public void upgrade() throws IOException {
         try (Directory directory = FSDirectory.open(path)) {
-            org.apache.lucene.util.InfoStream adaptedInfoStream =
-                    infoStream == null ? org.apache.lucene.util.InfoStream.NO_OUTPUT
-                            : new AdaptedInfoStream(infoStream);
+            org.apache.lucene.util.InfoStream adaptedInfoStream = new AdaptedInfoStream(infoStream);
             IndexWriterConfig indexWriterConfig = new IndexWriterConfig(new FailAnalyzer());
             indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
             indexWriterConfig.setMergeScheduler(new SerialMergeScheduler());

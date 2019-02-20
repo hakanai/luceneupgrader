@@ -21,11 +21,6 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.LeafReaderContext;
 
-/**
- * Base {@link Collector} implementation that is used to collect all contexts.
- *
- * @lucene.experimental
- */
 public abstract class SimpleCollector implements Collector, LeafCollector {
 
   @Override
@@ -34,7 +29,6 @@ public abstract class SimpleCollector implements Collector, LeafCollector {
     return this;
   }
 
-  /** This method is called before collecting <code>context</code>. */
   protected void doSetNextReader(LeafReaderContext context) throws IOException {}
 
   @Override

@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.IOException;
 
@@ -25,27 +24,10 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.TermDocs;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.TermEnum;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.FixedBitSet;
 
-/**
- * A wrapper for {@link MultiTermQuery}, that exposes its
- * functionality as a {@link Filter}.
- * <P>
- * <code>MultiTermQueryWrapperFilter</code> is not designed to
- * be used by itself. Normally you subclass it to provide a Filter
- * counterpart for a {@link MultiTermQuery} subclass.
- * <P>
- * For example, {@link TermRangeFilter} and {@link PrefixFilter} extend
- * <code>MultiTermQueryWrapperFilter</code>.
- * This class also provides the functionality behind
- * {@link MultiTermQuery#CONSTANT_SCORE_FILTER_REWRITE};
- * this is why it is not abstract.
- */
 public class MultiTermQueryWrapperFilter<Q extends MultiTermQuery> extends Filter {
     
   protected final Q query;
 
-  /**
-   * Wrap a {@link MultiTermQuery} as a Filter.
-   */
   protected MultiTermQueryWrapperFilter(Q query) {
       this.query = query;
   }
@@ -72,37 +54,16 @@ public class MultiTermQueryWrapperFilter<Q extends MultiTermQuery> extends Filte
     return query.hashCode();
   }
   
-  /**
-   * Expert: Return the number of unique terms visited during execution of the filter.
-   * If there are many of them, you may consider using another filter type
-   * or optimize your total term count in index.
-   * <p>This method is not thread safe, be sure to only call it when no filter is running!
-   * If you re-use the same filter instance for another
-   * search, be sure to first reset the term counter
-   * with {@link #clearTotalNumberOfTerms}.
-   * @see #clearTotalNumberOfTerms
-   * @deprecated Don't use this method, as its not thread safe and useless.
-   */
   @Deprecated
   public int getTotalNumberOfTerms() {
     return query.getTotalNumberOfTerms();
   }
   
-  /**
-   * Expert: Resets the counting of unique terms.
-   * Do this before executing the filter.
-   * @see #getTotalNumberOfTerms
-   * @deprecated Don't use this method, as its not thread safe and useless.
-   */
   @Deprecated
   public void clearTotalNumberOfTerms() {
     query.clearTotalNumberOfTerms();
   }
   
-  /**
-   * Returns a DocIdSet with documents that should be
-   * permitted in search results.
-   */
   @Override
   public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
     final TermEnum enumerator = query.getEnum(reader);

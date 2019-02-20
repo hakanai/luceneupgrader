@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -41,11 +40,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Version;
 
-/**
- * Lucene 3x implementation of {@link SegmentInfoReader}.
- * @lucene.experimental
- * @deprecated Only for reading existing 3.x indexes
- */
 @Deprecated
 public class Lucene3xSegmentInfoReader extends SegmentInfoReader {
 
@@ -124,7 +118,6 @@ public class Lucene3xSegmentInfoReader extends SegmentInfoReader {
     }
   }
   
-  /** reads from legacy 3.x segments_N */
   private SegmentCommitInfo readLegacySegmentInfo(Directory dir, int format, IndexInput input) throws IOException {
     // check that it is a format we can understand
     if (format > Lucene3xSegmentInfoFormat.FORMAT_DIAGNOSTICS) {

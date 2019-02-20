@@ -25,16 +25,10 @@ import java.util.List;
 
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.LeafReaderContext;
 
-/**
- * A {@link Rescorer} that re-sorts according to a provided
- * Sort.
- */
-
 public class SortRescorer extends Rescorer {
 
   private final Sort sort;
 
-  /** Sole constructor. */
   public SortRescorer(Sort sort) {
     this.sort = sort;
   }

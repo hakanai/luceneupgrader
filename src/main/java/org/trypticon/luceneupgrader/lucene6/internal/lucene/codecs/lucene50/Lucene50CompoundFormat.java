@@ -30,39 +30,8 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.store.IndexOutput;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.StringHelper;
 
-/**
- * Lucene 5.0 compound file format
- * <p>
- * Files:
- * <ul>
- *    <li><tt>.cfs</tt>: An optional "virtual" file consisting of all the other 
- *    index files for systems that frequently run out of file handles.
- *    <li><tt>.cfe</tt>: The "virtual" compound file's entry table holding all 
- *    entries in the corresponding .cfs file.
- * </ul>
- * <p>Description:</p>
- * <ul>
- *   <li>Compound (.cfs) --&gt; Header, FileData <sup>FileCount</sup>, Footer</li>
- *   <li>Compound Entry Table (.cfe) --&gt; Header, FileCount, &lt;FileName,
- *       DataOffset, DataLength&gt; <sup>FileCount</sup></li>
- *   <li>Header --&gt; {@link CodecUtil#writeIndexHeader IndexHeader}</li>
- *   <li>FileCount --&gt; {@link DataOutput#writeVInt VInt}</li>
- *   <li>DataOffset,DataLength,Checksum --&gt; {@link DataOutput#writeLong UInt64}</li>
- *   <li>FileName --&gt; {@link DataOutput#writeString String}</li>
- *   <li>FileData --&gt; raw file data</li>
- *   <li>Footer --&gt; {@link CodecUtil#writeFooter CodecFooter}</li>
- * </ul>
- * <p>Notes:</p>
- * <ul>
- *   <li>FileCount indicates how many files are contained in this compound file. 
- *       The entry table that follows has that many entries. 
- *   <li>Each directory entry contains a long pointer to the start of this file's data
- *       section, the files length, and a String with that file's name.
- * </ul>
- */
 public final class Lucene50CompoundFormat extends CompoundFormat {
 
-  /** Sole constructor. */
   public Lucene50CompoundFormat() {
   }
   
@@ -123,9 +92,7 @@ public final class Lucene50CompoundFormat extends CompoundFormat {
     }
   }
 
-  /** Extension of compound file */
   static final String DATA_EXTENSION = "cfs";
-  /** Extension of compound file entries */
   static final String ENTRIES_EXTENSION = "cfe";
   static final String DATA_CODEC = "Lucene50CompoundData";
   static final String ENTRY_CODEC = "Lucene50CompoundEntries";

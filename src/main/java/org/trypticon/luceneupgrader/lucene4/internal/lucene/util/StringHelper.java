@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,23 +13,11 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
-/**
- * Methods for manipulating strings.
- *
- * @lucene.internal
- */
 public abstract class StringHelper {
 
-  /**
-   * Compares two {@link BytesRef}, element by element, and returns the
-   * number of elements common to both arrays.
-   *
-   * @param left The first {@link BytesRef} to compare
-   * @param right The second {@link BytesRef} to compare
-   * @return The number of common elements.
-   */
   public static int bytesDifference(BytesRef left, BytesRef right) {
     int len = left.length < right.length ? left.length : right.length;
     final byte[] bytesLeft = left.bytes;
@@ -44,11 +30,7 @@ public abstract class StringHelper {
     return len;
   }
   
-  /** 
-   * Returns the length of {@code currentTerm} needed for use as a sort key.
-   * so that {@link BytesRef#compareTo(BytesRef)} still returns the same result.
-   * This method assumes currentTerm comes after priorTerm.
-   */
+
   public static int sortKeyLength(final BytesRef priorTerm, final BytesRef currentTerm) {
     final int currentTermOffset = currentTerm.offset;
     final int priorTermOffset = priorTerm.offset;
@@ -72,17 +54,6 @@ public abstract class StringHelper {
     }
   }
 
-  /**
-   * Returns <code>true</code> iff the ref starts with the given prefix.
-   * Otherwise <code>false</code>.
-   * 
-   * @param ref
-   *         the {@code byte[]} to test
-   * @param prefix
-   *         the expected prefix
-   * @return Returns <code>true</code> iff the ref starts with the given prefix.
-   *         Otherwise <code>false</code>.
-   */
   public static boolean startsWith(byte[] ref, BytesRef prefix) {
     if (ref.length < prefix.length) {
       return false;
@@ -97,32 +68,10 @@ public abstract class StringHelper {
     return true;
   }
 
-  /**
-   * Returns <code>true</code> iff the ref starts with the given prefix.
-   * Otherwise <code>false</code>.
-   * 
-   * @param ref
-   *          the {@link BytesRef} to test
-   * @param prefix
-   *          the expected prefix
-   * @return Returns <code>true</code> iff the ref starts with the given prefix.
-   *         Otherwise <code>false</code>.
-   */
   public static boolean startsWith(BytesRef ref, BytesRef prefix) {
     return sliceEquals(ref, prefix, 0);
   }
 
-  /**
-   * Returns <code>true</code> iff the ref ends with the given suffix. Otherwise
-   * <code>false</code>.
-   * 
-   * @param ref
-   *          the {@link BytesRef} to test
-   * @param suffix
-   *          the expected suffix
-   * @return Returns <code>true</code> iff the ref ends with the given suffix.
-   *         Otherwise <code>false</code>.
-   */
   public static boolean endsWith(BytesRef ref, BytesRef suffix) {
     return sliceEquals(ref, suffix, ref.length - suffix.length);
   }
@@ -143,8 +92,6 @@ public abstract class StringHelper {
     
     return true;
   }
-
-  /** Pass this as the seed to {@link #murmurhash3_x86_32}. */
 
   // Poached from Guava: set a different salt/seed
   // for each JVM instance, to frustrate hash key collision
@@ -167,9 +114,7 @@ public abstract class StringHelper {
     }
   }
 
-  /** Returns the MurmurHash3_x86_32 hash.
-   * Original source/tests at https://github.com/yonik/java_util/
-   */
+
   @SuppressWarnings("fallthrough")
   public static int murmurhash3_x86_32(byte[] data, int offset, int len, int seed) {
 

@@ -19,11 +19,6 @@ package org.trypticon.luceneupgrader.lucene6.internal.lucene.index;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.Bits;
 
 
-/**
- * Exposes a slice of an existing Bits as a new Bits.
- *
- * @lucene.internal
- */
 final class BitsSlice implements Bits {
   private final Bits parent;
   private final int start;

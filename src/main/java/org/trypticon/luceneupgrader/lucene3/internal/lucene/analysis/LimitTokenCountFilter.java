@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,22 +13,18 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis;
 
 import java.io.IOException;
 
-/**
- * This TokenFilter limits the number of tokens while indexing. It is
- * a replacement for the maximum field length setting inside {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexWriter}.
- */
+
 public final class LimitTokenCountFilter extends TokenFilter {
 
   private final int maxTokenCount;
   private int tokenCount = 0;
 
-  /**
-   * Build a filter that only accepts tokens up to a maximum number.
-   */
+
   public LimitTokenCountFilter(TokenStream in, int maxTokenCount) {
     super(in);
     this.maxTokenCount = maxTokenCount;

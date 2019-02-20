@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattributes;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,31 +13,14 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattri
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.tokenattributes;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.Tokenizer;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Attribute;
 
-/**
- * This attribute can be used to pass different flags down the {@link Tokenizer} chain,
- * e.g. from one TokenFilter to another one. 
- * <p>
- * This is completely distinct from {@link TypeAttribute}, although they do share similar purposes.
- * The flags can be used to encode information about the token for use by other 
- * {@link org.trypticon.luceneupgrader.lucene4.internal.lucene.analysis.TokenFilter}s.
- * @lucene.experimental While we think this is here to stay, we may want to change it to be a long.
- */
 public interface FlagsAttribute extends Attribute {
-  /**
-   * Get the bitset for any bits that have been set.  
-   * @return The bits
-   * @see #getFlags()
-   */
   public int getFlags();
 
-  /**
-   * Set the flags to a new bitset.
-   * @see #getFlags()
-   */
-  public void setFlags(int flags);  
+  public void setFlags(int flags);
 }

@@ -53,10 +53,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.LongsRef;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.BlockPackedReaderIterator;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 
-/**
- * 4.2 term vectors reader
- * @deprecated only for reading old segments
- */
 @Deprecated
 final class Lucene42TermVectorsReader extends TermVectorsReader implements Closeable {
 
@@ -104,7 +100,6 @@ final class Lucene42TermVectorsReader extends TermVectorsReader implements Close
     this.closed = false;
   }
 
-  /** Sole constructor. */
   public Lucene42TermVectorsReader(Directory d, SegmentInfo si, String segmentSuffix, FieldInfos fn,
       IOContext context, String formatName, CompressionMode compressionMode) throws IOException {
     this.compressionMode = compressionMode;
@@ -164,9 +159,6 @@ final class Lucene42TermVectorsReader extends TermVectorsReader implements Close
     }
   }
 
-  /**
-   * @throws AlreadyClosedException if this TermVectorsReader is closed
-   */
   private void ensureOpen() throws AlreadyClosedException {
     if (closed) {
       throw new AlreadyClosedException("this FieldsReader is closed");

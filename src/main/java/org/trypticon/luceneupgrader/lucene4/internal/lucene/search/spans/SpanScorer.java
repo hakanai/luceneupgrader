@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.spans;
 
 import java.io.IOException;
 
@@ -23,9 +22,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.Weight;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.Scorer;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities.Similarity;
 
-/**
- * Public for extension only.
- */
 public class SpanScorer extends Scorer {
   protected Spans spans;
 
@@ -97,8 +93,6 @@ public class SpanScorer extends Scorer {
     return numMatches;
   }
   
-  /** Returns the intermediate "sloppy freq" adjusted for edit distance 
-   *  @lucene.internal */
   // only public so .payloads can see it.
   public float sloppyFreq() throws IOException {
     return freq;

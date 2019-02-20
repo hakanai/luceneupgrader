@@ -21,12 +21,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.ByteBlockPool;
 
 
 
-/**
- * Class to write byte streams into slices of shared
- * byte[].  This is used by DocumentsWriter to hold the
- * posting list for many terms in RAM.
- */
-
 final class ByteSliceWriter extends DataOutput {
 
   private byte[] slice;
@@ -39,9 +33,6 @@ final class ByteSliceWriter extends DataOutput {
     this.pool = pool;
   }
 
-  /**
-   * Set up the writer to write at address.
-   */
   public void init(int address) {
     slice = pool.buffers[address >> ByteBlockPool.BYTE_BLOCK_SHIFT];
     assert slice != null;
@@ -50,7 +41,6 @@ final class ByteSliceWriter extends DataOutput {
     assert upto < slice.length;
   }
 
-  /** Write byte into byte slice stream */
   @Override
   public void writeByte(byte b) {
     assert slice != null;

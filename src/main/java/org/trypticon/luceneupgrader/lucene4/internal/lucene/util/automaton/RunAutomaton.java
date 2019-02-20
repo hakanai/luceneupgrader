@@ -25,17 +25,11 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene4.internal.lucene.util.automaton;
 
 import java.util.Arrays;
 
-/**
- * Finite-state automaton with fast run operation.
- * 
- * @lucene.experimental
- */
 public abstract class RunAutomaton {
   final Automaton automaton;
   final int maxInterval;
@@ -47,9 +41,6 @@ public abstract class RunAutomaton {
   final int[] points; // char interval start points
   final int[] classmap; // map from char number to class class
   
-  /**
-   * Returns a string representation of this automaton.
-   */
   @Override
   public String toString() {
     StringBuilder b = new StringBuilder();
@@ -78,60 +69,30 @@ public abstract class RunAutomaton {
     return b.toString();
   }
   
-  /**
-   * Returns number of states in automaton.
-   */
   public final int getSize() {
     return size;
   }
   
-  /**
-   * Returns acceptance status for given state.
-   */
   public final boolean isAccept(int state) {
     return accept[state];
   }
   
-  /**
-   * Returns initial state.
-   */
   public final int getInitialState() {
     return initial;
   }
   
-  /**
-   * Returns array of codepoint class interval start points. The array should
-   * not be modified by the caller.
-   */
   public final int[] getCharIntervals() {
     return points.clone();
   }
   
-  /**
-   * Gets character class of given codepoint
-   */
   final int getCharClass(int c) {
     return Operations.findIndex(c, points);
   }
 
-  /**
-   * Constructs a new <code>RunAutomaton</code> from a deterministic
-   * <code>Automaton</code>.
-   * 
-   * @param a an automaton
-   */
   public RunAutomaton(Automaton a, int maxInterval, boolean tableize) {
     this(a, maxInterval, tableize, Operations.DEFAULT_MAX_DETERMINIZED_STATES);
   }
 
-  /**
-   * Constructs a new <code>RunAutomaton</code> from a deterministic
-   * <code>Automaton</code>.
-   * 
-   * @param a an automaton
-   * @param maxDeterminizedStates maximum number of states that can be created
-   *   while determinizing a
-   */
   public RunAutomaton(Automaton a, int maxInterval, boolean tableize,
       int maxDeterminizedStates) {
     this.maxInterval = maxInterval;
@@ -169,13 +130,6 @@ public abstract class RunAutomaton {
     }
   }
   
-  /**
-   * Returns the state obtained by reading the given char from the given state.
-   * Returns -1 if not obtaining any such state. (If the original
-   * <code>Automaton</code> had no dead states, -1 is returned here if and only
-   * if a dead state is entered in an equivalent automaton with a total
-   * transition function.)
-   */
   public final int step(int state, int c) {
     if (classmap == null) {
       return transitions[state * points.length + getCharClass(c)];

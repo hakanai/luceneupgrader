@@ -24,14 +24,9 @@ import java.util.Collections;
 
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.Bits;
 
-/** Internal document-at-a-time scorers used to deal with stupid coord() computation */
 class BooleanTopLevelScorers {
   
-  /** 
-   * Used when there is more than one scorer in a query, but a segment
-   * only had one non-null scorer. This just wraps that scorer directly
-   * to factor in coord().
-   */
+
   static class BoostedScorer extends FilterScorer {
     final float boost;
     
@@ -51,10 +46,6 @@ class BooleanTopLevelScorers {
     }
   }
 
-  /**
-   * Used when there is more than one scorer in a query, but a segment
-   * only had one non-null scorer.
-   */
   static class BoostedBulkScorer extends BulkScorer {
 
     final BulkScorer in;
@@ -83,11 +74,7 @@ class BooleanTopLevelScorers {
 
   }
 
-  /** 
-   * Used when there are both mandatory and optional clauses, but minShouldMatch
-   * dictates that some of the optional clauses must match. The query is a conjunction,
-   * but must compute coord based on how many optional subscorers matched (freq).
-   */
+
   static class CoordinatingConjunctionScorer extends ConjunctionScorer {
     private final float coords[];
     private final int reqCount;
@@ -108,10 +95,7 @@ class BooleanTopLevelScorers {
     }
   }
   
-  /** 
-   * Used when there are mandatory clauses with one optional clause: we compute
-   * coord based on whether the optional clause matched or not.
-   */
+
   static class ReqSingleOptScorer extends ReqOptSumScorer {
     // coord factor if just the required part matches
     private final float coordReq;
@@ -145,10 +129,7 @@ class BooleanTopLevelScorers {
     }
   }
 
-  /** 
-   * Used when there are mandatory clauses with optional clauses: we compute
-   * coord based on how many optional subscorers matched (freq).
-   */
+
   static class ReqMultiOptScorer extends ReqOptSumScorer {
     private final int requiredCount;
     private final float coords[];

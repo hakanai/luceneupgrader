@@ -1,5 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,15 +14,9 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
 
-/**
- * Simple lockless and memory barrier free String intern cache that is guaranteed
- * to return the same String instance as String.intern()
- * does.
- *
- * @lucene.internal
- */
 public class SimpleStringInterner extends StringInterner {
 
   private static class Entry {
@@ -40,10 +33,6 @@ public class SimpleStringInterner extends StringInterner {
   private final Entry[] cache;
   private final int maxChainLength;
 
-  /**
-   * @param tableSize  Size of the hash table, should be a power of two.
-   * @param maxChainLength  Maximum length of each bucket, after which the oldest item inserted is dropped.
-   */
   public SimpleStringInterner(int tableSize, int maxChainLength) {
     cache = new Entry[Math.max(1,BitUtil.nextHighestPowerOfTwo(tableSize))];
     this.maxChainLength = Math.max(2,maxChainLength);

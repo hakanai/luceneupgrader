@@ -1,4 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,18 +14,11 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext.Context;
 
-/**
- * 
- * A {@link Directory} wrapper that allows {@link IndexOutput} rate limiting using
- * {@link IOContext.Context IO context} specific {@link RateLimiter rate limiters}.
- * 
- *  @see #setRateLimiter(RateLimiter, IOContext.Context)
- * @lucene.experimental
- */
 public final class RateLimitedDirectoryWrapper extends FilterDirectory {
 
   // we need to be volatile here to make sure we see all the values that are set
@@ -61,25 +53,6 @@ public final class RateLimitedDirectoryWrapper extends FilterDirectory {
     return contextRateLimiters[context.ordinal()];
   }
   
-  /**
-   * Sets the maximum (approx) MB/sec allowed by all write IO performed by
-   * {@link IndexOutput} created with the given {@link IOContext.Context}. Pass
-   * <code>null</code> to have no limit.
-   * 
-   * <p>
-   * <b>NOTE</b>: For already created {@link IndexOutput} instances there is no
-   * guarantee this new rate will apply to them; it will only be guaranteed to
-   * apply for new created {@link IndexOutput} instances.
-   * <p>
-   * <b>NOTE</b>: this is an optional operation and might not be respected by
-   * all Directory implementations. Currently only {@link FSDirectory buffered}
-   * Directory implementations use rate-limiting.
-   * 
-   * @throws IllegalArgumentException
-   *           if context is <code>null</code>
-   * @throws AlreadyClosedException if the {@link Directory} is already closed
-   * @lucene.experimental
-   */
   public void setMaxWriteMBPerSec(Double mbPerSec, IOContext.Context context) {
     ensureOpen();
     if (context == null) {
@@ -100,22 +73,6 @@ public final class RateLimitedDirectoryWrapper extends FilterDirectory {
     }
   }
   
-  /**
-   * Sets the rate limiter to be used to limit (approx) MB/sec allowed by all IO
-   * performed with the given {@link IOContext.Context context}. Pass <code>null</code> to
-   * have no limit.
-   * 
-   * <p>
-   * Passing an instance of rate limiter compared to setting it using
-   * {@link #setMaxWriteMBPerSec(Double, IOContext.Context)}
-   * allows to use the same limiter instance across several directories globally
-   * limiting IO across them.
-   * 
-   * @throws IllegalArgumentException
-   *           if context is <code>null</code>
-   * @throws AlreadyClosedException if the {@link Directory} is already closed           
-   * @lucene.experimental
-   */
   public void setRateLimiter(RateLimiter mergeWriteRateLimiter,
       Context context) {
     ensureOpen();
@@ -125,14 +82,6 @@ public final class RateLimitedDirectoryWrapper extends FilterDirectory {
     contextRateLimiters[context.ordinal()] = mergeWriteRateLimiter;
   }
   
-  /**
-   * See {@link #setMaxWriteMBPerSec}.
-   * 
-   * @throws IllegalArgumentException
-   *           if context is <code>null</code>
-   * @throws AlreadyClosedException if the {@link Directory} is already closed
-   * @lucene.experimental
-   */
   public Double getMaxWriteMBPerSec(IOContext.Context context) {
     ensureOpen();
     if (context == null) {

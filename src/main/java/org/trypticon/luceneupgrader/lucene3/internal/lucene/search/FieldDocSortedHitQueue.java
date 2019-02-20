@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,21 +13,14 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.PriorityQueue;
 import java.io.IOException;
 import java.text.Collator;
 import java.util.Locale;
 
-/**
- * Expert: Collects sorted results from Searchable's and collates them.
- * The elements put into this queue must be of type FieldDoc.
- *
- * <p>Created: Feb 11, 2004 2:04:21 PM
- *
- * @since   lucene 1.4
- */
 class FieldDocSortedHitQueue extends PriorityQueue<FieldDoc> {
 
   volatile SortField[] fields = null;
@@ -41,24 +32,11 @@ class FieldDocSortedHitQueue extends PriorityQueue<FieldDoc> {
   volatile FieldComparator<?>[] comparators = null;
 
 
-  /**
-   * Creates a hit queue sorted by the given list of fields.
-   * @param fields Fieldable names, in priority order (highest priority first).
-   * @param size  The number of hits to retain.  Must be greater than zero.
-   */
   FieldDocSortedHitQueue (int size) {
     initialize (size);
   }
 
 
-  /**
-   * Allows redefinition of sort fields if they are <code>null</code>.
-   * This is to handle the case using ParallelMultiSearcher where the
-   * original list contains AUTO and we don't know the actual sort
-   * type until the values come back.  The fields can only be set once.
-   * This method should be synchronized external like all other PQ methods.
-   * @param fields
-   */
   @SuppressWarnings({"unchecked","rawtypes"})
   void setFields (SortField[] fields) throws IOException {
     this.fields = fields;
@@ -70,17 +48,12 @@ class FieldDocSortedHitQueue extends PriorityQueue<FieldDoc> {
   }
 
 
-  /** Returns the fields being used to sort. */
   SortField[] getFields() {
     return fields;
   }
 
 
-  /** Returns an array of collators, possibly <code>null</code>.  The collators
-   * correspond to any SortFields which were given a specific locale.
-   * @param fields Array of sort fields.
-   * @return Array, possibly <code>null</code>.
-   */
+
   private Collator[] hasCollators (final SortField[] fields) {
     if (fields == null) return null;
     Collator[] ret = new Collator[fields.length];
@@ -93,12 +66,6 @@ class FieldDocSortedHitQueue extends PriorityQueue<FieldDoc> {
   }
 
 
-  /**
-   * Returns whether <code>a</code> is less relevant than <code>b</code>.
-   * @param a ScoreDoc
-   * @param b ScoreDoc
-   * @return <code>true</code> if document <code>a</code> should be sorted after document <code>b</code>.
-   */
   @Override
   @SuppressWarnings({"unchecked","rawtypes"})
   protected final boolean lessThan(final FieldDoc docA, final FieldDoc docB) {

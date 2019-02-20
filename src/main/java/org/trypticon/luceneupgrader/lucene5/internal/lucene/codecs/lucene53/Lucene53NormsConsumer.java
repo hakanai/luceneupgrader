@@ -29,10 +29,7 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 
 import static org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.lucene53.Lucene53NormsFormat.VERSION_CURRENT;
 
-/**
- * Writer for {@link Lucene53NormsFormat}
- */
-class Lucene53NormsConsumer extends NormsConsumer { 
+class Lucene53NormsConsumer extends NormsConsumer {
   IndexOutput data, meta;
   final int maxDoc;
 

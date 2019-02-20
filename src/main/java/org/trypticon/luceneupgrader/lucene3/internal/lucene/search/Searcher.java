@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.IOException;
 
@@ -24,145 +23,59 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.CorruptIndexEx
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.FieldSelector;
 
-/**
- * An abstract base class for search implementations. Implements the main search
- * methods.
- * 
- * <p>
- * Note that you can only access hits from a Searcher as long as it is not yet
- * closed, otherwise an IOException will be thrown.
- *
- * @deprecated In 4.0 this abstract class is removed/absorbed
- * into IndexSearcher
- */
 @Deprecated
 public abstract class Searcher implements Searchable {
-  /** Search implementation with arbitrary sorting.  Finds
-   * the top <code>n</code> hits for <code>query</code>, applying
-   * <code>filter</code> if non-null, and sorting the hits by the criteria in
-   * <code>sort</code>.
-   * 
-   * <p>NOTE: this does not compute scores by default; use
-   * {@link IndexSearcher#setDefaultFieldSortScoring} to
-   * enable scoring.
-   *
-   * @throws BooleanQuery.TooManyClauses
-   */
+
   public TopFieldDocs search(Query query, Filter filter, int n,
                              Sort sort) throws IOException {
     return search(createNormalizedWeight(query), filter, n, sort);
   }
 
-  /**
-   * Search implementation with arbitrary sorting and no filter.
-   * @param query The query to search for
-   * @param n Return only the top n results
-   * @param sort The {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Sort} object
-   * @return The top docs, sorted according to the supplied {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Sort} instance
-   * @throws IOException
-   */
   public TopFieldDocs search(Query query, int n,
                              Sort sort) throws IOException {
     return search(createNormalizedWeight(query), null, n, sort);
   }
 
-  /** Lower-level search API.
-  *
-  * <p>{@link Collector#collect(int)} is called for every matching document.
-  *
-  * <p>Applications should only use this if they need <i>all</i> of the
-  * matching documents.  The high-level search API ({@link
-  * Searcher#search(Query, int)}) is usually more efficient, as it skips
-  * non-high-scoring hits.
-  * <p>Note: The <code>score</code> passed to this method is a raw score.
-  * In other words, the score will not necessarily be a float whose value is
-  * between 0 and 1.
-  * @throws BooleanQuery.TooManyClauses
-  */
  public void search(Query query, Collector results)
    throws IOException {
    search(createNormalizedWeight(query), null, results);
  }
 
-  /** Lower-level search API.
-   *
-   * <p>{@link Collector#collect(int)} is called for every matching
-   * document.
-   * <br>Collector-based access to remote indexes is discouraged.
-   *
-   * <p>Applications should only use this if they need <i>all</i> of the
-   * matching documents.  The high-level search API ({@link
-   * Searcher#search(Query, Filter, int)}) is usually more efficient, as it skips
-   * non-high-scoring hits.
-   *
-   * @param query to match documents
-   * @param filter if non-null, used to permit documents to be collected.
-   * @param results to receive hits
-   * @throws BooleanQuery.TooManyClauses
-   */
+
   public void search(Query query, Filter filter, Collector results)
   throws IOException {
     search(createNormalizedWeight(query), filter, results);
   }
 
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code>, applying <code>filter</code> if non-null.
-   *
-   * @throws BooleanQuery.TooManyClauses
-   */
+
   public TopDocs search(Query query, Filter filter, int n)
     throws IOException {
     return search(createNormalizedWeight(query), filter, n);
   }
 
-  /** Finds the top <code>n</code>
-   * hits for <code>query</code>.
-   *
-   * @throws BooleanQuery.TooManyClauses
-   */
+
   public TopDocs search(Query query, int n)
     throws IOException {
     return search(query, null, n);
   }
 
-  /** Returns an Explanation that describes how <code>doc</code> scored against
-   * <code>query</code>.
-   *
-   * <p>This is intended to be used in developing Similarity implementations,
-   * and, for good performance, should not be displayed with every hit.
-   * Computing an explanation is as expensive as executing the query over the
-   * entire index.
-   */
+
   public Explanation explain(Query query, int doc) throws IOException {
     return explain(createNormalizedWeight(query), doc);
   }
 
-  /** The Similarity implementation used by this searcher. */
   private Similarity similarity = Similarity.getDefault();
 
-  /** Expert: Set the Similarity implementation used by this Searcher.
-   *
-   * @see Similarity#setDefault(Similarity)
-   */
+
   public void setSimilarity(Similarity similarity) {
     this.similarity = similarity;
   }
 
-  /** Expert: Return the Similarity implementation used by this Searcher.
-   *
-   * <p>This defaults to the current value of {@link Similarity#getDefault()}.
-   */
+
   public Similarity getSimilarity() {
     return this.similarity;
   }
 
-  /**
-   * Creates a normalized weight for a top-level {@link Query}.
-   * The query is rewritten by this method and {@link Query#createWeight} called,
-   * afterwards the {@link Weight} is normalized. The returned {@code Weight}
-   * can then directly be used to get a {@link Scorer}.
-   * @lucene.internal
-   */
   public Weight createNormalizedWeight(Query query) throws IOException {
     query = rewrite(query);
     Weight weight = query.createWeight(this);
@@ -175,14 +88,6 @@ public abstract class Searcher implements Searchable {
     return weight;
   }
   
-  /**
-   * Expert: Creates a normalized weight for a top-level {@link Query}.
-   * The query is rewritten by this method and {@link Query#createWeight} called,
-   * afterwards the {@link Weight} is normalized. The returned {@code Weight}
-   * can then directly be used to get a {@link Scorer}.
-   * @deprecated never ever use this method in {@link Weight} implementations.
-   * Subclasses of Searcher should use {@link #createNormalizedWeight}, instead.
-   */
   @Deprecated
   protected final Weight createWeight(Query query) throws IOException {
     return createNormalizedWeight(query);

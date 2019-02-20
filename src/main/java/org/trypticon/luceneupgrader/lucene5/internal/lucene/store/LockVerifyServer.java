@@ -28,16 +28,6 @@ import java.util.concurrent.CountDownLatch;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.SuppressForbidden;
 
-/**
- * Simple standalone server that must be running when you
- * use {@link VerifyingLockFactory}.  This server simply
- * verifies at most one process holds the lock at a time.
- * Run without any args to see usage.
- *
- * @see VerifyingLockFactory
- * @see LockStressTest
- */
-
 public class LockVerifyServer {
 
   @SuppressForbidden(reason = "System.out required: command line tool")

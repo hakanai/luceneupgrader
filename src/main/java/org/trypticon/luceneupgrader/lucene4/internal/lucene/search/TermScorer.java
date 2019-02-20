@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,30 +13,18 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.DocsEnum;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities.Similarity;
 
-/** Expert: A <code>Scorer</code> for documents matching a <code>Term</code>.
- */
 final class TermScorer extends Scorer {
   private final DocsEnum docsEnum;
   private final Similarity.SimScorer docScorer;
   
-  /**
-   * Construct a <code>TermScorer</code>.
-   * 
-   * @param weight
-   *          The weight of the <code>Term</code> in the query.
-   * @param td
-   *          An iterator over the documents matching the <code>Term</code>.
-   * @param docScorer
-   *          The </code>Similarity.SimScorer</code> implementation 
-   *          to be used for score computations.
-   */
   TermScorer(Weight weight, DocsEnum td, Similarity.SimScorer docScorer) {
     super(weight);
     this.docScorer = docScorer;
@@ -55,11 +41,6 @@ final class TermScorer extends Scorer {
     return docsEnum.freq();
   }
 
-  /**
-   * Advances to the next document matching the query. <br>
-   * 
-   * @return the document matching the query or NO_MORE_DOCS if there are no more documents.
-   */
   @Override
   public int nextDoc() throws IOException {
     return docsEnum.nextDoc();
@@ -71,15 +52,6 @@ final class TermScorer extends Scorer {
     return docScorer.score(docsEnum.docID(), docsEnum.freq());  
   }
 
-  /**
-   * Advances to the first match beyond the current whose document number is
-   * greater than or equal to a given target. <br>
-   * The implementation uses {@link DocsEnum#advance(int)}.
-   * 
-   * @param target
-   *          The target document number.
-   * @return the matching document or NO_MORE_DOCS if none exist.
-   */
   @Override
   public int advance(int target) throws IOException {
     return docsEnum.advance(target);
@@ -90,7 +62,6 @@ final class TermScorer extends Scorer {
     return docsEnum.cost();
   }
 
-  /** Returns a string representation of this <code>TermScorer</code>. */
   @Override
   public String toString() { return "scorer(" + weight + ")"; }
 }

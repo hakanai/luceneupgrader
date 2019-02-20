@@ -13,8 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
 import java.io.IOException;
@@ -30,48 +29,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.PagedBytes;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.StringHelper;
-
-/**
- * This class enables fast access to multiple term ords for
- * a specified field across all docIDs.
- *
- * Like FieldCache, it uninverts the index and holds a
- * packed data structure in RAM to enable fast access.
- * Unlike FieldCache, it can handle multi-valued fields,
- * and, it does not hold the term bytes in RAM.  Rather, you
- * must obtain a TermsEnum from the {@link #getOrdTermsEnum}
- * method, and then seek-by-ord to get the term's bytes.
- *
- * While normally term ords are type long, in this API they are
- * int as the internal representation here cannot address
- * more than MAX_INT unique terms.  Also, typically this
- * class is used on fields with relatively few unique terms
- * vs the number of documents.  In addition, there is an
- * internal limit (16 MB) on how many bytes each chunk of
- * documents may consume.  If you trip this limit you'll hit
- * an IllegalStateException.
- *
- * Deleted documents are skipped during uninversion, and if
- * you look them up you'll get 0 ords.
- *
- * The returned per-document ords do not retain their
- * original order in the document.  Instead they are returned
- * in sorted (by ord, ie term's BytesRef comparator) order.  They
- * are also de-dup'd (ie if doc has same term more than once
- * in this field, you'll only get that ord back once).
- *
- * This class tests whether the provided reader is able to
- * retrieve terms by ord (ie, it's single segment, and it
- * uses an ord-capable terms index).  If not, this class
- * will create its own term index internally, allowing to
- * create a wrapped TermsEnum that can handle ord.  The
- * {@link #getOrdTermsEnum} method then provides this
- * wrapped enum, if necessary.
- *
- * The RAM consumption of this class can be high!
- *
- * @lucene.experimental
- */
 
 /*
  * Final form of the un-inverted field:
@@ -109,57 +66,40 @@ public class DocTermOrds implements Accountable {
   // values 0 (end term) and 1 (index is a pointer into byte array)
   private final static int TNUM_OFFSET = 2;
 
-  /** Every 128th term is indexed, by default. */
   public final static int DEFAULT_INDEX_INTERVAL_BITS = 7; // decrease to a low number like 2 for testing
 
   private int indexIntervalBits;
   private int indexIntervalMask;
   private int indexInterval;
 
-  /** Don't uninvert terms that exceed this count. */
   protected final int maxTermDocFreq;
 
-  /** Field we are uninverting. */
   protected final String field;
 
-  /** Number of terms in the field. */
   protected int numTermsInField;
 
-  /** Total number of references to term numbers. */
   protected long termInstances;
   private long memsz;
 
-  /** Total time to uninvert the field. */
   protected int total_time;
 
-  /** Time for phase1 of the uninvert process. */
   protected int phase1_time;
 
-  /** Holds the per-document ords or a pointer to the ords. */
   protected int[] index;
 
-  /** Holds term ords for documents. */
   protected byte[][] tnums = new byte[256][];
 
-  /** Total bytes (sum of term lengths) for all indexed terms.*/
   protected long sizeOfIndexedStrings;
 
-  /** Holds the indexed (by default every 128th) terms. */
   protected BytesRef[] indexedTermsArray;
 
-  /** If non-null, only terms matching this prefix were
-   *  indexed. */
   protected BytesRef prefix;
 
-  /** Ordinal of the first term in the field, or 0 if the
-   *  {@link PostingsFormat} does not implement {@link
-   *  TermsEnum#ord}. */
+
   protected int ordBase;
 
-  /** Used while uninverting. */
   protected DocsEnum docsEnum;
 
-  /** Returns total bytes used. */
   public long ramBytesUsed() {
     // can cache the mem size since it shouldn't change
     if (memsz!=0) return memsz;
@@ -173,34 +113,25 @@ public class DocTermOrds implements Accountable {
     return sz;
   }
 
-  /** Inverts all terms */
   public DocTermOrds(AtomicReader reader, Bits liveDocs, String field) throws IOException {
     this(reader, liveDocs, field, null, Integer.MAX_VALUE);
   }
 
-  /** Inverts only terms starting w/ prefix */
   public DocTermOrds(AtomicReader reader, Bits liveDocs, String field, BytesRef termPrefix) throws IOException {
     this(reader, liveDocs, field, termPrefix, Integer.MAX_VALUE);
   }
 
-  /** Inverts only terms starting w/ prefix, and only terms
-   *  whose docFreq (not taking deletions into account) is
-   *  <=  maxTermDocFreq */
+
   public DocTermOrds(AtomicReader reader, Bits liveDocs, String field, BytesRef termPrefix, int maxTermDocFreq) throws IOException {
     this(reader, liveDocs, field, termPrefix, maxTermDocFreq, DEFAULT_INDEX_INTERVAL_BITS);
   }
 
-  /** Inverts only terms starting w/ prefix, and only terms
-   *  whose docFreq (not taking deletions into account) is
-   *  <=  maxTermDocFreq, with a custom indexing interval
-   *  (default is every 128nd term). */
+
   public DocTermOrds(AtomicReader reader, Bits liveDocs, String field, BytesRef termPrefix, int maxTermDocFreq, int indexIntervalBits) throws IOException {
     this(field, maxTermDocFreq, indexIntervalBits);
     uninvert(reader, liveDocs, termPrefix);
   }
 
-  /** Subclass inits w/ this, but be sure you then call
-   *  uninvert, only once */
   protected DocTermOrds(String field, int maxTermDocFreq, int indexIntervalBits) {
     //System.out.println("DTO init field=" + field + " maxTDFreq=" + maxTermDocFreq);
     this.field = field;
@@ -210,16 +141,7 @@ public class DocTermOrds implements Accountable {
     indexInterval = 1 << indexIntervalBits;
   }
 
-  /** Returns a TermsEnum that implements ord.  If the
-   *  provided reader supports ord, we just return its
-   *  TermsEnum; if it does not, we build a "private" terms
-   *  index internally (WARNING: consumes RAM) and use that
-   *  index to implement ord.  This also enables ord on top
-   *  of a composite reader.  The returned TermsEnum is
-   *  unpositioned.  This returns null if there are no terms.
-   *
-   *  <p><b>NOTE</b>: you must pass the same reader that was
-   *  used when creating this class */
+
   public TermsEnum getOrdTermsEnum(AtomicReader reader) throws IOException {
     if (indexedTermsArray == null) {
       //System.out.println("GET normal enum");
@@ -239,31 +161,21 @@ public class DocTermOrds implements Accountable {
     }
   }
 
-  /**
-   * Returns the number of terms in this field
-   */
   public int numTerms() {
     return numTermsInField;
   }
 
-  /**
-   * Returns {@code true} if no terms were indexed.
-   */
   public boolean isEmpty() {
     return index == null;
   }
 
-  /** Subclass can override this */
   protected void visitTerm(TermsEnum te, int termNum) throws IOException {
   }
 
-  /** Invoked during {@link #uninvert(AtomicReader,Bits,BytesRef)}
-   *  to record the document frequency for each uninverted
-   *  term. */
+
   protected void setActualDocFreq(int termNum, int df) throws IOException {
   }
 
-  /** Call this only once (if you subclass!) */
   protected void uninvert(final AtomicReader reader, Bits liveDocs, final BytesRef termPrefix) throws IOException {
     final FieldInfo info = reader.getFieldInfos().fieldInfo(field);
     if (info != null && info.hasDocValues()) {
@@ -510,19 +422,7 @@ public class DocTermOrds implements Accountable {
               bytes[doc] = null;        // IMPORTANT: allow GC to avoid OOM
               if (target.length <= pos + len) {
                 int newlen = target.length;
-                /*** we don't have to worry about the array getting too large
-                 * since the "pos" param will overflow first (only 24 bits available)
-                if ((newlen<<1) <= 0) {
-                  // overflow...
-                  newlen = Integer.MAX_VALUE;
-                  if (newlen <= pos + len) {
-                    throw new SolrException(400,"Too many terms to uninvert field!");
-                  }
-                } else {
-                  while (newlen <= pos + len) newlen<<=1;  // doubling strategy
-                }
-                ****/
-                while (newlen <= pos + len) newlen<<=1;  // doubling strategy                 
+                while (newlen <= pos + len) newlen<<=1;  // doubling strategy
                 byte[] newtarget = new byte[newlen];
                 System.arraycopy(target, 0, newtarget, 0, pos);
                 target = newtarget;
@@ -557,7 +457,6 @@ public class DocTermOrds implements Accountable {
     phase1_time = (int)(midPoint-startTime);
   }
 
-  /** Number of bytes to represent an unsigned int as a vint. */
   private static int vIntSize(int x) {
     if ((x & (0xffffffff << (7*1))) == 0 ) {
       return 1;
@@ -758,14 +657,11 @@ public class DocTermOrds implements Accountable {
     }
   }
 
-  /** Returns the term ({@link BytesRef}) corresponding to
-   *  the provided ordinal. */
   public BytesRef lookupTerm(TermsEnum termsEnum, int ord) throws IOException {
     termsEnum.seekExact(ord);
     return termsEnum.term();
   }
   
-  /** Returns a SortedSetDocValues view of this instance */
   public SortedSetDocValues iterator(AtomicReader reader) throws IOException {
     if (isEmpty()) {
       return DocValues.emptySortedSet();
@@ -804,9 +700,7 @@ public class DocTermOrds implements Accountable {
       return buffer[bufferUpto++];
     }
     
-    /** Buffer must be at least 5 ints long.  Returns number
-     *  of term ords placed into buffer; if this count is
-     *  less than buffer.length then that is the end. */
+
     int read(int[] buffer) {
       int bufferUpto = 0;
       if (arr == null) {

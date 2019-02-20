@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search;
 
 import java.io.Serializable;
 import java.io.IOException;
@@ -25,49 +24,15 @@ import java.util.WeakHashMap;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.FixedBitSet;
 
-/**
- * Wraps another filter's result and caches it.  The purpose is to allow
- * filters to simply filter, and then wrap with this class
- * to add caching.
- *
- * <p><b>NOTE</b>: if you wrap this filter as a query (eg,
- * using ConstantScoreQuery), you'll likely want to enforce
- * deletions (using either {@link DeletesMode#RECACHE} or
- * {@link DeletesMode#DYNAMIC}).
- */
 public class CachingWrapperFilter extends Filter {
   Filter filter;
 
-  /**
-   * Expert: Specifies how new deletions against a reopened
-   * reader should be handled.
-   *
-   * <p>The default is IGNORE, which means the cache entry
-   * will be re-used for a given segment, even when that
-   * segment has been reopened due to changes in deletions.
-   * This is a big performance gain, especially with
-   * near-real-timer readers, since you don't hit a cache
-   * miss on every reopened reader for prior segments.</p>
-   *
-   * <p>However, in some cases this can cause invalid query
-   * results, allowing deleted documents to be returned.
-   * This only happens if the main query does not rule out
-   * deleted documents on its own, such as a toplevel
-   * ConstantScoreQuery.  To fix this, use RECACHE to
-   * re-create the cached filter (at a higher per-reopen
-   * cost, but at faster subsequent search performance), or
-   * use DYNAMIC to dynamically intersect deleted docs (fast
-   * reopen time but some hit to search performance).</p>
-   */
   public static enum DeletesMode {IGNORE, RECACHE, DYNAMIC};
 
   protected final FilterCache<DocIdSet> cache;
 
   static abstract class FilterCache<T> implements Serializable {
 
-    /**
-     * A transient Filter cache (package private because of test)
-     */
     // NOTE: not final so that we can dynamically re-init
     // after de-serialize
     transient Map<Object,T> cache;
@@ -124,28 +89,10 @@ public class CachingWrapperFilter extends Filter {
     }
   }
 
-  /**
-   * New deletes are ignored by default, which gives higher
-   * cache hit rate on reopened readers.  Most of the time
-   * this is safe, because the filter will be AND'd with a
-   * Query that fully enforces deletions.  If instead you
-   * need this filter to always enforce deletions, pass
-   * either {@link DeletesMode#RECACHE} or {@link
-   * DeletesMode#DYNAMIC}.
-   * @param filter Filter to cache results of
-   */
   public CachingWrapperFilter(Filter filter) {
     this(filter, DeletesMode.IGNORE);
   }
 
-  /**
-   * Expert: by default, the cached filter will be shared
-   * across reopened segments that only had changes to their
-   * deletions.  
-   *
-   * @param filter Filter to cache results of
-   * @param deletesMode See {@link DeletesMode}
-   */
   public CachingWrapperFilter(Filter filter, DeletesMode deletesMode) {
     this.filter = filter;
     cache = new FilterCache<DocIdSet>(deletesMode) {
@@ -161,12 +108,7 @@ public class CachingWrapperFilter extends Filter {
     };
   }
 
-  /** Provide the DocIdSet to be cached, using the DocIdSet provided
-   *  by the wrapped Filter.
-   *  <p>This implementation returns the given {@link DocIdSet}, if {@link DocIdSet#isCacheable}
-   *  returns <code>true</code>, else it copies the {@link DocIdSetIterator} into
-   *  an {@link FixedBitSet}.
-   */
+
   protected DocIdSet docIdSetToCache(DocIdSet docIdSet, IndexReader reader) throws IOException {
     if (docIdSet == null) {
       // this is better than returning null, as the nonnull result can be cached

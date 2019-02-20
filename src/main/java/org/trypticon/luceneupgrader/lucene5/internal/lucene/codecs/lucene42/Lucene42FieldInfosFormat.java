@@ -35,14 +35,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 
-/**
- * Lucene 4.2 Field Infos format.
- * @deprecated Only for reading old 4.2-4.5 segments
- */
 @Deprecated
 public class Lucene42FieldInfosFormat extends FieldInfosFormat {
 
-  /** Sole constructor. */
   public Lucene42FieldInfosFormat() {
   }
 
@@ -134,7 +129,6 @@ public class Lucene42FieldInfosFormat extends FieldInfosFormat {
     throw new UnsupportedOperationException("this codec can only be used for reading");
   }
 
-  /** Extension of field infos */
   static final String EXTENSION = "fnm";
   
   // Codec header

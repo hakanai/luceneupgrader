@@ -16,12 +16,6 @@
  */
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.util.mutable;
 
-/**
- * {@link MutableValue} implementation of type <code>double</code>.  
- * When mutating instances of this object, the caller is responsible for ensuring 
- * that any instance where <code>exists</code> is set to <code>false</code> must also 
- * <code>value</code> set to <code>0.0D</code> for proper operation.
- */
 public class MutableValueDouble extends MutableValue {
   public double value = 0.0D;
 

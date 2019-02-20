@@ -39,42 +39,21 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.Weight;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.DocIdSetBuilder;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.StringHelper;
 
-/**
- * Query class for searching {@code RangeField} types by a defined {@link Relation}.
- */
 abstract class RangeFieldQuery extends Query {
-  /** field name */
   final String field;
-  /** query relation
-   * intersects: {@code CELL_CROSSES_QUERY},
-   * contains: {@code CELL_CONTAINS_QUERY},
-   * within: {@code CELL_WITHIN_QUERY} */
+
   final QueryType queryType;
-  /** number of dimensions - max 4 */
   final int numDims;
-  /** ranges encoded as a sortable byte array */
   final byte[] ranges;
-  /** number of bytes per dimension */
   final int bytesPerDim;
 
-  /** Used by {@code RangeFieldQuery} to check how each internal or leaf node relates to the query. */
   enum QueryType {
-    /** Use this for intersects queries. */
     INTERSECTS,
-    /** Use this for within queries. */
     WITHIN,
-    /** Use this for contains */
     CONTAINS,
-    /** Use this for crosses queries */
     CROSSES
   }
 
-  /**
-   * Create a query for searching indexed ranges that match the provided relation.
-   * @param field field name. must not be null.
-   * @param ranges encoded range values; this is done by the {@code RangeField} implementation
-   * @param queryType the query relation
-   */
   RangeFieldQuery(String field, final byte[] ranges, final int numDims, final QueryType queryType) {
     checkArgs(field, ranges, numDims);
     if (queryType == null) {
@@ -87,7 +66,6 @@ abstract class RangeFieldQuery extends Query {
     this.bytesPerDim = ranges.length / (2*numDims);
   }
 
-  /** check input arguments */
   private static void checkArgs(String field, final byte[] ranges, final int numDims) {
     if (field == null) {
       throw new IllegalArgumentException("field must not be null");
@@ -100,7 +78,6 @@ abstract class RangeFieldQuery extends Query {
     }
   }
 
-  /** Check indexed field info against the provided query data. */
   private void checkFieldInfo(FieldInfo fieldInfo) {
     if (fieldInfo.getPointDimensionCount()/2 != numDims) {
       throw new IllegalArgumentException("field=\"" + field + "\" was indexed with numDims="
@@ -182,8 +159,6 @@ abstract class RangeFieldQuery extends Query {
         return new ConstantScoreScorer(this, score(), iterator);
       }
 
-      /** get an encoded byte representation of the internal node; this is
-       *  the lower half of the min array and the upper half of the max array */
       private byte[] getInternalRange(byte[] min, byte[] max) {
         byte[] range = new byte[min.length];
         final int dimSize = numDims * bytesPerDim;
@@ -194,14 +169,9 @@ abstract class RangeFieldQuery extends Query {
     };
   }
 
-  /**
-   * RangeFieldComparator class provides the core comparison logic for accepting or rejecting indexed
-   * {@code RangeField} types based on the defined query range and relation.
-   */
   class RangeFieldComparator {
     final Predicate<byte[]> predicate;
 
-    /** constructs the comparator based on the query type */
     RangeFieldComparator() {
       switch (queryType) {
         case INTERSECTS:
@@ -224,28 +194,23 @@ abstract class RangeFieldQuery extends Query {
       }
     }
 
-    /** determines if the candidate range matches the query request */
     private boolean matches(final byte[] candidate) {
       return (Arrays.equals(ranges, candidate) && queryType != QueryType.CROSSES)
           || predicate.test(candidate);
     }
 
-    /** check if query intersects candidate range */
     private boolean intersects(final byte[] candidate) {
       return relate((int d) -> compareMinMax(candidate, d) > 0 || compareMaxMin(candidate, d) < 0);
     }
 
-    /** check if query is within candidate range */
     private boolean within(final byte[] candidate) {
       return relate((int d) -> compareMinMin(candidate, d) < 0 || compareMaxMax(candidate, d) > 0);
     }
 
-    /** check if query contains candidate range */
     private boolean contains(final byte[] candidate) {
       return relate((int d) -> compareMinMin(candidate, d) > 0 || compareMaxMax(candidate, d) < 0);
     }
 
-    /** internal method used by each relation method to test range relation logic */
     private boolean relate(IntPredicate predicate) {
       for (int d=0; d<numDims; ++d) {
         if (predicate.test(d)) {
@@ -255,28 +220,24 @@ abstract class RangeFieldQuery extends Query {
       return true;
     }
 
-    /** compare the encoded min value (for the defined query dimension) with the encoded min value in the byte array */
     private int compareMinMin(byte[] b, int dimension) {
       // convert dimension to offset:
       dimension *= bytesPerDim;
       return StringHelper.compare(bytesPerDim, ranges, dimension, b, dimension);
     }
 
-    /** compare the encoded min value (for the defined query dimension) with the encoded max value in the byte array */
     private int compareMinMax(byte[] b, int dimension) {
       // convert dimension to offset:
       dimension *= bytesPerDim;
       return StringHelper.compare(bytesPerDim, ranges, dimension, b, numDims * bytesPerDim + dimension);
     }
 
-    /** compare the encoded max value (for the defined query dimension) with the encoded min value in the byte array */
     private int compareMaxMin(byte[] b, int dimension) {
       // convert dimension to offset:
       dimension *= bytesPerDim;
       return StringHelper.compare(bytesPerDim, ranges, numDims * bytesPerDim + dimension, b, dimension);
     }
 
-    /** compare the encoded max value (for the defined query dimension) with the encoded max value in the byte array */
     private int compareMaxMax(byte[] b, int dimension) {
       // convert dimension to max offset:
       dimension = numDims * bytesPerDim + dimension * bytesPerDim;
@@ -326,13 +287,5 @@ abstract class RangeFieldQuery extends Query {
     return sb.toString();
   }
 
-  /**
-   * Returns a string of a single value in a human-readable format for debugging.
-   * This is used by {@link #toString()}.
-   *
-   * @param dimension dimension of the particular value
-   * @param ranges encoded ranges, never null
-   * @return human readable value for debugging
-   */
   protected abstract String toString(byte[] ranges, int dimension);
 }

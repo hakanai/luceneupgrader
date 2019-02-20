@@ -34,10 +34,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.similarities.
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.search.similarities.Similarity.SimScorer;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.ToStringUtils;
 
-/**
- * A Query that matches documents containing a term. This may be combined with
- * other terms with a {@link BooleanQuery}.
- */
 public class TermQuery extends Query {
 
   private final Term term;
@@ -108,10 +104,6 @@ public class TermQuery extends Query {
       return new TermScorer(this, docs, similarity.simScorer(stats, context));
     }
 
-    /**
-     * Returns a {@link TermsEnum} positioned at this weights Term or null if
-     * the term does not exist in the given context
-     */
     private TermsEnum getTermsEnum(LeafReaderContext context) throws IOException {
       final TermState state = termStates.get(context.ord);
       if (state == null) { // term is not present in that reader
@@ -154,16 +146,11 @@ public class TermQuery extends Query {
     }
   }
 
-  /** Constructs a query for the term <code>t</code>. */
   public TermQuery(Term t) {
     term = Objects.requireNonNull(t);
     perReaderTermState = null;
   }
 
-  /**
-   * Expert: constructs a TermQuery that will use the provided docFreq instead
-   * of looking up the docFreq against the searcher.
-   */
   public TermQuery(Term t, TermContext states) {
     assert states != null;
     term = Objects.requireNonNull(t);
@@ -176,7 +163,6 @@ public class TermQuery extends Query {
     perReaderTermState = Objects.requireNonNull(states);
   }
 
-  /** Returns the term of this query. */
   public Term getTerm() {
     return term;
   }
@@ -198,7 +184,6 @@ public class TermQuery extends Query {
     return new TermWeight(searcher, needsScores, termState);
   }
 
-  /** Prints a user-readable version of this query. */
   @Override
   public String toString(String field) {
     StringBuilder buffer = new StringBuilder();
@@ -211,7 +196,6 @@ public class TermQuery extends Query {
     return buffer.toString();
   }
 
-  /** Returns true iff <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof TermQuery)) return false;

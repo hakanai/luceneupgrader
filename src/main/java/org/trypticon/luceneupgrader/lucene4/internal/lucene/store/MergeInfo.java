@@ -1,4 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,11 +14,7 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- * <p>A MergeInfo provides information required for a MERGE context.
- *  It is used as part of an {@link IOContext} in case of MERGE context.</p>
- */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
 public class MergeInfo {
   
@@ -31,14 +26,6 @@ public class MergeInfo {
   
   public final int mergeMaxNumSegments;
   
-
-  /**
-   * <p>Creates a new {@link MergeInfo} instance from
-   * the values required for a MERGE {@link IOContext} context.
-   * 
-   * These values are only estimates and are not the actual values.
-   * 
-   */
 
   public MergeInfo(int totalDocCount, long estimatedMergeBytes, boolean isExternal, int mergeMaxNumSegments) {
     this.totalDocCount = totalDocCount;

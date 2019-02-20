@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
 import java.io.Closeable;
 import java.lang.ref.WeakReference;
@@ -23,35 +22,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
-/** Java's builtin ThreadLocal has a serious flaw:
- *  it can take an arbitrarily long amount of time to
- *  dereference the things you had stored in it, even once the
- *  ThreadLocal instance itself is no longer referenced.
- *  This is because there is single, master map stored for
- *  each thread, which all ThreadLocals share, and that
- *  master map only periodically purges "stale" entries.
- *
- *  While not technically a memory leak, because eventually
- *  the memory will be reclaimed, it can take a long time
- *  and you can easily hit OutOfMemoryError because from the
- *  GC's standpoint the stale entries are not reclaimable.
- * 
- *  This class works around that, by only enrolling
- *  WeakReference values into the ThreadLocal, and
- *  separately holding a hard reference to each stored
- *  value.  When you call {@link #close}, these hard
- *  references are cleared and then GC is freely able to
- *  reclaim space by objects stored in it.
- *
- *  We can not rely on {@link ThreadLocal#remove()} as it
- *  only removes the value for the caller thread, whereas
- *  {@link #close} takes care of all
- *  threads.  You should not call {@link #close} until all
- *  threads are done using the instance.
- *
- * @lucene.internal
- */
 
 public class CloseableThreadLocal<T> implements Closeable {
 

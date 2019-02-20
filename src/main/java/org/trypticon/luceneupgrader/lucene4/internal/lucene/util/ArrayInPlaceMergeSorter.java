@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,20 +13,16 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
 import java.util.Comparator;
 
-/**
- * An {@link InPlaceMergeSorter} for object arrays.
- * @lucene.internal
- */
 final class ArrayInPlaceMergeSorter<T> extends InPlaceMergeSorter {
 
   private final T[] arr;
   private final Comparator<? super T> comparator;
 
-  /** Create a new {@link ArrayInPlaceMergeSorter}. */
   public ArrayInPlaceMergeSorter(T[] arr, Comparator<? super T> comparator) {
     this.arr = arr;
     this.comparator = comparator;

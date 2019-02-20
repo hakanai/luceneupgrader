@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -13,19 +13,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
+*/
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 
-/** Base class for enumerating all but deleted docs.
- * 
- * <p>NOTE: this class is meant only to be used internally
- * by Lucene; it's only public so it can be shared across
- * packages.  This means the API is freely subject to
- * change, and, the class could be removed entirely, in any
- * Lucene release.  Use directly at your own risk! */
+
 public abstract class AbstractAllTermDocs implements TermDocs {
 
   protected int maxDoc;

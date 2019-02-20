@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,17 +13,10 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.store;
 
 import java.io.IOException;
-
-/**
- * Use this {@link LockFactory} to disable locking entirely.
- * Only one instance of this lock is created.  You should call {@link
- * #getNoLockFactory()} to get the instance.
- *
- * @see LockFactory
- */
 
 public class NoLockFactory extends LockFactory {
 
@@ -33,11 +24,6 @@ public class NoLockFactory extends LockFactory {
   private static NoLock singletonLock = new NoLock();
   private static NoLockFactory singleton = new NoLockFactory();
   
-  /**
-   * @deprecated This constructor was not intended to be public and should not be used.
-   *  It will be made private in Lucene 4.0
-   * @see #getNoLockFactory()
-   */
   // make private in 4.0!
   @Deprecated
   public NoLockFactory() {}

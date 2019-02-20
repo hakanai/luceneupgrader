@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,20 +13,15 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
 import java.io.IOException;
 
-/**
- * @lucene.experimental
- */
 
 abstract class FormatPostingsDocsConsumer {
 
-  /** Adds a new doc in this term.  If this returns null
-   *  then we just skip consuming positions/payloads. */
   abstract FormatPostingsPositionsConsumer addDoc(int docID, int termDocFreq) throws IOException;
 
-  /** Called when we are done adding docs to this term */
   abstract void finish() throws IOException;
 }

@@ -46,10 +46,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.BytesRefBuilder;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.IOUtils;
 
-/**
- * Lucene 4.0 Term Vectors reader.
- * @deprecated only for reading 4.0 and 4.1 segments
- */
 @Deprecated
 final class Lucene40TermVectorsReader extends TermVectorsReader implements Closeable {
 
@@ -59,13 +55,10 @@ final class Lucene40TermVectorsReader extends TermVectorsReader implements Close
   
   static final byte STORE_PAYLOAD_WITH_TERMVECTOR = 0x4;
   
-  /** Extension of vectors fields file */
   static final String VECTORS_FIELDS_EXTENSION = "tvf";
 
-  /** Extension of vectors documents file */
   static final String VECTORS_DOCUMENTS_EXTENSION = "tvd";
 
-  /** Extension of vectors index file */
   static final String VECTORS_INDEX_EXTENSION = "tvx";
   
   static final String CODEC_NAME_FIELDS = "Lucene40TermVectorsFields";
@@ -90,7 +83,6 @@ final class Lucene40TermVectorsReader extends TermVectorsReader implements Close
   private int numTotalDocs;
   
 
-  /** Used by clone. */
   Lucene40TermVectorsReader(FieldInfos fieldInfos, IndexInput tvx, IndexInput tvd, IndexInput tvf, int size, int numTotalDocs) {
     this.fieldInfos = fieldInfos;
     this.tvx = tvx;
@@ -100,7 +92,6 @@ final class Lucene40TermVectorsReader extends TermVectorsReader implements Close
     this.numTotalDocs = numTotalDocs;
   }
     
-  /** Sole constructor. */
   public Lucene40TermVectorsReader(Directory d, SegmentInfo si, FieldInfos fieldInfos, IOContext context)
     throws IOException {
     final String segment = si.name;
@@ -160,10 +151,6 @@ final class Lucene40TermVectorsReader extends TermVectorsReader implements Close
     IOUtils.close(tvx, tvd, tvf);
   }
 
-  /**
-   * 
-   * @return The number of documents in the reader
-   */
   int size() {
     return size;
   }

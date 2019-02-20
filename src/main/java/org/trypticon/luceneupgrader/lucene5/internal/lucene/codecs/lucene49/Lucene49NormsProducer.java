@@ -45,10 +45,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimat
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.BlockPackedReader;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 
-/**
- * Reader for 4.9 norms
- * @deprecated only for reading 4.9/4.10 indexes
- */
 @Deprecated
 final class Lucene49NormsProducer extends NormsProducer {
   static final byte DELTA_COMPRESSED = 0;

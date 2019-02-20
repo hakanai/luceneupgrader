@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.queryParser;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.queryParser;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.queryParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,68 +28,16 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.PhraseQuery;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Query;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Version;
 
-/**
- * A QueryParser which constructs queries to search multiple fields.
- *
- * @version $Revision: 965592 $
- */
 public class MultiFieldQueryParser extends QueryParser
 {
   protected String[] fields;
   protected Map<String,Float> boosts;
 
-  /**
-   * Creates a MultiFieldQueryParser. 
-   * Allows passing of a map with term to Boost, and the boost to apply to each term.
-   *
-   * <p>It will, when parse(String query)
-   * is called, construct a query like this (assuming the query consists of
-   * two terms and you specify the two fields <code>title</code> and <code>body</code>):</p>
-   * 
-   * <code>
-   * (title:term1 body:term1) (title:term2 body:term2)
-   * </code>
-   *
-   * <p>When setDefaultOperator(AND_OPERATOR) is set, the result will be:</p>
-   *  
-   * <code>
-   * +(title:term1 body:term1) +(title:term2 body:term2)
-   * </code>
-   * 
-   * <p>When you pass a boost (title=>5 body=>10) you can get </p>
-   * 
-   * <code>
-   * +(title:term1^5.0 body:term1^10.0) +(title:term2^5.0 body:term2^10.0)
-   * </code>
-   *
-   * <p>In other words, all the query's terms must appear, but it doesn't matter in
-   * what fields they appear.</p>
-   */
   public MultiFieldQueryParser(Version matchVersion, String[] fields, Analyzer analyzer, Map<String,Float> boosts) {
     this(matchVersion, fields, analyzer);
     this.boosts = boosts;
   }
   
-  /**
-   * Creates a MultiFieldQueryParser.
-   *
-   * <p>It will, when parse(String query)
-   * is called, construct a query like this (assuming the query consists of
-   * two terms and you specify the two fields <code>title</code> and <code>body</code>):</p>
-   * 
-   * <code>
-   * (title:term1 body:term1) (title:term2 body:term2)
-   * </code>
-   *
-   * <p>When setDefaultOperator(AND_OPERATOR) is set, the result will be:</p>
-   *  
-   * <code>
-   * +(title:term1 body:term1) +(title:term2 body:term2)
-   * </code>
-   * 
-   * <p>In other words, all the query's terms must appear, but it doesn't matter in
-   * what fields they appear.</p>
-   */
   public MultiFieldQueryParser(Version matchVersion, String[] fields, Analyzer analyzer) {
     super(matchVersion, null, analyzer);
     this.fields = fields;
@@ -215,23 +162,6 @@ public class MultiFieldQueryParser extends QueryParser
     return super.getRangeQuery(field, part1, part2, inclusive);
   }
 
-  /**
-   * Parses a query which searches on the fields specified.
-   * <p>
-   * If x fields are specified, this effectively constructs:
-   * <pre>
-   * <code>
-   * (field1:query1) (field2:query2) (field3:query3)...(fieldx:queryx)
-   * </code>
-   * </pre>
-   * @param matchVersion Lucene version to match; this is passed through to QueryParser.
-   * @param queries Queries strings to parse
-   * @param fields Fields to search on
-   * @param analyzer Analyzer to use
-   * @throws ParseException if query parsing fails
-   * @throws IllegalArgumentException if the length of the queries array differs
-   *  from the length of the fields array
-   */
   public static Query parse(Version matchVersion, String[] queries, String[] fields,
       Analyzer analyzer) throws ParseException
   {
@@ -250,37 +180,6 @@ public class MultiFieldQueryParser extends QueryParser
     return bQuery;
   }
 
-  /**
-   * Parses a query, searching on the fields specified.
-   * Use this if you need to specify certain fields as required,
-   * and others as prohibited.
-   * <p><pre>
-   * Usage:
-   * <code>
-   * String[] fields = {"filename", "contents", "description"};
-   * BooleanClause.Occur[] flags = {BooleanClause.Occur.SHOULD,
-   *                BooleanClause.Occur.MUST,
-   *                BooleanClause.Occur.MUST_NOT};
-   * MultiFieldQueryParser.parse("query", fields, flags, analyzer);
-   * </code>
-   * </pre>
-   *<p>
-   * The code above would construct a query:
-   * <pre>
-   * <code>
-   * (filename:query) +(contents:query) -(description:query)
-   * </code>
-   * </pre>
-   *
-   * @param matchVersion Lucene version to match; this is passed through to QueryParser.
-   * @param query Query string to parse
-   * @param fields Fields to search on
-   * @param flags Flags describing the fields
-   * @param analyzer Analyzer to use
-   * @throws ParseException if query parsing fails
-   * @throws IllegalArgumentException if the length of the fields array differs
-   *  from the length of the flags array
-   */
   public static Query parse(Version matchVersion, String query, String[] fields,
       BooleanClause.Occur[] flags, Analyzer analyzer) throws ParseException {
     if (fields.length != flags.length)
@@ -297,38 +196,6 @@ public class MultiFieldQueryParser extends QueryParser
     return bQuery;
   }
 
-  /**
-   * Parses a query, searching on the fields specified.
-   * Use this if you need to specify certain fields as required,
-   * and others as prohibited.
-   * <p><pre>
-   * Usage:
-   * <code>
-   * String[] query = {"query1", "query2", "query3"};
-   * String[] fields = {"filename", "contents", "description"};
-   * BooleanClause.Occur[] flags = {BooleanClause.Occur.SHOULD,
-   *                BooleanClause.Occur.MUST,
-   *                BooleanClause.Occur.MUST_NOT};
-   * MultiFieldQueryParser.parse(query, fields, flags, analyzer);
-   * </code>
-   * </pre>
-   *<p>
-   * The code above would construct a query:
-   * <pre>
-   * <code>
-   * (filename:query1) +(contents:query2) -(description:query3)
-   * </code>
-   * </pre>
-   *
-   * @param matchVersion Lucene version to match; this is passed through to QueryParser.
-   * @param queries Queries string to parse
-   * @param fields Fields to search on
-   * @param flags Flags describing the fields
-   * @param analyzer Analyzer to use
-   * @throws ParseException if query parsing fails
-   * @throws IllegalArgumentException if the length of the queries, fields,
-   *  and flags array differ
-   */
   public static Query parse(Version matchVersion, String[] queries, String[] fields, BooleanClause.Occur[] flags,
       Analyzer analyzer) throws ParseException
   {

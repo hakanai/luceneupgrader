@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,18 +13,13 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattri
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.TokenStream;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.AttributeImpl;
 
-/**
- *This attribute can be used to mark a token as a keyword. Keyword aware
- * {@link TokenStream}s can decide to modify a token based on the return value
- * of {@link #isKeyword()} if the token is modified. Stemming filters for
- * instance can use this attribute to conditionally skip a term if
- * {@link #isKeyword()} returns <code>true</code>.
- */
+
 public final class KeywordAttributeImpl extends AttributeImpl implements
     KeywordAttribute {
   private boolean keyword;
@@ -57,24 +50,12 @@ public final class KeywordAttributeImpl extends AttributeImpl implements
     return keyword == other.keyword;
   }
 
-  /**
-   * Returns <code>true</code> iff the current token is a keyword, otherwise
-   * <code>false</code>/
-   * 
-   * @return <code>true</code> iff the current token is a keyword, otherwise
-   *         <code>false</code>/
-   */
+
   public boolean isKeyword() {
     return keyword;
   }
 
-  /**
-   * Marks the current token as keyword iff set to <code>true</code>.
-   * 
-   * @param isKeyword
-   *          <code>true</code> iff the current token is a keyword, otherwise
-   *          <code>false</code>.
-   */
+
   public void setKeyword(boolean isKeyword) {
     keyword = isKeyword;
   }

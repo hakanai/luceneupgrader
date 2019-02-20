@@ -33,14 +33,6 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.search.BooleanClause
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.DocIdSetBuilder;
 
-/**
- * This class also provides the functionality behind
- * {@link MultiTermQuery#CONSTANT_SCORE_REWRITE}.
- * It tries to rewrite per-segment as a boolean query
- * that returns a constant score and otherwise fills a
- * bit set with matches and builds a Scorer on top of
- * this bit set.
- */
 final class MultiTermQueryConstantScoreWrapper<Q extends MultiTermQuery> extends Query {
 
   // mtq that matches 16 terms or less will be executed as a regular disjunction
@@ -77,9 +69,6 @@ final class MultiTermQueryConstantScoreWrapper<Q extends MultiTermQuery> extends
 
   protected final Q query;
 
-  /**
-   * Wrap a {@link MultiTermQuery} as a Filter.
-   */
   protected MultiTermQueryConstantScoreWrapper(Q query) {
       this.query = query;
   }
@@ -101,19 +90,15 @@ final class MultiTermQueryConstantScoreWrapper<Q extends MultiTermQuery> extends
     return 31 * classHash() + query.hashCode();
   }
 
-  /** Returns the encapsulated query */
   public Q getQuery() { return query; }
   
-  /** Returns the field name for this query */
   public final String getField() { return query.getField(); }
 
   @Override
   public Weight createWeight(IndexSearcher searcher, boolean needsScores) throws IOException {
     return new ConstantScoreWeight(this) {
 
-      /** Try to collect terms from the given terms enum and return true iff all
-       *  terms could be collected. If {@code false} is returned, the enum is
-       *  left positioned on the next term. */
+
       private boolean collectTerms(LeafReaderContext context, TermsEnum termsEnum, List<TermAndState> terms) throws IOException {
         final int threshold = Math.min(BOOLEAN_REWRITE_TERM_COUNT_THRESHOLD, BooleanQuery.getMaxClauseCount());
         for (int i = 0; i < threshold; ++i) {
@@ -127,10 +112,6 @@ final class MultiTermQueryConstantScoreWrapper<Q extends MultiTermQuery> extends
         return termsEnum.next() == null;
       }
 
-      /**
-       * On the given leaf context, try to either rewrite to a disjunction if
-       * there are few terms, or build a bitset containing matching docs.
-       */
       private WeightOrDocIdSet rewrite(LeafReaderContext context) throws IOException {
         final Terms terms = context.reader().terms(query.field);
         if (terms == null) {

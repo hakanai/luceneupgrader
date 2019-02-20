@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,14 +13,9 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-
-/**
- * Class to write byte streams into slices of shared
- * byte[].  This is used by DocumentsWriter to hold the
- * posting list for many terms in RAM.
- */
 
 final class ByteSliceWriter {
 
@@ -36,9 +29,6 @@ final class ByteSliceWriter {
     this.pool = pool;
   }
 
-  /**
-   * Set up the writer to write at address.
-   */ 
   public void init(int address) {
     slice = pool.buffers[address >> DocumentsWriter.BYTE_BLOCK_SHIFT];
     assert slice != null;
@@ -47,7 +37,6 @@ final class ByteSliceWriter {
     assert upto < slice.length;
   }
 
-  /** Write byte into byte slice stream */
   public void writeByte(byte b) {
     assert slice != null;
     if (slice[upto] != 0) {

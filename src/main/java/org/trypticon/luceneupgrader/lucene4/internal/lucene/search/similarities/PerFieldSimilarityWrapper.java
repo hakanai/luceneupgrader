@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search.similarities;
 
 import java.io.IOException;
 
@@ -24,20 +23,8 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.index.FieldInvertSta
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.CollectionStatistics;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.search.TermStatistics;
 
-/**
- * Provides the ability to use a different {@link Similarity} for different fields.
- * <p>
- * Subclasses should implement {@link #get(String)} to return an appropriate
- * Similarity (for example, using field-specific parameter values) for the field.
- * 
- * @lucene.experimental
- */
 public abstract class PerFieldSimilarityWrapper extends Similarity {
   
-  /**
-   * Sole constructor. (For invocation by subclass 
-   * constructors, typically implicit.)
-   */
   public PerFieldSimilarityWrapper() {}
 
   @Override
@@ -59,9 +46,7 @@ public abstract class PerFieldSimilarityWrapper extends Similarity {
     return perFieldWeight.delegate.simScorer(perFieldWeight.delegateWeight, context);
   }
   
-  /** 
-   * Returns a {@link Similarity} for scoring a field.
-   */
+
   public abstract Similarity get(String name);
   
   static class PerFieldSimWeight extends SimWeight {

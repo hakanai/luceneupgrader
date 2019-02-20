@@ -1,5 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,6 +14,7 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
 
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ToStringUtils;
 
@@ -24,23 +24,10 @@ import java.util.Collection;
 import java.util.Iterator;
 
 
-/**
- *   Only return those matches that have a specific payload at
- *  the given position.
- *<p/>
- * Do not use this with an SpanQuery that contains a {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans.SpanNearQuery}.  Instead, use
- * {@link SpanNearPayloadCheckQuery} since it properly handles the fact that payloads
- * aren't ordered by {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans.SpanNearQuery}.
- *
- **/
+
 public class SpanPayloadCheckQuery extends SpanPositionCheckQuery{
   protected final Collection<byte[]> payloadToMatch;
 
-  /**
-   *
-   * @param match The underlying {@link org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans.SpanQuery} to check
-   * @param payloadToMatch The {@link java.util.Collection} of payloads to match
-   */
   public SpanPayloadCheckQuery(SpanQuery match, Collection<byte[]> payloadToMatch) {
     super(match);
     if (match instanceof SpanNearQuery){

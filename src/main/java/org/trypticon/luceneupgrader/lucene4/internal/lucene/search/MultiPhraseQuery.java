@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.search;
 
 import java.io.IOException;
 import java.util.*;
@@ -39,15 +38,6 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.PriorityQueue;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.ToStringUtils;
 
-/**
- * MultiPhraseQuery is a generalized version of PhraseQuery, with an added
- * method {@link #add(Term[])}.
- * To use this class, to search for the phrase "Microsoft app*" first use
- * add(Term) on the term "Microsoft", then find all terms that have "app" as
- * prefix using IndexReader.terms(Term), and use MultiPhraseQuery.add(Term[]
- * terms) to add them to the query.
- *
- */
 public class MultiPhraseQuery extends Query {
   private String field;
   private ArrayList<Term[]> termArrays = new ArrayList<>();
@@ -55,9 +45,7 @@ public class MultiPhraseQuery extends Query {
 
   private int slop = 0;
 
-  /** Sets the phrase slop for this query.
-   * @see PhraseQuery#setSlop(int)
-   */
+
   public void setSlop(int s) {
     if (s < 0) {
       throw new IllegalArgumentException("slop value cannot be negative");
@@ -65,21 +53,13 @@ public class MultiPhraseQuery extends Query {
     slop = s; 
   }
 
-  /** Sets the phrase slop for this query.
-   * @see PhraseQuery#getSlop()
-   */
+
   public int getSlop() { return slop; }
 
-  /** Add a single term at the next position in the phrase.
-   * @see PhraseQuery#add(Term)
-   */
+
   public void add(Term term) { add(new Term[]{term}); }
 
-  /** Add multiple terms at the next position in the phrase.  Any of the terms
-   * may match.
-   *
-   * @see PhraseQuery#add(Term)
-   */
+
   public void add(Term[] terms) {
     int position = 0;
     if (positions.size() > 0)
@@ -88,11 +68,6 @@ public class MultiPhraseQuery extends Query {
     add(terms, position);
   }
 
-  /**
-   * Allows to specify the relative position of terms within the phrase.
-   * 
-   * @see PhraseQuery#add(Term, int)
-   */
   public void add(Term[] terms, int position) {
     if (termArrays.size() == 0)
       field = terms[0].field();
@@ -109,17 +84,10 @@ public class MultiPhraseQuery extends Query {
     positions.add(Integer.valueOf(position));
   }
 
-  /**
-   * Returns a List of the terms in the multiphrase.
-   * Do not modify the List or its contents.
-   */
   public List<Term[]> getTermArrays() {
     return Collections.unmodifiableList(termArrays);
   }
 
-  /**
-   * Returns the relative positions of terms in this phrase.
-   */
   public int[] getPositions() {
     int[] result = new int[positions.size()];
     for (int i = 0; i < positions.size(); i++)
@@ -301,7 +269,6 @@ public class MultiPhraseQuery extends Query {
     return new MultiPhraseWeight(searcher);
   }
 
-  /** Prints a user-readable version of this query. */
   @Override
   public final String toString(String f) {
     StringBuilder buffer = new StringBuilder();
@@ -353,7 +320,6 @@ public class MultiPhraseQuery extends Query {
   }
 
 
-  /** Returns true if <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof MultiPhraseQuery)) return false;
@@ -364,7 +330,6 @@ public class MultiPhraseQuery extends Query {
       && this.positions.equals(other.positions);
   }
 
-  /** Returns a hash code value for this object.*/
   @Override
   public int hashCode() {
     return Float.floatToIntBits(getBoost())
@@ -403,9 +368,6 @@ public class MultiPhraseQuery extends Query {
   }
 }
 
-/**
- * Takes the logical union of multiple DocsEnum iterators.
- */
 
 // TODO: if ever we allow subclassing of the *PhraseScorer
 class UnionDocsAndPositionsEnum extends DocsAndPositionsEnum {

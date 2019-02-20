@@ -17,14 +17,10 @@
 package org.trypticon.luceneupgrader.lucene5.internal.lucene.search;
 
 
-/**
- * Just counts the total number of hits.
- */
 
 public class TotalHitCountCollector extends SimpleCollector {
   private int totalHits;
 
-  /** Returns how many hits matched the search. */
   public int getTotalHits() {
     return totalHits;
   }

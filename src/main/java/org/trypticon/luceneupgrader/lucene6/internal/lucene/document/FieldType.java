@@ -24,25 +24,14 @@ import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.IndexableField
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.index.PointValues;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.LegacyNumericUtils;
 
-/**
- * Describes the properties of a field.
- */
 public class FieldType implements IndexableFieldType  {
 
-  /** Data type of the numeric value
-   * @since 3.2
-   *
-   * @deprecated Please switch to {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.index.PointValues} instead
-   */
+
   @Deprecated
   public enum LegacyNumericType {
-    /** 32-bit integer numeric type */
-    INT, 
-    /** 64-bit long numeric type */
-    LONG, 
-    /** 32-bit float numeric type */
-    FLOAT, 
-    /** 64-bit double numeric type */
+    INT,
+    LONG,
+    FLOAT,
     DOUBLE
   }
 
@@ -61,9 +50,6 @@ public class FieldType implements IndexableFieldType  {
   private int dimensionCount;
   private int dimensionNumBytes;
 
-  /**
-   * Create a new mutable FieldType with all of the properties from <code>ref</code>
-   */
   public FieldType(FieldType ref) {
     this.stored = ref.stored();
     this.tokenized = ref.tokenized();
@@ -81,214 +67,93 @@ public class FieldType implements IndexableFieldType  {
     // Do not copy frozen!
   }
   
-  /**
-   * Create a new FieldType with default properties.
-   */
   public FieldType() {
   }
 
-  /**
-   * Throws an exception if this FieldType is frozen. Subclasses should
-   * call this within setters for additional state.
-   */
   protected void checkIfFrozen() {
     if (frozen) {
       throw new IllegalStateException("this FieldType is already frozen and cannot be changed");
     }
   }
 
-  /**
-   * Prevents future changes. Note, it is recommended that this is called once
-   * the FieldTypes's properties have been set, to prevent unintentional state
-   * changes.
-   */
   public void freeze() {
     this.frozen = true;
   }
   
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>false</code>.
-   * @see #setStored(boolean)
-   */
   @Override
   public boolean stored() {
     return this.stored;
   }
   
-  /**
-   * Set to <code>true</code> to store this field.
-   * @param value true if this field should be stored.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #stored()
-   */
   public void setStored(boolean value) {
     checkIfFrozen();
     this.stored = value;
   }
 
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>true</code>.
-   * @see #setTokenized(boolean)
-   */
   public boolean tokenized() {
     return this.tokenized;
   }
   
-  /**
-   * Set to <code>true</code> to tokenize this field's contents via the 
-   * configured {@link Analyzer}.
-   * @param value true if this field should be tokenized.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #tokenized()
-   */
   public void setTokenized(boolean value) {
     checkIfFrozen();
     this.tokenized = value;
   }
 
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>false</code>. 
-   * @see #setStoreTermVectors(boolean)
-   */
   @Override
   public boolean storeTermVectors() {
     return this.storeTermVectors;
   }
   
-  /**
-   * Set to <code>true</code> if this field's indexed form should be also stored 
-   * into term vectors.
-   * @param value true if this field should store term vectors.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #storeTermVectors()
-   */
   public void setStoreTermVectors(boolean value) {
     checkIfFrozen();
     this.storeTermVectors = value;
   }
 
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>false</code>.
-   * @see #setStoreTermVectorOffsets(boolean)
-   */
   @Override
   public boolean storeTermVectorOffsets() {
     return this.storeTermVectorOffsets;
   }
   
-  /**
-   * Set to <code>true</code> to also store token character offsets into the term
-   * vector for this field.
-   * @param value true if this field should store term vector offsets.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #storeTermVectorOffsets()
-   */
   public void setStoreTermVectorOffsets(boolean value) {
     checkIfFrozen();
     this.storeTermVectorOffsets = value;
   }
 
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>false</code>.
-   * @see #setStoreTermVectorPositions(boolean)
-   */
   @Override
   public boolean storeTermVectorPositions() {
     return this.storeTermVectorPositions;
   }
   
-  /**
-   * Set to <code>true</code> to also store token positions into the term
-   * vector for this field.
-   * @param value true if this field should store term vector positions.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #storeTermVectorPositions()
-   */
   public void setStoreTermVectorPositions(boolean value) {
     checkIfFrozen();
     this.storeTermVectorPositions = value;
   }
   
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>false</code>.
-   * @see #setStoreTermVectorPayloads(boolean) 
-   */
   @Override
   public boolean storeTermVectorPayloads() {
     return this.storeTermVectorPayloads;
   }
   
-  /**
-   * Set to <code>true</code> to also store token payloads into the term
-   * vector for this field.
-   * @param value true if this field should store term vector payloads.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #storeTermVectorPayloads()
-   */
   public void setStoreTermVectorPayloads(boolean value) {
     checkIfFrozen();
     this.storeTermVectorPayloads = value;
   }
   
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>false</code>.
-   * @see #setOmitNorms(boolean)
-   */
   @Override
   public boolean omitNorms() {
     return this.omitNorms;
   }
   
-  /**
-   * Set to <code>true</code> to omit normalization values for the field.
-   * @param value true if this field should omit norms.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #omitNorms()
-   */
   public void setOmitNorms(boolean value) {
     checkIfFrozen();
     this.omitNorms = value;
   }
 
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is {@link IndexOptions#DOCS_AND_FREQS_AND_POSITIONS}.
-   * @see #setIndexOptions(IndexOptions)
-   */
   @Override
   public IndexOptions indexOptions() {
     return this.indexOptions;
   }
   
-  /**
-   * Sets the indexing options for the field:
-   * @param value indexing options
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #indexOptions()
-   */
   public void setIndexOptions(IndexOptions value) {
     checkIfFrozen();
     if (value == null) {
@@ -297,46 +162,18 @@ public class FieldType implements IndexableFieldType  {
     this.indexOptions = value;
   }
 
-  /**
-   * Specifies the field's numeric type.
-   * @param type numeric type, or null if the field has no numeric type.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #numericType()
-   *
-   * @deprecated Please switch to {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.index.PointValues} instead
-   */
   @Deprecated
   public void setNumericType(LegacyNumericType type) {
     checkIfFrozen();
     numericType = type;
   }
 
-  /** 
-   * LegacyNumericType: if non-null then the field's value will be indexed
-   * numerically so that {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.search.LegacyNumericRangeQuery} can be used at
-   * search time. 
-   * <p>
-   * The default is <code>null</code> (no numeric type) 
-   * @see #setNumericType(org.trypticon.luceneupgrader.lucene6.internal.lucene.document.FieldType.LegacyNumericType)
-   *
-   * @deprecated Please switch to {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.index.PointValues} instead
-   */
+
   @Deprecated
   public LegacyNumericType numericType() {
     return numericType;
   }
 
-  /**
-   * Sets the numeric precision step for the field.
-   * @param precisionStep numeric precision step for the field
-   * @throws IllegalArgumentException if precisionStep is less than 1. 
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #numericPrecisionStep()
-   *
-   * @deprecated Please switch to {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.index.PointValues} instead
-   */
   @Deprecated
   public void setNumericPrecisionStep(int precisionStep) {
     checkIfFrozen();
@@ -346,24 +183,12 @@ public class FieldType implements IndexableFieldType  {
     this.numericPrecisionStep = precisionStep;
   }
 
-  /** 
-   * Precision step for numeric field. 
-   * <p>
-   * This has no effect if {@link #numericType()} returns null.
-   * <p>
-   * The default is {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.util.LegacyNumericUtils#PRECISION_STEP_DEFAULT}
-   * @see #setNumericPrecisionStep(int)
-   *
-   * @deprecated Please switch to {@link org.trypticon.luceneupgrader.lucene6.internal.lucene.index.PointValues} instead
-   */
+
   @Deprecated
   public int numericPrecisionStep() {
     return numericPrecisionStep;
   }
 
-  /**
-   * Enables points indexing.
-   */
   public void setDimensions(int dimensionCount, int dimensionNumBytes) {
     if (dimensionCount < 0) {
       throw new IllegalArgumentException("dimensionCount must be >= 0; got " + dimensionCount);
@@ -401,7 +226,6 @@ public class FieldType implements IndexableFieldType  {
     return dimensionNumBytes;
   }
 
-  /** Prints a Field for human consumption. */
   @Override
   public final String toString() {
     StringBuilder result = new StringBuilder();
@@ -461,24 +285,11 @@ public class FieldType implements IndexableFieldType  {
     return result.toString();
   }
   
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>null</code> (no docValues) 
-   * @see #setDocValuesType(DocValuesType)
-   */
   @Override
   public DocValuesType docValuesType() {
     return docValuesType;
   }
 
-  /**
-   * Sets the field's DocValuesType
-   * @param type DocValues type, or null if no DocValues should be stored.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #docValuesType()
-   */
   public void setDocValuesType(DocValuesType type) {
     checkIfFrozen();
     if (type == null) {

@@ -36,14 +36,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.store.IndexOutput;
 
-/**
- * Lucene 4.6 Field Infos format.
- * @deprecated only for old 4.x segments
- */
 @Deprecated
 public final class Lucene46FieldInfosFormat extends FieldInfosFormat {
 
-  /** Sole constructor. */
   public Lucene46FieldInfosFormat() {
   }
 
@@ -185,7 +180,6 @@ public final class Lucene46FieldInfosFormat extends FieldInfosFormat {
     }
   }
   
-  /** Extension of field infos */
   static final String EXTENSION = "fnm";
   
   // Codec header

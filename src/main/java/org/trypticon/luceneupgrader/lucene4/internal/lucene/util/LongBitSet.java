@@ -1,7 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
-import java.util.Arrays;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,30 +14,16 @@ import java.util.Arrays;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
-/**
- * BitSet of fixed length (numBits), backed by accessible ({@link #getBits})
- * long[], accessed with a long index. Use it only if you intend to store more
- * than 2.1B bits, otherwise you should use {@link FixedBitSet}.
- * 
- * @lucene.internal
- */
+import java.util.Arrays;
+
 public final class LongBitSet {
 
   private final long[] bits;
   private final long numBits;
   private final int numWords;
 
-  /**
-   * If the given {@link LongBitSet} is large enough to hold
-   * {@code numBits}, returns the given bits, otherwise returns a new
-   * {@link LongBitSet} which can hold the requested number of bits.
-   * 
-   * <p>
-   * <b>NOTE:</b> the returned bitset reuses the underlying {@code long[]} of
-   * the given {@code bits} if possible. Also, calling {@link #length()} on the
-   * returned bits may return a value greater than {@code numBits}.
-   */
   public static LongBitSet ensureCapacity(LongBitSet bits, long numBits) {
     if (numBits < bits.length()) {
       return bits;
@@ -55,7 +37,6 @@ public final class LongBitSet {
     }
   }
   
-  /** returns the number of 64 bit words it would take to hold numBits */
   public static int bits2words(long numBits) {
     int numLong = (int) (numBits >>> 6);
     if ((numBits & 63) != 0) {
@@ -79,19 +60,15 @@ public final class LongBitSet {
     this.bits = storedBits;
   }
   
-  /** Returns the number of bits stored in this bitset. */
   public long length() {
     return numBits;
   }
 
-  /** Expert. */
   public long[] getBits() {
     return bits;
   }
 
-  /** Returns number of set bits.  NOTE: this visits every
-   *  long in the backing bits array, and the result is not
-   *  internally cached! */
+
   public long cardinality() {
     return BitUtil.pop_array(bits, 0, bits.length);
   }
@@ -137,9 +114,7 @@ public final class LongBitSet {
     return val;
   }
 
-  /** Returns the index of the first set bit starting at the index specified.
-   *  -1 is returned if there are no more set bits.
-   */
+
   public long nextSetBit(long index) {
     assert index >= 0 && index < numBits;
     int i = (int) (index >> 6);
@@ -159,9 +134,7 @@ public final class LongBitSet {
     return -1;
   }
 
-  /** Returns the index of the last set bit before or on the index specified.
-   *  -1 is returned if there are no more set bits.
-   */
+
   public long prevSetBit(long index) {
     assert index >= 0 && index < numBits: "index=" + index + " numBits=" + numBits;
     int i = (int) (index >> 6);
@@ -182,7 +155,6 @@ public final class LongBitSet {
     return -1;
   }
 
-  /** this = this OR other */
   public void or(LongBitSet other) {
     assert other.numWords <= numWords : "numWords=" + numWords + ", other.numWords=" + other.numWords;
     int pos = Math.min(numWords, other.numWords);
@@ -191,7 +163,6 @@ public final class LongBitSet {
     }
   }
 
-  /** this = this XOR other */
   public void xor(LongBitSet other) {
     assert other.numWords <= numWords : "numWords=" + numWords + ", other.numWords=" + other.numWords;
     int pos = Math.min(numWords, other.numWords);
@@ -200,7 +171,6 @@ public final class LongBitSet {
     }
   }
 
-  /** returns true if the sets have any elements in common */
   public boolean intersects(LongBitSet other) {
     int pos = Math.min(numWords, other.numWords);
     while (--pos>=0) {
@@ -209,7 +179,6 @@ public final class LongBitSet {
     return false;
   }
 
-  /** this = this AND other */
   public void and(LongBitSet other) {
     int pos = Math.min(numWords, other.numWords);
     while (--pos >= 0) {
@@ -220,7 +189,6 @@ public final class LongBitSet {
     }
   }
   
-  /** this = this AND NOT other */
   public void andNot(LongBitSet other) {
     int pos = Math.min(numWords, other.bits.length);
     while (--pos >= 0) {
@@ -232,11 +200,7 @@ public final class LongBitSet {
   // typically isEmpty is low cost, but this one wouldn't
   // be)
 
-  /** Flips a range of bits
-   *
-   * @param startIndex lower index
-   * @param endIndex one-past the last bit to flip
-   */
+
   public void flip(long startIndex, long endIndex) {
     assert startIndex >= 0 && startIndex < numBits;
     assert endIndex >= 0 && endIndex <= numBits;
@@ -246,13 +210,6 @@ public final class LongBitSet {
 
     int startWord = (int) (startIndex >> 6);
     int endWord = (int) ((endIndex-1) >> 6);
-
-    /*** Grrr, java shifting wraps around so -1L>>>64 == -1
-     * for that reason, make sure not to use endmask if the bits to flip will
-     * be zero in the last word (redefine endWord to be the last changed...)
-    long startmask = -1L << (startIndex & 0x3f);     // example: 11111...111000
-    long endmask = -1L >>> (64-(endIndex & 0x3f));   // example: 00111...111111
-    ***/
 
     long startmask = -1L << startIndex;
     long endmask = -1L >>> -endIndex;  // 64-(endIndex&0x3f) is the same as -endIndex due to wrap
@@ -271,11 +228,7 @@ public final class LongBitSet {
     bits[endWord] ^= endmask;
   }
 
-  /** Sets a range of bits
-   *
-   * @param startIndex lower index
-   * @param endIndex one-past the last bit to set
-   */
+
   public void set(long startIndex, long endIndex) {
     assert startIndex >= 0 && startIndex < numBits;
     assert endIndex >= 0 && endIndex <= numBits;
@@ -299,11 +252,7 @@ public final class LongBitSet {
     bits[endWord] |= endmask;
   }
 
-  /** Clears a range of bits.
-   *
-   * @param startIndex lower index
-   * @param endIndex one-past the last bit to clear
-   */
+
   public void clear(long startIndex, long endIndex) {
     assert startIndex >= 0 && startIndex < numBits;
     assert endIndex >= 0 && endIndex <= numBits;
@@ -338,7 +287,6 @@ public final class LongBitSet {
     return new LongBitSet(bits, numBits);
   }
 
-  /** returns true if both sets have the same bits set */
   @Override
   public boolean equals(Object o) {
     if (this == o) {

@@ -1,7 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
-
-import java.io.IOException;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,30 +14,19 @@ import java.io.IOException;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
-/** 
- * Extension of IndexInput, computing checksum as it goes. 
- * Callers can retrieve the checksum via {@link #getChecksum()}.
- */
+import java.io.IOException;
+
 public abstract class ChecksumIndexInput extends IndexInput {
   
-  /** resourceDescription should be a non-null, opaque string
-   *  describing this resource; it's returned from
-   *  {@link #toString}. */
+
   protected ChecksumIndexInput(String resourceDescription) {
     super(resourceDescription);
   }
 
-  /** Returns the current checksum value */
   public abstract long getChecksum() throws IOException;
 
-  /**
-   * {@inheritDoc}
-   *
-   * {@link ChecksumIndexInput} can only seek forward and seeks are expensive
-   * since they imply to read bytes in-between the current position and the
-   * target position in order to update the checksum.
-   */
   @Override
   public void seek(long pos) throws IOException {
     final long skip = pos - getFilePointer();

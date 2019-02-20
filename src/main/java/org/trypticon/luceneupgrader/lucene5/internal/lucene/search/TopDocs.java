@@ -21,33 +21,22 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.PriorityQueue;
 
 import java.io.IOException;
 
-/** Represents hits returned by {@link
- * IndexSearcher#search(Query,int)}. */
 public class TopDocs {
 
-  /** The total number of hits for the query. */
   public int totalHits;
 
-  /** The top hits for the query. */
   public ScoreDoc[] scoreDocs;
 
-  /** Stores the maximum score value encountered, needed for normalizing. */
   private float maxScore;
   
-  /**
-   * Returns the maximum score value encountered. Note that in case
-   * scores are not tracked, this returns {@link Float#NaN}.
-   */
   public float getMaxScore() {
     return maxScore;
   }
   
-  /** Sets the maximum score value encountered. */
   public void setMaxScore(float maxScore) {
     this.maxScore = maxScore;
   }
 
-  /** Constructs a TopDocs with a default maxScore=Float.NaN. */
   TopDocs(int totalHits, ScoreDoc[] scoreDocs) {
     this(totalHits, scoreDocs, Float.NaN);
   }
@@ -192,39 +181,20 @@ public class TopDocs {
     }
   }
 
-  /** Returns a new TopDocs, containing topN results across
-   *  the provided TopDocs, sorting by score. Each {@link TopDocs}
-   *  instance must be sorted.
-   *  @lucene.experimental */
+
   public static TopDocs merge(int topN, TopDocs[] shardHits) throws IOException {
     return merge(0, topN, shardHits);
   }
 
-  /**
-   * Same as {@link #merge(int, TopDocs[])} but also ignores the top
-   * {@code start} top docs. This is typically useful for pagination.
-   * @lucene.experimental
-   */
   public static TopDocs merge(int start, int topN, TopDocs[] shardHits) throws IOException {
     return mergeAux(null, start, topN, shardHits);
   }
 
-  /** Returns a new TopFieldDocs, containing topN results across
-   *  the provided TopFieldDocs, sorting by the specified {@link
-   *  Sort}.  Each of the TopDocs must have been sorted by
-   *  the same Sort, and sort field values must have been
-   *  filled (ie, <code>fillFields=true</code> must be
-   *  passed to {@link TopFieldCollector#create}).
-   * @lucene.experimental */
+
   public static TopFieldDocs merge(Sort sort, int topN, TopFieldDocs[] shardHits) throws IOException {
     return merge(sort, 0, topN, shardHits);
   }
 
-  /**
-   * Same as {@link #merge(Sort, int, TopFieldDocs[])} but also ignores the top
-   * {@code start} top docs. This is typically useful for pagination.
-   * @lucene.experimental
-   */
   public static TopFieldDocs merge(Sort sort, int start, int topN, TopFieldDocs[] shardHits) throws IOException {
     if (sort == null) {
       throw new IllegalArgumentException("sort must be non-null when merging field-docs");
@@ -232,8 +202,6 @@ public class TopDocs {
     return (TopFieldDocs) mergeAux(sort, start, topN, shardHits);
   }
 
-  /** Auxiliary method used by the {@link #merge} impls. A sort value of null
-   *  is used to indicate that docs should be sorted by score. */
   private static TopDocs mergeAux(Sort sort, int start, int size, TopDocs[] shardHits) throws IOException {
     final PriorityQueue<ShardRef> queue;
     if (sort == null) {

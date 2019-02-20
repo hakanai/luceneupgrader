@@ -25,14 +25,9 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.codecs.DocValuesProd
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentReadState;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.index.SegmentWriteState;
 
-/**
- * Lucene 5.0 Doc values format.
- * @deprecated Only for reading old 5.0-5.3 segments
- */
 @Deprecated
 public class Lucene50DocValuesFormat extends DocValuesFormat {
 
-  /** Sole Constructor */
   public Lucene50DocValuesFormat() {
     super("Lucene50");
   }
@@ -77,37 +72,21 @@ public class Lucene50DocValuesFormat extends DocValuesFormat {
   static final int BLOCK_INTERVAL_COUNT = 1 << BLOCK_INTERVAL_SHIFT;
   static final int BLOCK_INTERVAL_MASK = BLOCK_INTERVAL_COUNT - 1;
 
-  /** Compressed using packed blocks of ints. */
   static final int DELTA_COMPRESSED = 0;
-  /** Compressed by computing the GCD. */
   static final int GCD_COMPRESSED = 1;
-  /** Compressed by giving IDs to unique values. */
   static final int TABLE_COMPRESSED = 2;
-  /** Compressed with monotonically increasing values */
   static final int MONOTONIC_COMPRESSED = 3;
-  /** Compressed with constant value (uses only missing bitset) */
   static final int CONST_COMPRESSED = 4;
   
-  /** Uncompressed binary, written directly (fixed length). */
   static final int BINARY_FIXED_UNCOMPRESSED = 0;
-  /** Uncompressed binary, written directly (variable length). */
   static final int BINARY_VARIABLE_UNCOMPRESSED = 1;
-  /** Compressed binary with shared prefixes */
   static final int BINARY_PREFIX_COMPRESSED = 2;
 
-  /** Standard storage for sorted set values with 1 level of indirection:
-   *  {@code docId -> address -> ord}. */
   static final int SORTED_WITH_ADDRESSES = 0;
-  /** Single-valued sorted set values, encoded as sorted values, so no level
-   *  of indirection: {@code docId -> ord}. */
   static final int SORTED_SINGLE_VALUED = 1;
-  /** Compressed giving IDs to unique sets of values:
-   * {@code docId -> setId -> ords} */
   static final int SORTED_SET_TABLE = 2;
   
-  /** placeholder for missing offset that means there are no missing values */
   static final int ALL_LIVE = -1;
-  /** placeholder for missing offset that means all values are missing */
   static final int ALL_MISSING = -2;
   
   // addressing uses 16k blocks

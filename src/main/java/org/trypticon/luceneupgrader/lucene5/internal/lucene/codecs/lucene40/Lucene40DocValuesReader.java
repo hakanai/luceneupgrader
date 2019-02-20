@@ -45,10 +45,6 @@ import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.PagedBytes;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene5.internal.lucene.util.packed.PackedInts;
 
-/**
- * Reads the 4.0 format of norms/docvalues
- * @deprecated Only for reading old 4.0 and 4.1 segments
- */
 @Deprecated
 final class Lucene40DocValuesReader extends DocValuesProducer {
   private final Directory dir;

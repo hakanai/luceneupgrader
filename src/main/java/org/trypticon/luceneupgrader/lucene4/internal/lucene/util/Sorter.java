@@ -1,5 +1,3 @@
-package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,29 +13,22 @@ package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene4.internal.lucene.util;
 
 import java.util.Comparator;
 
-/** Base class for sorting algorithms implementations.
- * @lucene.internal */
 public abstract class Sorter {
 
   static final int THRESHOLD = 20;
 
-  /** Sole constructor, used for inheritance. */
   protected Sorter() {}
 
-  /** Compare entries found in slots <code>i</code> and <code>j</code>.
-   *  The contract for the returned value is the same as
-   *  {@link Comparator#compare(Object, Object)}. */
+
   protected abstract int compare(int i, int j);
 
-  /** Swap values at slots <code>i</code> and <code>j</code>. */
   protected abstract void swap(int i, int j);
 
-  /** Sort the slice which starts at <code>from</code> (inclusive) and ends at
-   *  <code>to</code> (exclusive). */
   public abstract void sort(int from, int to);
 
   void checkRange(int from, int to) {

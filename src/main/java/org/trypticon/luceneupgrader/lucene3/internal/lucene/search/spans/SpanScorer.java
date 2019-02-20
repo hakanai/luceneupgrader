@@ -1,6 +1,4 @@
-package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
-
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,7 +13,8 @@ package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.spans;
 
 import java.io.IOException;
 
@@ -24,9 +23,6 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Weight;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Scorer;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Similarity;
 
-/**
- * Public for extension only.
- */
 public class SpanScorer extends Scorer {
   protected Spans spans;
   protected byte[] norms;
@@ -101,8 +97,6 @@ public class SpanScorer extends Scorer {
     return freq;
   }
 
-  /** This method is no longer an official member of {@link Scorer},
-   * but it is needed by SpanWeight to build an explanation. */
   protected Explanation explain(final int doc) throws IOException {
     Explanation tfExplanation = new Explanation();
 
