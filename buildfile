@@ -1,5 +1,5 @@
 
-VERSION_NUMBER = "0.4.2-SNAPSHOT"
+VERSION_NUMBER = "0.4.2"
 
 repositories.remote << 'https://oss.sonatype.org/content/repositories/releases'
 repositories.remote << 'https://repository.apache.org/content/repositories/releases'
