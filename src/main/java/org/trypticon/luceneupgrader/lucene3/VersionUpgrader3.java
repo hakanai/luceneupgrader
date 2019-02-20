@@ -10,6 +10,7 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.Version;
 import org.trypticon.luceneupgrader.lucene3.internal.lucenesupport.PathFSDirectory3;
 
+import javax.annotation.Nonnull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -21,10 +22,14 @@ import java.nio.file.Path;
  * Upgrades an index to Lucene 3 format.
  */
 public class VersionUpgrader3 implements VersionUpgrader {
+
+    @Nonnull
     private final Path path;
+
+    @Nonnull
     private final InfoStream infoStream;
 
-    public VersionUpgrader3(Path path, InfoStream infoStream) {
+    public VersionUpgrader3(@Nonnull Path path, @Nonnull InfoStream infoStream) {
         this.path = path;
         this.infoStream = infoStream;
     }
@@ -32,7 +37,7 @@ public class VersionUpgrader3 implements VersionUpgrader {
     @Override
     public void upgrade() throws IOException {
         try (Directory directory = PathFSDirectory3.open(path)) {
-            PrintStream printStream = infoStream == null ? null : new PrintStream(new InfoStreamOutputStream(infoStream));
+            PrintStream printStream = new PrintStream(new InfoStreamOutputStream(infoStream));
             IndexWriterConfig indexWriterConfig = new IndexWriterConfig(Version.LUCENE_36, null);
             indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
             indexWriterConfig.setMergeScheduler(new SerialMergeScheduler());

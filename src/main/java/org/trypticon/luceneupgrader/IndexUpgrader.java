@@ -1,5 +1,6 @@
 package org.trypticon.luceneupgrader;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -7,15 +8,21 @@ import java.nio.file.Path;
  * Upgrades an index to a newer version.
  */
 public class IndexUpgrader {
+
+    @Nonnull
     private final Path directory;
+
+    @Nonnull
     private final InfoStream infoStream;
+
+    @Nonnull
     private LuceneVersion version;
 
-    public IndexUpgrader(Path directory) throws IOException {
-        this(directory, null);
+    public IndexUpgrader(@Nonnull Path directory) throws IOException {
+        this(directory, InfoStream.NO_OUTPUT);
     }
 
-    public IndexUpgrader(Path directory, InfoStream infoStream) throws IOException {
+    public IndexUpgrader(@Nonnull Path directory, @Nonnull InfoStream infoStream) throws IOException {
         this.directory = directory;
         this.infoStream = infoStream;
 
