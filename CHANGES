@@ -1,5 +1,9 @@
 
-v0.4.0 (19 Feb 2019)
+v0.4.2 (20 Feb 2019)
+- Add in backwards-compatibility codecs for reading older versions of
+  Lucene 6.x
+
+v0.4.1 (19 Feb 2019)
 - Support versions up to Lucene 7.5.0.
 - Require Java 8 minimum.
 - Support detecting the version of, but not migrating, the v1 format used by
