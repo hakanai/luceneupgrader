@@ -758,7 +758,7 @@ public class QueryParser implements QueryParserConstants {
 
   public static void main(String[] args) throws Exception {
     if (args.length == 0) {
-      System.out.println("Usage: java org.apache.lucene.queryParser.QueryParser <input>");
+      System.out.println("Usage: java org.trypticon.luceneupgrader.lucene3.internal.lucene.queryParser.QueryParser <input>");
       System.exit(0);
     }
     QueryParser qp = new QueryParser(Version.LUCENE_CURRENT, "field",

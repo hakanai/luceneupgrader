@@ -32,13 +32,11 @@ public class ValueSourceQuery extends Query {
     this.valSrc=valSrc;
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.Query#rewrite(org.apache.lucene.index.IndexReader) */
   @Override
   public Query rewrite(IndexReader reader) throws IOException {
     return this;
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.Query#extractTerms(java.util.Set) */
   @Override
   public void extractTerms(Set<Term> terms) {
     // no terms involved here
@@ -53,26 +51,22 @@ public class ValueSourceQuery extends Query {
       this.similarity = getSimilarity(searcher);
     }
 
-    /*(non-Javadoc) @see org.apache.lucene.search.Weight#getQuery() */
     @Override
     public Query getQuery() {
       return ValueSourceQuery.this;
     }
 
-    /*(non-Javadoc) @see org.apache.lucene.search.Weight#getValue() */
     @Override
     public float getValue() {
       return queryWeight;
     }
 
-    /*(non-Javadoc) @see org.apache.lucene.search.Weight#sumOfSquaredWeights() */
     @Override
     public float sumOfSquaredWeights() throws IOException {
       queryWeight = getBoost();
       return queryWeight * queryWeight;
     }
 
-    /*(non-Javadoc) @see org.apache.lucene.search.Weight#normalize(float) */
     @Override
     public void normalize(float norm) {
       this.queryNorm = norm;
@@ -84,7 +78,6 @@ public class ValueSourceQuery extends Query {
       return new ValueSourceScorer(similarity, reader, this);
     }
 
-    /*(non-Javadoc) @see org.apache.lucene.search.Weight#explain(org.apache.lucene.index.IndexReader, int) */
     @Override
     public Explanation explain(IndexReader reader, int doc) throws IOException {
       DocValues vals = valSrc.getValues(reader);
@@ -130,7 +123,6 @@ public class ValueSourceQuery extends Query {
       return doc = termDocs.skipTo(target) ? termDocs.doc() : NO_MORE_DOCS;
     }
     
-    /*(non-Javadoc) @see org.apache.lucene.search.Scorer#score() */
     @Override
     public float score() throws IOException {
       return qWeight * vals.floatVal(termDocs.doc());

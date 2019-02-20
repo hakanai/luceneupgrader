@@ -16,6 +16,8 @@
 */
 package org.trypticon.luceneupgrader.lucene4.internal.lucene.store;
 
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,14 +26,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
 
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
-
 public class LockVerifyServer {
 
   public static void main(String[] args) throws Exception {
 
     if (args.length != 2) {
-      System.out.println("Usage: java org.apache.lucene.store.LockVerifyServer bindToIp clients\n");
+      System.out.println("Usage: java org.trypticon.luceneupgrader.lucene4.internal.lucene.store.LockVerifyServer bindToIp clients\n");
       System.exit(1);
     }
 

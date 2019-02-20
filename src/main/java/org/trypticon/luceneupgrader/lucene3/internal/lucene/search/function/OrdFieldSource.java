@@ -29,34 +29,28 @@ public class OrdFieldSource extends ValueSource {
     this.field = field;
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.function.ValueSource#description() */
   @Override
   public String description() {
     return "ord(" + field + ')';
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.function.ValueSource#getValues(org.apache.lucene.index.IndexReader) */
   @Override
   public DocValues getValues(IndexReader reader) throws IOException {
     final int[] arr = FieldCache.DEFAULT.getStringIndex(reader, field).order;
     return new DocValues() {
-      /*(non-Javadoc) @see org.apache.lucene.search.function.DocValues#floatVal(int) */
       @Override
       public float floatVal(int doc) {
         return arr[doc];
       }
-      /*(non-Javadoc) @see org.apache.lucene.search.function.DocValues#strVal(int) */
       @Override
       public String strVal(int doc) {
         // the string value of the ordinal, not the string itself
         return Integer.toString(arr[doc]);
       }
-      /*(non-Javadoc) @see org.apache.lucene.search.function.DocValues#toString(int) */
       @Override
       public String toString(int doc) {
         return description() + '=' + intVal(doc);
       }
-      /*(non-Javadoc) @see org.apache.lucene.search.function.DocValues#getInnerArray() */
       @Override
       Object getInnerArray() {
         return arr;
@@ -64,7 +58,6 @@ public class OrdFieldSource extends ValueSource {
     };
   }
 
-  /*(non-Javadoc) @see java.lang.Object#equals(java.lang.Object) */
   @Override
   public boolean equals(Object o) {
     if (o == this) return true;
@@ -76,7 +69,6 @@ public class OrdFieldSource extends ValueSource {
 
   private static final int hcode = OrdFieldSource.class.hashCode();
   
-  /*(non-Javadoc) @see java.lang.Object#hashCode() */
   @Override
   public int hashCode() {
     return hcode + field.hashCode();

@@ -17,12 +17,10 @@
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.util;
 
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.ref.WeakReference;
 import java.util.LinkedList;
-
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.analysis.tokenattributes.CharTermAttributeImpl; // deprecated
 
 public abstract class AttributeImpl implements Cloneable, Serializable, Attribute {
   public abstract void clear();
@@ -59,8 +57,8 @@ public abstract class AttributeImpl implements Cloneable, Serializable, Attribut
   @Deprecated
   private boolean assertExternalClass(Class<? extends AttributeImpl> clazz) {
     final String name = clazz.getName();
-    return (!name.startsWith("org.apache.lucene.") && !name.startsWith("org.apache.solr."))
-      || name.equals("org.apache.lucene.util.TestAttributeSource$TestAttributeImpl");
+    return (!name.startsWith("org.trypticon.luceneupgrader.lucene3.internal.lucene.") && !name.startsWith("org.apache.solr."))
+      || name.equals("org.trypticon.luceneupgrader.lucene3.internal.lucene.util.TestAttributeSource$TestAttributeImpl");
   }
 
   public void reflectWith(AttributeReflector reflector) {

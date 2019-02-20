@@ -16,10 +16,10 @@
 */
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function;
 
-import java.io.IOException;
-
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.FieldCache;
+
+import java.io.IOException;
 
 public abstract class FieldCacheSource extends ValueSource {
   private String field;
@@ -28,13 +28,11 @@ public abstract class FieldCacheSource extends ValueSource {
     this.field=field;
   }
 
-  /* (non-Javadoc) @see org.apache.lucene.search.function.ValueSource#getValues(org.apache.lucene.index.IndexReader) */
   @Override
   public final DocValues getValues(IndexReader reader) throws IOException {
     return getCachedFieldValues(FieldCache.DEFAULT, field, reader);
   }
 
-  /* (non-Javadoc) @see org.apache.lucene.search.function.ValueSource#description() */
   @Override
   public String description() {
     return field;
@@ -42,7 +40,6 @@ public abstract class FieldCacheSource extends ValueSource {
 
   public abstract DocValues getCachedFieldValues(FieldCache cache, String field, IndexReader reader) throws IOException;
 
-  /*(non-Javadoc) @see java.lang.Object#equals(java.lang.Object) */
   @Override
   public final boolean equals(Object o) {
     if (!(o instanceof FieldCacheSource)) {
@@ -54,7 +51,6 @@ public abstract class FieldCacheSource extends ValueSource {
       cachedFieldSourceEquals(other);
   }
 
-  /*(non-Javadoc) @see java.lang.Object#hashCode() */
   @Override
   public final int hashCode() {
     return 

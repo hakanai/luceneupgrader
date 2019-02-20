@@ -126,11 +126,6 @@ public final class StandardTokenizer extends Tokenizer {
   private final PositionIncrementAttribute posIncrAtt = addAttribute(PositionIncrementAttribute.class);
   private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see org.apache.lucene.analysis.TokenStream#next()
-   */
   @Override
   public final boolean incrementToken() throws IOException {
     clearAttributes();

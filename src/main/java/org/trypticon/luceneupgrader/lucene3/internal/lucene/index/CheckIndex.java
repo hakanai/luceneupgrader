@@ -16,16 +16,6 @@
 */
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.index;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.AbstractField;  // for javadocs
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.document.Document;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.IndexSearcher;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.TermQuery;
@@ -34,6 +24,15 @@ import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.FSDirectory;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.CommandLineUtil;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.StringHelper;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class CheckIndex {
 
@@ -836,7 +835,7 @@ public class CheckIndex {
 
     if (indexPath == null) {
       System.out.println("\nERROR: index path not specified");
-      System.out.println("\nUsage: java org.apache.lucene.index.CheckIndex pathToIndex [-fix] [-segment X] [-segment Y] [-dir-impl X]\n" +
+      System.out.println("\nUsage: java org.trypticon.luceneupgrader.lucene3.internal.lucene.index.CheckIndex pathToIndex [-fix] [-segment X] [-segment Y] [-dir-impl X]\n" +
                          "\n" +
                          "  -fix: actually write a new segments_N file, removing any problematic segments\n" +
                          "  -segment X: only check the specified segments.  This can be specified multiple\n" + 
@@ -861,7 +860,7 @@ public class CheckIndex {
     }
 
     if (!assertsOn())
-      System.out.println("\nNOTE: testing will be more thorough if you run java with '-ea:org.apache.lucene...', so assertions are enabled");
+      System.out.println("\nNOTE: testing will be more thorough if you run java with '-ea:org.trypticon.luceneupgrader.lucene3.internal.lucene...', so assertions are enabled");
 
     if (onlySegments.size() == 0)
       onlySegments = null;

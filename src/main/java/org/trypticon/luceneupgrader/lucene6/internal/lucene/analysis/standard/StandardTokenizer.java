@@ -16,14 +16,14 @@
 */
 package org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.standard;
 
-import java.io.IOException;
-
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.Tokenizer;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.tokenattributes.TypeAttribute;
 import org.trypticon.luceneupgrader.lucene6.internal.lucene.util.AttributeFactory;
+
+import java.io.IOException;
 
 public final class StandardTokenizer extends Tokenizer {
   private StandardTokenizerImpl scanner;
@@ -113,11 +113,6 @@ public final class StandardTokenizer extends Tokenizer {
   private final PositionIncrementAttribute posIncrAtt = addAttribute(PositionIncrementAttribute.class);
   private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see org.trypticon.luceneupgrader.lucene6.internal.lucene.analysis.TokenStream#next()
-   */
   @Override
   public final boolean incrementToken() throws IOException {
     clearAttributes();

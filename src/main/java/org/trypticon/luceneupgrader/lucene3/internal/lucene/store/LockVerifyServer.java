@@ -31,7 +31,7 @@ public class LockVerifyServer {
   public static void main(String[] args) throws IOException {
 
     if (args.length != 1) {
-      System.out.println("\nUsage: java org.apache.lucene.store.LockVerifyServer port\n");
+      System.out.println("\nUsage: java org.trypticon.luceneupgrader.lucene3.internal.lucene.store.LockVerifyServer port\n");
       System.exit(1);
     }
 

@@ -16,20 +16,14 @@
 */
 package org.trypticon.luceneupgrader.lucene3.internal.lucene.search.function;
 
-import java.io.IOException;
-import java.util.Set;
-import java.util.Arrays;
-
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.index.Term;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.ComplexExplanation;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Explanation;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Query;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Weight;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Scorer;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Searcher;
-import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.Similarity;
+import org.trypticon.luceneupgrader.lucene3.internal.lucene.search.*;
 import org.trypticon.luceneupgrader.lucene3.internal.lucene.util.ToStringUtils;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Set;
 
 public class CustomScoreQuery extends Query {
 
@@ -53,7 +47,6 @@ public class CustomScoreQuery extends Query {
     if (subQuery == null) throw new IllegalArgumentException("<subquery> must not be null!");
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.Query#rewrite(org.apache.lucene.index.IndexReader) */
   @Override
   public Query rewrite(IndexReader reader) throws IOException {
     CustomScoreQuery clone = null;
@@ -75,7 +68,6 @@ public class CustomScoreQuery extends Query {
     return (clone == null) ? this : clone;
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.Query#extractTerms(java.util.Set) */
   @Override
   public void extractTerms(Set<Term> terms) {
     subQuery.extractTerms(terms);
@@ -84,7 +76,6 @@ public class CustomScoreQuery extends Query {
     }
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.Query#clone() */
   @Override
   public Object clone() {
     CustomScoreQuery clone = (CustomScoreQuery)super.clone();
@@ -96,7 +87,6 @@ public class CustomScoreQuery extends Query {
     return clone;
   }
 
-  /* (non-Javadoc) @see org.apache.lucene.search.Query#toString(java.lang.String) */
   @Override
   public String toString(String field) {
     StringBuilder sb = new StringBuilder(name()).append("(");
@@ -156,19 +146,16 @@ public class CustomScoreQuery extends Query {
       this.qStrict = strict;
     }
 
-    /*(non-Javadoc) @see org.apache.lucene.search.Weight#getQuery() */
     @Override
     public Query getQuery() {
       return CustomScoreQuery.this;
     }
 
-    /*(non-Javadoc) @see org.apache.lucene.search.Weight#getValue() */
     @Override
     public float getValue() {
       return getBoost();
     }
 
-    /*(non-Javadoc) @see org.apache.lucene.search.Weight#sumOfSquaredWeights() */
     @Override
     public float sumOfSquaredWeights() throws IOException {
       float sum = subQueryWeight.sumOfSquaredWeights();
@@ -183,7 +170,6 @@ public class CustomScoreQuery extends Query {
       return sum ;
     }
 
-    /*(non-Javadoc) @see org.apache.lucene.search.Weight#normalize(float) */
     @Override
     public void normalize(float norm) {
       norm *= getBoost(); // incorporate boost
@@ -284,7 +270,6 @@ public class CustomScoreQuery extends Query {
       return subQueryScorer.docID();
     }
     
-    /*(non-Javadoc) @see org.apache.lucene.search.Scorer#score() */
     @Override
     public float score() throws IOException {
       for (int i = 0; i < valSrcScorers.length; i++) {

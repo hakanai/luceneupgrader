@@ -16,19 +16,7 @@
 */
 package org.trypticon.luceneupgrader.lucene4.internal.lucene.index;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.Codec;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.PostingsFormat;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.blocktree.FieldReader;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.blocktree.Stats;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.codecs.lucene3x.Lucene3xSegmentInfoFormat;
@@ -40,14 +28,13 @@ import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.FSDirectory;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene4.internal.lucene.store.IndexInput;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Bits;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRef;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.BytesRefBuilder;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.CommandLineUtil;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.FixedBitSet;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.IOUtils;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.LongBitSet;
-import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.Version;
+import org.trypticon.luceneupgrader.lucene4.internal.lucene.util.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.text.NumberFormat;
+import java.util.*;
 
 
 public class CheckIndex {
@@ -1824,7 +1811,7 @@ public class CheckIndex {
 
     if (indexPath == null) {
       System.out.println("\nERROR: index path not specified");
-      System.out.println("\nUsage: java org.apache.lucene.index.CheckIndex pathToIndex [-fix] [-crossCheckTermVectors] [-segment X] [-segment Y] [-dir-impl X]\n" +
+      System.out.println("\nUsage: java org.trypticon.luceneupgrader.lucene4.internal.lucene.index.CheckIndex pathToIndex [-fix] [-crossCheckTermVectors] [-segment X] [-segment Y] [-dir-impl X]\n" +
                          "\n" +
                          "  -fix: actually write a new segments_N file, removing any problematic segments\n" +
                          "  -crossCheckTermVectors: verifies that term vectors match postings; THIS IS VERY SLOW!\n" +
@@ -1853,7 +1840,7 @@ public class CheckIndex {
     }
 
     if (!assertsOn())
-      System.out.println("\nNOTE: testing will be more thorough if you run java with '-ea:org.apache.lucene...', so assertions are enabled");
+      System.out.println("\nNOTE: testing will be more thorough if you run java with '-ea:org.trypticon.luceneupgrader.lucene4.internal.lucene...', so assertions are enabled");
 
     if (onlySegments.size() == 0)
       onlySegments = null;

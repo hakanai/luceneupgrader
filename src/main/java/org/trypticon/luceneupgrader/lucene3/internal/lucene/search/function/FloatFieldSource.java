@@ -33,28 +33,23 @@ public class FloatFieldSource extends FieldCacheSource {
     this.parser = parser;
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.function.ValueSource#description() */
   @Override
   public String description() {
     return "float(" + super.description() + ')';
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.function.FieldCacheSource#getCachedValues(org.apache.lucene.search.FieldCache, java.lang.String, org.apache.lucene.index.IndexReader) */
   @Override
   public DocValues getCachedFieldValues (FieldCache cache, String field, IndexReader reader) throws IOException {
     final float[] arr = cache.getFloats(reader, field, parser);
     return new DocValues() {
-      /*(non-Javadoc) @see org.apache.lucene.search.function.DocValues#floatVal(int) */
       @Override
       public float floatVal(int doc) {
         return arr[doc];      
       }
-      /*(non-Javadoc) @see org.apache.lucene.search.function.DocValues#toString(int) */
       @Override
       public String toString(int doc) { 
         return  description() + '=' + arr[doc];  
       }
-      /*(non-Javadoc) @see org.apache.lucene.search.function.DocValues#getInnerArray() */
       @Override
       Object getInnerArray() {
         return arr;
@@ -62,7 +57,6 @@ public class FloatFieldSource extends FieldCacheSource {
     };
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.function.FieldCacheSource#cachedFieldSourceEquals(org.apache.lucene.search.function.FieldCacheSource) */
   @Override
   public boolean cachedFieldSourceEquals(FieldCacheSource o) {
     if (o.getClass() !=  FloatFieldSource.class) {
@@ -74,7 +68,6 @@ public class FloatFieldSource extends FieldCacheSource {
       this.parser.getClass() == other.parser.getClass();
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.function.FieldCacheSource#cachedFieldSourceHashCode() */
   @Override
   public int cachedFieldSourceHashCode() {
     return parser==null ? 

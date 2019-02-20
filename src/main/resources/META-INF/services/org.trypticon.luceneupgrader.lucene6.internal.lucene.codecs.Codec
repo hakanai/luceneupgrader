@@ -14,3 +14,8 @@
 #  limitations under the License.
 
 org.trypticon.luceneupgrader.lucene6.internal.lucene.codecs.lucene62.Lucene62Codec
+
+org.trypticon.luceneupgrader.lucene6.internal.lucene.codecs.lucene50.Lucene50Codec
+org.trypticon.luceneupgrader.lucene6.internal.lucene.codecs.lucene53.Lucene53Codec
+org.trypticon.luceneupgrader.lucene6.internal.lucene.codecs.lucene54.Lucene54Codec
+org.trypticon.luceneupgrader.lucene6.internal.lucene.codecs.lucene60.Lucene60Codec

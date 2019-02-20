@@ -33,33 +33,27 @@ public class ShortFieldSource extends FieldCacheSource {
     this.parser = parser;
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.function.ValueSource#description() */
   @Override
   public String description() {
     return "short(" + super.description() + ')';
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.function.FieldCacheSource#getCachedValues(org.apache.lucene.search.FieldCache, java.lang.String, org.apache.lucene.index.IndexReader) */
   @Override
   public DocValues getCachedFieldValues (FieldCache cache, String field, IndexReader reader) throws IOException {
     final short[] arr = cache.getShorts(reader, field, parser);
     return new DocValues() {
-      /*(non-Javadoc) @see org.apache.lucene.search.function.DocValues#floatVal(int) */
       @Override
       public float floatVal(int doc) { 
         return arr[doc];
       }
-      /*(non-Javadoc) @see org.apache.lucene.search.function.DocValues#intVal(int) */
       @Override
       public  int intVal(int doc) { 
         return arr[doc]; 
       }
-      /*(non-Javadoc) @see org.apache.lucene.search.function.DocValues#toString(int) */
       @Override
       public String toString(int doc) { 
         return  description() + '=' + intVal(doc);  
       }
-      /*(non-Javadoc) @see org.apache.lucene.search.function.DocValues#getInnerArray() */
       @Override
       Object getInnerArray() {
         return arr;
@@ -67,7 +61,6 @@ public class ShortFieldSource extends FieldCacheSource {
     };
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.function.FieldCacheSource#cachedFieldSourceEquals(org.apache.lucene.search.function.FieldCacheSource) */
   @Override
   public boolean cachedFieldSourceEquals(FieldCacheSource o) {
     if (o.getClass() !=  ShortFieldSource.class) {
@@ -79,7 +72,6 @@ public class ShortFieldSource extends FieldCacheSource {
       this.parser.getClass() == other.parser.getClass();
   }
 
-  /*(non-Javadoc) @see org.apache.lucene.search.function.FieldCacheSource#cachedFieldSourceHashCode() */
   @Override
   public int cachedFieldSourceHashCode() {
     return parser==null ? 

@@ -24,7 +24,7 @@ public class LockStressTest {
   public static void main(String[] args) throws Exception {
 
     if (args.length != 6) {
-      System.out.println("\nUsage: java org.apache.lucene.store.LockStressTest myID verifierHostOrIP verifierPort lockFactoryClassName lockDirName sleepTime\n" +
+      System.out.println("\nUsage: java org.trypticon.luceneupgrader.lucene3.internal.lucene.store.LockStressTest myID verifierHostOrIP verifierPort lockFactoryClassName lockDirName sleepTime\n" +
                          "\n" +
                          "  myID = int from 0 .. 255 (should be unique for test process)\n" +
                          "  verifierHostOrIP = host name or IP address where LockVerifyServer is running\n" +
