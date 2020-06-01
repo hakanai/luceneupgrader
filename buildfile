@@ -21,7 +21,7 @@ else
   require 'buildr/gpg'
 end
 
-LUCENE_VERSION = '7.5.0'
+LUCENE_VERSION = '8.5.1'
 
 require 'buildr/custom_pom'
 

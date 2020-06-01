@@ -1,9 +1,9 @@
 package org.trypticon.luceneupgrader.lucene7;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.*;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
+import org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.Analyzer;
+import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.*;
+import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.Directory;
+import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.FSDirectory;
 import org.trypticon.luceneupgrader.InfoStream;
 import org.trypticon.luceneupgrader.VersionUpgrader;
 
@@ -30,7 +30,7 @@ public class VersionUpgrader7 implements VersionUpgrader {
     @Override
     public void upgrade() throws IOException {
         try (Directory directory = FSDirectory.open(path)) {
-            org.apache.lucene.util.InfoStream adaptedInfoStream = new AdaptedInfoStream(infoStream);
+            org.trypticon.luceneupgrader.lucene7.internal.lucene.util.InfoStream adaptedInfoStream = new AdaptedInfoStream(infoStream);
             IndexWriterConfig indexWriterConfig = new IndexWriterConfig(new FailAnalyzer());
             indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
             indexWriterConfig.setMergeScheduler(new SerialMergeScheduler());
@@ -43,7 +43,7 @@ public class VersionUpgrader7 implements VersionUpgrader {
     /**
      * Adapts Lucene's info stream to pass messages to ours.
      */
-    private static class AdaptedInfoStream extends org.apache.lucene.util.InfoStream {
+    private static class AdaptedInfoStream extends org.trypticon.luceneupgrader.lucene7.internal.lucene.util.InfoStream {
         private final InfoStream infoStream;
 
         private AdaptedInfoStream(InfoStream infoStream) {
