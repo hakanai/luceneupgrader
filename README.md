@@ -30,3 +30,9 @@ To build and run all tests:
 To build the jar and pom files for a distribution:
 
     buildr package
+
+To generate test Lucene indices, e.g. from one of the `lucene` subdirectories
+under `testgen/`:
+
+    buildr run
+
