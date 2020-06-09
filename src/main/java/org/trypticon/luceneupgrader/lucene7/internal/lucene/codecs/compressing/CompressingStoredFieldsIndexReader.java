@@ -34,10 +34,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PackedInts;
 
-/**
- * Random-access reader for {@link CompressingStoredFieldsIndexWriter}.
- * @lucene.internal
- */
 public final class CompressingStoredFieldsIndexReader implements Cloneable, Accountable {
 
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(CompressingStoredFieldsIndexReader.class);

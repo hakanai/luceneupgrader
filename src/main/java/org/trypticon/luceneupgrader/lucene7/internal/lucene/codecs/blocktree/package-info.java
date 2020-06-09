@@ -15,20 +15,4 @@
  * limitations under the License.
  */
 
-/**
- * BlockTree terms dictionary.
- * 
- * <p>
- * This terms dictionary organizes all terms into blocks according to
- * shared prefix, such that each block has enough terms, and then stores
- * the prefix trie in memory as an FST as the index structure.  It allows
- * you to plug in your own {@link
- * org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.PostingsWriterBase} to implement the
- * postings.
- * </p>
- * 
- * <p>See {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.blocktree.BlockTreeTermsWriter}
- *   for the file format.
- * </p>
- */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.blocktree;

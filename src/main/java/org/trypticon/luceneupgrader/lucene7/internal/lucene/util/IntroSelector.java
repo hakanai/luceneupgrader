@@ -18,12 +18,6 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.util;
 
 import java.util.Comparator;
 
-/** Implementation of the quick select algorithm.
- *  <p>It uses the median of the first, middle and last values as a pivot and
- *  falls back to a heap sort when the number of recursion levels exceeds
- *  {@code 2 lg(n)}, as a consequence it runs in linear time on average and in
- *  {@code n log(n)} time in the worst case.</p>
- *  @lucene.internal */
 public abstract class IntroSelector extends Selector {
 
   @Override
@@ -110,19 +104,12 @@ public abstract class IntroSelector extends Selector {
     }
   }
 
-  /** Compare entries found in slots <code>i</code> and <code>j</code>.
-   *  The contract for the returned value is the same as
-   *  {@link Comparator#compare(Object, Object)}. */
   protected int compare(int i, int j) {
     setPivot(i);
     return comparePivot(j);
   }
 
-  /** Save the value at slot <code>i</code> so that it can later be used as a
-   * pivot, see {@link #comparePivot(int)}. */
   protected abstract void setPivot(int i);
 
-  /** Compare the pivot with the slot at <code>j</code>, similarly to
-   *  {@link #compare(int, int) compare(i, j)}. */
   protected abstract int comparePivot(int j);
 }

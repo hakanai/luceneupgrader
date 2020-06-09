@@ -17,9 +17,6 @@
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.util;
 
 
-/** Used for parsing Version strings so we don't have to
- *  use overkill String.split nor StringTokenizer (which silently
- *  skips empty tokens). */
 
 final class StrictStringTokenizer {
 

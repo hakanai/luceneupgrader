@@ -22,14 +22,6 @@ import java.io.IOException;
 
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.store.RAMOutputStream.BUFFER_SIZE;
 
-/** 
- * A memory-resident {@link IndexInput} implementation. 
- *
- * @lucene.internal 
- * @deprecated This class uses inefficient synchronization and is discouraged
- * in favor of {@link MMapDirectory}. It will be removed in future versions 
- * of Lucene.
- */
 @Deprecated
 public class RAMInputStream extends IndexInput implements Cloneable {
 

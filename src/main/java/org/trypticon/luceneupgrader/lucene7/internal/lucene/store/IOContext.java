@@ -17,25 +17,12 @@
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.store;
 
 
-/**
- * IOContext holds additional details on the merge/search context. A IOContext
- * object can never be initialized as null as passed as a parameter to either
- * {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.store.Directory#openInput(String, IOContext)} or
- * {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.store.Directory#createOutput(String, IOContext)}
- */
 public class IOContext {
 
-  /**
-   * Context is a enumerator which specifies the context in which the Directory
-   * is being used for.
-   */
   public enum Context {
     MERGE, READ, FLUSH, DEFAULT
   };
 
-  /**
-   * An object of a enumerator Context type
-   */
   public final Context context;
 
   public final MergeInfo mergeInfo;
@@ -86,11 +73,6 @@ public class IOContext {
     this.flushInfo = null;
   }
   
-  /**
-   * This constructor is used to initialize a {@link IOContext} instance with a new value for the readOnce variable. 
-   * @param ctxt {@link IOContext} object whose information is used to create the new instance except the readOnce variable.
-   * @param readOnce The new {@link IOContext} object will use this value for readOnce. 
-   */
   public IOContext(IOContext ctxt, boolean readOnce) {
     this.context = ctxt.context;
     this.mergeInfo = ctxt.mergeInfo;

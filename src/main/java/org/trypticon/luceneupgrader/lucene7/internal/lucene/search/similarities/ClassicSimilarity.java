@@ -22,38 +22,25 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.Explanation;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.TermStatistics;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 
-/**
- * Expert: Historical scoring implementation. You might want to consider using
- * {@link BM25Similarity} instead, which is generally considered superior to
- * TF-IDF.
- */
 public class ClassicSimilarity extends TFIDFSimilarity {
 
-  /** Sole constructor: parameter-free */
   public ClassicSimilarity() {}
 
-  /** Implemented as
-   *  <code>1/sqrt(length)</code>.
-   *
-   *  @lucene.experimental */
   @Override
   public float lengthNorm(int numTerms) {
     return (float) (1.0 / Math.sqrt(numTerms));
   }
 
-  /** Implemented as <code>sqrt(freq)</code>. */
   @Override
   public float tf(float freq) {
     return (float)Math.sqrt(freq);
   }
     
-  /** Implemented as <code>1 / (distance + 1)</code>. */
   @Override
   public float sloppyFreq(int distance) {
     return 1.0f / (distance + 1);
   }
   
-  /** The default implementation returns <code>1</code> */
   @Override
   public float scorePayload(int doc, int start, int end, BytesRef payload) {
     return 1;
@@ -69,7 +56,6 @@ public class ClassicSimilarity extends TFIDFSimilarity {
         Explanation.match(docCount, "docCount"));
   }
 
-  /** Implemented as <code>log((docCount+1)/(docFreq+1)) + 1</code>. */
   @Override
   public float idf(long docFreq, long docCount) {
     return (float)(Math.log((docCount+1)/(double)(docFreq+1)) + 1.0);

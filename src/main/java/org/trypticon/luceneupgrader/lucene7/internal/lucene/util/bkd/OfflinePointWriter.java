@@ -26,9 +26,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IndexOutput;
 
-/** Writes points to disk in a fixed-with format.
- *
- * @lucene.internal */
 public final class OfflinePointWriter implements PointWriter {
 
   final Directory tempDir;
@@ -44,7 +41,6 @@ public final class OfflinePointWriter implements PointWriter {
   private long nextSharedRead;
   final long expectedCount;
 
-  /** Create a new writer with an unknown number of incoming points */
   public OfflinePointWriter(Directory tempDir, String tempFileNamePrefix, int packedBytesLength,
                             boolean longOrds, String desc, long expectedCount, boolean singleValuePerDoc) throws IOException {
     this.out = tempDir.createTempOutput(tempFileNamePrefix, "bkd_" + desc, IOContext.DEFAULT);
@@ -56,7 +52,6 @@ public final class OfflinePointWriter implements PointWriter {
     this.expectedCount = expectedCount;
   }
 
-  /** Initializes on an already written/closed file, just so consumers can use {@link #getReader} to read the file. */
   public OfflinePointWriter(Directory tempDir, String name, int packedBytesLength, long count, boolean longOrds, boolean singleValuePerDoc) {
     this.out = null;
     this.name = name;

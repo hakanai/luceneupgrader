@@ -25,54 +25,19 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReaderContext;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.Term;
 
-/**
- * A query that uses either an index structure (points or terms) or doc values
- * in order to run a query, depending which one is more efficient. This is
- * typically useful for range queries, whose {@link Weight#scorer} is costly
- * to create since it usually needs to sort large lists of doc ids. For
- * instance, for a field that both indexed {@link LongPoint}s and
- * {@link SortedNumericDocValuesField}s with the same values, an efficient
- * range query could be created by doing:
- * <pre class="prettyprint">
- *   String field;
- *   long minValue, maxValue;
- *   Query pointQuery = LongPoint.newRangeQuery(field, minValue, maxValue);
- *   Query dvQuery = SortedNumericDocValuesField.newSlowRangeQuery(field, minValue, maxValue);
- *   Query query = new IndexOrDocValuesQuery(pointQuery, dvQuery);
- * </pre>
- * The above query will be efficient as it will use points in the case that they
- * perform better, ie. when we need a good lead iterator that will be almost
- * entirely consumed; and doc values otherwise, ie. in the case that another
- * part of the query is already leading iteration but we still need the ability
- * to verify that some documents match.
- * <p><b>NOTE</b>This query currently only works well with point range/exact
- * queries and their equivalent doc values queries.
- * @lucene.experimental
- */
 public final class IndexOrDocValuesQuery extends Query {
 
   private final Query indexQuery, dvQuery;
 
-  /**
-   * Create an {@link IndexOrDocValuesQuery}. Both provided queries must match
-   * the same documents and give the same scores.
-   * @param indexQuery a query that has a good iterator but whose scorer may be costly to create
-   * @param dvQuery a query whose scorer is cheap to create that can quickly check whether a given document matches
-   */
   public IndexOrDocValuesQuery(Query indexQuery, Query dvQuery) {
     this.indexQuery = indexQuery;
     this.dvQuery = dvQuery;
   }
 
-  /** Return the wrapped query that may be costly to initialize but has a good
-   *  iterator. */
   public Query getIndexQuery() {
     return indexQuery;
   }
 
-  /** Return the wrapped query that may be slow at identifying all matching
-   *  documents, but which is cheap to initialize and can efficiently
-   *  verify that some documents match. */
   public Query getRandomAccessQuery() {
     return dvQuery;
   }

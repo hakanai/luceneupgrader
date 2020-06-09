@@ -32,13 +32,10 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 abstract class TermCollectingRewrite<B> extends MultiTermQuery.RewriteMethod {
   
   
-  /** Return a suitable builder for the top-level Query for holding all expanded terms. */
   protected abstract B getTopLevelBuilder() throws IOException;
 
-  /** Finalize the creation of the query from the builder. */
   protected abstract Query build(B builder);
 
-  /** Add a MultiTermQuery term to the top-level query builder. */
   protected final void addClause(B topLevel, Term term, int docCount, float boost) throws IOException {
     addClause(topLevel, term, docCount, boost, null);
   }
@@ -80,13 +77,10 @@ abstract class TermCollectingRewrite<B> extends MultiTermQuery.RewriteMethod {
       this.readerContext = readerContext;
       this.topReaderContext = topReaderContext;
     }
-    /** attributes used for communication with the enum */
     public final AttributeSource attributes = new AttributeSource();
   
-    /** return false to stop collecting */
     public abstract boolean collect(BytesRef bytes) throws IOException;
     
-    /** the next segment's {@link TermsEnum} that is used to collect terms */
     public abstract void setNextEnum(TermsEnum termsEnum) throws IOException;
   }
 }

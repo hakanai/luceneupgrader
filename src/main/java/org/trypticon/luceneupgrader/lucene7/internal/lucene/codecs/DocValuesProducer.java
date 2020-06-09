@@ -28,55 +28,22 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.SortedNumericD
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.SortedSetDocValues;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Accountable;
 
-/** Abstract API that produces numeric, binary, sorted, sortedset,
- *  and sortednumeric docvalues.
- *
- * @lucene.experimental
- */
 public abstract class DocValuesProducer implements Closeable, Accountable {
   
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected DocValuesProducer() {}
 
-  /** Returns {@link NumericDocValues} for this field.
-   *  The returned instance need not be thread-safe: it will only be
-   *  used by a single thread. */
   public abstract NumericDocValues getNumeric(FieldInfo field) throws IOException;
 
-  /** Returns {@link BinaryDocValues} for this field.
-   *  The returned instance need not be thread-safe: it will only be
-   *  used by a single thread. */
   public abstract BinaryDocValues getBinary(FieldInfo field) throws IOException;
 
-  /** Returns {@link SortedDocValues} for this field.
-   *  The returned instance need not be thread-safe: it will only be
-   *  used by a single thread. */
   public abstract SortedDocValues getSorted(FieldInfo field) throws IOException;
   
-  /** Returns {@link SortedNumericDocValues} for this field.
-   *  The returned instance need not be thread-safe: it will only be
-   *  used by a single thread. */
   public abstract SortedNumericDocValues getSortedNumeric(FieldInfo field) throws IOException;
   
-  /** Returns {@link SortedSetDocValues} for this field.
-   *  The returned instance need not be thread-safe: it will only be
-   *  used by a single thread. */
   public abstract SortedSetDocValues getSortedSet(FieldInfo field) throws IOException;
   
-  /** 
-   * Checks consistency of this producer
-   * <p>
-   * Note that this may be costly in terms of I/O, e.g. 
-   * may involve computing a checksum value against large data files.
-   * @lucene.internal
-   */
   public abstract void checkIntegrity() throws IOException;
   
-  /** 
-   * Returns an instance optimized for merging.
-   * <p>
-   * The default implementation returns {@code this} */
   public DocValuesProducer getMergeInstance() throws IOException {
     return this;
   }

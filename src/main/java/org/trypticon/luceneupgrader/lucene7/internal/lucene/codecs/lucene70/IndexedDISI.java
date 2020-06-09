@@ -26,27 +26,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BitSetIterator;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.FixedBitSet;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RoaringDocIdSet;
 
-/**
- * Disk-based implementation of a {@link DocIdSetIterator} which can return
- * the index of the current document, i.e. the ordinal of the current document
- * among the list of documents that this iterator can return. This is useful
- * to implement sparse doc values by only having to encode values for documents
- * that actually have a value.
- * <p>Implementation-wise, this {@link DocIdSetIterator} is inspired of
- * {@link RoaringDocIdSet roaring bitmaps} and encodes ranges of {@code 65536}
- * documents independently and picks between 3 encodings depending on the
- * density of the range:<ul>
- *   <li>{@code ALL} if the range contains 65536 documents exactly,
- *   <li>{@code DENSE} if the range contains 4096 documents or more; in that
- *       case documents are stored in a bit set,
- *   <li>{@code SPARSE} otherwise, and the lower 16 bits of the doc IDs are
- *       stored in a {@link DataInput#readShort() short}.
- * </ul>
- * <p>Only ranges that contain at least one value are encoded.
- * <p>This implementation uses 6 bytes per document in the worst-case, which happens
- * in the case that all ranges contain exactly one document.
- * @lucene.internal
- */
 final class IndexedDISI extends DocIdSetIterator {
 
   static final int MAX_ARRAY_LENGTH = (1 << 12) - 1;
@@ -95,7 +74,6 @@ final class IndexedDISI extends DocIdSetIterator {
     flush(DocIdSetIterator.NO_MORE_DOCS >>> 16, buffer, 1, out);
   }
 
-  /** The slice that stores the {@link DocIdSetIterator}. */
   private final IndexInput slice;
   private final long cost;
 
@@ -297,12 +275,8 @@ final class IndexedDISI extends DocIdSetIterator {
       }
     };
 
-    /** Advance to the first doc from the block that is equal to or greater than {@code target}.
-     *  Return true if there is such a doc and false otherwise. */
     abstract boolean advanceWithinBlock(IndexedDISI disi, int target) throws IOException;
 
-    /** Advance the iterator exactly to the position corresponding to the given {@code target}
-     * and return whether this document exists. */
     abstract boolean advanceExactWithinBlock(IndexedDISI disi, int target) throws IOException;
   }
 

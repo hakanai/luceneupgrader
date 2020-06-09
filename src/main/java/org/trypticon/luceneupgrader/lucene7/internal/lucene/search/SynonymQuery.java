@@ -36,22 +36,9 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.TermsEnum;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.similarities.Similarity;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.similarities.Similarity.SimScorer;
 
-/**
- * A query that treats multiple terms as synonyms.
- * <p>
- * For scoring purposes, this query tries to score the terms as if you
- * had indexed them as one term: it will match any of the terms but
- * only invoke the similarity a single time, scoring the sum of all
- * term frequencies for the document.
- */
 public final class SynonymQuery extends Query {
   private final Term terms[];
   
-  /**
-   * Creates a new SynonymQuery, matching any of the supplied terms.
-   * <p>
-   * The terms must all have the same field.
-   */
   public SynonymQuery(Term... terms) {
     this.terms = Objects.requireNonNull(terms).clone();
     // check that all terms are the same field
@@ -238,7 +225,6 @@ public final class SynonymQuery extends Query {
       return similarity.score(topList.doc, tf(topList));
     }
     
-    /** combines TF of all subs. */
     final int tf(DisiWrapper topList) throws IOException {
       int tf = 0;
       for (DisiWrapper w = topList; w != null; w = w.next) {

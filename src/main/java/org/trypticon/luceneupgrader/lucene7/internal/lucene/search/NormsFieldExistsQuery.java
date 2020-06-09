@@ -26,17 +26,10 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.FieldInfos;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReader;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReaderContext;
 
-/**
- * A {@link Query} that matches documents that have a value for a given field
- * as reported by field norms.  This will not work for fields that omit norms,
- * e.g. {@link StringField}.
- */
 public final class NormsFieldExistsQuery extends Query {
 
   private final String field;
 
-  /** Create a query that will match that have a value for the given
-   *  {@code field}. */
   public NormsFieldExistsQuery(String field) {
     this.field = Objects.requireNonNull(field);
   }

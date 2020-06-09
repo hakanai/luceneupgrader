@@ -25,12 +25,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.ByteBlockPool;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Counter;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IntBlockPool;
 
-/** This class is passed each token produced by the analyzer
- *  on each field during indexing, and it stores these
- *  tokens in a hash table, and allocates separate byte
- *  streams per token.  Consumers of this class, eg {@link
- *  FreqProxTermsWriter} and {@link TermVectorsConsumer},
- *  write their own byte streams under each term. */
 abstract class TermsHash {
 
   final TermsHash nextTermsHash;

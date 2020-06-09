@@ -21,12 +21,6 @@ import java.util.List;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.PriorityQueue;
 
-/**
- * Similar to {@link NearSpansOrdered}, but for the unordered case.
- *
- * Expert:
- * Only public for subclassing.  Most implementations should not need this class
- */
 public class NearSpansUnordered extends ConjunctionSpans {
 
   private final int allowedSlop;
@@ -40,7 +34,6 @@ public class NearSpansUnordered extends ConjunctionSpans {
     this.spanWindow = new SpanTotalLengthEndPositionWindow();
   }
 
-  /** Maintain totalSpanLength and maxEndPosition */
   private class SpanTotalLengthEndPositionWindow extends PriorityQueue<Spans> {
     int totalSpanLength;
     int maxEndPosition;
@@ -97,11 +90,6 @@ public class NearSpansUnordered extends ConjunctionSpans {
   }
 
 
-  /** Check whether two Spans in the same document are ordered with possible overlap.
-   * @return true iff spans1 starts before spans2
-   *              or the spans start at the same position,
-   *              and spans1 ends before spans2.
-   */
   static boolean positionsOrdered(Spans spans1, Spans spans2) {
     assert spans1.docID() == spans2.docID() : "doc1 " + spans1.docID() + " != doc2 " + spans2.docID();
     int start1 = spans1.startPosition();

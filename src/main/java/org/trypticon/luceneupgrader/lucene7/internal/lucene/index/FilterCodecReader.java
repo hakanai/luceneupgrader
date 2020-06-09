@@ -30,33 +30,16 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.TermVectorsRe
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Bits;
 
-/** 
- * A <code>FilterCodecReader</code> contains another CodecReader, which it
- * uses as its basic source of data, possibly transforming the data along the
- * way or providing additional functionality.
- * <p><b>NOTE</b>: If this {@link FilterCodecReader} does not change the
- * content the contained reader, you could consider delegating calls to
- * {@link #getCoreCacheHelper()} and {@link #getReaderCacheHelper()}.
- */
 public abstract class FilterCodecReader extends CodecReader {
 
-  /** Get the wrapped instance by <code>reader</code> as long as this reader is
-   *  an instance of {@link FilterCodecReader}.  */
   public static CodecReader unwrap(CodecReader reader) {
     while (reader instanceof FilterCodecReader) {
       reader = ((FilterCodecReader) reader).getDelegate();
     }
     return reader;
   }
-  /**
-   * The underlying CodecReader instance.
-   */
   protected final CodecReader in;
   
-  /**
-   * Creates a new FilterCodecReader.
-   * @param in the underlying CodecReader instance.
-   */
   public FilterCodecReader(CodecReader in) {
     this.in = Objects.requireNonNull(in);
   }
@@ -136,14 +119,10 @@ public abstract class FilterCodecReader extends CodecReader {
     in.checkIntegrity();
   }
 
-  /** Returns the wrapped {@link CodecReader}. */
   public CodecReader getDelegate() {
     return in;
   }
 
-  /**
-   * Returns a filtered codec reader with the given live docs and numDocs.
-   */
   static FilterCodecReader wrapLiveDocs(CodecReader reader, Bits liveDocs, int numDocs) {
     return new FilterCodecReader(reader) {
       @Override

@@ -20,11 +20,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.FutureObjects;
 
 
-/**
- * Exposes a slice of an existing Bits as a new Bits.
- *
- * @lucene.internal
- */
 final class BitsSlice implements Bits {
   private final Bits parent;
   private final int start;

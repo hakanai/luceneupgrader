@@ -18,33 +18,22 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.PriorityQueue;
 
-/** Represents hits returned by {@link
- * IndexSearcher#search(Query,int)}. */
 public class TopDocs {
 
-  /** The total number of hits for the query. */
   public long totalHits;
 
-  /** The top hits for the query. */
   public ScoreDoc[] scoreDocs;
 
-  /** Stores the maximum score value encountered, needed for normalizing. */
   private float maxScore;
   
-  /**
-   * Returns the maximum score value encountered. Note that in case
-   * scores are not tracked, this returns {@link Float#NaN}.
-   */
   public float getMaxScore() {
     return maxScore;
   }
   
-  /** Sets the maximum score value encountered. */
   public void setMaxScore(float maxScore) {
     this.maxScore = maxScore;
   }
 
-  /** Constructs a TopDocs with a default maxScore=Float.NaN. */
   TopDocs(long totalHits, ScoreDoc[] scoreDocs) {
     this(totalHits, scoreDocs, Float.NaN);
   }
@@ -89,10 +78,6 @@ public class TopDocs {
     }
   }
 
-  /**
-   * if we need to tie-break since score / sort value are the same we first compare shard index (lower shard wins)
-   * and then iff shard index is the same we use the hit index.
-   */
   static boolean tieBreakLessThan(ShardRef first, ScoreDoc firstDoc, ShardRef second, ScoreDoc secondDoc) {
     final int firstShardIndex = first.getShardIndex(firstDoc);
     final int secondShardIndex = second.getShardIndex(secondDoc);
@@ -200,54 +185,18 @@ public class TopDocs {
     }
   }
 
-  /** Returns a new TopDocs, containing topN results across
-   *  the provided TopDocs, sorting by score. Each {@link TopDocs}
-   *  instance must be sorted.
-   *
-   *  @see #merge(int, int, TopDocs[], boolean)
-   *  @lucene.experimental */
   public static TopDocs merge(int topN, TopDocs[] shardHits) {
     return merge(0, topN, shardHits, true);
   }
 
-  /**
-   * Same as {@link #merge(int, TopDocs[])} but also ignores the top
-   * {@code start} top docs. This is typically useful for pagination.
-   *
-   * Note: If {@code setShardIndex} is true, this method will assume the incoming order of {@code shardHits} reflects
-   * each shard's index and will fill the {@link ScoreDoc#shardIndex}, otherwise
-   * it must already be set for all incoming {@code ScoreDoc}s, which can be useful when doing multiple reductions
-   * (merges) of TopDocs.
-   *
-   * @lucene.experimental
-   */
   public static TopDocs merge(int start, int topN, TopDocs[] shardHits, boolean setShardIndex) {
     return mergeAux(null, start, topN, shardHits, setShardIndex);
   }
 
-  /** Returns a new TopFieldDocs, containing topN results across
-   *  the provided TopFieldDocs, sorting by the specified {@link
-   *  Sort}.  Each of the TopDocs must have been sorted by
-   *  the same Sort, and sort field values must have been
-   *  filled (ie, <code>fillFields=true</code> must be
-   *  passed to {@link TopFieldCollector#create}).
-   *  @see #merge(Sort, int, int, TopFieldDocs[], boolean)
-   * @lucene.experimental */
   public static TopFieldDocs merge(Sort sort, int topN, TopFieldDocs[] shardHits) {
     return merge(sort, 0, topN, shardHits, true);
   }
 
-  /**
-   * Same as {@link #merge(Sort, int, TopFieldDocs[])} but also ignores the top
-   * {@code start} top docs. This is typically useful for pagination.
-   *
-   * Note: If {@code setShardIndex} is true, this method will assume the incoming order of {@code shardHits} reflects
-   * each shard's index and will fill the {@link ScoreDoc#shardIndex}, otherwise
-   * it must already be set for all incoming {@code ScoreDoc}s, which can be useful when doing multiple reductions
-   * (merges) of TopDocs.
-   *
-   * @lucene.experimental
-   */
   public static TopFieldDocs merge(Sort sort, int start, int topN, TopFieldDocs[] shardHits, boolean setShardIndex) {
     if (sort == null) {
       throw new IllegalArgumentException("sort must be non-null when merging field-docs");
@@ -255,8 +204,6 @@ public class TopDocs {
     return (TopFieldDocs) mergeAux(sort, start, topN, shardHits, setShardIndex);
   }
 
-  /** Auxiliary method used by the {@link #merge} impls. A sort value of null
-   *  is used to indicate that docs should be sorted by score. */
   private static TopDocs mergeAux(Sort sort, int start, int size, TopDocs[] shardHits, boolean setShardIndex) {
 
     final PriorityQueue<ShardRef> queue;

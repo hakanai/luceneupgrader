@@ -36,13 +36,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.automaton.Leven
 import java.io.IOException;
 import java.util.Arrays;
 
-/** Subclass of TermsEnum for enumerating all terms that are similar
- * to the specified filter term.
- *
- * <p>Term enumerations are always ordered by
- * {@link BytesRef#compareTo}.  Each term in the enumeration is
- * greater than all that precede it.</p>
- */
 public final class FuzzyTermsEnum extends TermsEnum {
 
   // NOTE: we can't subclass FilteredTermsEnum here because we need to sometimes change actualEnum:
@@ -80,22 +73,6 @@ public final class FuzzyTermsEnum extends TermsEnum {
   // True (the default, in FuzzyQuery) if a transposition should count as a single edit:
   final boolean transpositions;
   
-  /**
-   * Constructor for enumeration of all terms from specified <code>reader</code> which share a prefix of
-   * length <code>prefixLength</code> with <code>term</code> and which have at most {@code maxEdits} edits.
-   * <p>
-   * After calling the constructor the enumeration is already pointing to the first 
-   * valid term if such a term exists. 
-   * 
-   * @param terms Delivers terms.
-   * @param atts {@link AttributeSource} created by the rewrite method of {@link MultiTermQuery}
-   * thats contains information about competitive boosts during rewrite. It is also used
-   * to cache DFAs between segment transitions.
-   * @param term Pattern term.
-   * @param maxEdits Maximum edit distance.
-   * @param prefixLength Length of required common prefix. Default value is 0.
-   * @throws IOException if there is a low-level IO error
-   */
   public FuzzyTermsEnum(Terms terms, AttributeSource atts, Term term, 
       final int maxEdits, final int prefixLength, boolean transpositions) throws IOException {
     if (maxEdits < 0 || maxEdits > LevenshteinAutomata.MAXIMUM_SUPPORTED_DISTANCE) {
@@ -151,10 +128,6 @@ public final class FuzzyTermsEnum extends TermsEnum {
     bottomChanged(null);
   }
   
-  /**
-   * return an automata-based enum for matching up to editDistance from
-   * lastTerm, if possible
-   */
   private TermsEnum getAutomatonEnum(int editDistance, BytesRef lastTerm) throws IOException {
     assert editDistance < automata.length;
     final CompiledAutomaton compiled = automata[editDistance];
@@ -169,10 +142,6 @@ public final class FuzzyTermsEnum extends TermsEnum {
     return terms.intersect(compiled, initialSeekTerm);
   }
 
-  /**
-   * fired when the max non-competitive boost has changed. this is the hook to
-   * swap in a smarter actualEnum.
-   */
   private void bottomChanged(BytesRef lastTerm) throws IOException {
     int oldMaxEdits = maxEdits;
     
@@ -251,7 +220,6 @@ public final class FuzzyTermsEnum extends TermsEnum {
     return term;
   }
 
-  /** returns true if term is within k edits of the query term */
   private boolean matches(BytesRef termIn, int k) {
     return k == 0 ? termIn.equals(term.bytes()) : automata[k].runAutomaton.run(termIn.bytes, termIn.offset, termIn.length);
   }
@@ -307,18 +275,11 @@ public final class FuzzyTermsEnum extends TermsEnum {
     return actualEnum.term();
   }
 
-  /**
-   * reuses compiled automata across different segments,
-   * because they are independent of the index
-   * @lucene.internal */
   public static interface LevenshteinAutomataAttribute extends Attribute {
     public CompiledAutomaton[] automata();
     public void setAutomata(CompiledAutomaton[] automata);
   }
     
-  /** 
-   * Stores compiled automata as a list (indexed by edit distance)
-   * @lucene.internal */
   public static final class LevenshteinAutomataAttributeImpl extends AttributeImpl implements LevenshteinAutomataAttribute {
     private CompiledAutomaton[] automata;
       

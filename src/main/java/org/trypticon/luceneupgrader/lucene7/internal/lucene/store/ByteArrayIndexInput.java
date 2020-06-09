@@ -21,12 +21,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Locale;
 
-/**
- * A {@link IndexInput} backed by a byte array.
- * 
- * @lucene.experimental
- * @deprecated Will be removed in future Lucene versions. Use byte buffer backed index inputs instead.
- */
 @Deprecated
 public final class ByteArrayIndexInput extends IndexInput implements RandomAccessInput {
   private byte[] bytes;

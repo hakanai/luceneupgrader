@@ -25,116 +25,53 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * <p>This class implements a {@link MergePolicy} that tries
- * to merge segments into levels of exponentially
- * increasing size, where each level has fewer segments than
- * the value of the merge factor. Whenever extra segments
- * (beyond the merge factor upper bound) are encountered,
- * all segments within the level are merged. You can get or
- * set the merge factor using {@link #getMergeFactor()} and
- * {@link #setMergeFactor(int)} respectively.</p>
- *
- * <p>This class is abstract and requires a subclass to
- * define the {@link #size} method which specifies how a
- * segment's size is determined.  {@link LogDocMergePolicy}
- * is one subclass that measures size by document count in
- * the segment.  {@link LogByteSizeMergePolicy} is another
- * subclass that measures size as the total byte size of the
- * file(s) for the segment.</p>
- */
 
 public abstract class LogMergePolicy extends MergePolicy {
 
-  /** Defines the allowed range of log(size) for each
-   *  level.  A level is computed by taking the max segment
-   *  log size, minus LEVEL_LOG_SPAN, and finding all
-   *  segments falling within that range. */
   public static final double LEVEL_LOG_SPAN = 0.75;
 
-  /** Default merge factor, which is how many segments are
-   *  merged at a time */
   public static final int DEFAULT_MERGE_FACTOR = 10;
 
-  /** Default maximum segment size.  A segment of this size
-   *  or larger will never be merged.  @see setMaxMergeDocs */
   public static final int DEFAULT_MAX_MERGE_DOCS = Integer.MAX_VALUE;
 
-  /** Default noCFSRatio.  If a merge's size is {@code >= 10%} of
-   *  the index, then we disable compound file for it.
-   *  @see MergePolicy#setNoCFSRatio */
   public static final double DEFAULT_NO_CFS_RATIO = 0.1;
 
-  /** How many segments to merge at a time. */
   protected int mergeFactor = DEFAULT_MERGE_FACTOR;
 
-  /** Any segments whose size is smaller than this value
-   *  will be rounded up to this value.  This ensures that
-   *  tiny segments are aggressively merged. */
   protected long minMergeSize;
 
-  /** If the size of a segment exceeds this value then it
-   *  will never be merged. */
   protected long maxMergeSize;
 
   // Although the core MPs set it explicitly, we must default in case someone
   // out there wrote his own LMP ...
-  /** If the size of a segment exceeds this value then it
-   * will never be merged during {@link IndexWriter#forceMerge}. */
   protected long maxMergeSizeForForcedMerge = Long.MAX_VALUE;
 
-  /** If a segment has more than this many documents then it
-   *  will never be merged. */
   protected int maxMergeDocs = DEFAULT_MAX_MERGE_DOCS;
 
-  /** If true, we pro-rate a segment's size by the
-   *  percentage of non-deleted documents. */
   protected boolean calibrateSizeByDeletes = true;
 
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   public LogMergePolicy() {
     super(DEFAULT_NO_CFS_RATIO, MergePolicy.DEFAULT_MAX_CFS_SEGMENT_SIZE);
   }
 
-  /** <p>Returns the number of segments that are merged at
-   * once and also controls the total number of segments
-   * allowed to accumulate in the index.</p> */
   public int getMergeFactor() {
     return mergeFactor;
   }
 
-  /** Determines how often segment indices are merged by
-   * addDocument().  With smaller values, less RAM is used
-   * while indexing, and searches are
-   * faster, but indexing speed is slower.  With larger
-   * values, more RAM is used during indexing, and while
-   * searches is slower, indexing is
-   * faster.  Thus larger values ({@code > 10}) are best for batch
-   * index creation, and smaller values ({@code < 10}) for indices
-   * that are interactively maintained. */
   public void setMergeFactor(int mergeFactor) {
     if (mergeFactor < 2)
       throw new IllegalArgumentException("mergeFactor cannot be less than 2");
     this.mergeFactor = mergeFactor;
   }
 
-  /** Sets whether the segment size should be calibrated by
-   *  the number of deletes when choosing segments for merge. */
   public void setCalibrateSizeByDeletes(boolean calibrateSizeByDeletes) {
     this.calibrateSizeByDeletes = calibrateSizeByDeletes;
   }
 
-  /** Returns true if the segment size should be calibrated 
-   *  by the number of deletes when choosing segments for merge. */
   public boolean getCalibrateSizeByDeletes() {
     return calibrateSizeByDeletes;
   }
 
-  /** Return the number of documents in the provided {@link
-   *  SegmentCommitInfo}, pro-rated by percentage of
-   *  non-deleted documents if {@link
-   *  #setCalibrateSizeByDeletes} is set. */
   protected long sizeDocs(SegmentCommitInfo info, MergeContext mergeContext) throws IOException {
     if (calibrateSizeByDeletes) {
       int delCount = mergeContext.numDeletesToMerge(info);
@@ -145,10 +82,6 @@ public abstract class LogMergePolicy extends MergePolicy {
     }
   }
 
-  /** Return the byte size of the provided {@link
-   *  SegmentCommitInfo}, pro-rated by percentage of
-   *  non-deleted documents if {@link
-   *  #setCalibrateSizeByDeletes} is set. */
   protected long sizeBytes(SegmentCommitInfo info, MergeContext mergeContext) throws IOException {
     if (calibrateSizeByDeletes) {
       return super.size(info, mergeContext);
@@ -156,9 +89,6 @@ public abstract class LogMergePolicy extends MergePolicy {
     return info.sizeInBytes();
   }
   
-  /** Returns true if the number of segments eligible for
-   *  merging is less than or equal to the specified {@code
-   *  maxNumSegments}. */
   protected boolean isMerged(SegmentInfos infos, int maxNumSegments, Map<SegmentCommitInfo,Boolean> segmentsToMerge, MergeContext mergeContext) throws IOException {
     final int numSegments = infos.size();
     int numToMerge = 0;
@@ -178,14 +108,6 @@ public abstract class LogMergePolicy extends MergePolicy {
       (numToMerge != 1 || !segmentIsOriginal || isMerged(infos, mergeInfo, mergeContext));
   }
 
-  /**
-   * Returns the merges necessary to merge the index, taking the max merge
-   * size or max merge docs into consideration. This method attempts to respect
-   * the {@code maxNumSegments} parameter, however it might be, due to size
-   * constraints, that more than that number of segments will remain in the
-   * index. Also, this method does not guarantee that exactly {@code
-   * maxNumSegments} will remain, but &lt;= that number.
-   */
   private MergeSpecification findForcedMergesSizeLimit(
       SegmentInfos infos, int last, MergeContext mergeContext) throws IOException {
     MergeSpecification spec = new MergeSpecification();
@@ -223,11 +145,6 @@ public abstract class LogMergePolicy extends MergePolicy {
     return spec.merges.size() == 0 ? null : spec;
   }
   
-  /**
-   * Returns the merges necessary to forceMerge the index. This method constraints
-   * the returned merges only by the {@code maxNumSegments} parameter, and
-   * guaranteed that exactly that number of segments will remain in the index.
-   */
   private MergeSpecification findForcedMergesMaxNumSegments(SegmentInfos infos, int maxNumSegments, int last, MergeContext mergeContext) throws IOException {
     MergeSpecification spec = new MergeSpecification();
     final List<SegmentCommitInfo> segments = infos.asList();
@@ -283,16 +200,6 @@ public abstract class LogMergePolicy extends MergePolicy {
     return spec.merges.size() == 0 ? null : spec;
   }
   
-  /** Returns the merges necessary to merge the index down
-   *  to a specified number of segments.
-   *  This respects the {@link #maxMergeSizeForForcedMerge} setting.
-   *  By default, and assuming {@code maxNumSegments=1}, only
-   *  one segment will be left in the index, where that segment
-   *  has no deletions pending nor separate norms, and it is in
-   *  compound file format if the current useCompoundFile
-   *  setting is true.  This method returns multiple merges
-   *  (mergeFactor at a time) so the {@link MergeScheduler}
-   *  in use may make use of concurrency. */
   @Override
   public MergeSpecification findForcedMerges(SegmentInfos infos,
                                              int maxNumSegments, Map<SegmentCommitInfo,Boolean> segmentsToMerge, MergeContext mergeContext) throws IOException {
@@ -355,11 +262,6 @@ public abstract class LogMergePolicy extends MergePolicy {
     }
   }
 
-  /**
-   * Finds merges necessary to force-merge all deletes from the
-   * index.  We simply merge adjacent segments that have
-   * deletes, up to mergeFactor at a time.
-   */ 
   @Override
   public MergeSpecification findForcedDeletesMerges(SegmentInfos segmentInfos, MergeContext mergeContext)
       throws IOException {
@@ -430,13 +332,6 @@ public abstract class LogMergePolicy extends MergePolicy {
     }
   }
 
-  /** Checks if any merges are now necessary and returns a
-   *  {@link MergePolicy.MergeSpecification} if so.  A merge
-   *  is necessary when there are more than {@link
-   *  #setMergeFactor} segments at a given level.  When
-   *  multiple levels have too many segments, this method
-   *  will return multiple merges, allowing the {@link
-   *  MergeScheduler} to use concurrency. */
   @Override
   public MergeSpecification findMerges(MergeTrigger mergeTrigger, SegmentInfos infos, MergeContext mergeContext) throws IOException {
 
@@ -572,28 +467,10 @@ public abstract class LogMergePolicy extends MergePolicy {
     return spec;
   }
 
-  /** <p>Determines the largest segment (measured by
-   * document count) that may be merged with other segments.
-   * Small values (e.g., less than 10,000) are best for
-   * interactive indexing, as this limits the length of
-   * pauses while indexing to a few seconds.  Larger values
-   * are best for batched indexing and speedier
-   * searches.</p>
-   *
-   * <p>The default value is {@link Integer#MAX_VALUE}.</p>
-   *
-   * <p>The default merge policy ({@link
-   * LogByteSizeMergePolicy}) also allows you to set this
-   * limit by net size (in MB) of the segment, using {@link
-   * LogByteSizeMergePolicy#setMaxMergeMB}.</p>
-   */
   public void setMaxMergeDocs(int maxMergeDocs) {
     this.maxMergeDocs = maxMergeDocs;
   }
 
-  /** Returns the largest segment (measured by document
-   *  count) that may be merged with other segments.
-   *  @see #setMaxMergeDocs */
   public int getMaxMergeDocs() {
     return maxMergeDocs;
   }

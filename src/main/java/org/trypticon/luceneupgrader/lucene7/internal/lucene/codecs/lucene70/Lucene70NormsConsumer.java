@@ -31,9 +31,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSetItera
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IndexOutput;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 
-/**
- * Writer for {@link Lucene70NormsFormat}
- */
 final class Lucene70NormsConsumer extends NormsConsumer {
   IndexOutput data, meta;
   final int maxDoc;

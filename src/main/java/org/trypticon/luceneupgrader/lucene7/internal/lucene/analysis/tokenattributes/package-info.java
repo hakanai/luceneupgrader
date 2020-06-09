@@ -15,7 +15,4 @@
  * limitations under the License.
  */
 
-/**
- * General-purpose attributes for text analysis.
- */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.tokenattributes;

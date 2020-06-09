@@ -15,28 +15,4 @@
  * limitations under the License.
  */
 
-/** 
- * The logical representation of a {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.document.Document} for indexing and searching.
- * <p>The document package provides the user level logical representation of content to be indexed and searched.  The
- * package also provides utilities for working with {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.document.Document}s and {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexableField}s.</p>
- * <h2>Document and IndexableField</h2>
- * <p>A {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.document.Document} is a collection of {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexableField}s.  A
- *   {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexableField} is a logical representation of a user's content that needs to be indexed or stored.
- *   {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexableField}s have a number of properties that tell Lucene how to treat the content (like indexed, tokenized,
- *   stored, etc.)  See the {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.document.Field} implementation of {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexableField}
- *   for specifics on these properties.
- * </p>
- * <p>Note: it is common to refer to {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.document.Document}s having {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.document.Field}s, even though technically they have
- * {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexableField}s.</p>
- * <h2>Working with Documents</h2>
- * <p>First and foremost, a {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.document.Document} is something created by the user application.  It is your job
- *   to create Documents based on the content of the files you are working with in your application (Word, txt, PDF, Excel or any other format.)
- *   How this is done is completely up to you.  That being said, there are many tools available in other projects that can make
- *   the process of taking a file and converting it into a Lucene {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.document.Document}.
- * </p>
- * <p>The {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.document.DateTools} is a utility class to make dates and times searchable. {@link
- * org.trypticon.luceneupgrader.lucene7.internal.lucene.document.IntPoint}, {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.document.LongPoint},
- * {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.document.FloatPoint} and {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.document.DoublePoint} enable indexing
- * of numeric values (and also dates) for fast range queries using {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.search.PointRangeQuery}</p>
- */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.document;

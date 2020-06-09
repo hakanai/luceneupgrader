@@ -27,7 +27,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.TermVectorsRe
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.FutureObjects;
 
-/** This is a hack to make index sorting fast, with a {@link LeafReader} that always returns merge instances when you ask for the codec readers. */
 class MergeReaderWrapper extends LeafReader {
   final CodecReader in;
   final FieldsProducer fields;

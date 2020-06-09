@@ -15,7 +15,4 @@
  * limitations under the License.
  */
 
-/**
- * Comparable object wrappers 
- */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.util.mutable;

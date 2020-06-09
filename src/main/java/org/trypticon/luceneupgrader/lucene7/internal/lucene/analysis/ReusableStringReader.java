@@ -19,7 +19,6 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis;
 import java.io.Reader;
 
 
-/** Internal class to enable reuse of the string reader by {@link Analyzer#tokenStream(String,String)} */
 final class ReusableStringReader extends Reader {
   private int pos = 0, size = 0;
   private String s = null;

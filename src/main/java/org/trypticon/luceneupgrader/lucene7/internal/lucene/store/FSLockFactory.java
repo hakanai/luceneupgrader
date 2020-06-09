@@ -19,16 +19,8 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.store;
 
 import java.io.IOException;
 
-/**
- * Base class for file system based locking implementation.
- * This class is explicitly checking that the passed {@link Directory}
- * is an {@link FSDirectory}.
- */
 public abstract class FSLockFactory extends LockFactory {
   
-  /** Returns the default locking implementation for this platform.
-   * This method currently returns always {@link NativeFSLockFactory}.
-   */
   public static final FSLockFactory getDefault() {
     return NativeFSLockFactory.INSTANCE;
   }
@@ -41,10 +33,6 @@ public abstract class FSLockFactory extends LockFactory {
     return obtainFSLock((FSDirectory) dir, lockName);
   }
   
-  /** 
-   * Implement this method to obtain a lock for a FSDirectory instance. 
-   * @throws IOException if the lock could not be obtained.
-   */
   protected abstract Lock obtainFSLock(FSDirectory dir, String lockName) throws IOException;
 
 }

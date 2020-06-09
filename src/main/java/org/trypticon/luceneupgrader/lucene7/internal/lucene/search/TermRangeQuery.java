@@ -22,17 +22,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.automaton.Automata;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.automaton.Automaton;
 
-/**
- * A Query that matches documents within an range of terms.
- *
- * <p>This query matches the documents looking for terms that fall into the
- * supplied range according to {@link BytesRef#compareTo(BytesRef)}.
- *
- * <p>This query uses the {@link
- * MultiTermQuery#CONSTANT_SCORE_REWRITE}
- * rewrite method.
- * @since 2.9
- */
 
 public class TermRangeQuery extends AutomatonQuery {
   private final BytesRef lowerTerm;
@@ -40,28 +29,6 @@ public class TermRangeQuery extends AutomatonQuery {
   private final boolean includeLower;
   private final boolean includeUpper;
 
-  /**
-   * Constructs a query selecting all terms greater/equal than <code>lowerTerm</code>
-   * but less/equal than <code>upperTerm</code>. 
-   * 
-   * <p>
-   * If an endpoint is null, it is said 
-   * to be "open". Either or both endpoints may be open.  Open endpoints may not 
-   * be exclusive (you can't select all but the first or last term without 
-   * explicitly specifying the term to exclude.)
-   * 
-   * @param field The field that holds both lower and upper terms.
-   * @param lowerTerm
-   *          The term text at the lower end of the range
-   * @param upperTerm
-   *          The term text at the upper end of the range
-   * @param includeLower
-   *          If true, the <code>lowerTerm</code> is
-   *          included in the range.
-   * @param includeUpper
-   *          If true, the <code>upperTerm</code> is
-   *          included in the range.
-   */
   public TermRangeQuery(String field, BytesRef lowerTerm, BytesRef upperTerm, boolean includeLower, boolean includeUpper) {
     super(new Term(field, lowerTerm), toAutomaton(lowerTerm, upperTerm, includeLower, includeUpper), Integer.MAX_VALUE, true);
     this.lowerTerm = lowerTerm;
@@ -85,28 +52,20 @@ public class TermRangeQuery extends AutomatonQuery {
     return Automata.makeBinaryInterval(lowerTerm, includeLower, upperTerm, includeUpper);
   }
 
-  /**
-   * Factory that creates a new TermRangeQuery using Strings for term text.
-   */
   public static TermRangeQuery newStringRange(String field, String lowerTerm, String upperTerm, boolean includeLower, boolean includeUpper) {
     BytesRef lower = lowerTerm == null ? null : new BytesRef(lowerTerm);
     BytesRef upper = upperTerm == null ? null : new BytesRef(upperTerm);
     return new TermRangeQuery(field, lower, upper, includeLower, includeUpper);
   }
 
-  /** Returns the lower value of this range query */
   public BytesRef getLowerTerm() { return lowerTerm; }
 
-  /** Returns the upper value of this range query */
   public BytesRef getUpperTerm() { return upperTerm; }
   
-  /** Returns <code>true</code> if the lower endpoint is inclusive */
   public boolean includesLower() { return includeLower; }
   
-  /** Returns <code>true</code> if the upper endpoint is inclusive */
   public boolean includesUpper() { return includeUpper; }
   
-  /** Prints a user-readable version of this query. */
   @Override
   public String toString(String field) {
     StringBuilder buffer = new StringBuilder();

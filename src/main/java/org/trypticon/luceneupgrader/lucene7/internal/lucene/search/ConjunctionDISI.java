@@ -30,17 +30,8 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BitSet;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BitSetIterator;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.CollectionUtil;
 
-/** A conjunction of DocIdSetIterators.
- * This iterates over the doc ids that are present in each given DocIdSetIterator.
- * <br>Public only for use in {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.search.spans}.
- * @lucene.internal
- */
 public final class ConjunctionDISI extends DocIdSetIterator {
 
-  /** Create a conjunction over the provided {@link Scorer}s. Note that the
-   * returned {@link DocIdSetIterator} might leverage two-phase iteration in
-   * which case it is possible to retrieve the {@link TwoPhaseIterator} using
-   * {@link TwoPhaseIterator#unwrap}. */
   public static DocIdSetIterator intersectScorers(Collection<Scorer> scorers) {
     if (scorers.size() < 2) {
       throw new IllegalArgumentException("Cannot make a ConjunctionDISI of less than 2 iterators");
@@ -54,10 +45,6 @@ public final class ConjunctionDISI extends DocIdSetIterator {
     return createConjunction(allIterators, twoPhaseIterators);
   }
 
-  /** Create a conjunction over the provided DocIdSetIterators. Note that the
-   * returned {@link DocIdSetIterator} might leverage two-phase iteration in
-   * which case it is possible to retrieve the {@link TwoPhaseIterator} using
-   * {@link TwoPhaseIterator#unwrap}. */
   public static DocIdSetIterator intersectIterators(List<DocIdSetIterator> iterators) {
     if (iterators.size() < 2) {
       throw new IllegalArgumentException("Cannot make a ConjunctionDISI of less than 2 iterators");
@@ -71,10 +58,6 @@ public final class ConjunctionDISI extends DocIdSetIterator {
     return createConjunction(allIterators, twoPhaseIterators);
   }
 
-  /** Create a conjunction over the provided {@link Spans}. Note that the
-   * returned {@link DocIdSetIterator} might leverage two-phase iteration in
-   * which case it is possible to retrieve the {@link TwoPhaseIterator} using
-   * {@link TwoPhaseIterator#unwrap}. */
   public static DocIdSetIterator intersectSpans(List<Spans> spanList) {
     if (spanList.size() < 2) {
       throw new IllegalArgumentException("Cannot make a ConjunctionDISI of less than 2 iterators");
@@ -88,7 +71,6 @@ public final class ConjunctionDISI extends DocIdSetIterator {
     return createConjunction(allIterators, twoPhaseIterators);
   }
 
-  /** Adds the scorer, possibly splitting up into two phases or collapsing if it is another conjunction */
   private static void addScorer(Scorer scorer, List<DocIdSetIterator> allIterators, List<TwoPhaseIterator> twoPhaseIterators) {
     TwoPhaseIterator twoPhaseIter = scorer.twoPhaseIterator();
     if (twoPhaseIter != null) {
@@ -98,7 +80,6 @@ public final class ConjunctionDISI extends DocIdSetIterator {
     }
   }
 
-  /** Adds the Spans. */
   private static void addSpans(Spans spans, List<DocIdSetIterator> allIterators, List<TwoPhaseIterator> twoPhaseIterators) {
     TwoPhaseIterator twoPhaseIter = spans.asTwoPhaseIterator();
     if (twoPhaseIter != null) {
@@ -245,7 +226,6 @@ public final class ConjunctionDISI extends DocIdSetIterator {
     return lead1.cost(); // overestimate
   }
 
-  /** Conjunction between a {@link DocIdSetIterator} and one or more {@link BitSetIterator}s. */
   private static class BitSetConjunctionDISI extends DocIdSetIterator {
 
     private final DocIdSetIterator lead;
@@ -308,9 +288,6 @@ public final class ConjunctionDISI extends DocIdSetIterator {
 
   }
 
-  /**
-   * {@link TwoPhaseIterator} implementing a conjunction.
-   */
   private static final class ConjunctionTwoPhaseIterator extends TwoPhaseIterator {
 
     private final TwoPhaseIterator[] twoPhaseIterators;

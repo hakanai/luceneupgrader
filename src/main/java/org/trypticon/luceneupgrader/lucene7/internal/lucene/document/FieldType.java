@@ -26,9 +26,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexOptions;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexableFieldType;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.PointValues;
 
-/**
- * Describes the properties of a field.
- */
 public class FieldType implements IndexableFieldType  {
 
   private boolean stored;
@@ -46,9 +43,6 @@ public class FieldType implements IndexableFieldType  {
   private int dimensionNumBytes;
   private Map<String, String> attributes;
 
-  /**
-   * Create a new mutable FieldType with all of the properties from <code>ref</code>
-   */
   public FieldType(IndexableFieldType ref) {
     this.stored = ref.stored();
     this.tokenized = ref.tokenized();
@@ -68,214 +62,93 @@ public class FieldType implements IndexableFieldType  {
     // Do not copy frozen!
   }
   
-  /**
-   * Create a new FieldType with default properties.
-   */
   public FieldType() {
   }
 
-  /**
-   * Throws an exception if this FieldType is frozen. Subclasses should
-   * call this within setters for additional state.
-   */
   protected void checkIfFrozen() {
     if (frozen) {
       throw new IllegalStateException("this FieldType is already frozen and cannot be changed");
     }
   }
 
-  /**
-   * Prevents future changes. Note, it is recommended that this is called once
-   * the FieldTypes's properties have been set, to prevent unintentional state
-   * changes.
-   */
   public void freeze() {
     this.frozen = true;
   }
   
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>false</code>.
-   * @see #setStored(boolean)
-   */
   @Override
   public boolean stored() {
     return this.stored;
   }
   
-  /**
-   * Set to <code>true</code> to store this field.
-   * @param value true if this field should be stored.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #stored()
-   */
   public void setStored(boolean value) {
     checkIfFrozen();
     this.stored = value;
   }
 
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>true</code>.
-   * @see #setTokenized(boolean)
-   */
   public boolean tokenized() {
     return this.tokenized;
   }
   
-  /**
-   * Set to <code>true</code> to tokenize this field's contents via the 
-   * configured {@link Analyzer}.
-   * @param value true if this field should be tokenized.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #tokenized()
-   */
   public void setTokenized(boolean value) {
     checkIfFrozen();
     this.tokenized = value;
   }
 
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>false</code>. 
-   * @see #setStoreTermVectors(boolean)
-   */
   @Override
   public boolean storeTermVectors() {
     return this.storeTermVectors;
   }
   
-  /**
-   * Set to <code>true</code> if this field's indexed form should be also stored 
-   * into term vectors.
-   * @param value true if this field should store term vectors.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #storeTermVectors()
-   */
   public void setStoreTermVectors(boolean value) {
     checkIfFrozen();
     this.storeTermVectors = value;
   }
 
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>false</code>.
-   * @see #setStoreTermVectorOffsets(boolean)
-   */
   @Override
   public boolean storeTermVectorOffsets() {
     return this.storeTermVectorOffsets;
   }
   
-  /**
-   * Set to <code>true</code> to also store token character offsets into the term
-   * vector for this field.
-   * @param value true if this field should store term vector offsets.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #storeTermVectorOffsets()
-   */
   public void setStoreTermVectorOffsets(boolean value) {
     checkIfFrozen();
     this.storeTermVectorOffsets = value;
   }
 
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>false</code>.
-   * @see #setStoreTermVectorPositions(boolean)
-   */
   @Override
   public boolean storeTermVectorPositions() {
     return this.storeTermVectorPositions;
   }
   
-  /**
-   * Set to <code>true</code> to also store token positions into the term
-   * vector for this field.
-   * @param value true if this field should store term vector positions.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #storeTermVectorPositions()
-   */
   public void setStoreTermVectorPositions(boolean value) {
     checkIfFrozen();
     this.storeTermVectorPositions = value;
   }
   
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>false</code>.
-   * @see #setStoreTermVectorPayloads(boolean) 
-   */
   @Override
   public boolean storeTermVectorPayloads() {
     return this.storeTermVectorPayloads;
   }
   
-  /**
-   * Set to <code>true</code> to also store token payloads into the term
-   * vector for this field.
-   * @param value true if this field should store term vector payloads.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #storeTermVectorPayloads()
-   */
   public void setStoreTermVectorPayloads(boolean value) {
     checkIfFrozen();
     this.storeTermVectorPayloads = value;
   }
   
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>false</code>.
-   * @see #setOmitNorms(boolean)
-   */
   @Override
   public boolean omitNorms() {
     return this.omitNorms;
   }
   
-  /**
-   * Set to <code>true</code> to omit normalization values for the field.
-   * @param value true if this field should omit norms.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #omitNorms()
-   */
   public void setOmitNorms(boolean value) {
     checkIfFrozen();
     this.omitNorms = value;
   }
 
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is {@link IndexOptions#DOCS_AND_FREQS_AND_POSITIONS}.
-   * @see #setIndexOptions(IndexOptions)
-   */
   @Override
   public IndexOptions indexOptions() {
     return this.indexOptions;
   }
   
-  /**
-   * Sets the indexing options for the field:
-   * @param value indexing options
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #indexOptions()
-   */
   public void setIndexOptions(IndexOptions value) {
     checkIfFrozen();
     if (value == null) {
@@ -284,16 +157,10 @@ public class FieldType implements IndexableFieldType  {
     this.indexOptions = value;
   }
 
-  /**
-   * Enables points indexing.
-   */
   public void setDimensions(int dimensionCount, int dimensionNumBytes) {
     this.setDimensions(dimensionCount, dimensionCount, dimensionNumBytes);
   }
 
-  /**
-   * Enables points indexing with selectable dimension indexing.
-   */
   public void setDimensions(int dataDimensionCount, int indexDimensionCount, int dimensionNumBytes) {
     if (dataDimensionCount < 0) {
       throw new IllegalArgumentException("dataDimensionCount must be >= 0; got " + dataDimensionCount);
@@ -348,18 +215,6 @@ public class FieldType implements IndexableFieldType  {
     return dimensionNumBytes;
   }
 
-  /**
-   * Puts an attribute value.
-   * <p>
-   * This is a key-value mapping for the field that the codec can use
-   * to store additional metadata.
-   * <p>
-   * If a value already exists for the field, it will be replaced with
-   * the new value. This method is not thread-safe, user must not add attributes
-   * while other threads are indexing documents with this field type.
-   *
-   * @lucene.experimental
-   */
   public String putAttribute(String key, String value) {
     if (attributes == null) {
       attributes = new HashMap<>();
@@ -372,7 +227,6 @@ public class FieldType implements IndexableFieldType  {
     return attributes;
   }
 
-  /** Prints a Field for human consumption. */
   @Override
   public String toString() {
     StringBuilder result = new StringBuilder();
@@ -428,24 +282,11 @@ public class FieldType implements IndexableFieldType  {
     return result.toString();
   }
   
-  /**
-   * {@inheritDoc}
-   * <p>
-   * The default is <code>null</code> (no docValues) 
-   * @see #setDocValuesType(DocValuesType)
-   */
   @Override
   public DocValuesType docValuesType() {
     return docValuesType;
   }
 
-  /**
-   * Sets the field's DocValuesType
-   * @param type DocValues type, or null if no DocValues should be stored.
-   * @throws IllegalStateException if this FieldType is frozen against
-   *         future modifications.
-   * @see #docValuesType()
-   */
   public void setDocValuesType(DocValuesType type) {
     checkIfFrozen();
     if (type == null) {

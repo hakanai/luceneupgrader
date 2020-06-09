@@ -16,11 +16,8 @@
  */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.util;
 
-/** Abstraction over an array of longs.
- *  @lucene.internal */
 public abstract class LongValues  {
 
-  /** An instance that returns the provided value. */
   public static final LongValues IDENTITY = new LongValues() {
 
     @Override
@@ -39,7 +36,6 @@ public abstract class LongValues  {
 
   };
 
-  /** Get value at <code>index</code>. */
   public abstract long get(long index);
 
 }

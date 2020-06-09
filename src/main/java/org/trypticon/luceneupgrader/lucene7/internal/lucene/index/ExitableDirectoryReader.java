@@ -25,35 +25,21 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.automaton.CompiledAutomaton;
 
 
-/**
- * The {@link ExitableDirectoryReader} wraps a real index {@link DirectoryReader} and
- * allows for a {@link QueryTimeout} implementation object to be checked periodically
- * to see if the thread should exit or not.  If {@link QueryTimeout#shouldExit()}
- * returns true, an {@link ExitingReaderException} is thrown.
- */
 public class ExitableDirectoryReader extends FilterDirectoryReader {
   
   private QueryTimeout queryTimeout;
 
-  /**
-   * Exception that is thrown to prematurely terminate a term enumeration.
-   */
   @SuppressWarnings("serial")
   public static class ExitingReaderException extends RuntimeException {
 
-    /** Constructor **/
     ExitingReaderException(String msg) {
       super(msg);
     }
   }
 
-  /**
-   * Wrapper class for a SubReaderWrapper that is used by the ExitableDirectoryReader.
-   */
   public static class ExitableSubReaderWrapper extends SubReaderWrapper {
     private QueryTimeout queryTimeout;
 
-    /** Constructor **/
     public ExitableSubReaderWrapper(QueryTimeout queryTimeout) {
       this.queryTimeout = queryTimeout;
     }
@@ -64,14 +50,10 @@ public class ExitableDirectoryReader extends FilterDirectoryReader {
     }
   }
 
-  /**
-   * Wrapper class for another FilterAtomicReader. This is used by ExitableSubReaderWrapper.
-   */
   public static class ExitableFilterAtomicReader extends FilterLeafReader {
 
     private QueryTimeout queryTimeout;
     
-    /** Constructor **/
     public ExitableFilterAtomicReader(LeafReader in, QueryTimeout queryTimeout) {
       super(in);
       this.queryTimeout = queryTimeout;
@@ -109,9 +91,6 @@ public class ExitableDirectoryReader extends FilterDirectoryReader {
 
   }
 
-  /**
-   * Wrapper class for another PointValues implementation that is used by ExitableFields.
-   */
   private static class ExitablePointValues extends PointValues {
 
     private final PointValues in;
@@ -123,10 +102,6 @@ public class ExitableDirectoryReader extends FilterDirectoryReader {
       checkAndThrow();
     }
 
-    /**
-     * Throws {@link ExitingReaderException} if {@link QueryTimeout#shouldExit()} returns true,
-     * or if {@link Thread#interrupted()} returns true.
-     */
     private void checkAndThrow() {
       if (queryTimeout.shouldExit()) {
         throw new ExitingReaderException("The request took too long to iterate over point values. Timeout: "
@@ -206,10 +181,6 @@ public class ExitableDirectoryReader extends FilterDirectoryReader {
       this.queryTimeout = queryTimeout;
     }
 
-    /**
-     * Throws {@link ExitingReaderException} if {@link QueryTimeout#shouldExit()} returns true,
-     * or if {@link Thread#interrupted()} returns true.
-     */
     private void checkAndThrowWithSampling() {
       if (calls++ % MAX_CALLS_BEFORE_QUERY_TIMEOUT_CHECK == 0) {
         checkAndThrow();
@@ -252,14 +223,10 @@ public class ExitableDirectoryReader extends FilterDirectoryReader {
     }
   }
 
-  /**
-   * Wrapper class for another Terms implementation that is used by ExitableFields.
-   */
   public static class ExitableTerms extends FilterTerms {
 
     private QueryTimeout queryTimeout;
 
-    /** Constructor **/
     public ExitableTerms(Terms terms, QueryTimeout queryTimeout) {
       super(terms);
       this.queryTimeout = queryTimeout;
@@ -276,25 +243,16 @@ public class ExitableDirectoryReader extends FilterDirectoryReader {
     }
   }
 
-  /**
-   * Wrapper class for TermsEnum that is used by ExitableTerms for implementing an
-   * exitable enumeration of terms.
-   */
   public static class ExitableTermsEnum extends FilterTermsEnum {
 
     private QueryTimeout queryTimeout;
     
-    /** Constructor **/
     public ExitableTermsEnum(TermsEnum termsEnum, QueryTimeout queryTimeout) {
       super(termsEnum);
       this.queryTimeout = queryTimeout;
       checkAndThrow();
     }
 
-    /**
-     * Throws {@link ExitingReaderException} if {@link QueryTimeout#shouldExit()} returns true,
-     * or if {@link Thread#interrupted()} returns true.
-     */
     private void checkAndThrow() {
       if (queryTimeout.shouldExit()) {
         throw new ExitingReaderException("The request took too long to iterate over terms. Timeout: " 
@@ -314,11 +272,6 @@ public class ExitableDirectoryReader extends FilterDirectoryReader {
     }
   }
 
-  /**
-   * Constructor
-   * @param in DirectoryReader that this ExitableDirectoryReader wraps around to make it Exitable.
-   * @param queryTimeout The object to periodically check if the query should time out.
-   */
   public ExitableDirectoryReader(DirectoryReader in, QueryTimeout queryTimeout) throws IOException {
     super(in, new ExitableSubReaderWrapper(queryTimeout));
     this.queryTimeout = queryTimeout;
@@ -329,11 +282,6 @@ public class ExitableDirectoryReader extends FilterDirectoryReader {
     return new ExitableDirectoryReader(in, queryTimeout);
   }
 
-  /**
-   * Wraps a provided DirectoryReader. Note that for convenience, the returned reader
-   * can be used normally (e.g. passed to {@link DirectoryReader#openIfChanged(DirectoryReader)})
-   * and so on.
-   */
   public static DirectoryReader wrap(DirectoryReader in, QueryTimeout queryTimeout) throws IOException {
     return new ExitableDirectoryReader(in, queryTimeout);
   }

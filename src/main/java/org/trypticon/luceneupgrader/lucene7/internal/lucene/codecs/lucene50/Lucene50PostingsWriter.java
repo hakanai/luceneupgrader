@@ -45,15 +45,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PackedInts;
 
-/**
- * Concrete class that writes docId(maybe frq,pos,offset,payloads) list
- * with postings format.
- *
- * Postings list for each term will be stored separately. 
- *
- * @see Lucene50SkipWriter for details about skipping setting and postings layout.
- * @lucene.experimental
- */
 public final class Lucene50PostingsWriter extends PushPostingsWriterBase {
 
   IndexOutput docOut;
@@ -97,7 +88,6 @@ public final class Lucene50PostingsWriter extends PushPostingsWriterBase {
   private final ForUtil forUtil;
   private final Lucene50SkipWriter skipWriter;
   
-  /** Creates a postings writer */
   public Lucene50PostingsWriter(SegmentWriteState state) throws IOException {
     final float acceptableOverheadRatio = PackedInts.COMPACT;
 
@@ -318,7 +308,6 @@ public final class Lucene50PostingsWriter extends PushPostingsWriterBase {
     }
   }
 
-  /** Called when we are done adding docs to this term */
   @Override
   public void finishTerm(BlockTermState _state) throws IOException {
     IntBlockTermState state = (IntBlockTermState) _state;

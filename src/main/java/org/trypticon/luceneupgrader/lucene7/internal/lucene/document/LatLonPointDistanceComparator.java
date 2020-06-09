@@ -36,13 +36,6 @@ import static org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoEncodi
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoEncodingUtils.encodeLatitude;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoEncodingUtils.encodeLongitude;
 
-/**
- * Compares documents by distance from an origin point
- * <p>
- * When the least competitive item on the priority queue changes (setBottom), we recompute
- * a bounding box representing competitive distance to the top-N. Then in compareBottom, we can
- * quickly reject hits based on bounding box alone without computing distance for every element.
- */
 class LatLonPointDistanceComparator extends FieldComparator<Double> implements LeafFieldComparator {
   final String field;
   final double latitude;

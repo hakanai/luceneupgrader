@@ -26,10 +26,6 @@ abstract class DocConsumer {
   abstract Sorter.DocMap flush(final SegmentWriteState state) throws IOException;
   abstract void abort() throws IOException;
 
-  /**
-   * Returns a {@link DocIdSetIterator} for the given field or null if the field doesn't have
-   * doc values.
-   */
   abstract DocIdSetIterator getHasDocValues(String field);
 
 }

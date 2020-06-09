@@ -22,7 +22,6 @@ abstract class StringMSBRadixSorter extends MSBRadixSorter {
     super(Integer.MAX_VALUE);
   }
 
-  /** Get a {@link BytesRef} for the given index. */
   protected abstract BytesRef get(int i);
 
   @Override

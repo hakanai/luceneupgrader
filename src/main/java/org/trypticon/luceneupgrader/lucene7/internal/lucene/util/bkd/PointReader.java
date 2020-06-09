@@ -22,26 +22,16 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.LongBitSet;
 
-/** One pass iterator through all points previously written with a
- *  {@link PointWriter}, abstracting away whether points a read
- *  from (offline) disk or simple arrays in heap.
- *
- * @lucene.internal */
 public abstract class PointReader implements Closeable {
 
-  /** Returns false once iteration is done, else true. */
   public abstract boolean next() throws IOException;
 
-  /** Returns the packed byte[] value */
   public abstract byte[] packedValue();
 
-  /** Point ordinal */
   public abstract long ord();
 
-  /** DocID for this point */
   public abstract int docID();
 
-  /** Iterates through the next {@code count} ords, marking them in the provided {@code ordBitSet}. */
   public void markOrds(long count, LongBitSet ordBitSet) throws IOException {
     for(int i=0;i<count;i++) {
       boolean result = next();
@@ -53,7 +43,6 @@ public abstract class PointReader implements Closeable {
     }
   }
 
-  /** Splits this reader into left and right partitions */
   public long split(long count, LongBitSet rightTree, PointWriter left, PointWriter right, boolean doClearBits) throws IOException {
 
     // Partition this source according to how the splitDim split the values:

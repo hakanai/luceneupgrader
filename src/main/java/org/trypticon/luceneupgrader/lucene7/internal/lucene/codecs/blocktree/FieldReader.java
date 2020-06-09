@@ -35,10 +35,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.automaton.Compi
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.fst.ByteSequenceOutputs;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.fst.FST;
 
-/**
- * BlockTree's implementation of {@link Terms}.
- * @lucene.internal
- */
 public final class FieldReader extends Terms implements Accountable {
 
   // private final boolean DEBUG = BlockTreeTermsWriter.DEBUG;
@@ -124,7 +120,6 @@ public final class FieldReader extends Terms implements Accountable {
     }
   }
 
-  /** For debugging -- used by CheckIndex too*/
   @Override
   public Stats getStats() throws IOException {
     // TODO: add auto-prefix terms into stats

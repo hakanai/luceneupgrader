@@ -36,27 +36,16 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.UnicodeUtil;
 
-/**
- * A {@link DataOutput} storing data in a list of {@link ByteBuffer}s.
- */
 public final class ByteBuffersDataOutput extends DataOutput implements Accountable {
   private final static ByteBuffer EMPTY = ByteBuffer.allocate(0);
   private final static byte [] EMPTY_BYTE_ARRAY = {};
 
   public final static IntFunction<ByteBuffer> ALLOCATE_BB_ON_HEAP = ByteBuffer::allocate;
 
-  /**
-   * A singleton instance of "no-reuse" buffer strategy.
-   */
   public final static Consumer<ByteBuffer> NO_REUSE = (bb) -> {
     throw new RuntimeException("reset() is not allowed on this buffer.");
   };
 
-  /**
-   * An implementation of a {@link ByteBuffer} allocation and recycling policy.
-   * The blocks are recycled if exactly the same size is requested, otherwise
-   * they're released to be GCed.
-   */
   public final static class ByteBufferRecycler {
     private final ArrayDeque<ByteBuffer> reuse = new ArrayDeque<>();
     private final IntFunction<ByteBuffer> delegate;
@@ -86,40 +75,18 @@ public final class ByteBuffersDataOutput extends DataOutput implements Accountab
   public final static int DEFAULT_MIN_BITS_PER_BLOCK = 10; // 1024 B
   public final static int DEFAULT_MAX_BITS_PER_BLOCK = 26; //   64 MB
 
-  /**
-   * Maximum number of blocks at the current {@link #blockBits} block size
-   * before we increase the block size (and thus decrease the number of blocks).
-   */
   final static int MAX_BLOCKS_BEFORE_BLOCK_EXPANSION = 100;
 
-  /**
-   * Maximum block size: {@code 2^bits}.
-   */
   private final int maxBitsPerBlock;
 
-  /**
-   * {@link ByteBuffer} supplier.
-   */
   private final IntFunction<ByteBuffer> blockAllocate;
 
-  /**
-   * {@link ByteBuffer} recycler on {@link #reset}.
-   */
   private final Consumer<ByteBuffer> blockReuse;
 
-  /**
-   * Current block size: {@code 2^bits}.
-   */
   private int blockBits;
 
-  /**
-   * Blocks storing data.
-   */
   private final ArrayDeque<ByteBuffer> blocks = new ArrayDeque<>();
 
-  /**
-   * The current-or-next write block.
-   */
   private ByteBuffer currentBlock = EMPTY;
 
   public ByteBuffersDataOutput(long expectedSize) {
@@ -196,10 +163,6 @@ public final class ByteBuffersDataOutput extends DataOutput implements Accountab
     }
   }
 
-  /**
-   * Return a list of read-only view of {@link ByteBuffer} blocks over the 
-   * current content written to the output.
-   */
   public ArrayList<ByteBuffer> toBufferList() {
     ArrayList<ByteBuffer> result = new ArrayList<>(Math.max(blocks.size(), 1));
     if (blocks.isEmpty()) {
@@ -213,18 +176,6 @@ public final class ByteBuffersDataOutput extends DataOutput implements Accountab
     return result;
   }
 
-  /**
-   * Returns a list of writeable blocks over the (source) content buffers.
-   * 
-   * This method returns the raw content of source buffers that may change over the lifetime 
-   * of this object (blocks can be recycled or discarded, for example). Most applications 
-   * should favor calling {@link #toBufferList()} which returns a read-only <i>view</i> over 
-   * the content of the source buffers.
-   * 
-   * The difference between {@link #toBufferList()} and {@link #toWriteableBufferList()} is that
-   * read-only view of source buffers will always return {@code false} from {@link ByteBuffer#hasArray()}
-   * (which sometimes may be required to avoid double copying).
-   */
   public ArrayList<ByteBuffer> toWriteableBufferList() {
     ArrayList<ByteBuffer> result = new ArrayList<>(Math.max(blocks.size(), 1));
     if (blocks.isEmpty()) {
@@ -238,20 +189,10 @@ public final class ByteBuffersDataOutput extends DataOutput implements Accountab
     return result;
   }
 
-  /**
-   * Return a {@link ByteBuffersDataInput} for the set of current buffers ({@link #toBufferList()}). 
-   */
   public ByteBuffersDataInput toDataInput() {
     return new ByteBuffersDataInput(toBufferList());
   }
 
-  /**
-   * Return a contiguous array with the current content written to the output. The returned
-   * array is always a copy (can be mutated).
-   *
-   * If the {@link #size()} of the underlying buffers exceeds maximum size of Java array, an
-   * {@link RuntimeException} will be thrown.
-   */
   public byte[] toArrayCopy() {
     if (blocks.size() == 0) {
       return EMPTY_BYTE_ARRAY;
@@ -275,9 +216,6 @@ public final class ByteBuffersDataOutput extends DataOutput implements Accountab
     return arr;
   }  
 
-  /**
-   * Copy the current content of this object into another {@link DataOutput}.
-   */
   public void copyTo(DataOutput output) throws IOException {
     for (ByteBuffer bb : toBufferList()) {
       if (bb.hasArray()) {
@@ -288,9 +226,6 @@ public final class ByteBuffersDataOutput extends DataOutput implements Accountab
     }
   }
 
-  /**
-   * @return The number of bytes written to this output so far.
-   */
   public long size() {
     long size = 0;
     int blockCount = blocks.size();
@@ -403,23 +338,12 @@ public final class ByteBuffersDataOutput extends DataOutput implements Accountab
            blocks.stream().mapToLong(buf -> buf.capacity()).sum();
   }
 
-  /**
-   * This method resets this object to a clean (zero-size) state and
-   * publishes any currently allocated buffers for reuse to the reuse strategy
-   * provided in the constructor.
-   * 
-   * Sharing byte buffers for reads and writes is dangerous and will very likely
-   * lead to hard-to-debug issues, use with great care.
-   */
   public void reset() {
     blocks.stream().forEach(blockReuse);
     blocks.clear();
     currentBlock = EMPTY;
   }
 
-  /**
-   * @return Returns a new {@link ByteBuffersDataOutput} with the {@link #reset()} capability. 
-   */
   // TODO: perhaps we can move it out to an utility class (as a supplier of preconfigured instances?) 
   public static ByteBuffersDataOutput newResettableInstance() {
     ByteBuffersDataOutput.ByteBufferRecycler reuser = new ByteBuffersDataOutput.ByteBufferRecycler(
@@ -489,9 +413,6 @@ public final class ByteBuffersDataOutput extends DataOutput implements Accountab
       Character.MIN_SUPPLEMENTARY_CODE_POINT - 
       (UnicodeUtil.UNI_SUR_HIGH_START << HALF_SHIFT) - UnicodeUtil.UNI_SUR_LOW_START;
 
-  /**
-   * A consumer-based UTF16-UTF8 encoder (writes the input string in smaller buffers.).
-   */
   private static int UTF16toUTF8(final CharSequence s, 
                                  final int offset,
                                  final int length,

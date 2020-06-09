@@ -21,15 +21,10 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 
-/**
- * Delegates all methods to a wrapped {@link BinaryDocValues}.
- */
 public abstract class FilterBinaryDocValues extends BinaryDocValues {
 
-  /** Wrapped values */
   protected final BinaryDocValues in;
   
-  /** Sole constructor */
   protected FilterBinaryDocValues(BinaryDocValues in) {
     this.in = in;
   }

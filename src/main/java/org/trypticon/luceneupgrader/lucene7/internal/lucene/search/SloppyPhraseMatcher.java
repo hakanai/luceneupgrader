@@ -30,24 +30,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.Term;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.similarities.Similarity;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.FixedBitSet;
 
-/**
- * Find all slop-valid position-combinations (matches)
- * encountered while traversing/hopping the PhrasePositions.
- * <br> The sloppy frequency contribution of a match depends on the distance:
- * <br> - highest freq for distance=0 (exact match).
- * <br> - freq gets lower as distance gets higher.
- * <br>Example: for query "a b"~2, a document "x a b a y" can be matched twice:
- * once for "a b" (distance=0), and once for "b a" (distance=2).
- * <br>Possibly not all valid combinations are encountered, because for efficiency
- * we always propagate the least PhrasePosition. This allows to base on
- * PriorityQueue and move forward faster.
- * As result, for example, document "a b c b a"
- * would score differently for queries "a b c"~4 and "c b a"~4, although
- * they really are equivalent.
- * Similarly, for doc "a b c b a f g", query "c b"~2
- * would get same score as "g f"~2, although "c b"~2 could be matched twice.
- * We may want to fix this in the future (currently not, for performance reasons).
- */
 final class SloppyPhraseMatcher extends PhraseMatcher {
 
   private final PhrasePositions[] phrasePositions;
@@ -214,7 +196,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     return endOffset;
   }
 
-  /** advance a PhrasePosition and update 'end', return false if exhausted */
   private boolean advancePP(PhrasePositions pp) throws IOException {
     if (!pp.nextPosition()) {
       return false;
@@ -225,9 +206,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     return true;
   }
   
-  /** pp was just advanced. If that caused a repeater collision, resolve by advancing the lesser
-   * of the two colliding pps. Note that there can only be one collision, as by the initialization
-   * there were no collisions before pp was advanced.  */
   private boolean advanceRpts(PhrasePositions pp) throws IOException {
     if (pp.rptGroup < 0) {
       return true; // not a repeater
@@ -267,7 +245,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     return true;
   }
 
-  /** compare two pps, but only by position and offset */
   private PhrasePositions lesser(PhrasePositions pp, PhrasePositions pp2) {
     if (pp.position < pp2.position ||
         (pp.position == pp2.position && pp.offset < pp2.offset)) {
@@ -276,7 +253,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     return pp2;
   }
 
-  /** index of a pp2 colliding with pp, or -1 if none */
   private int collide(PhrasePositions pp) {
     int tpPos = tpPos(pp);
     PhrasePositions[] rg = rptGroups[pp.rptGroup];
@@ -289,21 +265,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     return -1;
   }
 
-  /**
-   * Initialize PhrasePositions in place.
-   * A one time initialization for this scorer (on first doc matching all terms):
-   * <ul>
-   *  <li>Check if there are repetitions
-   *  <li>If there are, find groups of repetitions.
-   * </ul>
-   * Examples:
-   * <ol>
-   *  <li>no repetitions: <b>"ho my"~2</b>
-   *  <li>repetitions: <b>"ho my my"~2</b>
-   *  <li>repetitions: <b>"my ho my"~2</b>
-   * </ol>
-   * @return false if PPs are exhausted (and so current doc will not be a match) 
-   */
   private boolean initPhrasePositions() throws IOException {
     end = Integer.MIN_VALUE;
     if (!checkedRpts) {
@@ -316,7 +277,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     return initComplex();
   }
   
-  /** no repeats: simplest case, and most common. It is important to keep this piece of the code simple and efficient */
   private void initSimple() throws IOException {
     //System.err.println("initSimple: doc: "+min.doc);
     pq.clear();
@@ -330,7 +290,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     }
   }
   
-  /** with repeats: not so simple. */
   private boolean initComplex() throws IOException {
     //System.err.println("initComplex: doc: "+min.doc);
     placeFirstPositions();
@@ -341,14 +300,12 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     return true; // PPs available
   }
 
-  /** move all PPs to their first position */
   private void placeFirstPositions() throws IOException {
     for (PhrasePositions pp : phrasePositions) {
       pp.firstPosition();
     }
   }
 
-  /** Fill the queue (all pps are already placed */
   private void fillQueue() {
     pq.clear();
     for (PhrasePositions pp : phrasePositions) {  // iterate cyclic list: done once handled max
@@ -359,15 +316,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     }
   }
 
-  /** At initialization (each doc), each repetition group is sorted by (query) offset.
-   * This provides the start condition: no collisions.
-   * <p>Case 1: no multi-term repeats<br>
-   * It is sufficient to advance each pp in the group by one less than its group index.
-   * So lesser pp is not advanced, 2nd one advance once, 3rd one advanced twice, etc.
-   * <p>Case 2: multi-term repeats<br>
-   * 
-   * @return false if PPs are exhausted. 
-   */
   private boolean advanceRepeatGroups() throws IOException {
     for (PhrasePositions[] rg: rptGroups) { 
       if (hasMultiTermRpts) {
@@ -402,20 +350,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     return true; // PPs available
   }
   
-  /** initialize with checking for repeats. Heavy work, but done only for the first candidate doc.<p>
-   * If there are repetitions, check if multi-term postings (MTP) are involved.<p>
-   * Without MTP, once PPs are placed in the first candidate doc, repeats (and groups) are visible.<br>
-   * With MTP, a more complex check is needed, up-front, as there may be "hidden collisions".<br>
-   * For example P1 has {A,B}, P1 has {B,C}, and the first doc is: "A C B". At start, P1 would point
-   * to "A", p2 to "C", and it will not be identified that P1 and P2 are repetitions of each other.<p>
-   * The more complex initialization has two parts:<br>
-   * (1) identification of repetition groups.<br>
-   * (2) advancing repeat groups at the start of the doc.<br>
-   * For (1), a possible solution is to just create a single repetition group, 
-   * made of all repeating pps. But this would slow down the check for collisions, 
-   * as all pps would need to be checked. Instead, we compute "connected regions" 
-   * on the bipartite graph of postings and terms.  
-   */
   private boolean initFirstTime() throws IOException {
     //System.err.println("initFirstTime: doc: "+min.doc);
     checkedRpts = true;
@@ -437,8 +371,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     return true; // PPs available
   }
 
-  /** sort each repetition group by (query) offset. 
-   * Done only once (at first doc) and allows to initialize faster for each doc. */
   private void sortRptGroups(ArrayList<ArrayList<PhrasePositions>> rgs) {
     rptGroups = new PhrasePositions[rgs.size()][];
     Comparator<PhrasePositions> cmprtr = new Comparator<PhrasePositions>() {
@@ -457,7 +389,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     }
   }
 
-  /** Detect repetition groups. Done once - for first doc */
   private ArrayList<ArrayList<PhrasePositions>> gatherRptGroups(LinkedHashMap<Term,Integer> rptTerms) throws IOException {
     PhrasePositions[] rpp = repeatingPPs(rptTerms); 
     ArrayList<ArrayList<PhrasePositions>> res = new ArrayList<>();
@@ -515,12 +446,10 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     return res;
   }
 
-  /** Actual position in doc of a PhrasePosition, relies on that position = tpPos - offset) */
   private final int tpPos(PhrasePositions pp) {
     return pp.position + pp.offset;
   }
 
-  /** find repeating terms and assign them ordinal values */
   private LinkedHashMap<Term,Integer> repeatingTerms() {
     LinkedHashMap<Term,Integer> tord = new LinkedHashMap<>();
     HashMap<Term,Integer> tcnt = new HashMap<>();
@@ -535,7 +464,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     return tord;
   }
 
-  /** find repeating pps, and for each, if has multi-terms, update this.hasMultiTermRpts */
   private PhrasePositions[] repeatingPPs(HashMap<Term,Integer> rptTerms) {
     ArrayList<PhrasePositions> rp = new ArrayList<>();
     for (PhrasePositions pp : phrasePositions) {
@@ -550,7 +478,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     return rp.toArray(new PhrasePositions[0]);
   }
   
-  /** bit-sets - for each repeating pp, for each of its repeating terms, the term ordinal values is set */
   private ArrayList<FixedBitSet> ppTermsBitSets(PhrasePositions[] rpp, HashMap<Term,Integer> tord) {
     ArrayList<FixedBitSet> bb = new ArrayList<>(rpp.length);
     for (PhrasePositions pp : rpp) {
@@ -566,7 +493,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     return bb;
   }
   
-  /** union (term group) bit-sets until they are disjoint (O(n^^2)), and each group have different terms */
   private void unionTermGroups(ArrayList<FixedBitSet> bb) {
     int incr;
     for (int i=0; i<bb.size()-1; i+=incr) {
@@ -584,7 +510,6 @@ final class SloppyPhraseMatcher extends PhraseMatcher {
     }
   }
   
-  /** map each term to the single group that contains it */ 
   private HashMap<Term,Integer> termGroups(LinkedHashMap<Term,Integer> tord, ArrayList<FixedBitSet> bb) throws IOException {
     HashMap<Term,Integer> tg = new HashMap<>();
     Term[] t = tord.keySet().toArray(new Term[0]);

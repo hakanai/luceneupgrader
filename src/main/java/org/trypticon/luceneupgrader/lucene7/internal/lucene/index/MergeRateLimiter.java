@@ -26,10 +26,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.MergePolicy.OneMergeProgress;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.MergePolicy.OneMergeProgress.PauseReason;
 
-/** This is the {@link RateLimiter} that {@link IndexWriter} assigns to each running merge, to 
- *  give {@link MergeScheduler}s ionice like control.
- *
- *  @lucene.internal */
 
 public class MergeRateLimiter extends RateLimiter {
 
@@ -47,7 +43,6 @@ public class MergeRateLimiter extends RateLimiter {
 
   private final OneMergeProgress mergeProgress;
 
-  /** Sole constructor. */
   public MergeRateLimiter(OneMergeProgress mergeProgress) {
     // Initially no IO limit; use setter here so minPauseCheckBytes is set:
     this.mergeProgress = mergeProgress;
@@ -77,7 +72,6 @@ public class MergeRateLimiter extends RateLimiter {
     return mbPerSec;
   }
 
-  /** Returns total bytes written by this merge. */
   public long getTotalBytesWritten() {
     return totalBytesWritten.get();
   }
@@ -98,21 +92,14 @@ public class MergeRateLimiter extends RateLimiter {
     return paused;
   }
 
-  /** Total NS merge was stopped. */
   public long getTotalStoppedNS() {
     return mergeProgress.getPauseTimes().get(PauseReason.STOPPED);
   } 
 
-  /** Total NS merge was paused to rate limit IO. */
   public long getTotalPausedNS() {
     return mergeProgress.getPauseTimes().get(PauseReason.PAUSED);
   } 
 
-  /** 
-   * Returns the number of nanoseconds spent in a paused state or <code>-1</code>
-   * if no pause was applied. If the thread needs pausing, this method delegates 
-   * to the linked {@link OneMergeProgress}. 
-   */
   private long maybePause(long bytes, long curNS) throws MergePolicy.MergeAbortedException {
     // Now is a good time to abort the merge:
     if (mergeProgress.isAborted()) {

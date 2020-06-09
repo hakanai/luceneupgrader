@@ -19,11 +19,6 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.store;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 
-/** 
- * DataInput backed by a byte array.
- * <b>WARNING:</b> This class omits all low-level checks.
- * @lucene.experimental 
- */
 public final class ByteArrayDataInput extends DataInput {
 
   private byte[] bytes;

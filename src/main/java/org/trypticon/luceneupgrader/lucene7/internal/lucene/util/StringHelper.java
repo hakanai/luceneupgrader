@@ -24,22 +24,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Properties;
 
-/**
- * Methods for manipulating strings.
- *
- * @lucene.internal
- */
 public abstract class StringHelper {
 
-  /**
-   * Compares two {@link BytesRef}, element by element, and returns the
-   * number of elements common to both arrays (from the start of each).
-   * This method assumes currentTerm comes after priorTerm.
-   *
-   * @param priorTerm The first {@link BytesRef} to compare
-   * @param currentTerm The second {@link BytesRef} to compare
-   * @return The number of common elements (from the start of each).
-   */
   public static int bytesDifference(BytesRef priorTerm, BytesRef currentTerm) {
     int mismatch = FutureArrays.mismatch(priorTerm.bytes, priorTerm.offset, priorTerm.offset + priorTerm.length, 
                                          currentTerm.bytes, currentTerm.offset, currentTerm.offset + currentTerm.length);
@@ -49,11 +35,6 @@ public abstract class StringHelper {
     return mismatch;
   }
   
-  /** 
-   * Returns the length of {@code currentTerm} needed for use as a sort key.
-   * so that {@link BytesRef#compareTo(BytesRef)} still returns the same result.
-   * This method assumes currentTerm comes after priorTerm.
-   */
   public static int sortKeyLength(final BytesRef priorTerm, final BytesRef currentTerm) {
     return bytesDifference(priorTerm, currentTerm) + 1;
   }
@@ -61,17 +42,6 @@ public abstract class StringHelper {
   private StringHelper() {
   }
 
-  /**
-   * Returns <code>true</code> iff the ref starts with the given prefix.
-   * Otherwise <code>false</code>.
-   * 
-   * @param ref
-   *         the {@code byte[]} to test
-   * @param prefix
-   *         the expected prefix
-   * @return Returns <code>true</code> iff the ref starts with the given prefix.
-   *         Otherwise <code>false</code>.
-   */
   public static boolean startsWith(byte[] ref, BytesRef prefix) {
     // not long enough to start with the prefix
     if (ref.length < prefix.length) {
@@ -81,17 +51,6 @@ public abstract class StringHelper {
                                prefix.bytes, prefix.offset, prefix.offset + prefix.length);
   }
 
-  /**
-   * Returns <code>true</code> iff the ref starts with the given prefix.
-   * Otherwise <code>false</code>.
-   * 
-   * @param ref
-   *          the {@link BytesRef} to test
-   * @param prefix
-   *          the expected prefix
-   * @return Returns <code>true</code> iff the ref starts with the given prefix.
-   *         Otherwise <code>false</code>.
-   */
   public static boolean startsWith(BytesRef ref, BytesRef prefix) {
     // not long enough to start with the prefix
     if (ref.length < prefix.length) {
@@ -101,17 +60,6 @@ public abstract class StringHelper {
                                prefix.bytes, prefix.offset, prefix.offset + prefix.length);
   }
 
-  /**
-   * Returns <code>true</code> iff the ref ends with the given suffix. Otherwise
-   * <code>false</code>.
-   * 
-   * @param ref
-   *          the {@link BytesRef} to test
-   * @param suffix
-   *          the expected suffix
-   * @return Returns <code>true</code> iff the ref ends with the given suffix.
-   *         Otherwise <code>false</code>.
-   */
   public static boolean endsWith(BytesRef ref, BytesRef suffix) {
     int startAt = ref.length - suffix.length;
     // not long enough to start with the suffix
@@ -122,7 +70,6 @@ public abstract class StringHelper {
                                suffix.bytes, suffix.offset, suffix.offset + suffix.length);
   }
 
-  /** Pass this as the seed to {@link #murmurhash3_x86_32}. */
 
   // Poached from Guava: set a different salt/seed
   // for each JVM instance, to frustrate hash key collision
@@ -142,9 +89,6 @@ public abstract class StringHelper {
     }
   }
 
-  /** Returns the MurmurHash3_x86_32 hash.
-   * Original source/tests at https://github.com/yonik/java_util/
-   */
   @SuppressWarnings("fallthrough")
   public static int murmurhash3_x86_32(byte[] data, int offset, int len, int seed) {
 
@@ -277,10 +221,8 @@ public abstract class StringHelper {
     nextId = unsignedX0.shiftLeft(64).or(unsignedX1);
   }
   
-  /** length in bytes of an ID */
   public static final int ID_LENGTH = 16;
 
-  /** Generates a non-cryptographic globally unique id. */
   public static byte[] randomId() {
 
     // NOTE: we don't use Java's UUID.randomUUID() implementation here because:
@@ -315,14 +257,6 @@ public abstract class StringHelper {
     }
   }
   
-  /** 
-   * Helper method to render an ID as a string, for debugging
-   * <p>
-   * Returns the string {@code (null)} if the id is null.
-   * Otherwise, returns a string representation for debugging.
-   * Never throws an exception. The returned string may
-   * indicate if the id is definitely invalid.
-   */
   public static String idToString(byte id[]) {
     if (id == null) {
       return "(null)";
@@ -336,9 +270,6 @@ public abstract class StringHelper {
     }
   }
   
-  /** Just converts each int in the incoming {@link IntsRef} to each byte
-   *  in the returned {@link BytesRef}, throwing {@code IllegalArgumentException}
-   *  if any int value is out of bounds for a byte. */
   public static BytesRef intsRefToBytesRef(IntsRef ints) {
     byte[] bytes = new byte[ints.length];
     for(int i=0;i<ints.length;i++) {
@@ -352,12 +283,6 @@ public abstract class StringHelper {
     return new BytesRef(bytes);
   }
 
-  /** Compares a fixed length slice of two byte arrays interpreted as
-   *  big-endian unsigned values.  Returns positive int if a &gt; b,
-   *  negative int if a &lt; b and 0 if a == b 
-   *  
-   * @deprecated Use FutureArrays.compareUnsigned instead.
-   */
   @Deprecated
   public static int compare(int count, byte[] a, int aOffset, byte[] b, int bOffset) {
     return FutureArrays.compareUnsigned(a, aOffset, aOffset + count, b, bOffset, bOffset + count);

@@ -27,45 +27,15 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.index.SortedSetDocValues.NO_MORE_ORDS;
 
-/** Selects a value from the document's set to use as the representative value */
 public class SortedSetSelector {
   
-  /** 
-   * Type of selection to perform.
-   * <p>
-   * Limitations:
-   * <ul>
-   *   <li>Fields containing {@link Integer#MAX_VALUE} or more unique values
-   *       are unsupported.
-   *   <li>Selectors other than ({@link Type#MIN}) require 
-   *       optional codec support. However several codecs provided by Lucene, 
-   *       including the current default codec, support this.
-   * </ul>
-   */
   public enum Type {
-    /** 
-     * Selects the minimum value in the set 
-     */
     MIN,
-    /** 
-     * Selects the maximum value in the set 
-     */
     MAX,
-    /** 
-     * Selects the middle value in the set.
-     * <p>
-     * If the set has an even number of values, the lower of the middle two is chosen.
-     */
     MIDDLE_MIN,
-    /** 
-     * Selects the middle value in the set.
-     * <p>
-     * If the set has an even number of values, the higher of the middle two is chosen
-     */
     MIDDLE_MAX
   }
   
-  /** Wraps a multi-valued SortedSetDocValues as a single-valued view, using the specified selector */
   public static SortedDocValues wrap(SortedSetDocValues sortedSet, Type selector) {
     if (sortedSet.getValueCount() >= Integer.MAX_VALUE) {
       throw new UnsupportedOperationException("fields containing more than " + (Integer.MAX_VALUE-1) + " unique terms are unsupported");
@@ -89,7 +59,6 @@ public class SortedSetSelector {
     }
   }
   
-  /** Wraps a SortedSetDocValues and returns the first ordinal (min) */
   static class MinValue extends SortedDocValues {
     final SortedSetDocValues in;
     private int ord;
@@ -160,7 +129,6 @@ public class SortedSetSelector {
     }
   }
   
-  /** Wraps a SortedSetDocValues and returns the last ordinal (max) */
   static class MaxValue extends SortedDocValues {
     final SortedSetDocValues in;
     private int ord;
@@ -237,7 +205,6 @@ public class SortedSetSelector {
     }
   }
   
-  /** Wraps a SortedSetDocValues and returns the middle ordinal (or min of the two) */
   static class MiddleMinValue extends SortedDocValues {
     final SortedSetDocValues in;
     private int ord;
@@ -327,7 +294,6 @@ public class SortedSetSelector {
     }
   }
   
-  /** Wraps a SortedSetDocValues and returns the middle ordinal (or max of the two) */
   static class MiddleMaxValue extends SortedDocValues {
     final SortedSetDocValues in;
     private int ord;

@@ -21,18 +21,11 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.AttributeImpl;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.AttributeReflector;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 
-/** Default implementation of {@link PayloadAttribute}. */
 public class PayloadAttributeImpl extends AttributeImpl implements PayloadAttribute, Cloneable {
   private BytesRef payload;  
   
-  /**
-   * Initialize this attribute with no payload.
-   */
   public PayloadAttributeImpl() {}
   
-  /**
-   * Initialize this attribute with the given payload. 
-   */
   public PayloadAttributeImpl(BytesRef payload) {
     this.payload = payload;
   }

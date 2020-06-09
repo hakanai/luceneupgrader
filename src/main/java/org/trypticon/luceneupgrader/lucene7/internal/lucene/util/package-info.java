@@ -15,7 +15,4 @@
  * limitations under the License.
  */
 
-/**
- * Some utility classes.
- */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.util;

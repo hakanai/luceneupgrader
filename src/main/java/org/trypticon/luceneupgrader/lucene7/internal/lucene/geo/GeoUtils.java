@@ -24,35 +24,21 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.PointValues;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.PointValues.Relation;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.SloppyMath;
 
-/**
- * Basic reusable geo-spatial utility methods
- *
- * @lucene.experimental
- */
 public final class GeoUtils {
-  /** Minimum longitude value. */
   public static final double MIN_LON_INCL = -180.0D;
 
-  /** Maximum longitude value. */
   public static final double MAX_LON_INCL = 180.0D;
 
-  /** Minimum latitude value. */
   public static final double MIN_LAT_INCL = -90.0D;
 
-  /** Maximum latitude value. */
   public static final double MAX_LAT_INCL = 90.0D;
 
-  /** min longitude value in radians */
   public static final double MIN_LON_RADIANS = TO_RADIANS * MIN_LON_INCL;
-  /** min latitude value in radians */
   public static final double MIN_LAT_RADIANS = TO_RADIANS * MIN_LAT_INCL;
-  /** max longitude value in radians */
   public static final double MAX_LON_RADIANS = TO_RADIANS * MAX_LON_INCL;
-  /** max latitude value in radians */
   public static final double MAX_LAT_RADIANS = TO_RADIANS * MAX_LAT_INCL;
 
   // WGS84 earth-ellipsoid parameters
-  /** mean earth axis in meters */
   // see http://earth-info.nga.mil/GandG/publications/tr8350.2/wgs84fin.pdf
   public static final double EARTH_MEAN_RADIUS_METERS = 6_371_008.7714;
 
@@ -60,14 +46,12 @@ public final class GeoUtils {
   private GeoUtils() {
   }
 
-  /** validates latitude value is within standard +/-90 coordinate bounds */
   public static void checkLatitude(double latitude) {
     if (Double.isNaN(latitude) || latitude < MIN_LAT_INCL || latitude > MAX_LAT_INCL) {
       throw new IllegalArgumentException("invalid latitude " +  latitude + "; must be between " + MIN_LAT_INCL + " and " + MAX_LAT_INCL);
     }
   }
 
-  /** validates longitude value is within standard +/-180 coordinate bounds */
   public static void checkLongitude(double longitude) {
     if (Double.isNaN(longitude) || longitude < MIN_LON_INCL || longitude > MAX_LON_INCL) {
       throw new IllegalArgumentException("invalid longitude " +  longitude + "; must be between " + MIN_LON_INCL + " and " + MAX_LON_INCL);
@@ -78,28 +62,11 @@ public final class GeoUtils {
   // unless it is performance sensitive, we should try to remove.
   private static final double PIO2 = Math.PI / 2D;
 
-  /**
-   * Returns the trigonometric sine of an angle converted as a cos operation.
-   * <p>
-   * Note that this is not quite right... e.g. sin(0) != 0
-   * <p>
-   * Special cases:
-   * <ul>
-   *  <li>If the argument is {@code NaN} or an infinity, then the result is {@code NaN}.
-   * </ul>
-   * @param a an angle, in radians.
-   * @return the sine of the argument.
-   * @see Math#sin(double)
-   */
   // TODO: deprecate/remove this? at least its no longer public.
   public static double sloppySin(double a) {
     return cos(a - PIO2);
   }
 
-  /**
-   * binary search to find the exact sortKey needed to match the specified radius
-   * any sort key lte this is a query match.
-   */
   public static double distanceQuerySortKey(double radius) {
     // effectively infinite
     if (radius >= haversinMeters(Double.MAX_VALUE)) {
@@ -129,10 +96,6 @@ public final class GeoUtils {
     return ceil;
   }
 
-  /**
-   * Compute the relation between the provided box and distance query.
-   * This only works for boxes that do not cross the dateline.
-   */
   public static PointValues.Relation relate(
       double minLat, double maxLat, double minLon, double maxLon,
       double lat, double lon, double distanceSortKey, double axisLat) {
@@ -164,7 +127,6 @@ public final class GeoUtils {
     return Relation.CELL_CROSSES_QUERY;
   }
 
-  /** Return whether all points of {@code [minLon,maxLon]} are within 90 degrees of {@code lon}. */
   static boolean within90LonDegrees(double lon, double minLon, double maxLon) {
     if (maxLon <= lon - 180) {
       lon -= 360;
@@ -174,10 +136,6 @@ public final class GeoUtils {
     return maxLon - lon < 90 && lon - minLon < 90;
   }
 
-  /**
-   * Returns a positive value if points a, b, and c are arranged in counter-clockwise order,
-   * negative value if clockwise, zero if collinear.
-   */
   // see the "Orient2D" method described here:
   // http://www.cs.berkeley.edu/~jrs/meshpapers/robnotes.pdf
   // https://www.cs.cmu.edu/~quake/robust.html
@@ -194,13 +152,6 @@ public final class GeoUtils {
     }
   }
 
-  /**
-   * uses orient method to compute relation between two line segments
-   * note the following return values:
-   * CELL_CROSSES_QUERY - if the two line segments fully cross
-   * CELL_INSIDE_QUERY - if the one line segment terminates on the other
-   * CELL_OUTSIDE_QUERY - if the two segments do not cross
-   **/
   public static Relation lineRelateLine(double a1x, double a1y, double b1x, double b1y, double a2x, double a2y, double b2x, double b2y) {
     // shortcut: either "line" is actually a point
     if ((a1x == b1x && a1y == b1y) || (a2x == b2x && a2y == b2y)) {
@@ -217,12 +168,6 @@ public final class GeoUtils {
     return Relation.CELL_OUTSIDE_QUERY;
   }
 
-  /**
-   * used to define the orientation of 3 points
-   * -1 = Clockwise
-   * 0 = Colinear
-   * 1 = Counter-clockwise
-   **/
   public enum WindingOrder {
     CW(-1), COLINEAR(0), CCW(1);
     private final int sign;

@@ -22,8 +22,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BitSetIterator;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.FixedBitSet;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimator;
 
-/** Accumulator for documents that have a value for a field. This is optimized
- *  for the case that all documents have a value. */
 final class DocsWithFieldSet extends DocIdSet {
 
   private static long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(DocsWithFieldSet.class);

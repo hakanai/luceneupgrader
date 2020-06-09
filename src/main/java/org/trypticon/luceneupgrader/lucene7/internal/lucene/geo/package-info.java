@@ -15,7 +15,4 @@
  * limitations under the License.
  */
 
-/**
- * Geospatial Utility Implementations for Lucene Core
- */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.geo;

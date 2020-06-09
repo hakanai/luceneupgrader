@@ -46,9 +46,6 @@ import static org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoEncodi
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoEncodingUtils.encodeLatitude;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoEncodingUtils.encodeLongitude;
 
-/**
- * Distance query for {@link LatLonPoint}.
- */
 final class LatLonPointDistanceQuery extends Query {
   final String field;
   final double latitude;
@@ -177,9 +174,6 @@ final class LatLonPointDistanceQuery extends Query {
 
       }
 
-      /**
-       * Create a visitor that collects documents matching the range.
-       */
       private IntersectVisitor getIntersectVisitor(DocIdSetBuilder result) {
         return new IntersectVisitor() {
 
@@ -248,9 +242,6 @@ final class LatLonPointDistanceQuery extends Query {
         };
       }
 
-      /**
-       * Create a visitor that clears documents that do NOT match the range.
-       */
       private IntersectVisitor getInverseIntersectVisitor(FixedBitSet result, int[] cost) {
         return new IntersectVisitor() {
 

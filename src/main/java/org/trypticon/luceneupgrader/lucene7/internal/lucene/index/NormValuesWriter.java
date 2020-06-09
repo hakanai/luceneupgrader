@@ -26,8 +26,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Counter;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PackedInts;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PackedLongValues;
 
-/** Buffers up pending long per doc, then flushes when
- *  segment flushes. */
 class NormValuesWriter {
 
   private DocsWithFieldSet docsWithField;

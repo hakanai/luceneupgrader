@@ -28,10 +28,6 @@ import java.util.stream.Collectors;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimator;
 
-/**
- * A {@link DataInput} implementing {@link RandomAccessInput} and reading data from a
- * list of {@link ByteBuffer}s.
- */
 public final class ByteBuffersDataInput extends DataInput implements Accountable, RandomAccessInput {
   private final ByteBuffer[] blocks;
   private final int blockBits;
@@ -41,11 +37,6 @@ public final class ByteBuffersDataInput extends DataInput implements Accountable
 
   private long pos;
 
-  /**
-   * Read data from a set of contiguous buffers. All data buffers except for the last one 
-   * must have an identical remaining number of bytes in the buffer (that is a power of two). The last
-   * buffer can be of an arbitrary remaining length.
-   */
   public ByteBuffersDataInput(List<ByteBuffer> buffers) {
     ensureAssumptions(buffers);
 
@@ -95,13 +86,6 @@ public final class ByteBuffersDataInput extends DataInput implements Accountable
     }
   }
 
-  /**
-   * Reads exactly {@code len} bytes into the given buffer. The buffer must have
-   * enough remaining limit.
-   * 
-   * If there are fewer than {@code len} bytes in the input, {@link EOFException} 
-   * is thrown. 
-   */
   public void readBytes(ByteBuffer buffer, int len) throws EOFException {
     try {
       while (len > 0) {

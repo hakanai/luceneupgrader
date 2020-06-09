@@ -28,7 +28,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.DataOutput;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 
-/** An in-place update to a DocValues field. */
 abstract class DocValuesUpdate {
   
   /* Rough logic: OBJ_HEADER + 3*PTR + INT
@@ -48,12 +47,6 @@ abstract class DocValuesUpdate {
   final int docIDUpto;
   final boolean hasValue;
 
-  /**
-   * Constructor.
-   * 
-   * @param term the {@link Term} which determines the documents that will be updated
-   * @param field the {@link NumericDocValuesField} to update
-   */
   protected DocValuesUpdate(DocValuesType type, Term term, String field, int docIDUpto, boolean hasValue) {
     assert docIDUpto >= 0 : docIDUpto + "must be >= 0";
     this.type = type;
@@ -88,7 +81,6 @@ abstract class DocValuesUpdate {
     return "term=" + term + ",field=" + field + ",value=" + valueToString() + ",docIDUpto=" + docIDUpto;
   }
   
-  /** An in-place update to a binary DocValues field */
   static final class BinaryDocValuesUpdate extends DocValuesUpdate {
     private final BytesRef value;
 
@@ -143,7 +135,6 @@ abstract class DocValuesUpdate {
     }
   }
 
-  /** An in-place update to a numeric DocValues field */
   static final class NumericDocValuesUpdate extends DocValuesUpdate {
     private final long value;
 

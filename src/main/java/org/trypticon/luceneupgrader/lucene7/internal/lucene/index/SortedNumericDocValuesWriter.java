@@ -33,7 +33,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PackedLo
 
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 
-/** Buffers up pending long[] per doc, sorts, then flushes when segment flushes. */
 class SortedNumericDocValuesWriter extends DocValuesWriter {
   private PackedLongValues.Builder pending; // stream of all values
   private PackedLongValues.Builder pendingCounts; // count of values per doc

@@ -27,13 +27,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.FSDirectory;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.SuppressForbidden;
 
-/**
- * Command-line tool that reads from a source index and
- * writes to a dest index, correcting any broken offsets
- * in the process.
- *
- * @lucene.experimental
- */
 public class FixBrokenOffsets {
   public SegmentInfos infos;
 

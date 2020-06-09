@@ -22,25 +22,11 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.UndeclaredThrowableException;
 
-/**
- * An AttributeFactory creates instances of {@link AttributeImpl}s.
- */
 public abstract class AttributeFactory {
   
-  /**
-   * Returns an {@link AttributeImpl} for the supplied {@link Attribute} interface class.
-   * 
-   * @throws UndeclaredThrowableException A wrapper runtime exception thrown if the 
-   *         constructor of the attribute class throws a checked exception. 
-   *         Note that attributes should not throw or declare 
-   *         checked exceptions; this may be verified and fail early in the future. 
-   */
   public abstract AttributeImpl createAttributeInstance(Class<? extends Attribute> attClass)
       throws UndeclaredThrowableException;
   
-  /**
-   * Returns a correctly typed {@link MethodHandle} for the no-arg ctor of the given class.
-   */
   static final MethodHandle findAttributeImplCtor(Class<? extends AttributeImpl> clazz) {
     try {
       return lookup.findConstructor(clazz, NO_ARG_CTOR).asType(NO_ARG_RETURNING_ATTRIBUTEIMPL);
@@ -53,10 +39,6 @@ public abstract class AttributeFactory {
   private static final MethodType NO_ARG_CTOR = MethodType.methodType(void.class);
   private static final MethodType NO_ARG_RETURNING_ATTRIBUTEIMPL = MethodType.methodType(AttributeImpl.class);
   
-  /**
-   * This is the default factory that creates {@link AttributeImpl}s using the
-   * class name of the supplied {@link Attribute} interface class by appending <code>Impl</code> to it.
-   */
   public static final AttributeFactory DEFAULT_ATTRIBUTE_FACTORY = new DefaultAttributeFactory();
   
   private static final class DefaultAttributeFactory extends AttributeFactory {
@@ -89,18 +71,10 @@ public abstract class AttributeFactory {
     }
   }
   
-  /** <b>Expert</b>: AttributeFactory returning an instance of the given {@code clazz} for the
-   * attributes it implements. For all other attributes it calls the given delegate factory
-   * as fallback. This class can be used to prefer a specific {@code AttributeImpl} which
-   * combines multiple attributes over separate classes.
-   * @lucene.internal
-   */
   public abstract static class StaticImplementationAttributeFactory<A extends AttributeImpl> extends AttributeFactory {
     private final AttributeFactory delegate;
     private final Class<A> clazz;
     
-    /** <b>Expert</b>: Creates an AttributeFactory returning {@code clazz} as instance for the
-     * attributes it implements and for all other attributes calls the given delegate factory. */
     public StaticImplementationAttributeFactory(AttributeFactory delegate, Class<A> clazz) {
       this.delegate = delegate;
       this.clazz = clazz;
@@ -111,7 +85,6 @@ public abstract class AttributeFactory {
       return attClass.isAssignableFrom(clazz) ? createInstance() : delegate.createAttributeInstance(attClass);
     }
     
-    /** Creates an instance of {@code A}. */
     protected abstract A createInstance();
     
     @Override
@@ -131,14 +104,6 @@ public abstract class AttributeFactory {
     }
   }
   
-  /** Returns an AttributeFactory returning an instance of the given {@code clazz} for the
-   * attributes it implements. The given {@code clazz} must have a public no-arg constructor.
-   * For all other attributes it calls the given delegate factory as fallback.
-   * This method can be used to prefer a specific {@code AttributeImpl} which combines
-   * multiple attributes over separate classes.
-   * <p>Please save instances created by this method in a static final field, because
-   * on each call, this does reflection for creating a {@link MethodHandle}.
-   */
   public static <A extends AttributeImpl> AttributeFactory getStaticImplementation(AttributeFactory delegate, Class<A> clazz) {
     final MethodHandle constr = findAttributeImplCtor(clazz);
     return new StaticImplementationAttributeFactory<A>(delegate, clazz) {

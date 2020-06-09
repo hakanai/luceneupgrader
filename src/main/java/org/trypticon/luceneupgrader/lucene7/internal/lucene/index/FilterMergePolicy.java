@@ -21,21 +21,10 @@ import java.util.Map;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOSupplier;
 
-/**
- * A wrapper for {@link MergePolicy} instances.
- *
- * @lucene.experimental
- */
 public class FilterMergePolicy extends MergePolicy {
 
-  /** The wrapped {@link MergePolicy}. */
   protected final MergePolicy in;
 
-  /**
-   * Creates a new filter merge policy instance wrapping another.
-   *
-   * @param in the wrapped {@link MergePolicy}
-   */
   public FilterMergePolicy(MergePolicy in) {
     this.in = in;
   }

@@ -48,17 +48,12 @@ abstract class AbstractBlockPackedWriter {
   protected long ord;
   protected boolean finished;
 
-  /**
-   * Sole constructor.
-   * @param blockSize the number of values of a single block, must be a multiple of <tt>64</tt>
-   */
   public AbstractBlockPackedWriter(DataOutput out, int blockSize) {
     checkBlockSize(blockSize, MIN_BLOCK_SIZE, MAX_BLOCK_SIZE);
     reset(out);
     values = new long[blockSize];
   }
 
-  /** Reset this writer to wrap <code>out</code>. The block size remains unchanged. */
   public void reset(DataOutput out) {
     assert out != null;
     this.out = out;
@@ -73,7 +68,6 @@ abstract class AbstractBlockPackedWriter {
     }
   }
 
-  /** Append a new long. */
   public void add(long l) throws IOException {
     checkNotFinished();
     if (off == values.length) {
@@ -97,9 +91,6 @@ abstract class AbstractBlockPackedWriter {
     ord += values.length;
   }
 
-  /** Flush all buffered data to disk. This instance is not usable anymore
-   *  after this method has been called until {@link #reset(DataOutput)} has
-   *  been called. */
   public void finish() throws IOException {
     checkNotFinished();
     if (off > 0) {
@@ -108,7 +99,6 @@ abstract class AbstractBlockPackedWriter {
     finished = true;
   }
 
-  /** Return the number of values which have been added. */
   public long ord() {
     return ord;
   }

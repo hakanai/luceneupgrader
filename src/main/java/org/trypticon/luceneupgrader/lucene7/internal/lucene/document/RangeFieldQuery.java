@@ -37,27 +37,14 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.Weight;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.DocIdSetBuilder;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.FutureArrays;
 
-/**
- * Query class for searching {@code RangeField} types by a defined {@link Relation}.
- */
 abstract class RangeFieldQuery extends Query {
-  /** field name */
   final String field;
-  /** query relation
-   * intersects: {@code CELL_CROSSES_QUERY},
-   * contains: {@code CELL_CONTAINS_QUERY},
-   * within: {@code CELL_WITHIN_QUERY} */
   final QueryType queryType;
-  /** number of dimensions - max 4 */
   final int numDims;
-  /** ranges encoded as a sortable byte array */
   final byte[] ranges;
-  /** number of bytes per dimension */
   final int bytesPerDim;
 
-  /** Used by {@code RangeFieldQuery} to check how each internal or leaf node relates to the query. */
   enum QueryType {
-    /** Use this for intersects queries. */
     INTERSECTS {
 
       @Override
@@ -89,7 +76,6 @@ abstract class RangeFieldQuery extends Query {
       }
 
     },
-    /** Use this for within queries. */
     WITHIN {
 
       @Override
@@ -121,7 +107,6 @@ abstract class RangeFieldQuery extends Query {
       }
 
     },
-    /** Use this for contains */
     CONTAINS {
 
       @Override
@@ -153,7 +138,6 @@ abstract class RangeFieldQuery extends Query {
       }
 
     },
-    /** Use this for crosses queries */
     CROSSES {
 
       @Override
@@ -221,12 +205,6 @@ abstract class RangeFieldQuery extends Query {
     }
   }
 
-  /**
-   * Create a query for searching indexed ranges that match the provided relation.
-   * @param field field name. must not be null.
-   * @param ranges encoded range values; this is done by the {@code RangeField} implementation
-   * @param queryType the query relation
-   */
   RangeFieldQuery(String field, final byte[] ranges, final int numDims, final QueryType queryType) {
     checkArgs(field, ranges, numDims);
     if (queryType == null) {
@@ -239,7 +217,6 @@ abstract class RangeFieldQuery extends Query {
     this.bytesPerDim = ranges.length / (2*numDims);
   }
 
-  /** check input arguments */
   private static void checkArgs(String field, final byte[] ranges, final int numDims) {
     if (field == null) {
       throw new IllegalArgumentException("field must not be null");
@@ -252,7 +229,6 @@ abstract class RangeFieldQuery extends Query {
     }
   }
 
-  /** Check indexed field info against the provided query data. */
   private void checkFieldInfo(FieldInfo fieldInfo) {
     if (fieldInfo.getPointDataDimensionCount()/2 != numDims) {
       throw new IllegalArgumentException("field=\"" + field + "\" was indexed with numDims="
@@ -407,13 +383,5 @@ abstract class RangeFieldQuery extends Query {
     return sb.toString();
   }
 
-  /**
-   * Returns a string of a single value in a human-readable format for debugging.
-   * This is used by {@link #toString()}.
-   *
-   * @param dimension dimension of the particular value
-   * @param ranges encoded ranges, never null
-   * @return human readable value for debugging
-   */
   protected abstract String toString(byte[] ranges, int dimension);
 }

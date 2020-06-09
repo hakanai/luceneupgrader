@@ -19,9 +19,6 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.store;
 
 import java.io.*;
 
-/**
- * A {@link DataInput} wrapping a plain {@link InputStream}.
- */
 public class InputStreamDataInput extends DataInput implements Closeable {
   private final InputStream is;
   

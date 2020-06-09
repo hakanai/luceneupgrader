@@ -40,17 +40,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.lucene60.Luce
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.perfield.PerFieldDocValuesFormat;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.perfield.PerFieldPostingsFormat;
 
-/**
- * Implements the Lucene 7.0 index format, with configurable per-field postings
- * and docvalues formats.
- * <p>
- * If you want to reuse functionality of this codec in another codec, extend
- * {@link FilterCodec}.
- *
- * @see org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.lucene70 package documentation for file format details.
- *
- * @lucene.experimental
- */
 public class Lucene70Codec extends Codec {
   private final TermVectorsFormat vectorsFormat = new Lucene50TermVectorsFormat();
   private final FieldInfosFormat fieldInfosFormat = new Lucene60FieldInfosFormat();
@@ -74,19 +63,10 @@ public class Lucene70Codec extends Codec {
   
   private final StoredFieldsFormat storedFieldsFormat;
 
-  /** 
-   * Instantiates a new codec.
-   */
   public Lucene70Codec() {
     this(Mode.BEST_SPEED);
   }
   
-  /** 
-   * Instantiates a new codec, specifying the stored fields compression
-   * mode to use.
-   * @param mode stored fields compression mode to use for newly 
-   *             flushed/merged segments.
-   */
   public Lucene70Codec(Mode mode) {
     super("Lucene70");
     this.storedFieldsFormat = new Lucene50StoredFieldsFormat(Objects.requireNonNull(mode));
@@ -132,28 +112,10 @@ public class Lucene70Codec extends Codec {
     return new Lucene60PointsFormat();
   }
 
-  /** Returns the postings format that should be used for writing 
-   *  new segments of <code>field</code>.
-   *  
-   *  The default implementation always returns "Lucene50".
-   *  <p>
-   *  <b>WARNING:</b> if you subclass, you are responsible for index 
-   *  backwards compatibility: future version of Lucene are only 
-   *  guaranteed to be able to read the default implementation. 
-   */
   public PostingsFormat getPostingsFormatForField(String field) {
     return defaultFormat;
   }
   
-  /** Returns the docvalues format that should be used for writing 
-   *  new segments of <code>field</code>.
-   *  
-   *  The default implementation always returns "Lucene70".
-   *  <p>
-   *  <b>WARNING:</b> if you subclass, you are responsible for index 
-   *  backwards compatibility: future version of Lucene are only 
-   *  guaranteed to be able to read the default implementation. 
-   */
   public DocValuesFormat getDocValuesFormatForField(String field) {
     return defaultDVFormat;
   }

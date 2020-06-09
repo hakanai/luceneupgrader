@@ -31,7 +31,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.index.SortedSetDocValues.NO_MORE_ORDS;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 
-/** Bridge helper methods for legacy codecs to map sorted doc values to iterables. */
 
 public class LegacyDocValuesIterables {
 
@@ -39,9 +38,6 @@ public class LegacyDocValuesIterables {
     // no
   }
 
-  /** Converts {@link SortedDocValues} into an {@code Iterable&lt;BytesRef&gt;} for all the values.
-   *
-   * @deprecated Consume {@link SortedDocValues} instead. */
   @Deprecated
   public static Iterable<BytesRef> valuesIterable(final SortedDocValues values) {
     return new Iterable<BytesRef>() {
@@ -68,9 +64,6 @@ public class LegacyDocValuesIterables {
     };
   }
 
-  /** Converts {@link SortedSetDocValues} into an {@code Iterable&lt;BytesRef&gt;} for all the values.
-   *
-   * @deprecated Consume {@link SortedSetDocValues} instead. */
   @Deprecated
   public static Iterable<BytesRef> valuesIterable(final SortedSetDocValues values) {
     return new Iterable<BytesRef>() {
@@ -97,9 +90,6 @@ public class LegacyDocValuesIterables {
     };
   }
 
-  /** Converts {@link SortedDocValues} into the ord for each document as an {@code Iterable&lt;Number&gt;}.
-   *
-   * @deprecated Consume {@link SortedDocValues} instead. */
   @Deprecated
   public static Iterable<Number> sortedOrdIterable(final DocValuesProducer valuesProducer, FieldInfo fieldInfo, int maxDoc) {
     return new Iterable<Number>() {
@@ -144,9 +134,6 @@ public class LegacyDocValuesIterables {
     };
   }
 
-  /** Converts number-of-ords per document from {@link SortedSetDocValues} into {@code Iterable&lt;Number&gt;}.
-   *
-   * @deprecated Consume {@link SortedSetDocValues} instead. */
   @Deprecated
   public static Iterable<Number> sortedSetOrdCountIterable(final DocValuesProducer valuesProducer, final FieldInfo fieldInfo, final int maxDoc) {
 
@@ -199,9 +186,6 @@ public class LegacyDocValuesIterables {
     };
   }
 
-  /** Converts all concatenated ords (in docID order) from {@link SortedSetDocValues} into {@code Iterable&lt;Number&gt;}.
-   *
-   * @deprecated Consume {@link SortedSetDocValues} instead. */
   @Deprecated
   public static Iterable<Number> sortedSetOrdsIterable(final DocValuesProducer valuesProducer, final FieldInfo fieldInfo) {
 
@@ -263,9 +247,6 @@ public class LegacyDocValuesIterables {
     };
   }
 
-  /** Converts number-of-values per document from {@link SortedNumericDocValues} into {@code Iterable&lt;Number&gt;}.
-   *
-   * @deprecated Consume {@link SortedDocValues} instead. */
   @Deprecated
   public static Iterable<Number> sortedNumericToDocCount(final DocValuesProducer valuesProducer, final FieldInfo fieldInfo, int maxDoc) {
     return new Iterable<Number>() {
@@ -311,9 +292,6 @@ public class LegacyDocValuesIterables {
     };
   }
 
-  /** Converts all concatenated values (in docID order) from {@link SortedNumericDocValues} into {@code Iterable&lt;Number&gt;}.
-   *
-   * @deprecated Consume {@link SortedDocValues} instead. */
   @Deprecated
   public static Iterable<Number> sortedNumericToValues(final DocValuesProducer valuesProducer, final FieldInfo fieldInfo) {
     return new Iterable<Number>() {
@@ -375,9 +353,6 @@ public class LegacyDocValuesIterables {
     };
   }
 
-  /** Converts norms into {@code Iterable&lt;Number&gt;}.
-   *
-   * @deprecated Consume {@link NumericDocValues} instead. */
   @Deprecated
   public static Iterable<Number> normsIterable(final FieldInfo field,
       final NormsProducer normsProducer, final int maxDoc) {
@@ -430,9 +405,6 @@ public class LegacyDocValuesIterables {
     };
   }
 
-  /** Converts values from {@link BinaryDocValues} into {@code Iterable&lt;BytesRef&gt;}.
-   *
-   * @deprecated Consume {@link BinaryDocValues} instead. */
   @Deprecated
   public static Iterable<BytesRef> binaryIterable(final FieldInfo field, final DocValuesProducer valuesProducer, final int maxDoc) {
     return new Iterable<BytesRef>() {
@@ -481,9 +453,6 @@ public class LegacyDocValuesIterables {
     };
   }
 
-  /** Converts values from {@link NumericDocValues} into {@code Iterable&lt;Number&gt;}.
-   *
-   * @deprecated Consume {@link NumericDocValues} instead. */
   @Deprecated
   public static Iterable<Number> numericIterable(final FieldInfo field, final DocValuesProducer valuesProducer, final int maxDoc) {
     return new Iterable<Number>() {

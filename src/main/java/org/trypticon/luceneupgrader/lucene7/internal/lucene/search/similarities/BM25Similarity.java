@@ -30,23 +30,10 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.TermStatistic
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.SmallFloat;
 
-/**
- * BM25 Similarity. Introduced in Stephen E. Robertson, Steve Walker,
- * Susan Jones, Micheline Hancock-Beaulieu, and Mike Gatford. Okapi at TREC-3.
- * In Proceedings of the Third <b>T</b>ext <b>RE</b>trieval <b>C</b>onference (TREC 1994).
- * Gaithersburg, USA, November 1994.
- */
 public class BM25Similarity extends Similarity {
   private final float k1;
   private final float b;
 
-  /**
-   * BM25 with the supplied parameter values.
-   * @param k1 Controls non-linear term frequency normalization (saturation).
-   * @param b Controls to what degree document length normalizes tf values.
-   * @throws IllegalArgumentException if {@code k1} is infinite or negative, or if {@code b} is 
-   *         not within the range {@code [0..1]}
-   */
   public BM25Similarity(float k1, float b) {
     if (Float.isFinite(k1) == false || k1 < 0) {
       throw new IllegalArgumentException("illegal k1 value: " + k1 + ", must be a non-negative finite value");
@@ -58,32 +45,22 @@ public class BM25Similarity extends Similarity {
     this.b  = b;
   }
   
-  /** BM25 with these default values:
-   * <ul>
-   *   <li>{@code k1 = 1.2}</li>
-   *   <li>{@code b = 0.75}</li>
-   * </ul>
-   */
   public BM25Similarity() {
     this(1.2f, 0.75f);
   }
   
-  /** Implemented as <code>log(1 + (docCount - docFreq + 0.5)/(docFreq + 0.5))</code>. */
   protected float idf(long docFreq, long docCount) {
     return (float) Math.log(1 + (docCount - docFreq + 0.5D)/(docFreq + 0.5D));
   }
   
-  /** Implemented as <code>1 / (distance + 1)</code>. */
   protected float sloppyFreq(int distance) {
     return 1.0f / (distance + 1);
   }
   
-  /** The default implementation returns <code>1</code> */
   protected float scorePayload(int doc, int start, int end, BytesRef payload) {
     return 1;
   }
   
-  /** The default implementation computes the average as <code>sumTotalTermFreq / docCount</code> */
   protected float avgFieldLength(CollectionStatistics collectionStats) {
     final long sumTotalTermFreq;
     if (collectionStats.sumTotalTermFreq() == -1) {
@@ -100,28 +77,16 @@ public class BM25Similarity extends Similarity {
     return (float) (sumTotalTermFreq / (double) docCount);
   }
   
-  /** 
-   * True if overlap tokens (tokens with a position of increment of zero) are
-   * discounted from the document's length.
-   */
   protected boolean discountOverlaps = true;
 
-  /** Sets whether overlap tokens (Tokens with 0 position increment) are 
-   *  ignored when computing norm.  By default this is true, meaning overlap
-   *  tokens do not count when computing norms. */
   public void setDiscountOverlaps(boolean v) {
     discountOverlaps = v;
   }
 
-  /**
-   * Returns true if overlap tokens are discounted from the document's length. 
-   * @see #setDiscountOverlaps 
-   */
   public boolean getDiscountOverlaps() {
     return discountOverlaps;
   }
   
-  /** Cache of decoded bytes. */
   private static final float[] OLD_LENGTH_TABLE = new float[256];
   private static final float[] LENGTH_TABLE = new float[256];
 
@@ -149,28 +114,6 @@ public class BM25Similarity extends Similarity {
     }
   }
 
-  /**
-   * Computes a score factor for a simple term and returns an explanation
-   * for that score factor.
-   * 
-   * <p>
-   * The default implementation uses:
-   * 
-   * <pre class="prettyprint">
-   * idf(docFreq, docCount);
-   * </pre>
-   * 
-   * Note that {@link CollectionStatistics#docCount()} is used instead of
-   * {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexReader#numDocs() IndexReader#numDocs()} because also 
-   * {@link TermStatistics#docFreq()} is used, and when the latter 
-   * is inaccurate, so is {@link CollectionStatistics#docCount()}, and in the same direction.
-   * In addition, {@link CollectionStatistics#docCount()} does not skew when fields are sparse.
-   *   
-   * @param collectionStats collection-level statistics
-   * @param termStats term-level statistics for the term
-   * @return an Explain object that includes both an idf score factor 
-             and an explanation for the term.
-   */
   public Explanation idfExplain(CollectionStatistics collectionStats, TermStatistics termStats) {
     final long df = termStats.docFreq();
     final long docCount = collectionStats.docCount() == -1 ? collectionStats.maxDoc() : collectionStats.docCount();
@@ -180,19 +123,6 @@ public class BM25Similarity extends Similarity {
         Explanation.match(docCount, "docCount"));
   }
 
-  /**
-   * Computes a score factor for a phrase.
-   * 
-   * <p>
-   * The default implementation sums the idf factor for
-   * each term in the phrase.
-   * 
-   * @param collectionStats collection-level statistics
-   * @param termStats term-level statistics for the terms in the phrase
-   * @return an Explain object that includes both an idf 
-   *         score factor for the phrase and an explanation 
-   *         for each term.
-   */
   public Explanation idfExplain(CollectionStatistics collectionStats, TermStatistics termStats[]) {
     double idf = 0d; // sum into a double before casting into a float
     List<Explanation> details = new ArrayList<>();
@@ -228,9 +158,7 @@ public class BM25Similarity extends Similarity {
     private final BM25Stats stats;
     private final float weightValue; // boost * idf * (k1 + 1)
     private final NumericDocValues norms;
-    /** precomputed cache for all length values */
     private final float[] lengthCache;
-    /** precomputed norm[256] with k1 * ((1 - b) + b * dl / avgdl) */
     private final float[] cache;
     
     BM25DocScorer(BM25Stats stats, int indexCreatedVersionMajor, NumericDocValues norms) throws IOException {
@@ -278,20 +206,12 @@ public class BM25Similarity extends Similarity {
     }
   }
   
-  /** Collection statistics for the BM25 model. */
   private static class BM25Stats extends SimWeight {
-    /** BM25's idf */
     private final Explanation idf;
-    /** The average document length. */
     private final float avgdl;
-    /** query boost */
     private final float boost;
-    /** weight (idf * boost) */
     private final float weight;
-    /** field name, for pulling norms */
     private final String field;
-    /** precomputed norm[256] with k1 * ((1 - b) + b * dl / avgdl)
-     *  for both OLD_LENGTH_TABLE and LENGTH_TABLE */
     private final float[] oldCache, cache;
 
     BM25Stats(String field, float boost, Explanation idf, float avgdl, float[] oldCache, float[] cache) {
@@ -350,18 +270,10 @@ public class BM25Similarity extends Similarity {
     return "BM25(k1=" + k1 + ",b=" + b + ")";
   }
   
-  /** 
-   * Returns the <code>k1</code> parameter
-   * @see #BM25Similarity(float, float) 
-   */
   public final float getK1() {
     return k1;
   }
   
-  /**
-   * Returns the <code>b</code> parameter 
-   * @see #BM25Similarity(float, float) 
-   */
   public final float getB() {
     return b;
   }

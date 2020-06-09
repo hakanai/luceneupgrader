@@ -37,9 +37,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.lucene53.Lucene53NormsFormat.VERSION_CURRENT;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.lucene53.Lucene53NormsFormat.VERSION_START;
 
-/**
- * Reader for {@link Lucene53NormsFormat}
- */
 class Lucene53NormsProducer extends NormsProducer {
   // metadata maps (just file pointers and minimal stuff)
   private final Map<Integer,NormsEntry> norms = new HashMap<>();

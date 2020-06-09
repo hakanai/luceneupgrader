@@ -32,35 +32,11 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.MergedIterator;
 
-/**
- * Provides a single {@link Fields} term index view over an
- * {@link IndexReader}.
- * This is useful when you're interacting with an {@link
- * IndexReader} implementation that consists of sequential
- * sub-readers (eg {@link DirectoryReader} or {@link
- * MultiReader}) and you must treat it as a {@link LeafReader}.
- *
- * <p><b>NOTE</b>: for composite readers, you'll get better
- * performance by gathering the sub readers using
- * {@link IndexReader#getContext()} to get the
- * atomic leaves and then operate per-LeafReader,
- * instead of using this class.
- *
- * @lucene.experimental
- */
 public final class MultiFields extends Fields {
   private final Fields[] subs;
   private final ReaderSlice[] subSlices;
   private final Map<String,Terms> terms = new ConcurrentHashMap<>();
 
-  /** Returns a single {@link Fields} instance for this
-   *  reader, merging fields/terms/docs/positions on the
-   *  fly.  This method will return null if the reader 
-   *  has no postings.
-   *
-   *  <p><b>NOTE</b>: this is a slow way to access postings.
-   *  It's better to get the sub-readers and iterate through them
-   *  yourself. */
   public static Fields getFields(IndexReader reader) throws IOException {
     final List<LeafReaderContext> leaves = reader.leaves();
     switch (leaves.size()) {
@@ -85,15 +61,6 @@ public final class MultiFields extends Fields {
     }
   }
 
-  /** Returns a single {@link Bits} instance for this
-   *  reader, merging live Documents on the
-   *  fly.  This method will return null if the reader 
-   *  has no deletions.
-   *
-   *  <p><b>NOTE</b>: this is a very slow way to access live docs.
-   *  For example, each Bits access will require a binary search.
-   *  It's better to get the sub-readers and iterate through them
-   *  yourself. */
   public static Bits getLiveDocs(IndexReader reader) {
     if (reader.hasDeletions()) {
       final List<LeafReaderContext> leaves = reader.leaves();
@@ -117,7 +84,6 @@ public final class MultiFields extends Fields {
     }
   }
 
-  /** This method may return null if the field does not exist or if it has no terms. */
   public static Terms getTerms(IndexReader r, String field) throws IOException {
     final List<LeafReaderContext> leaves = r.leaves();
     if (leaves.size() == 1) {
@@ -144,19 +110,10 @@ public final class MultiFields extends Fields {
     }
   }
   
-  /** Returns {@link PostingsEnum} for the specified field and
-   *  term.  This will return null if the field or term does
-   *  not exist. */
   public static PostingsEnum getTermDocsEnum(IndexReader r, String field, BytesRef term) throws IOException {
     return getTermDocsEnum(r, field, term, PostingsEnum.FREQS);
   }
   
-  /** Returns {@link PostingsEnum} for the specified field and
-   *  term, with control over whether freqs are required.
-   *  Some codecs may be able to optimize their
-   *  implementation when freqs are not required.  This will
-   *  return null if the field or term does not exist.  See {@link
-   *  TermsEnum#postings(PostingsEnum,int)}.*/
   public static PostingsEnum getTermDocsEnum(IndexReader r, String field, BytesRef term, int flags) throws IOException {
     assert field != null;
     assert term != null;
@@ -170,20 +127,10 @@ public final class MultiFields extends Fields {
     return null;
   }
 
-  /** Returns {@link PostingsEnum} for the specified
-   *  field and term.  This will return null if the field or
-   *  term does not exist or positions were not indexed. 
-   *  @see #getTermPositionsEnum(IndexReader, String, BytesRef, int) */
   public static PostingsEnum getTermPositionsEnum(IndexReader r, String field, BytesRef term) throws IOException {
     return getTermPositionsEnum(r, field, term, PostingsEnum.ALL);
   }
 
-  /** Returns {@link PostingsEnum} for the specified
-   *  field and term, with control over whether offsets and payloads are
-   *  required.  Some codecs may be able to optimize
-   *  their implementation when offsets and/or payloads are not
-   *  required. This will return null if the field or term does not
-   *  exist. See {@link TermsEnum#postings(PostingsEnum,int)}. */
   public static PostingsEnum getTermPositionsEnum(IndexReader r, String field, BytesRef term, int flags) throws IOException {
     assert field != null;
     assert term != null;
@@ -197,10 +144,6 @@ public final class MultiFields extends Fields {
     return null;
   }
 
-  /**
-   * Expert: construct a new MultiFields instance directly.
-   * @lucene.internal
-   */
   // TODO: why is this public?
   public MultiFields(Fields[] subs, ReaderSlice[] subSlices) {
     this.subs = subs;
@@ -255,14 +198,6 @@ public final class MultiFields extends Fields {
     return -1;
   }
 
-  /** Call this to get the (merged) FieldInfos for a
-   *  composite reader.
-   *  <p>
-   *  NOTE: the returned field numbers will likely not
-   *  correspond to the actual field numbers in the underlying
-   *  readers, and codec metadata ({@link FieldInfo#getAttribute(String)}
-   *  will be unavailable.
-   */
   public static FieldInfos getMergedFieldInfos(IndexReader reader) {
     final List<LeafReaderContext> leaves = reader.leaves();
     if (leaves.isEmpty()) {
@@ -282,14 +217,6 @@ public final class MultiFields extends Fields {
     }
   }
 
-  /** Call this to get the (merged) FieldInfos representing the
-   *  set of indexed fields <b>only</b> for a composite reader. 
-   *  <p>
-   *  NOTE: the returned field numbers will likely not
-   *  correspond to the actual field numbers in the underlying
-   *  readers, and codec metadata ({@link FieldInfo#getAttribute(String)}
-   *  will be unavailable.
-   */
   public static Collection<String> getIndexedFields(IndexReader reader) {
     final Collection<String> fields = new HashSet<>();
     for(final FieldInfo fieldInfo : getMergedFieldInfos(reader)) {

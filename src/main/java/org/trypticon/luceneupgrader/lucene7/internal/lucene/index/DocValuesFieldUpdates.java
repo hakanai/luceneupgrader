@@ -30,11 +30,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PagedMut
 
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 
-/**
- * Holds updates of a single DocValues field, for a set of documents within one segment.
- * 
- * @lucene.experimental
- */
 abstract class DocValuesFieldUpdates implements Accountable {
   
   protected static final int PAGE_SIZE = 1024;
@@ -42,11 +37,6 @@ abstract class DocValuesFieldUpdates implements Accountable {
   private static final long HAS_NO_VALUE_MASK = 0;
   private static final int SHIFT = 1; // we use the first bit of each value to mark if the doc has a value or not
 
-  /**
-   * An iterator over documents and their updated values. Only documents with
-   * updates are returned by this iterator, and the documents are returned in
-   * increasing order.
-   */
   static abstract class Iterator extends DocValuesIterator {
 
     @Override
@@ -66,27 +56,14 @@ abstract class DocValuesFieldUpdates implements Accountable {
     @Override
     public abstract int nextDoc(); // no IOException
 
-    /**
-     * Returns a long value for the current document if this iterator is a long iterator.
-     */
     abstract long longValue();
 
-    /**
-     * Returns a binary value for the current document if this iterator is a binary value iterator.
-     */
     abstract BytesRef binaryValue();
 
-    /** Returns delGen for this packet. */
     abstract long delGen();
 
-    /**
-     * Returns true if this doc has a value
-     */
     abstract boolean hasValue();
 
-    /**
-     * Wraps the given iterator as a BinaryDocValues instance.
-     */
     static BinaryDocValues asBinaryDocValues(Iterator iterator) {
       return new BinaryDocValues() {
         @Override
@@ -115,9 +92,6 @@ abstract class DocValuesFieldUpdates implements Accountable {
         }
       };
     }
-    /**
-     * Wraps the given iterator as a NumericDocValues instance.
-     */
     static NumericDocValues asNumericDocValues(Iterator iterator) {
       return new NumericDocValues() {
         @Override
@@ -150,7 +124,6 @@ abstract class DocValuesFieldUpdates implements Accountable {
 
 
 
-  /** Merge-sorts multiple iterators, one per delGen, favoring the largest delGen that has updates for a given docID. */
   public static Iterator mergedIterator(Iterator[] subs) {
 
     if (subs.length == 1) {
@@ -265,21 +238,11 @@ abstract class DocValuesFieldUpdates implements Accountable {
 
   abstract void add(int doc, BytesRef value);
 
-  /**
-   * Adds the value for the given docID.
-   * This method prevents conditional calls to {@link Iterator#longValue()} or {@link Iterator#binaryValue()}
-   * since the implementation knows if it's a long value iterator or binary value
-   */
   abstract void add(int docId, Iterator iterator);
 
-  /**
-   * Returns an {@link Iterator} over the updated documents and their
-   * values.
-   */
   // TODO: also use this for merging, instead of having to write through to disk first
   abstract Iterator iterator();
 
-  /** Freezes internal data structures and sorts updates by docID for efficient iteration. */
   final synchronized void finish() {
     if (finished) {
       throw new IllegalStateException("already finished");
@@ -342,7 +305,6 @@ abstract class DocValuesFieldUpdates implements Accountable {
     }
   }
 
-  /** Returns true if this instance contains any updates. */
   synchronized boolean any() {
     return size > 0;
   }
@@ -351,10 +313,6 @@ abstract class DocValuesFieldUpdates implements Accountable {
     return size;
   }
 
-  /**
-   * Adds an update that resets the documents value.
-   * @param doc the doc to update
-   */
   synchronized void reset(int doc) {
     addInternal(doc, HAS_NO_VALUE_MASK);
   }
@@ -447,10 +405,6 @@ abstract class DocValuesFieldUpdates implements Accountable {
       return doc;
     }
 
-    /**
-     * Called when the iterator moved to the next document
-     * @param idx the internal index to set the value to
-     */
     protected abstract void set(long idx);
 
     @Override

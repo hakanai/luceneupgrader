@@ -17,34 +17,11 @@
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.search.similarities;
 
 
-/**
- * Implements the <em>Divergence from Independence (DFI)</em> model based on Chi-square statistics
- * (i.e., standardized Chi-squared distance from independence in term frequency tf).
- * <p>
- * DFI is both parameter-free and non-parametric:
- * <ul>
- * <li>parameter-free: it does not require any parameter tuning or training.</li>
- * <li>non-parametric: it does not make any assumptions about word frequency distributions on document collections.</li>
- * </ul>
- * <p>
- * It is highly recommended <b>not</b> to remove stopwords (very common terms: the, of, and, to, a, in, for, is, on, that, etc) with this similarity.
- * <p>
- * For more information see: <a href="http://dx.doi.org/10.1007/s10791-013-9225-4">A nonparametric term weighting method for information retrieval based on measuring the divergence from independence</a>
- *
- * @lucene.experimental
- * @see org.trypticon.luceneupgrader.lucene7.internal.lucene.search.similarities.IndependenceStandardized
- * @see org.trypticon.luceneupgrader.lucene7.internal.lucene.search.similarities.IndependenceSaturated
- * @see org.trypticon.luceneupgrader.lucene7.internal.lucene.search.similarities.IndependenceChiSquared
- */
 
 
 public class DFISimilarity extends SimilarityBase {
   private final Independence independence;
   
-  /**
-   * Create DFI with the specified divergence from independence measure
-   * @param independenceMeasure measure of divergence from independence
-   */
   public DFISimilarity(Independence independenceMeasure) {
     this.independence = independenceMeasure;
   }
@@ -62,9 +39,6 @@ public class DFISimilarity extends SimilarityBase {
     return stats.getBoost() * (float) log2(measure + 1);
   }
 
-  /**
-   * Returns the measure of independence
-   */
   public Independence getIndependence() {
     return independence;
   }

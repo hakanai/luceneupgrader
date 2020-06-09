@@ -20,13 +20,8 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.search.similarities
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.Explanation;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.similarities.SimilarityBase.log2;
 
-/**
- * The basic tf-idf model of randomness.
- * @lucene.experimental
- */ 
 public class BasicModelIn extends BasicModel {
   
-  /** Sole constructor: parameter-free */
   public BasicModelIn() {}
 
   @Override

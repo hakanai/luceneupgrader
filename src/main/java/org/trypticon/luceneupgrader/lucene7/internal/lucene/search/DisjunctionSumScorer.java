@@ -20,14 +20,8 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.search;
 import java.io.IOException;
 import java.util.List;
 
-/** A Scorer for OR like queries, counterpart of <code>ConjunctionScorer</code>.
- */
 final class DisjunctionSumScorer extends DisjunctionScorer {
   
-  /** Construct a <code>DisjunctionScorer</code>.
-   * @param weight The weight to be used.
-   * @param subScorers Array of at least two subscorers.
-   */
   DisjunctionSumScorer(Weight weight, List<Scorer> subScorers, boolean needsScores) {
     super(weight, subScorers, needsScores);
   }

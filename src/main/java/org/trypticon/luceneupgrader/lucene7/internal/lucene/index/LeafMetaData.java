@@ -19,17 +19,12 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.index;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.Sort;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Version;
 
-/**
- * Provides read-only metadata about a leaf.
- * @lucene.experimental
- */
 public final class LeafMetaData {
 
   private final int createdVersionMajor;
   private final Version minVersion;
   private final Sort sort;
 
-  /** Expert: Sole constructor. Public for use by custom {@link LeafReader} impls. */
   public LeafMetaData(int createdVersionMajor, Version minVersion, Sort sort) {
     this.createdVersionMajor = createdVersionMajor;
     if (createdVersionMajor > Version.LATEST.major) {
@@ -48,25 +43,14 @@ public final class LeafMetaData {
     this.sort = sort;
   }
 
-  /** Get the Lucene version that created this index. This can be used to implement
-   *  backward compatibility on top of the codec API. A return value of {@code 6}
-   *  indicates that the created version is unknown. */
   public int getCreatedVersionMajor() {
     return createdVersionMajor;
   }
 
-  /**
-   * Return the minimum Lucene version that contributed documents to this index,
-   * or {@code null} if this information is not available.
-   */
   public Version getMinVersion() {
     return minVersion;
   }
 
-  /**
-   * Return the order in which documents from this index are sorted, or
-   * {@code null} if documents are in no particular order.
-   */
   public Sort getSort() {
     return sort;
   }

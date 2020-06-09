@@ -17,19 +17,8 @@
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.search.similarities;
 
 
-/**
- * Normalized chi-squared measure of distance from independence
- * <p>
- * Described as:
- * "can be used for tasks that require high precision, against both 
- *  short and long queries."
- * @lucene.experimental
- */
 public class IndependenceChiSquared extends Independence {
   
-  /**
-   * Sole constructor.
-   */
   public IndependenceChiSquared() {}
 
   @Override

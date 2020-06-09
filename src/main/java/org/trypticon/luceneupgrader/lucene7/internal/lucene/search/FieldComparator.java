@@ -28,99 +28,16 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.SortedDocValue
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRefBuilder;
 
-/**
- * Expert: a FieldComparator compares hits so as to determine their
- * sort order when collecting the top results with {@link
- * TopFieldCollector}.  The concrete public FieldComparator
- * classes here correspond to the SortField types.
- *
- * <p>The document IDs passed to these methods must only
- * move forwards, since they are using doc values iterators
- * to retrieve sort values.</p>
- *
- * <p>This API is designed to achieve high performance
- * sorting, by exposing a tight interaction with {@link
- * FieldValueHitQueue} as it visits hits.  Whenever a hit is
- * competitive, it's enrolled into a virtual slot, which is
- * an int ranging from 0 to numHits-1. Segment transitions are
- * handled by creating a dedicated per-segment
- * {@link LeafFieldComparator} which also needs to interact
- * with the {@link FieldValueHitQueue} but can optimize based
- * on the segment to collect.</p>
- * 
- * <p>The following functions need to be implemented</p>
- * <ul>
- *  <li> {@link #compare} Compare a hit at 'slot a'
- *       with hit 'slot b'.
- * 
- *  <li> {@link #setTopValue} This method is called by
- *       {@link TopFieldCollector} to notify the
- *       FieldComparator of the top most value, which is
- *       used by future calls to
- *       {@link LeafFieldComparator#compareTop}.
- * 
- *  <li> {@link #getLeafComparator(org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReaderContext)} Invoked
- *       when the search is switching to the next segment.
- *       You may need to update internal state of the
- *       comparator, for example retrieving new values from
- *       DocValues.
- *
- *  <li> {@link #value} Return the sort value stored in
- *       the specified slot.  This is only called at the end
- *       of the search, in order to populate {@link
- *       FieldDoc#fields} when returning the top results.
- * </ul>
- *
- * @see LeafFieldComparator
- * @lucene.experimental
- */
 public abstract class FieldComparator<T> {
 
-  /**
-   * Compare hit at slot1 with hit at slot2.
-   * 
-   * @param slot1 first slot to compare
-   * @param slot2 second slot to compare
-   * @return any {@code N < 0} if slot2's value is sorted after
-   * slot1, any {@code N > 0} if the slot2's value is sorted before
-   * slot1 and {@code 0} if they are equal
-   */
   public abstract int compare(int slot1, int slot2);
 
-  /**
-   * Record the top value, for future calls to {@link
-   * LeafFieldComparator#compareTop}.  This is only called for searches that
-   * use searchAfter (deep paging), and is called before any
-   * calls to {@link #getLeafComparator(LeafReaderContext)}.
-   */
   public abstract void setTopValue(T value);
 
-  /**
-   * Return the actual value in the slot.
-   *
-   * @param slot the value
-   * @return value in this slot
-   */
   public abstract T value(int slot);
 
-  /**
-   * Get a per-segment {@link LeafFieldComparator} to collect the given
-   * {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReaderContext}. All docIDs supplied to
-   * this {@link LeafFieldComparator} are relative to the current reader (you
-   * must add docBase if you need to map it to a top-level docID).
-   * 
-   * @param context current reader context
-   * @return the comparator to use for this segment
-   * @throws IOException if there is a low-level IO error
-   */
   public abstract LeafFieldComparator getLeafComparator(LeafReaderContext context) throws IOException;
 
-  /** Returns a negative integer if first is less than second,
-   *  0 if they are equal and a positive integer otherwise. Default
-   *  impl to assume the type implements Comparable and
-   *  invoke .compareTo; be sure to override this method if
-   *  your FieldComparator's type isn't a Comparable or
-   *  if your values may sometimes be null */
   @SuppressWarnings("unchecked")
   public int compareValues(T first, T second) {
     if (first == null) {
@@ -137,9 +54,6 @@ public abstract class FieldComparator<T> {
   }
 
 
-  /**
-   * Base FieldComparator class for numeric types
-   */
   public static abstract class NumericComparator<T extends Number> extends SimpleFieldComparator<T> {
     protected final T missingValue;
     protected final String field;
@@ -155,23 +69,16 @@ public abstract class FieldComparator<T> {
       currentReaderValues = getNumericDocValues(context, field);
     }
     
-    /** Retrieves the NumericDocValues for the field in this segment */
     protected NumericDocValues getNumericDocValues(LeafReaderContext context, String field) throws IOException {
       return DocValues.getNumeric(context.reader(), field);
     }
   }
 
-  /** Parses field's values as double (using {@link
-   *  org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReader#getNumericDocValues} and sorts by ascending value */
   public static class DoubleComparator extends NumericComparator<Double> {
     private final double[] values;
     private double bottom;
     private double topValue;
 
-    /** 
-     * Creates a new comparator based on {@link Double#compare} for {@code numHits}.
-     * When a document has no value for the field, {@code missingValue} is substituted.
-     */
     public DoubleComparator(int numHits, String field, Double missingValue) {
       super(field, missingValue != null ? missingValue : 0.0);
       values = new double[numHits];
@@ -221,17 +128,11 @@ public abstract class FieldComparator<T> {
     }
   }
 
-  /** Parses field's values as float (using {@link
-   *  org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReader#getNumericDocValues(String)} and sorts by ascending value */
   public static class FloatComparator extends NumericComparator<Float> {
     private final float[] values;
     private float bottom;
     private float topValue;
 
-    /** 
-     * Creates a new comparator based on {@link Float#compare} for {@code numHits}.
-     * When a document has no value for the field, {@code missingValue} is substituted. 
-     */
     public FloatComparator(int numHits, String field, Float missingValue) {
       super(field, missingValue != null ? missingValue : 0.0f);
       values = new float[numHits];
@@ -281,17 +182,11 @@ public abstract class FieldComparator<T> {
     }
   }
 
-  /** Parses field's values as int (using {@link
-   *  org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReader#getNumericDocValues(String)} and sorts by ascending value */
   public static class IntComparator extends NumericComparator<Integer> {
     private final int[] values;
     private int bottom;                           // Value of bottom of queue
     private int topValue;
 
-    /** 
-     * Creates a new comparator based on {@link Integer#compare} for {@code numHits}.
-     * When a document has no value for the field, {@code missingValue} is substituted. 
-     */
     public IntComparator(int numHits, String field, Integer missingValue) {
       super(field, missingValue != null ? missingValue : 0);
       //System.out.println("IntComparator.init");
@@ -343,17 +238,11 @@ public abstract class FieldComparator<T> {
     }
   }
 
-  /** Parses field's values as long (using {@link
-   *  org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReader#getNumericDocValues(String)} and sorts by ascending value */
   public static class LongComparator extends NumericComparator<Long> {
     private final long[] values;
     private long bottom;
     private long topValue;
 
-    /** 
-     * Creates a new comparator based on {@link Long#compare} for {@code numHits}.
-     * When a document has no value for the field, {@code missingValue} is substituted. 
-     */
     public LongComparator(int numHits, String field, Long missingValue) {
       super(field, missingValue != null ? missingValue : 0L);
       values = new long[numHits];
@@ -403,19 +292,12 @@ public abstract class FieldComparator<T> {
     }
   }
 
-  /** Sorts by descending relevance.  NOTE: if you are
-   *  sorting only by descending relevance and then
-   *  secondarily by ascending docID, performance is faster
-   *  using {@link TopScoreDocCollector} directly (which {@link
-   *  IndexSearcher#search} uses when no {@link Sort} is
-   *  specified). */
   public static final class RelevanceComparator extends FieldComparator<Float> implements LeafFieldComparator {
     private final float[] scores;
     private float bottom;
     private Scorer scorer;
     private float topValue;
 
-    /** Creates a new comparator based on relevance for {@code numHits}. */
     public RelevanceComparator(int numHits) {
       scores = new float[numHits];
     }
@@ -486,14 +368,12 @@ public abstract class FieldComparator<T> {
     }
   }
 
-  /** Sorts by ascending docID */
   public static final class DocComparator extends FieldComparator<Integer> implements LeafFieldComparator {
     private final int[] docIDs;
     private int docBase;
     private int bottom;
     private int topValue;
 
-    /** Creates a new comparator based on document ids for {@code numHits} */
     public DocComparator(int numHits) {
       docIDs = new int[numHits];
     }
@@ -549,15 +429,6 @@ public abstract class FieldComparator<T> {
     public void setScorer(Scorer scorer) {}
   }
   
-  /** Sorts by field's natural Term sort order, using
-   *  ordinals.  This is functionally equivalent to {@link
-   *  org.trypticon.luceneupgrader.lucene7.internal.lucene.search.FieldComparator.TermValComparator}, but it first resolves the string
-   *  to their relative ordinal positions (using the index
-   *  returned by {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReader#getSortedDocValues(String)}), and
-   *  does most comparisons using the ordinals.  For medium
-   *  to large results, this comparator will be much faster
-   *  than {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.search.FieldComparator.TermValComparator}.  For very small
-   *  result sets it may be slower. */
   public static class TermOrdValComparator extends FieldComparator<BytesRef> implements LeafFieldComparator {
     /* Ords for each slot.
        @lucene.internal */
@@ -604,26 +475,18 @@ public abstract class FieldComparator<T> {
       @lucene.internal */
     BytesRef bottomValue;
 
-    /** Set by setTopValue. */
     BytesRef topValue;
     boolean topSameReader;
     int topOrd;
 
-    /** -1 if missing values are sorted first, 1 if they are
-     *  sorted last */
     final int missingSortCmp;
     
-    /** Which ordinal to use for a missing value. */
     final int missingOrd;
 
-    /** Creates this, sorting missing values first. */
     public TermOrdValComparator(int numHits, String field) {
       this(numHits, field, false);
     }
 
-    /** Creates this, with control over how missing values
-     *  are sorted.  Pass sortMissingLast=true to put
-     *  missing values at the end. */
     public TermOrdValComparator(int numHits, String field, boolean sortMissingLast) {
       ords = new int[numHits];
       values = new BytesRef[numHits];
@@ -704,7 +567,6 @@ public abstract class FieldComparator<T> {
       readerGen[slot] = currentReaderGen;
     }
     
-    /** Retrieves the SortedDocValues for the field in this segment */
     protected SortedDocValues getSortedDocValues(LeafReaderContext context, String field) throws IOException {
       return DocValues.getSorted(context.reader(), field);
     }
@@ -821,10 +683,6 @@ public abstract class FieldComparator<T> {
     public void setScorer(Scorer scorer) {}
   }
   
-  /** Sorts by field's natural Term sort order.  All
-   *  comparisons are done using BytesRef.compareTo, which is
-   *  slow for medium to large result sets but possibly
-   *  very fast for very small results sets. */
   public static class TermValComparator extends FieldComparator<BytesRef> implements LeafFieldComparator {
     
     private final BytesRef[] values;
@@ -835,7 +693,6 @@ public abstract class FieldComparator<T> {
     private BytesRef topValue;
     private final int missingSortCmp;
 
-    /** Sole constructor. */
     public TermValComparator(int numHits, String field, boolean sortMissingLast) {
       values = new BytesRef[numHits];
       tempBRs = new BytesRefBuilder[numHits];
@@ -878,7 +735,6 @@ public abstract class FieldComparator<T> {
       }
     }
 
-    /** Retrieves the BinaryDocValues for the field in this segment */
     protected BinaryDocValues getBinaryDocValues(LeafReaderContext context, String field) throws IOException {
       return DocValues.getBinary(context.reader(), field);
     }

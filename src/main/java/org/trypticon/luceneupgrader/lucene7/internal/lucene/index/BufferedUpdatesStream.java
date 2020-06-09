@@ -33,20 +33,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.InfoStream;
 
-/** Tracks the stream of {@link FrozenBufferedUpdates}.
- * When DocumentsWriterPerThread flushes, its buffered
- * deletes and updates are appended to this stream and immediately
- * resolved (to actual docIDs, per segment) using the indexing
- * thread that triggered the flush for concurrency.  When a
- * merge kicks off, we sync to ensure all resolving packets
- * complete.  We also apply to all segments when NRT reader is pulled,
- * commit/close is called, or when too many deletes or updates are
- * buffered and must be flushed (by RAM usage or by count).
- *
- * Each packet is assigned a generation, and each flushed or
- * merged segment is also assigned a generation, so we can
- * track which BufferedDeletes packets to apply to any given
- * segment. */
 
 final class BufferedUpdatesStream implements Accountable {
 
@@ -95,7 +81,6 @@ final class BufferedUpdatesStream implements Accountable {
     return updates.size();
   }
 
-  /** Only used by IW.rollback */
   synchronized void clear() {
     updates.clear();
     nextGen = 1;
@@ -131,9 +116,6 @@ final class BufferedUpdatesStream implements Accountable {
     }
   }
 
-  /** Waits for all in-flight packets, which are already being resolved concurrently
-   *  by indexing threads, to finish.  Returns true if there were any 
-   *  new deletes or updates.  This is called for refresh, commit. */
   void waitApplyAll(IndexWriter writer) throws IOException {
     assert Thread.holdsLock(writer) == false;
     Set<FrozenBufferedUpdates> waitFor;
@@ -144,7 +126,6 @@ final class BufferedUpdatesStream implements Accountable {
     waitApply(waitFor, writer);
   }
 
-  /** Returns true if this delGen is still running. */
   boolean stillRunning(long delGen) {
     return finishedSegments.stillRunning(delGen);
   }
@@ -153,9 +134,6 @@ final class BufferedUpdatesStream implements Accountable {
     finishedSegments.finishedSegment(delGen);
   }
   
-  /** Called by indexing threads once they are fully done resolving all deletes for the provided
-   *  delGen.  We track the completed delGens and record the maximum delGen for which all prior
-   *  delGens, inclusive, are completed, so that it's safe for doc values updates to apply and write. */
 
   synchronized void finished(FrozenBufferedUpdates packet) {
     // TODO: would be a bit more memory efficient to track this per-segment, so when each segment writes it writes all packets finished for
@@ -174,14 +152,10 @@ final class BufferedUpdatesStream implements Accountable {
     finishedSegment(packet.delGen());
   }
 
-  /** All frozen packets up to and including this del gen are guaranteed to be finished. */
   long getCompletedDelGen() {
     return finishedSegments.getCompletedDelGen();
   }   
 
-  /** Waits only for those in-flight packets that apply to these merge segments.  This is
-   *  called when a merge needs to finish and must ensure all deletes to the merging
-   *  segments are resolved. */
   void waitApplyForMerge(List<SegmentCommitInfo> mergeInfos, IndexWriter writer) throws IOException {
     long maxDelGen = Long.MIN_VALUE;
     for (SegmentCommitInfo info : mergeInfos) {
@@ -254,7 +228,6 @@ final class BufferedUpdatesStream implements Accountable {
     return nextGen++;
   }
 
-  /** Holds all per-segment internal state used while resolving deletions. */
   static final class SegmentState implements Closeable {
     final long delGen;
     final ReadersAndUpdates rld;
@@ -298,16 +271,10 @@ final class BufferedUpdatesStream implements Accountable {
     return true;
   }
 
-  /** Tracks the contiguous range of packets that have finished resolving.  We need this because the packets
-   *  are concurrently resolved, and we can only write to disk the contiguous completed
-   *  packets. */
   private static class FinishedSegments {
 
-    /** Largest del gen, inclusive, for which all prior packets have finished applying. */
     private long completedDelGen;
 
-    /** This lets us track the "holes" in the current frontier of applying del
-     *  gens; once the holes are filled in we can advance completedDelGen. */
     private final Set<Long> finishedDelGens = new HashSet<>();
 
     private final InfoStream infoStream;

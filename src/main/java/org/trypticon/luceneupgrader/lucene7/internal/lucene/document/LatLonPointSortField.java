@@ -20,9 +20,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoUtils;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.FieldComparator;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.SortField;
 
-/**
- * Sorts by distance from an origin location.
- */
 final class LatLonPointSortField extends SortField {
   final double latitude;
   final double longitude;

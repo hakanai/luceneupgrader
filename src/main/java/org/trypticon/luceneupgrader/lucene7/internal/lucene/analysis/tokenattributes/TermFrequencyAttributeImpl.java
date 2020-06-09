@@ -20,11 +20,9 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.tokenattri
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.AttributeImpl;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.AttributeReflector;
 
-/** Default implementation of {@link TermFrequencyAttribute}. */
 public class TermFrequencyAttributeImpl extends AttributeImpl implements TermFrequencyAttribute, Cloneable {
   private int termFrequency = 1;
   
-  /** Initialize this attribute with term frequencey of 1 */
   public TermFrequencyAttributeImpl() {}
 
   @Override

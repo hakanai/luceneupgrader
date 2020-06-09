@@ -25,16 +25,10 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.FieldInfo;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReader;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReaderContext;
 
-/**
- * A {@link Query} that matches documents that have a value for a given field
- * as reported by doc values iterators.
- */
 public final class DocValuesFieldExistsQuery extends Query {
 
   private final String field;
 
-  /** Create a query that will match that have a value for the given
-   *  {@code field}. */
   public DocValuesFieldExistsQuery(String field) {
     this.field = Objects.requireNonNull(field);
   }
@@ -79,10 +73,6 @@ public final class DocValuesFieldExistsQuery extends Query {
     };
   }
 
-  /**
-   * Returns a {@link DocIdSetIterator} from the given field or null if the field doesn't exist
-   * in the reader or if the reader has no doc values for the field.
-   */
   public static DocIdSetIterator getDocValuesDocIdSetIterator(String field, LeafReader reader) throws IOException {
     FieldInfo fieldInfo = reader.getFieldInfos().fieldInfo(field);
     final DocIdSetIterator iterator;

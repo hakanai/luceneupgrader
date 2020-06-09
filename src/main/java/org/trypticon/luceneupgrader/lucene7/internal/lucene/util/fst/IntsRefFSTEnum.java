@@ -22,26 +22,17 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IntsRef;
 
 import java.io.IOException;
 
-/** Enumerates all input (IntsRef) + output pairs in an
- *  FST.
- *
-  * @lucene.experimental
-*/
 
 public final class IntsRefFSTEnum<T> extends FSTEnum<T> {
   private final IntsRef current = new IntsRef(10);
   private final InputOutput<T> result = new InputOutput<>();
   private IntsRef target;
 
-  /** Holds a single input (IntsRef) + output pair. */
   public static class InputOutput<T> {
     public IntsRef input;
     public T output;
   }
 
-  /** doFloor controls the behavior of advance: if it's true
-   *  doFloor is true, advance positions to the biggest
-   *  term before target.  */
   public IntsRefFSTEnum(FST<T> fst) {
     super(fst);
     result.input = current;
@@ -58,7 +49,6 @@ public final class IntsRefFSTEnum<T> extends FSTEnum<T> {
     return setResult();
   }
 
-  /** Seeks to smallest term that's &gt;= target. */
   public InputOutput<T> seekCeil(IntsRef target) throws IOException {
     this.target = target;
     targetLength = target.length;
@@ -66,7 +56,6 @@ public final class IntsRefFSTEnum<T> extends FSTEnum<T> {
     return setResult();
   }
 
-  /** Seeks to biggest term that's &lt;= target. */
   public InputOutput<T> seekFloor(IntsRef target) throws IOException {
     this.target = target;
     targetLength = target.length;
@@ -74,10 +63,6 @@ public final class IntsRefFSTEnum<T> extends FSTEnum<T> {
     return setResult();
   }
 
-  /** Seeks to exactly this term, returning null if the term
-   *  doesn't exist.  This is faster than using {@link
-   *  #seekFloor} or {@link #seekCeil} because it
-   *  short-circuits as soon the match is not found. */
   public InputOutput<T> seekExact(IntsRef target) throws IOException {
     this.target = target;
     targetLength = target.length;

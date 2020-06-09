@@ -23,11 +23,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.TermsEnum;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BitSet;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 
-/** Silly stub class, used only when writing an auto-prefix
- *  term in order to expose DocsEnum over a FixedBitSet.  We
- *  pass this to {@link PostingsWriterBase#writeTerm} so 
- *  that it can pull .docs() multiple times for the
- *  current term. */
 
 class BitSetTermsEnum extends TermsEnum {
   private final BitSetPostingsEnum postingsEnum;

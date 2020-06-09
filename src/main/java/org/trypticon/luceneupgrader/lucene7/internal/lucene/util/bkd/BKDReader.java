@@ -29,9 +29,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.FutureArrays;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.MathUtil;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimator;
 
-/** Handles intersection of an multi-dimensional shape in byte[] space with a block KD-tree previously written with {@link BKDWriter}.
- *
- * @lucene.experimental */
 
 public final class BKDReader extends PointValues implements Accountable {
   // Packed array of byte[] holding all split values in the full binary tree:
@@ -58,7 +55,6 @@ public final class BKDReader extends PointValues implements Accountable {
   final int bytesPerIndexEntry;
   final long[] leafBlockFPs;
 
-  /** Caller must pre-seek the provided {@link IndexInput} to the index location that {@link BKDWriter#finish} returned */
   public BKDReader(IndexInput in) throws IOException {
     version = CodecUtil.checkHeader(in, BKDWriter.CODEC_NAME, BKDWriter.VERSION_START, BKDWriter.VERSION_CURRENT);
     numDataDims = in.readVInt();
@@ -158,9 +154,6 @@ public final class BKDReader extends PointValues implements Accountable {
     }
   }
 
-  /** Used to walk the in-heap index
-   *
-   * @lucene.internal */
   public abstract class IndexTree implements Cloneable {
     protected int nodeID;
     // level is 1-based so that we can do level-1 w/o checking each time:
@@ -184,7 +177,6 @@ public final class BKDReader extends PointValues implements Accountable {
       }
     }
 
-    /** Clone, but you are not allowed to pop up past the point where the clone happened. */
     public abstract IndexTree clone();
     
     public void pushRight() {
@@ -220,19 +212,15 @@ public final class BKDReader extends PointValues implements Accountable {
       return splitPackedValueStack[level];
     }
                                                        
-    /** Only valid after pushLeft or pushRight, not pop! */
     public int getSplitDim() {
       assert isLeafNode() == false;
       return splitDim;
     }
 
-    /** Only valid after pushLeft or pushRight, not pop! */
     public abstract BytesRef getSplitDimValue();
     
-    /** Only valid after pushLeft or pushRight, not pop! */
     public abstract long getLeafBlockFP();
 
-    /** Return the number of leaves below the current node. */
     public int getNumLeaves() {
       int leftMostLeafNode = nodeID;
       while (leftMostLeafNode < leafNodeOffset) {
@@ -268,7 +256,6 @@ public final class BKDReader extends PointValues implements Accountable {
     }
   }
 
-  /** Reads the original simple yet heap-heavy index format */
   private final class LegacyIndexTree extends IndexTree {
 
     private long leafBlockFP;
@@ -345,9 +332,6 @@ public final class BKDReader extends PointValues implements Accountable {
     }
   }
 
-  /** Reads the new packed byte[] index format which can be up to ~63% smaller than the legacy index format on 20M NYC taxis tests.  This
-   *  format takes advantage of the limited access pattern to the BKD tree at search time, i.e. starting at the root node and recursing
-   *  downwards one child at a time. */
   private final class PackedIndexTree extends IndexTree {
     // used to read the packed byte[]
     private final ByteArrayDataInput in;
@@ -501,7 +485,6 @@ public final class BKDReader extends PointValues implements Accountable {
     return MathUtil.log(numLeaves, 2) + 2;
   }
 
-  /** Used to track all state for a single call to {@link #intersect}. */
   public static final class IntersectState {
     final IndexInput in;
     final int[] scratchDocIDs;
@@ -538,7 +521,6 @@ public final class BKDReader extends PointValues implements Accountable {
     return estimatePointCount(getIntersectState(visitor), minPackedValue, maxPackedValue);
   }
 
-  /** Fast path: this is called when the query box fully encompasses all cells under this node. */
   private void addAll(IntersectState state, boolean grown) throws IOException {
     //System.out.println("R: addAll nodeID=" + nodeID);
 
@@ -568,7 +550,6 @@ public final class BKDReader extends PointValues implements Accountable {
     }
   }
 
-  /** Create a new {@link IntersectState} */
   public IntersectState getIntersectState(IntersectVisitor visitor) {
     IndexTree index;
     if (packedIndex != null) {
@@ -584,7 +565,6 @@ public final class BKDReader extends PointValues implements Accountable {
                               index);
   }
 
-  /** Visits all docIDs and packed values in a single leaf block */
   public void visitLeafBlockValues(IndexTree index, IntersectState state) throws IOException {
 
     // Leaf node; scan and filter all points in this block:

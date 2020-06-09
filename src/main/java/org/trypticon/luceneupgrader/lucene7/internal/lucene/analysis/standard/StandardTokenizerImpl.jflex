@@ -19,24 +19,6 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.standard;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.tokenattributes.CharTermAttribute;
 
-/**
- * This class implements Word Break rules from the Unicode Text Segmentation 
- * algorithm, as specified in 
- * <a href="http://unicode.org/reports/tr29/">Unicode Standard Annex #29</a>. 
- * <p>
- * Tokens produced are of the following types:
- * <ul>
- *   <li>&lt;ALPHANUM&gt;: A sequence of alphabetic and numeric characters</li>
- *   <li>&lt;NUM&gt;: A number</li>
- *   <li>&lt;SOUTHEAST_ASIAN&gt;: A sequence of characters from South and Southeast
- *       Asian languages, including Thai, Lao, Myanmar, and Khmer</li>
- *   <li>&lt;IDEOGRAPHIC&gt;: A single CJKV ideographic character</li>
- *   <li>&lt;HIRAGANA&gt;: A single hiragana character</li>
- *   <li>&lt;KATAKANA&gt;: A sequence of katakana characters</li>
- *   <li>&lt;HANGUL&gt;: A sequence of Hangul characters</li>
- *   <li>&lt;EMOJI&gt;: A sequence of Emoji characters</li>
- * </ul>
- */
 @SuppressWarnings("fallthrough")
 %%
 
@@ -112,53 +94,31 @@ RegionalIndicatorEx = \p{WB:Regional_Indicator}                                 
 ComplexContextEx    = \p{LB:Complex_Context}                                    {ExtFmtZwj}
 
 %{
-  /** Alphanumeric sequences */
   public static final int WORD_TYPE = StandardTokenizer.ALPHANUM;
   
-  /** Numbers */
   public static final int NUMERIC_TYPE = StandardTokenizer.NUM;
   
-  /**
-   * Chars in class \p{Line_Break = Complex_Context} are from South East Asian
-   * scripts (Thai, Lao, Myanmar, Khmer, etc.).  Sequences of these are kept 
-   * together as as a single token rather than broken up, because the logic
-   * required to break them at word boundaries is too complex for UAX#29.
-   * <p>
-   * See Unicode Line Breaking Algorithm: http://www.unicode.org/reports/tr14/#SA
-   */
   public static final int SOUTH_EAST_ASIAN_TYPE = StandardTokenizer.SOUTHEAST_ASIAN;
   
-  /** Ideographic token type */
   public static final int IDEOGRAPHIC_TYPE = StandardTokenizer.IDEOGRAPHIC;
   
-  /** Hiragana token type */
   public static final int HIRAGANA_TYPE = StandardTokenizer.HIRAGANA;
   
-  /** Katakana token type */
   public static final int KATAKANA_TYPE = StandardTokenizer.KATAKANA;
 
-  /** Hangul token type */
   public static final int HANGUL_TYPE = StandardTokenizer.HANGUL;
   
-  /** Emoji token type */
   public static final int EMOJI_TYPE = StandardTokenizer.EMOJI;
 
-  /** Character count processed so far */
   public final int yychar()
   {
     return yychar;
   }
 
-  /**
-   * Fills CharTermAttribute with the current token text.
-   */
   public final void getText(CharTermAttribute t) {
     t.copyBuffer(zzBuffer, zzStartRead, zzMarkedPos-zzStartRead);
   }
   
-  /**
-   * Sets the scanner buffer size in chars
-   */
    public final void setBufferSize(int numChars) {
      ZZ_BUFFERSIZE = numChars;
      char[] newZzBuffer = new char[ZZ_BUFFERSIZE];

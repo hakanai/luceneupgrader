@@ -40,63 +40,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.InfoStream;
 
-/**
- * This class accepts multiple added documents and directly
- * writes segment files.
- *
- * Each added document is passed to the indexing chain,
- * which in turn processes the document into the different
- * codec formats.  Some formats write bytes to files
- * immediately, e.g. stored fields and term vectors, while
- * others are buffered by the indexing chain and written
- * only on flush.
- *
- * Once we have used our allowed RAM buffer, or the number
- * of added docs is large enough (in the case we are
- * flushing by doc count instead of RAM usage), we create a
- * real segment and flush it to the Directory.
- *
- * Threads:
- *
- * Multiple threads are allowed into addDocument at once.
- * There is an initial synchronized call to getThreadState
- * which allocates a ThreadState for this thread.  The same
- * thread will get the same ThreadState over time (thread
- * affinity) so that if there are consistent patterns (for
- * example each thread is indexing a different content
- * source) then we make better use of RAM.  Then
- * processDocument is called on that ThreadState without
- * synchronization (most of the "heavy lifting" is in this
- * call).  Finally the synchronized "finishDocument" is
- * called to flush changes to the directory.
- *
- * When flush is called by IndexWriter we forcefully idle
- * all threads and flush only once they are all idle.  This
- * means you can call flush with a given thread even while
- * other threads are actively adding/deleting documents.
- *
- *
- * Exceptions:
- *
- * Because this class directly updates in-memory posting
- * lists, and flushes stored fields and term vectors
- * directly to files in the directory, there are certain
- * limited times when an exception can corrupt this state.
- * For example, a disk full while flushing stored fields
- * leaves this file in a corrupt state.  Or, an OOM
- * exception while appending to the in-memory posting lists
- * can corrupt that posting list.  We call such exceptions
- * "aborting exceptions".  In these cases we must call
- * abort() to discard all docs added since the last flush.
- *
- * All other exceptions ("non-aborting exceptions") can
- * still partially update the index structures.  These
- * updates are consistent, but, they represent only a part
- * of the document seen up until the exception was hit.
- * When this happens, we immediately mark the document as
- * deleted so that the document is always atomically ("all
- * or none") added to the index.
- */
 
 final class DocumentsWriter implements Closeable, Accountable {
   private final Directory directoryOrig; // no wrapping, for infos
@@ -179,7 +122,6 @@ final class DocumentsWriter implements Closeable, Accountable {
     return seqNo;
   }
   
-  /** If buffered deletes are using too much heap, resolve them and write disk and return true. */
   private boolean applyAllDeletes(DocumentsWriterDeleteQueue deleteQueue) throws IOException {
     if (flushControl.isFullFlush() == false // never apply deletes during full flush this breaks happens before relationship
         && flushControl.getAndResetApplyAllDeletes()) {
@@ -202,7 +144,6 @@ final class DocumentsWriter implements Closeable, Accountable {
     }
   }
 
-  /** Returns how many docs are currently buffered in RAM. */
   int getNumDocs() {
     return numDocsInRAM.get();
   }
@@ -213,10 +154,6 @@ final class DocumentsWriter implements Closeable, Accountable {
     }
   }
 
-  /** Called if we hit an exception at a bad time (when
-   *  updating the index files) and must discard all
-   *  currently buffered docs.  This resets our state,
-   *  discarding any docs added since last flush. */
   synchronized void abort() throws IOException {
     boolean success = false;
     try {
@@ -259,9 +196,6 @@ final class DocumentsWriter implements Closeable, Accountable {
     return false; // we didn't flush anything here
   }
 
-  /** Locks all currently active DWPT and aborts them.
-   *  The returned Closeable should be closed once the locks for the aborted
-   *  DWPTs can be released. */
   synchronized Closeable lockAndAbortAll() throws IOException {
     if (infoStream.isEnabled("DW")) {
       infoStream.message("DW", "lockAndAbortAll");
@@ -320,7 +254,6 @@ final class DocumentsWriter implements Closeable, Accountable {
     }
   }
   
-  /** Returns how many documents were aborted. */
   private int abortThreadState(final ThreadState perThread) throws IOException {
     assert perThread.isHeldByCurrentThread();
     if (perThread.isInitialized()) { 
@@ -339,7 +272,6 @@ final class DocumentsWriter implements Closeable, Accountable {
     }
   }
 
-  /** returns the maximum sequence number for all previously completed operations */
   public long getMaxCompletedSequenceNumber() {
     long value = lastSeqNo;
     int limit = perThreadPool.getMaxThreadStates();
@@ -622,41 +554,16 @@ final class DocumentsWriter implements Closeable, Accountable {
 
   interface FlushNotifications { // TODO maybe we find a better name for this?
 
-    /**
-     * Called when files were written to disk that are not used anymore. It's the implementation's responsibility
-     * to clean these files up
-     */
     void deleteUnusedFiles(Collection<String> files);
 
-    /**
-     * Called when a segment failed to flush.
-     */
     void flushFailed(SegmentInfo info);
 
-    /**
-     * Called after one or more segments were flushed to disk.
-     */
     void afterSegmentsFlushed() throws IOException;
 
-    /**
-     * Should be called if a flush or an indexing operation caused a tragic / unrecoverable event.
-     */
     void onTragicEvent(Throwable event, String message);
 
-    /**
-     * Called once deletes have been applied either after a flush or on a deletes call
-     */
     void onDeletesApplied();
 
-    /**
-     * Called once the DocumentsWriter ticket queue has a backlog. This means there is an inner thread
-     * that tries to publish flushed segments but can't keep up with the other threads flushing new segments.
-     * This likely requires other thread to forcefully purge the buffer to help publishing. This
-     * can't be done in-place since we might hold index writer locks when this is called. The caller must ensure
-     * that the purge happens without an index writer lock being held.
-     *
-     * @see DocumentsWriter#purgeFlushTickets(boolean, IOUtils.IOConsumer)
-     */
     void onTicketBacklog();
   }
   
@@ -763,11 +670,6 @@ final class DocumentsWriter implements Closeable, Accountable {
     return flushControl.ramBytesUsed();
   }
 
-  /**
-   * Returns the number of bytes currently being flushed
-   *
-   * This is a subset of the value returned by {@link #ramBytesUsed()}
-   */
   public long getFlushingBytes() {
     return flushControl.getFlushingBytes();
   }

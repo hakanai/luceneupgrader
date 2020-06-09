@@ -23,20 +23,15 @@ import java.util.Set;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReaderContext;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.Term;
 
-/**
- * A query that matches no documents.
- */
 
 public class MatchNoDocsQuery extends Query {
 
   private final String reason;
 
-  /** Default constructor */
   public MatchNoDocsQuery() {
     this("");
   }
 
-  /** Provides a reason explaining why this query was used */
   public MatchNoDocsQuery(String reason) {
     this.reason = reason;
   }

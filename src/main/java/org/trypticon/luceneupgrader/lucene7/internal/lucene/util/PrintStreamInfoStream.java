@@ -22,12 +22,6 @@ import java.io.PrintStream;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * InfoStream implementation over a {@link PrintStream}
- * such as <code>System.out</code>.
- * 
- * @lucene.internal
- */
 public class PrintStreamInfoStream extends InfoStream {
   // Used for printing messages
   private static final AtomicInteger MESSAGE_ID = new AtomicInteger();
@@ -66,7 +60,6 @@ public class PrintStreamInfoStream extends InfoStream {
     return stream == System.out || stream == System.err;
   }
   
-  /** Returns the current time as string for insertion into log messages. */
   protected String getTimestamp() {
     return Instant.now().toString();
   }  

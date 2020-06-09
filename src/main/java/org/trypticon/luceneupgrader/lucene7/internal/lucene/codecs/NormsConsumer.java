@@ -27,45 +27,12 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.MergeState;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.NumericDocValues;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.SegmentWriteState;
 
-/** 
- * Abstract API that consumes normalization values.  
- * Concrete implementations of this
- * actually do "something" with the norms (write it into
- * the index in a specific format).
- * <p>
- * The lifecycle is:
- * <ol>
- *   <li>NormsConsumer is created by 
- *       {@link NormsFormat#normsConsumer(SegmentWriteState)}.
- *   <li>{@link #addNormsField} is called for each field with
- *       normalization values. The API is a "pull" rather
- *       than "push", and the implementation is free to iterate over the 
- *       values multiple times ({@link Iterable#iterator()}).
- *   <li>After all fields are added, the consumer is {@link #close}d.
- * </ol>
- *
- * @lucene.experimental
- */
 public abstract class NormsConsumer implements Closeable {
   
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected NormsConsumer() {}
   
-  /**
-   * Writes normalization values for a field.
-   * @param field field information
-   * @param normsProducer NormsProducer of the numeric norm values
-   * @throws IOException if an I/O error occurred.
-   */
   public abstract void addNormsField(FieldInfo field, NormsProducer normsProducer) throws IOException;
 
-  /** Merges in the fields from the readers in 
-   *  <code>mergeState</code>. The default implementation 
-   *  calls {@link #mergeNormsField} for each field,
-   *  filling segments with missing norms for the field with zeros. 
-   *  Implementations can override this method 
-   *  for more sophisticated merging (bulk-byte copying, etc). */
   public void merge(MergeState mergeState) throws IOException {
     for(NormsProducer normsProducer : mergeState.normsProducers) {
       if (normsProducer != null) {
@@ -79,7 +46,6 @@ public abstract class NormsConsumer implements Closeable {
     }
   }
   
-  /** Tracks state of one numeric sub-reader that we are merging */
   private static class NumericDocValuesSub extends DocIDMerger.Sub {
 
     private final NumericDocValues values;
@@ -96,12 +62,6 @@ public abstract class NormsConsumer implements Closeable {
     }
   }
 
-  /**
-   * Merges the norms from <code>toMerge</code>.
-   * <p>
-   * The default implementation calls {@link #addNormsField}, passing
-   * an Iterable that merges and filters deleted documents on the fly.
-   */
   public void mergeNormsField(final FieldInfo mergeFieldInfo, final MergeState mergeState) throws IOException {
 
     // TODO: try to share code with default merge of DVConsumer by passing MatchAllBits ?

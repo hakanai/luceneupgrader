@@ -29,10 +29,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RefCount;
 
-/**
- * Manages the {@link DocValuesProducer} held by {@link SegmentReader} and
- * keeps track of their reference counting.
- */
 final class SegmentDocValues {
 
   private final Map<Long,RefCount<DocValuesProducer>> genDVProducers = new HashMap<>();
@@ -60,7 +56,6 @@ final class SegmentDocValues {
     };
   }
 
-  /** Returns the {@link DocValuesProducer} for the given generation. */
   synchronized DocValuesProducer getDocValuesProducer(long gen, SegmentCommitInfo si, Directory dir, FieldInfos infos) throws IOException {
     RefCount<DocValuesProducer> dvp = genDVProducers.get(gen);
     if (dvp == null) {
@@ -73,10 +68,6 @@ final class SegmentDocValues {
     return dvp.get();
   }
   
-  /**
-   * Decrement the reference count of the given {@link DocValuesProducer}
-   * generations. 
-   */
   synchronized void decRef(List<Long> dvProducersGens) throws IOException {
     IOUtils.applyToAll(dvProducersGens, gen -> {
       RefCount<DocValuesProducer> dvp = genDVProducers.get(gen);

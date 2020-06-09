@@ -69,10 +69,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IntsRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PackedInts;
 
-/**
- * {@link StoredFieldsReader} impl for {@link CompressingStoredFieldsFormat}.
- * @lucene.experimental
- */
 public final class CompressingStoredFieldsReader extends StoredFieldsReader {
 
   private final int version;
@@ -110,7 +106,6 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
     this.closed = false;
   }
 
-  /** Sole constructor. */
   public CompressingStoredFieldsReader(Directory d, SegmentInfo si, String segmentSuffix, FieldInfos fn,
       IOContext context, String formatName, CompressionMode compressionMode) throws IOException {
     this.compressionMode = compressionMode;
@@ -182,18 +177,12 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
     }
   }
 
-  /**
-   * @throws AlreadyClosedException if this FieldsReader is closed
-   */
   private void ensureOpen() throws AlreadyClosedException {
     if (closed) {
       throw new AlreadyClosedException("this FieldsReader is closed");
     }
   }
 
-  /** 
-   * Close the underlying {@link IndexInput}s.
-   */
   @Override
   public void close() throws IOException {
     if (!closed) {
@@ -257,10 +246,6 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
     }
   }
 
-  /**
-   * Reads a float in a variable-length format.  Reads between one and
-   * five bytes. Small integral values typically take fewer bytes.
-   */
   static float readZFloat(DataInput in) throws IOException {
     int b = in.readByte() & 0xFF;
     if (b == 0xFF) {
@@ -276,10 +261,6 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
     }
   }
 
-  /**
-   * Reads a double in a variable-length format.  Reads between one and
-   * nine bytes. Small integral values typically take fewer bytes.
-   */
   static double readZDouble(DataInput in) throws IOException {
     int b = in.readByte() & 0xFF;
     if (b == 0xFF) {
@@ -298,10 +279,6 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
     }
   }
 
-  /**
-   * Reads a long in a variable-length format.  Reads between one andCorePropLo
-   * nine bytes. Small values typically take fewer bytes.
-   */
   static long readTLong(DataInput in) throws IOException {
     int header = in.readByte() & 0xFF;
 
@@ -333,10 +310,6 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
     return l;
   }
 
-  /**
-   * A serialized document, you need to decode its input in order to get an actual
-   * {@link Document}.
-   */
   static class SerializedDocument {
 
     // the serialized data
@@ -356,9 +329,6 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
 
   }
 
-  /**
-   * Keeps state about the current block of documents.
-   */
   private class BlockState {
 
     private int docBase, chunkDocs;
@@ -379,10 +349,6 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
       return docID >= docBase && docID < docBase + chunkDocs;
     }
 
-    /**
-     * Reset this block so that it stores state for the block
-     * that contains the given doc id.
-     */
     void reset(int docID) throws IOException {
       boolean success = false;
       try {
@@ -488,10 +454,6 @@ public final class CompressingStoredFieldsReader extends StoredFieldsReader {
       }
     }
 
-    /**
-     * Get the serialized representation of the given docID. This docID has
-     * to be contained in the current block.
-     */
     SerializedDocument document(int docID) throws IOException {
       if (contains(docID) == false) {
         throw new IllegalArgumentException();

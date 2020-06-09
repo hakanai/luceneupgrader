@@ -22,12 +22,6 @@ import java.util.Iterator;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.PriorityQueue;
 
-/**
- * A priority queue of DocIdSetIterators that orders by current doc ID.
- * This specialization is needed over {@link PriorityQueue} because the
- * pluggable comparison function makes the rebalancing quite slow.
- * @lucene.internal
- */
 public final class DisiPriorityQueue implements Iterable<DisiWrapper> {
 
   static int leftNode(int node) {
@@ -58,7 +52,6 @@ public final class DisiPriorityQueue implements Iterable<DisiWrapper> {
     return heap[0];
   }
 
-  /** Get the list of scorers which are on the current doc. */
   public DisiWrapper topList() {
     final DisiWrapper[] heap = this.heap;
     final int size = this.size;

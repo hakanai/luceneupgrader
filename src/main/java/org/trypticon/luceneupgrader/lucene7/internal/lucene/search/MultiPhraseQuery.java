@@ -43,25 +43,13 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.ArrayUtil;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.PriorityQueue;
 
-/**
- * A generalized version of {@link PhraseQuery}, with the possibility of
- * adding more than one term at the same position that are treated as a disjunction (OR).
- * To use this class to search for the phrase "Microsoft app*" first create a Builder and use
- * {@link Builder#add(Term)} on the term "microsoft" (assuming lowercase analysis), then
- * find all terms that have "app" as prefix using {@link LeafReader#terms(String)},
- * seeking to "app" then iterating and collecting terms until there is no longer
- * that prefix, and finally use {@link Builder#add(Term[])} to add them.
- * {@link Builder#build()} returns the fully constructed (and immutable) MultiPhraseQuery.
- */
 public class MultiPhraseQuery extends Query {
-  /** A builder for multi-phrase queries */
   public static class Builder {
     private String field; // becomes non-null on first add() then is unmodified
     private final ArrayList<Term[]> termArrays;
     private final ArrayList<Integer> positions;
     private int slop;
 
-    /** Default constructor. */
     public Builder() {
       this.field = null;
       this.termArrays = new ArrayList<>();
@@ -69,8 +57,6 @@ public class MultiPhraseQuery extends Query {
       this.slop = 0;
     }
 
-    /** Copy constructor: this will create a builder that has the same
-     *  configuration as the provided builder. */
     public Builder(MultiPhraseQuery multiPhraseQuery) {
       this.field = multiPhraseQuery.field;
 
@@ -87,9 +73,6 @@ public class MultiPhraseQuery extends Query {
       this.slop = multiPhraseQuery.slop;
     }
 
-    /** Sets the phrase slop for this query.
-     * @see PhraseQuery#getSlop()
-     */
     public Builder setSlop(int s) {
       if (s < 0) {
         throw new IllegalArgumentException("slop value cannot be negative");
@@ -99,15 +82,8 @@ public class MultiPhraseQuery extends Query {
       return this;
     }
 
-    /** Add a single term at the next position in the phrase.
-     */
     public Builder add(Term term) { return add(new Term[]{term}); }
 
-    /** Add multiple terms at the next position in the phrase.  Any of the terms
-     * may match (a disjunction).
-     * The array is not copied or mutated, the caller should consider it
-     * immutable subsequent to calling this method.
-     */
     public Builder add(Term[] terms) {
       int position = 0;
       if (positions.size() > 0)
@@ -116,11 +92,6 @@ public class MultiPhraseQuery extends Query {
       return add(terms, position);
     }
 
-    /**
-     * Allows to specify the relative position of terms within the phrase.
-     * The array is not copied or mutated, the caller should consider it
-     * immutable subsequent to calling this method.
-     */
     public Builder add(Term[] terms, int position) {
       Objects.requireNonNull(terms, "Term array must not be null");
       if (termArrays.size() == 0)
@@ -139,7 +110,6 @@ public class MultiPhraseQuery extends Query {
       return this;
     }
 
-    /** Builds a {@link MultiPhraseQuery}. */
     public MultiPhraseQuery build() {
       int[] positionsArray = new int[this.positions.size()];
 
@@ -166,23 +136,12 @@ public class MultiPhraseQuery extends Query {
     this.slop = slop;
   }
 
-  /** Sets the phrase slop for this query.
-   * @see PhraseQuery#getSlop()
-   */
   public int getSlop() { return slop; }
 
-  /**
-   * Returns the arrays of arrays of terms in the multi-phrase.
-   * Do not modify!
-   */
   public Term[][] getTermArrays() {
     return termArrays;
   }
 
-  /**
-   * Returns the relative positions of terms in this phrase.
-   * Do not modify!
-   */
   public int[] getPositions() {
     return positions;
   }
@@ -307,7 +266,6 @@ public class MultiPhraseQuery extends Query {
     };
   }
 
-  /** Prints a user-readable version of this query. */
   @Override
   public final String toString(String f) {
     StringBuilder buffer = new StringBuilder();
@@ -352,7 +310,6 @@ public class MultiPhraseQuery extends Query {
   }
 
 
-  /** Returns true if <code>o</code> is equal to this. */
   @Override
   public boolean equals(Object other) {
     return sameClassAs(other) &&
@@ -366,7 +323,6 @@ public class MultiPhraseQuery extends Query {
 
   }
 
-  /** Returns a hash code value for this object.*/
   @Override
   public int hashCode() {
     return classHash()
@@ -402,22 +358,12 @@ public class MultiPhraseQuery extends Query {
     return true;
   }
 
-  /**
-   * Takes the logical union of multiple PostingsEnum iterators.
-   * <p>
-   * Note: positions are merged during freq()
-   */
   static class UnionPostingsEnum extends PostingsEnum {
-    /** queue ordered by docid */
     final DocsQueue docsQueue;
-    /** cost of this enum: sum of its subs */
     final long cost;
 
-    /** queue ordered by position for current doc */
     final PositionsQueue posQueue = new PositionsQueue();
-    /** current doc posQueue is working */
     int posQueueDoc = -2;
-    /** list of subs (unordered) */
     final PostingsEnum[] subs;
 
     UnionPostingsEnum(Collection<PostingsEnum> subs) {
@@ -505,9 +451,6 @@ public class MultiPhraseQuery extends Query {
       return null; // payloads are unsupported
     }
 
-    /**
-     * disjunction of postings ordered by docid.
-     */
     static class DocsQueue extends PriorityQueue<PostingsEnum> {
       DocsQueue(int size) {
         super(size);
@@ -519,10 +462,6 @@ public class MultiPhraseQuery extends Query {
       }
     }
 
-    /**
-     * queue of terms for a single document. its a sorted array of
-     * all the positions from all the postings
-     */
     static class PositionsQueue {
       private int arraySize = 16;
       private int index = 0;

@@ -24,12 +24,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.DataOutput;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.CharsRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimator;
 
-/**
- * An FST {@link Outputs} implementation where each output
- * is a sequence of characters.
- *
- * @lucene.experimental
- */
 
 public final class CharSequenceOutputs extends Outputs<CharsRef> {
 

@@ -26,14 +26,10 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RadixSelector;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Selector;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PackedInts;
 
-/** Utility APIs for sorting and partitioning buffered points.
- *
- * @lucene.internal */
 public final class MutablePointsReaderUtils {
 
   MutablePointsReaderUtils() {}
 
-  /** Sort the given {@link MutablePointValues} based on its packed value then doc ID. */
   public static void sort(int maxDoc, int packedBytesLength,
                           MutablePointValues reader, int from, int to) {
     final int bitsPerDocId = PackedInts.bitsRequired(maxDoc - 1);
@@ -90,7 +86,6 @@ public final class MutablePointsReaderUtils {
     }.sort(from, to);
   }
 
-  /** Sort points on the given dimension. */
   public static void sortByDim(int sortedDim, int bytesPerDim, int[] commonPrefixLengths,
                                MutablePointValues reader, int from, int to,
                                BytesRef scratch1, BytesRef scratch2) {
@@ -127,9 +122,6 @@ public final class MutablePointsReaderUtils {
     }.sort(from, to);
   }
 
-  /** Partition points around {@code mid}. All values on the left must be less
-   *  than or equal to it and all values on the right must be greater than or
-   *  equal to it. */
   public static void partition(int maxDoc, int splitDim, int bytesPerDim, int commonPrefixLen,
                                MutablePointValues reader, int from, int to, int mid,
                                BytesRef scratch1, BytesRef scratch2) {

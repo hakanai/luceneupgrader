@@ -29,19 +29,8 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.StopwordAna
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.TokenStream;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.WordlistLoader;
 
-/**
- * Filters {@link StandardTokenizer} with {@link LowerCaseFilter} and
- * {@link StopFilter}, using a configurable list of stop words.
- *
- * @since 3.1
- */
 public final class StandardAnalyzer extends StopwordAnalyzerBase {
 
-  /**
-   * An unmodifiable set containing some common English words that are not
-   * usually useful for searching.
-   * @deprecated Use the stop words on EnglishAnalyzer in the analysis-common module
-   */
   @Deprecated
   public static final CharArraySet ENGLISH_STOP_WORDS_SET;
 
@@ -58,52 +47,29 @@ public final class StandardAnalyzer extends StopwordAnalyzerBase {
   }
 
   
-  /** Default maximum allowed token length */
   public static final int DEFAULT_MAX_TOKEN_LENGTH = 255;
 
   private int maxTokenLength = DEFAULT_MAX_TOKEN_LENGTH;
 
-  /**
-   * An unmodifiable set containing some common English words that are usually not
-   * useful for searching.
-   * @deprecated Use the stop words on EnglishAnalyzer in the analysis-common module
-   */
   @Deprecated
   public static final CharArraySet STOP_WORDS_SET = ENGLISH_STOP_WORDS_SET;
 
-  /** Builds an analyzer with the given stop words.
-   * @param stopWords stop words */
   public StandardAnalyzer(CharArraySet stopWords) {
     super(stopWords);
   }
 
-  /** Builds an analyzer with the default stop words ({@link #STOP_WORDS_SET}).
-   */
   public StandardAnalyzer() {
     this(STOP_WORDS_SET);
   }
 
-  /** Builds an analyzer with the stop words from the given reader.
-   * @see WordlistLoader#getWordSet(Reader)
-   * @param stopwords Reader to read stop words from */
   public StandardAnalyzer(Reader stopwords) throws IOException {
     this(loadStopwordSet(stopwords));
   }
 
-  /**
-   * Set the max allowed token length.  Tokens larger than this will be chopped
-   * up at this token length and emitted as multiple tokens.  If you need to
-   * skip such large tokens, you could increase this max length, and then
-   * use {@code LengthFilter} to remove long tokens.  The default is
-   * {@link StandardAnalyzer#DEFAULT_MAX_TOKEN_LENGTH}.
-   */
   public void setMaxTokenLength(int length) {
     maxTokenLength = length;
   }
     
-  /** Returns the current maximum token length
-   * 
-   *  @see #setMaxTokenLength */
   public int getMaxTokenLength() {
     return maxTokenLength;
   }

@@ -24,12 +24,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.DataOutput;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.SuppressForbidden;
 
-/**
- * An FST {@link Outputs} implementation where each output
- * is a non-negative long value.
- *
- * @lucene.experimental
- */
 @SuppressForbidden(reason = "Uses a Long instance as a marker")
 public final class PositiveIntOutputs extends Outputs<Long> {
   

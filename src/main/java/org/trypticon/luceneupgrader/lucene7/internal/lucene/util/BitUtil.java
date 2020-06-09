@@ -16,9 +16,6 @@
  */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.util; // from org.apache.solr.util rev 555343
 
-/**  A variety of high efficiency bit twiddling routines.
- * @lucene.internal
- */
 public final class BitUtil {
 
   // magic numbers for bit interleaving
@@ -37,7 +34,6 @@ public final class BitUtil {
   // turns out that it is faster to use the Long.bitCount method (which is an
   // intrinsic since Java 6u18) in a naive loop, see LUCENE-2221
 
-  /** Returns the number of set bits in an array of longs. */
   public static long pop_array(long[] arr, int wordOffset, int numWords) {
     long popCount = 0;
     for (int i = wordOffset, end = wordOffset + numWords; i < end; ++i) {
@@ -46,8 +42,6 @@ public final class BitUtil {
     return popCount;
   }
 
-  /** Returns the popcount or cardinality of the two sets after an intersection.
-   *  Neither array is modified. */
   public static long pop_intersect(long[] arr1, long[] arr2, int wordOffset, int numWords) {
     long popCount = 0;
     for (int i = wordOffset, end = wordOffset + numWords; i < end; ++i) {
@@ -56,8 +50,6 @@ public final class BitUtil {
     return popCount;
   }
 
-   /** Returns the popcount or cardinality of the union of two sets.
-    *  Neither array is modified. */
    public static long pop_union(long[] arr1, long[] arr2, int wordOffset, int numWords) {
      long popCount = 0;
      for (int i = wordOffset, end = wordOffset + numWords; i < end; ++i) {
@@ -66,8 +58,6 @@ public final class BitUtil {
      return popCount;
    }
 
-  /** Returns the popcount or cardinality of {@code A & ~B}.
-   *  Neither array is modified. */
   public static long pop_andnot(long[] arr1, long[] arr2, int wordOffset, int numWords) {
     long popCount = 0;
     for (int i = wordOffset, end = wordOffset + numWords; i < end; ++i) {
@@ -76,8 +66,6 @@ public final class BitUtil {
     return popCount;
   }
 
-  /** Returns the popcount or cardinality of A ^ B
-    * Neither array is modified. */
   public static long pop_xor(long[] arr1, long[] arr2, int wordOffset, int numWords) {
     long popCount = 0;
     for (int i = wordOffset, end = wordOffset + numWords; i < end; ++i) {
@@ -86,7 +74,6 @@ public final class BitUtil {
     return popCount;
   }
 
-  /** returns the next highest power of two, or the current value if it's already a power of two or zero*/
   public static int nextHighestPowerOfTwo(int v) {
     v--;
     v |= v >> 1;
@@ -98,7 +85,6 @@ public final class BitUtil {
     return v;
   }
 
-  /** returns the next highest power of two, or the current value if it's already a power of two or zero*/
    public static long nextHighestPowerOfTwo(long v) {
     v--;
     v |= v >> 1;
@@ -111,11 +97,6 @@ public final class BitUtil {
     return v;
   }
 
-  /**
-   * Interleaves the first 32 bits of each long value
-   *
-   * Adapted from: http://graphics.stanford.edu/~seander/bithacks.html#InterleaveBMN
-   */
   public static long interleave(int even, int odd) {
     long v1 = 0x00000000FFFFFFFFL & even;
     long v2 = 0x00000000FFFFFFFFL & odd;
@@ -133,9 +114,6 @@ public final class BitUtil {
     return (v2<<1) | v1;
   }
 
-  /**
-   * Extract just the even-bits value as a long from the bit-interleaved value
-   */
   public static long deinterleave(long b) {
     b &= MAGIC[0];
     b = (b ^ (b >>> SHIFT[0])) & MAGIC[1];
@@ -146,34 +124,22 @@ public final class BitUtil {
     return b;
   }
 
-  /**
-   * flip flops odd with even bits
-   */
   public static final long flipFlop(final long b) {
     return ((b & MAGIC[6]) >>> 1) | ((b & MAGIC[0]) << 1 );
   }
 
-   /** Same as {@link #zigZagEncode(long)} but on integers. */
    public static int zigZagEncode(int i) {
      return (i >> 31) ^ (i << 1);
    }
 
-   /**
-    * <a href="https://developers.google.com/protocol-buffers/docs/encoding#types">Zig-zag</a>
-    * encode the provided long. Assuming the input is a signed long whose
-    * absolute value can be stored on <tt>n</tt> bits, the returned value will
-    * be an unsigned long that can be stored on <tt>n+1</tt> bits.
-    */
    public static long zigZagEncode(long l) {
      return (l >> 63) ^ (l << 1);
    }
 
-   /** Decode an int previously encoded with {@link #zigZagEncode(int)}. */
    public static int zigZagDecode(int i) {
      return ((i >>> 1) ^ -(i & 1));
    }
 
-   /** Decode a long previously encoded with {@link #zigZagEncode(long)}. */
    public static long zigZagDecode(long l) {
      return ((l >>> 1) ^ -(l & 1));
    }

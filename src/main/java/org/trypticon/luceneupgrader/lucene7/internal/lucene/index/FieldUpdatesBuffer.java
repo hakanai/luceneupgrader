@@ -29,17 +29,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Counter;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.FixedBitSet;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimator;
 
-/**
- * This class efficiently buffers numeric and binary field updates and stores
- * terms, values and metadata in a memory efficient way without creating large amounts
- * of objects. Update terms are stored without de-duplicating the update term.
- * In general we try to optimize for several use-cases. For instance we try to use constant
- * space for update terms field since the common case always updates on the same field. Also for docUpTo
- * we try to optimize for the case when updates should be applied to all docs ie. docUpTo=Integer.MAX_VALUE.
- * In other cases each update will likely have a different docUpTo.
- * Along the same lines this impl optimizes the case when all updates have a value. Lastly, if all updates share the
- * same value for a numeric field we only store the value once.
- */
 final class FieldUpdatesBuffer {
   private static final long SELF_SHALLOW_SIZE = RamUsageEstimator.shallowSizeOfInstance(FieldUpdatesBuffer.class);
   private static final long STRING_SHALLOW_SIZE = RamUsageEstimator.shallowSizeOfInstance(String.class);
@@ -216,35 +205,14 @@ final class FieldUpdatesBuffer {
     return numericValues[getArrayIndex(numericValues.length, idx)];
   }
 
-  /**
-   * Struct like class that is used to iterate over all updates in this buffer
-   */
   static class BufferedUpdate {
 
     private BufferedUpdate() {};
-    /**
-     * the max document ID this update should be applied to
-     */
     int docUpTo;
-    /**
-     * a numeric value or 0 if this buffer holds binary updates
-     */
     long numericValue;
-    /**
-     * a binary value or null if this buffer holds numeric updates
-     */
     BytesRef binaryValue;
-    /**
-     * <code>true</code> if this update has a value
-     */
     boolean hasValue;
-    /**
-     * The update terms field. This will never be null.
-     */
     String termField;
-    /**
-     * The update terms value. This will never be null.
-     */
     BytesRef termValue;
 
     @Override
@@ -260,9 +228,6 @@ final class FieldUpdatesBuffer {
     }
   }
 
-  /**
-   * An iterator that iterates over all updates in insertion order
-   */
   class BufferedUpdateIterator {
     private final BytesRefIterator termValuesIterator;
     private final BytesRefIterator byteValuesIterator;
@@ -276,10 +241,6 @@ final class FieldUpdatesBuffer {
       updatesWithValue = hasValues == null ? new Bits.MatchAllBits(numUpdates) : hasValues;
     }
 
-    /**
-     * Moves to the next BufferedUpdate or return null if all updates are consumed.
-     * The returned instance is a shared instance and must be fully consumed before the next call to this method.
-     */
     BufferedUpdate next() throws IOException {
       BytesRef next = termValuesIterator.next();
       if (next != null) {

@@ -55,13 +55,11 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.StringHelper;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.DirectMonotonicWriter;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.DirectWriter;
 
-/** writer for {@link Lucene70DocValuesFormat} */
 final class Lucene70DocValuesConsumer extends DocValuesConsumer implements Closeable {
 
   IndexOutput data, meta;
   final int maxDoc;
 
-  /** expert: Creates a new writer */
   public Lucene70DocValuesConsumer(SegmentWriteState state, String dataCodec, String dataExtension, String metaCodec, String metaExtension) throws IOException {
     boolean success = false;
     try {
@@ -129,21 +127,18 @@ final class Lucene70DocValuesConsumer extends DocValuesConsumer implements Close
       numValues = 0;
     }
 
-    /** Accumulate a new value. */
     void update(long v) {
       min = Math.min(min, v);
       max = Math.max(max, v);
       ++numValues;
     }
 
-    /** Update the required space. */
     void finish() {
       if (max > min) {
         spaceInBits += DirectWriter.unsignedBitsRequired(max - min) * numValues;
       }
     }
 
-    /** Update space usage and get ready for accumulating values for the next block. */
     void nextBlock() {
       finish();
       reset();

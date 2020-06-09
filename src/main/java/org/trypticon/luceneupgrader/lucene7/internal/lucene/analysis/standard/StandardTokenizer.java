@@ -26,38 +26,19 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.tokenattrib
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.tokenattributes.TypeAttribute;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.AttributeFactory;
 
-/** A grammar-based tokenizer constructed with JFlex.
- * <p>
- * This class implements the Word Break rules from the
- * Unicode Text Segmentation algorithm, as specified in 
- * <a href="http://unicode.org/reports/tr29/">Unicode Standard Annex #29</a>.
- * <p>Many applications have specific tokenizer needs.  If this tokenizer does
- * not suit your application, please consider copying this source code
- * directory to your project and maintaining your own grammar-based tokenizer.
- */
 
 public final class StandardTokenizer extends Tokenizer {
-  /** A private instance of the JFlex-constructed scanner */
   private StandardTokenizerImpl scanner;
 
-  /** Alpha/numeric token type */
   public static final int ALPHANUM = 0;
-  /** Numeric token type */
   public static final int NUM = 1;
-  /** Southeast Asian token type */
   public static final int SOUTHEAST_ASIAN = 2;
-  /** Ideographic token type */
   public static final int IDEOGRAPHIC = 3;
-  /** Hiragana token type */
   public static final int HIRAGANA = 4;
-  /** Katakana token type */
   public static final int KATAKANA = 5;
-  /** Hangul token type */
   public static final int HANGUL = 6;
-  /** Emoji token type. */
   public static final int EMOJI = 7;
   
-  /** String token types that correspond to token type int constants */
   public static final String [] TOKEN_TYPES = new String [] {
     "<ALPHANUM>",
     "<NUM>",
@@ -69,23 +50,12 @@ public final class StandardTokenizer extends Tokenizer {
     "<EMOJI>"
   };
   
-  /** Absolute maximum sized token */
   public static final int MAX_TOKEN_LENGTH_LIMIT = 1024 * 1024;
   
   private int skippedPositions;
 
   private int maxTokenLength = StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH;
 
-  /**
-   * Set the max allowed token length.  Tokens larger than this will be chopped
-   * up at this token length and emitted as multiple tokens.  If you need to
-   * skip such large tokens, you could increase this max length, and then
-   * use {@code LengthFilter} to remove long tokens.  The default is
-   * {@link StandardAnalyzer#DEFAULT_MAX_TOKEN_LENGTH}.
-   * 
-   * @throws IllegalArgumentException if the given length is outside of the
-   *  range [1, {@value #MAX_TOKEN_LENGTH_LIMIT}].
-   */ 
   public void setMaxTokenLength(int length) {
     if (length < 1) {
       throw new IllegalArgumentException("maxTokenLength must be greater than zero");
@@ -98,26 +68,14 @@ public final class StandardTokenizer extends Tokenizer {
     }
   }
 
-  /** Returns the current maximum token length
-   * 
-   *  @see #setMaxTokenLength */
   public int getMaxTokenLength() {
     return maxTokenLength;
   }
 
-  /**
-   * Creates a new instance of the {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.standard.StandardTokenizer}.  Attaches
-   * the <code>input</code> to the newly created JFlex scanner.
-
-   * See http://issues.apache.org/jira/browse/LUCENE-1068
-   */
   public StandardTokenizer() {
     init();
   }
 
-  /**
-   * Creates a new StandardTokenizer with a given {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.util.AttributeFactory} 
-   */
   public StandardTokenizer(AttributeFactory factory) {
     super(factory);
     init();

@@ -19,21 +19,10 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.index;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 
-/**
- * A per-document byte[]
- *
- * @deprecated Use {@link BinaryDocValues} instead.
- */
 @Deprecated
 public abstract class LegacyBinaryDocValues {
   
-  /** Sole constructor. (For invocation by subclass 
-   * constructors, typically implicit.) */
   protected LegacyBinaryDocValues() {}
 
-  /** Lookup the value for document.  The returned {@link BytesRef} may be
-   * re-used across calls to {@link #get(int)} so make sure to
-   * {@link BytesRef#deepCopyOf(BytesRef) copy it} if you want to keep it
-   * around. */
   public abstract BytesRef get(int docID);
 }

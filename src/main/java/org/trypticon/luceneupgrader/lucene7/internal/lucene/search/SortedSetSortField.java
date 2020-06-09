@@ -24,43 +24,14 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReaderCont
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.SortedDocValues;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.SortedSetDocValues;
 
-/** 
- * SortField for {@link SortedSetDocValues}.
- * <p>
- * A SortedSetDocValues contains multiple values for a field, so sorting with
- * this technique "selects" a value as the representative sort value for the document.
- * <p>
- * By default, the minimum value in the set is selected as the sort value, but
- * this can be customized. Selectors other than the default do have some limitations
- * to ensure that all selections happen in constant-time for performance.
- * <p>
- * Like sorting by string, this also supports sorting missing values as first or last,
- * via {@link #setMissingValue(Object)}.
- * @see SortedSetSelector
- */
 public class SortedSetSortField extends SortField {
   
   private final SortedSetSelector.Type selector;
   
-  /**
-   * Creates a sort, possibly in reverse, by the minimum value in the set 
-   * for the document.
-   * @param field Name of field to sort by.  Must not be null.
-   * @param reverse True if natural order should be reversed.
-   */
   public SortedSetSortField(String field, boolean reverse) {
     this(field, reverse, SortedSetSelector.Type.MIN);
   }
 
-  /**
-   * Creates a sort, possibly in reverse, specifying how the sort value from 
-   * the document's set is selected.
-   * @param field Name of field to sort by.  Must not be null.
-   * @param reverse True if natural order should be reversed.
-   * @param selector custom selector type for choosing the sort value from the set.
-   * <p>
-   * NOTE: selectors other than {@link SortedSetSelector.Type#MIN} require optional codec support.
-   */
   public SortedSetSortField(String field, boolean reverse, SortedSetSelector.Type selector) {
     super(field, SortField.Type.CUSTOM, reverse);
     if (selector == null) {
@@ -69,7 +40,6 @@ public class SortedSetSortField extends SortField {
     this.selector = selector;
   }
   
-  /** Returns the selector in use for this sort */
   public SortedSetSelector.Type getSelector() {
     return selector;
   }
@@ -104,11 +74,6 @@ public class SortedSetSortField extends SortField {
     return buffer.toString();
   }
 
-  /**
-   * Set how missing values (the empty set) are sorted.
-   * <p>
-   * Note that this must be {@link #STRING_FIRST} or {@link #STRING_LAST}.
-   */
   @Override
   public void setMissingValue(Object missingValue) {
     if (missingValue != STRING_FIRST && missingValue != STRING_LAST) {

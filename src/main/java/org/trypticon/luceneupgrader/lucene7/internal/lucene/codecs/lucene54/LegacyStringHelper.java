@@ -19,24 +19,9 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.lucene54;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 
-/**
- * Legacy methods for manipulating strings.
- *
- * @lucene.internal
- * @deprecated This is only used for backwards compatibility codecs (they
- * don't work with the Java9-based replacement methods).
- */
 @Deprecated
 abstract class LegacyStringHelper {
 
-  /**
-   * Compares two {@link BytesRef}, element by element, and returns the
-   * number of elements common to both arrays (from the start of each).
-   *
-   * @param left The first {@link BytesRef} to compare
-   * @param right The second {@link BytesRef} to compare
-   * @return The number of common elements (from the start of each).
-   */
   public static int bytesDifference(BytesRef left, BytesRef right) {
     int len = left.length < right.length ? left.length : right.length;
     final byte[] bytesLeft = left.bytes;
@@ -49,11 +34,6 @@ abstract class LegacyStringHelper {
     return len;
   }
   
-  /** 
-   * Returns the length of {@code currentTerm} needed for use as a sort key.
-   * so that {@link BytesRef#compareTo(BytesRef)} still returns the same result.
-   * This method assumes currentTerm comes after priorTerm.
-   */
   public static int sortKeyLength(final BytesRef priorTerm, final BytesRef currentTerm) {
     final int currentTermOffset = currentTerm.offset;
     final int priorTermOffset = priorTerm.offset;

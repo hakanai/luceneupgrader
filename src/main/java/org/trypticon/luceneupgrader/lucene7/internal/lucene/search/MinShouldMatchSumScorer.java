@@ -30,22 +30,6 @@ import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DisiPr
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DisiPriorityQueue.parentNode;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DisiPriorityQueue.rightNode;
 
-/**
- * A {@link Scorer} for {@link BooleanQuery} when
- * {@link BooleanQuery.Builder#setMinimumNumberShouldMatch(int) minShouldMatch} is
- * between 2 and the total number of clauses.
- *
- * This implementation keeps sub scorers in 3 different places:
- *  - lead: a linked list of scorer that are positioned on the desired doc ID
- *  - tail: a heap that contains at most minShouldMatch - 1 scorers that are
- *    behind the desired doc ID. These scorers are ordered by cost so that we
- *    can advance the least costly ones first.
- *  - head: a heap that contains scorers which are beyond the desired doc ID,
- *    ordered by doc ID in order to move quickly to the next candidate.
- *
- * Finding the next match consists of first setting the desired doc ID to the
- * least entry in 'head' and then advance 'tail' until there is a match.
- */
 final class MinShouldMatchSumScorer extends Scorer {
 
   static long cost(LongStream costs, int numScorers, int minShouldMatch) {
@@ -252,7 +236,6 @@ final class MinShouldMatchSumScorer extends Scorer {
     advanceTail(top);
   }
 
-  /** Reinitializes head, freq and doc from 'head' */
   private void setDocAndFreq() {
     assert head.size() > 0;
 
@@ -267,7 +250,6 @@ final class MinShouldMatchSumScorer extends Scorer {
     }
   }
 
-  /** Advance tail to the lead until there is a match. */
   private int doNext() throws IOException {
     while (freq < minShouldMatch) {
       assert freq > 0;
@@ -285,8 +267,6 @@ final class MinShouldMatchSumScorer extends Scorer {
     return doc;
   }
 
-  /** Move iterators to the tail until the cumulated size of lead+tail is
-   *  greater than or equal to minShouldMath */
   private int doNextCandidate() throws IOException {
     while (freq + tailSize < minShouldMatch) {
       // no match on doc is possible, move to the next potential match
@@ -297,8 +277,6 @@ final class MinShouldMatchSumScorer extends Scorer {
     return doc;
   }
 
-  /** Advance all entries from the tail to know about all matches on the
-   *  current doc. */
   private void updateFreq() throws IOException {
     assert freq >= minShouldMatch;
     // we return the next doc when there are minShouldMatch matching clauses
@@ -331,7 +309,6 @@ final class MinShouldMatchSumScorer extends Scorer {
     return doc;
   }
 
-  /** Insert an entry in 'tail' and evict the least-costly scorer if full. */
   private DisiWrapper insertTailWithOverFlow(DisiWrapper s) {
     if (tailSize < tail.length) {
       addTail(s);
@@ -347,14 +324,12 @@ final class MinShouldMatchSumScorer extends Scorer {
     return s;
   }
 
-  /** Add an entry to 'tail'. Fails if over capacity. */
   private void addTail(DisiWrapper s) {
     tail[tailSize] = s;
     upHeapCost(tail, tailSize);
     tailSize += 1;
   }
 
-  /** Pop the least-costly scorer from 'tail'. */
   private DisiWrapper popTail() {
     assert tailSize > 0;
     final DisiWrapper result = tail[0];
@@ -363,7 +338,6 @@ final class MinShouldMatchSumScorer extends Scorer {
     return result;
   }
 
-  /** Heap helpers */
 
   private static void upHeapCost(DisiWrapper[] heap, int i) {
     final DisiWrapper node = heap[i];

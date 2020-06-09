@@ -28,9 +28,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.FixedBitSet;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOSupplier;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 
-/**
- * This class handles accounting and applying pending deletes for live segment readers
- */
 class PendingDeletes {
   protected final SegmentCommitInfo info;
   // Read-only live docs, null until live docs are initialized or if all docs are alive
@@ -82,10 +79,6 @@ class PendingDeletes {
   }
 
 
-  /**
-   * Marks a document as deleted in this segment and return true if a document got actually deleted or
-   * if the document was already deleted.
-   */
   boolean delete(int docID) throws IOException {
     assert info.info.maxDoc() > 0;
     FixedBitSet mutableBits = getMutableBits();
@@ -99,32 +92,20 @@ class PendingDeletes {
     return didDelete;
   }
 
-  /**
-   * Returns a snapshot of the current live docs.
-   */
   Bits getLiveDocs() {
     // Prevent modifications to the returned live docs
     writeableLiveDocs = null;
     return liveDocs;
   }
 
-  /**
-   * Returns a snapshot of the hard live docs.
-   */
   Bits getHardLiveDocs() {
     return getLiveDocs();
   }
 
-  /**
-   * Returns the number of pending deletes that are not written to disk.
-   */
   protected int numPendingDeletes() {
     return pendingDeleteCount;
   }
 
-  /**
-   * Called once a new reader is opened for this segment ie. when deletes or updates are applied.
-   */
   void onNewReader(CodecReader reader, SegmentCommitInfo info) throws IOException {
     if (liveDocsInitialized == false) {
       assert writeableLiveDocs == null;
@@ -152,9 +133,6 @@ class PendingDeletes {
     return true;
   }
 
-  /**
-   * Resets the pending docs
-   */
   void dropChanges() {
     pendingDeleteCount = 0;
   }
@@ -168,9 +146,6 @@ class PendingDeletes {
     return sb.toString();
   }
 
-  /**
-   * Writes the live docs to disk and returns <code>true</code> if any new docs were written.
-   */
   boolean writeLiveDocs(Directory dir) throws IOException {
     if (pendingDeleteCount == 0) {
       return false;
@@ -216,18 +191,10 @@ class PendingDeletes {
     return true;
   }
 
-  /**
-   * Returns <code>true</code> iff the segment represented by this {@link PendingDeletes} is fully deleted
-   */
   boolean isFullyDeleted(IOSupplier<CodecReader> readerIOSupplier) throws IOException {
     return getDelCount() == info.info.maxDoc();
   }
 
-  /**
-   * Called for every field update for the given field at flush time
-   * @param info the field info of the field that's updated
-   * @param iterator the values to apply
-   */
   void onDocValuesUpdate(FieldInfo info, DocValuesFieldUpdates.Iterator iterator) throws IOException {
   }
 
@@ -235,24 +202,15 @@ class PendingDeletes {
     return policy.numDeletesToMerge(info, getDelCount(), readerIOSupplier);
   }
 
-  /**
-   * Returns true if the given reader needs to be refreshed in order to see the latest deletes
-   */
   final boolean needsRefresh(CodecReader reader) {
     return reader.getLiveDocs() != getLiveDocs() || reader.numDeletedDocs() != getDelCount();
   }
 
-  /**
-   * Returns the number of deleted docs in the segment.
-   */
   final int getDelCount() {
     int delCount = info.getDelCount() + info.getSoftDelCount() + numPendingDeletes();
     return delCount;
   }
 
-  /**
-   * Returns the number of live documents in this segment
-   */
   final int numDocs() {
     return info.info.maxDoc() - getDelCount();
   }
@@ -280,11 +238,6 @@ class PendingDeletes {
     return true;
   }
 
-  /**
-   * Returns {@code true} if we have to initialize this PendingDeletes before {@link #delete(int)};
-   * otherwise this PendingDeletes is ready to accept deletes. A PendingDeletes can be initialized
-   * by providing it a reader via {@link #onNewReader(CodecReader, SegmentCommitInfo)}.
-   */
   boolean mustInitOnDelete() {
     return false;
   }

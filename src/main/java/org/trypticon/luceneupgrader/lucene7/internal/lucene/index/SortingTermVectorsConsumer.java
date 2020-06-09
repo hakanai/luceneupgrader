@@ -89,7 +89,6 @@ final class SortingTermVectorsConsumer extends TermVectorsConsumer {
     }
   }
 
-  /** Safe (but, slowish) default method to copy every vector field in the provided {@link TermVectorsWriter}. */
   private static void writeTermVectors(TermVectorsWriter writer, Fields vectors, FieldInfos fieldInfos) throws IOException {
     if (vectors == null) {
       writer.startDocument(0);

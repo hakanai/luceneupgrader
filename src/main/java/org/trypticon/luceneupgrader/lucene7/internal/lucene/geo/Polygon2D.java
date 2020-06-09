@@ -18,19 +18,11 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.geo;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.PointValues.Relation;
 
-/**
- * 2D polygon implementation represented as a balanced interval tree of edges.
- * <p>
- * Loosely based on the algorithm described in <a href="http://www-ma2.upc.es/geoc/Schirra-pointPolygon.pdf">
- * http://www-ma2.upc.es/geoc/Schirra-pointPolygon.pdf</a>.
- * @lucene.internal
- */
 // Both Polygon.contains() and Polygon.crossesSlowly() loop all edges, and first check that the edge is within a range.
 // we just organize the edges to do the same computations on the same subset of edges more efficiently.
 public final class Polygon2D extends EdgeTree {
   // each component/hole is a node in an augmented 2d kd-tree: we alternate splitting between latitude/longitude,
   // and pull up max values for both dimensions to each parent node (regardless of split).
-  /** tree of holes, or null */
   private final Polygon2D holes;
 
   private Polygon2D(Polygon polygon, Polygon2D holes) {
@@ -38,12 +30,6 @@ public final class Polygon2D extends EdgeTree {
     this.holes = holes;
   }
 
-  /**
-   * Returns true if the point is contained within this polygon.
-   * <p>
-   * See <a href="https://www.ecse.rpi.edu/~wrf/Research/Short_Notes/pnpoly.html">
-   * https://www.ecse.rpi.edu/~wrf/Research/Short_Notes/pnpoly.html</a> for more information.
-   */
   public boolean contains(double latitude, double longitude) {
     if (latitude <= maxY && longitude <= maxX) {
       if (componentContains(latitude, longitude)) {
@@ -63,7 +49,6 @@ public final class Polygon2D extends EdgeTree {
     return false;
   }
 
-  /** Returns true if the point is contained within this polygon component. */
   private boolean componentContains(double latitude, double longitude) {
     // check bounding box
     if (latitude < minLat || latitude > maxLat || longitude < minLon || longitude > maxLon) {
@@ -102,7 +87,6 @@ public final class Polygon2D extends EdgeTree {
     return null;
   }
 
-  /** Returns relation to the provided rectangle for this component */
   @Override
   protected Relation componentRelate(double minLat, double maxLat, double minLon, double maxLon) {
     // check any holes
@@ -168,7 +152,6 @@ public final class Polygon2D extends EdgeTree {
     return containsCount;
   }
 
-  /** Builds a Polygon2D from multipolygon */
   public static Polygon2D create(Polygon... polygons) {
     Polygon2D components[] = new Polygon2D[polygons.length];
     for (int i = 0; i < components.length; i++) {
@@ -183,12 +166,6 @@ public final class Polygon2D extends EdgeTree {
     return (Polygon2D)createTree(components, 0, components.length - 1, false);
   }
 
-  /**
-   * Returns true if the point crosses this edge subtree an odd number of times
-   * <p>
-   * See <a href="https://www.ecse.rpi.edu/~wrf/Research/Short_Notes/pnpoly.html">
-   * https://www.ecse.rpi.edu/~wrf/Research/Short_Notes/pnpoly.html</a> for more information.
-   */
   // ported to java from https://www.ecse.rpi.edu/~wrf/Research/Short_Notes/pnpoly.html
   // original code under the BSD license (https://www.ecse.rpi.edu/~wrf/Research/Short_Notes/pnpoly.html#License%20to%20Use)
   //

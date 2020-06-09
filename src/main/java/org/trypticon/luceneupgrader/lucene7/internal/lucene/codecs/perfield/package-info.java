@@ -15,7 +15,4 @@
  * limitations under the License.
  */
 
-/**
- * Postings format that can delegate to different formats per-field.
- */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.perfield;

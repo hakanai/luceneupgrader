@@ -35,13 +35,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 
-/**
- * IndexReader implementation over a single segment. 
- * <p>
- * Instances pointing to the same segment (but with different deletes, etc)
- * may share the same core data.
- * @lucene.experimental
- */
 public final class SegmentReader extends CodecReader {
        
   private final SegmentCommitInfo si;
@@ -61,17 +54,11 @@ public final class SegmentReader extends CodecReader {
   final SegmentCoreReaders core;
   final SegmentDocValues segDocValues;
 
-  /** True if we are holding RAM only liveDocs or DV updates, i.e. the SegmentCommitInfo delGen doesn't match our liveDocs. */
   final boolean isNRT;
   
   final DocValuesProducer docValuesProducer;
   final FieldInfos fieldInfos;
 
-  /**
-   * Constructs a new SegmentReader with a new core.
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
   SegmentReader(SegmentCommitInfo si, int createdVersionMajor, IOContext context) throws IOException {
     this.si = si.clone();
     this.originalSi = si;
@@ -111,9 +98,6 @@ public final class SegmentReader extends CodecReader {
     }
   }
 
-  /** Create new SegmentReader sharing core from a previous
-   *  SegmentReader and using the provided liveDocs, and recording
-   *  whether those liveDocs were carried in ram (isNRT=true). */
   SegmentReader(SegmentCommitInfo si, SegmentReader sr, Bits liveDocs, Bits hardLiveDocs, int numDocs, boolean isNRT) throws IOException {
     if (numDocs > si.info.maxDoc()) {
       throw new IllegalArgumentException("numDocs=" + numDocs + " but maxDoc=" + si.info.maxDoc());
@@ -154,9 +138,6 @@ public final class SegmentReader extends CodecReader {
     return true;
   }
 
-  /**
-   * init most recent DocValues for the current commit
-   */
   private DocValuesProducer initDocValuesProducer() throws IOException {
 
     if (fieldInfos.hasDocValues() == false) {
@@ -177,9 +158,6 @@ public final class SegmentReader extends CodecReader {
     }
   }
   
-  /**
-   * init most recent FieldInfos for the current commit
-   */
   private FieldInfos initFieldInfos() throws IOException {
     if (!si.hasFieldUpdates()) {
       return core.coreFieldInfos;
@@ -272,21 +250,14 @@ public final class SegmentReader extends CodecReader {
     return si.toString(si.info.maxDoc() - numDocs - si.getDelCount());
   }
   
-  /**
-   * Return the name of the segment this reader is reading.
-   */
   public String getSegmentName() {
     return si.info.name;
   }
   
-  /**
-   * Return the SegmentInfoPerCommit of the segment this reader is reading.
-   */
   public SegmentCommitInfo getSegmentInfo() {
     return si;
   }
 
-  /** Returns the directory this index resides in. */
   public Directory directory() {
     // Don't ensureOpen here -- in certain cases, when a
     // cloned/reopened reader needs to commit, it may call
@@ -323,8 +294,6 @@ public final class SegmentReader extends CodecReader {
     return readerCacheHelper;
   }
 
-  /** Wrap the cache helper of the core to add ensureOpen() calls that make
-   *  sure users do not register closed listeners on closed indices. */
   private final IndexReader.CacheHelper coreCacheHelper = new IndexReader.CacheHelper() {
 
     @Override
@@ -349,20 +318,10 @@ public final class SegmentReader extends CodecReader {
     return metaData;
   }
 
-  /**
-   * Returns the original SegmentInfo passed to the segment reader on creation time.
-   * {@link #getSegmentInfo()} returns a clone of this instance.
-   */
   SegmentCommitInfo getOriginalSegmentInfo() {
     return originalSi;
   }
 
-  /**
-   * Returns the live docs that are not hard-deleted. This is an expert API to be used with
-   * soft-deletes to filter out document that hard deleted for instance due to aborted documents or to distinguish
-   * soft and hard deleted documents ie. a rolled back tombstone.
-   * @lucene.experimental
-   */
   public Bits getHardLiveDocs() {
     return hardLiveDocs;
   }

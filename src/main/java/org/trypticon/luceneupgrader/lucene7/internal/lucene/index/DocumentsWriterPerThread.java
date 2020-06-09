@@ -49,11 +49,6 @@ import static org.trypticon.luceneupgrader.lucene7.internal.lucene.util.ByteBloc
 
 final class DocumentsWriterPerThread {
 
-  /**
-   * The IndexingChain must define the {@link #getChain(DocumentsWriterPerThread)} method
-   * which returns the DocConsumer that the DocumentsWriter calls to process the
-   * documents.
-   */
   abstract static class IndexingChain {
     abstract DocConsumer getChain(DocumentsWriterPerThread documentsWriterPerThread) throws IOException;
   }
@@ -123,10 +118,6 @@ final class DocumentsWriterPerThread {
     }
   }
 
-  /** Called if we hit an exception at a bad time (when
-   *  updating the index files) and must discard all
-   *  currently buffered docs.  This resets our state,
-   *  discarding any docs added since last flush. */
   void abort() throws IOException{
     aborted = true;
     pendingNumDocs.addAndGet(-numDocsInRAM);
@@ -217,8 +208,6 @@ final class DocumentsWriterPerThread {
     }
   }
 
-  /** Anything that will add N docs to the index should reserve first to
-   *  make sure it's allowed. */
   private void reserveOneDoc() {
     if (pendingNumDocs.incrementAndGet() > IndexWriter.getActualMaxDocs()) {
       // Reserve failed: put the one doc back and throw exc:
@@ -396,20 +385,12 @@ final class DocumentsWriterPerThread {
     // confounding exception).
   }
 
-  /**
-   * Returns the number of RAM resident documents in this {@link DocumentsWriterPerThread}
-   */
   public int getNumDocsInRAM() {
     // public for FlushPolicy
     return numDocsInRAM;
   }
 
   
-  /**
-   * Prepares this DWPT for flushing. This method will freeze and return the
-   * {@link DocumentsWriterDeleteQueue}s global buffer and apply all pending
-   * deletes to this DWPT.
-   */
   FrozenBufferedUpdates prepareFlush() throws IOException {
     assert numDocsInRAM > 0;
     final FrozenBufferedUpdates globalUpdates = deleteQueue.freezeGlobalBuffer(deleteSlice);
@@ -424,7 +405,6 @@ final class DocumentsWriterPerThread {
     return globalUpdates;
   }
 
-  /** Flush all pending docs to a new segment */
   FlushedSegment flush(DocumentsWriter.FlushNotifications flushNotifications) throws IOException {
     assert numDocsInRAM > 0;
     assert deleteSlice.isEmpty() : "all deletes must be applied in prepareFlush";
@@ -554,10 +534,6 @@ final class DocumentsWriterPerThread {
     return sortedLiveDocs;
   }
 
-  /**
-   * Seals the {@link SegmentInfo} for the new flushed segment and persists
-   * the deleted documents {@link FixedBitSet}.
-   */
   void sealFlushedSegment(FlushedSegment flushedSegment, Sorter.DocMap sortMap, DocumentsWriter.FlushNotifications flushNotifications) throws IOException {
     assert flushedSegment != null;
     SegmentCommitInfo newSegment = flushedSegment.segmentInfo;
@@ -629,7 +605,6 @@ final class DocumentsWriterPerThread {
     }
   }
 
-  /** Get current segment info we are writing. */
   SegmentInfo getSegmentInfo() {
     return segmentInfo;
   }

@@ -37,86 +37,27 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRefBuilder
 
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 
-/**
- * Codec API for writing term vectors:
- * <ol>
- *   <li>For every document, {@link #startDocument(int)} is called,
- *       informing the Codec how many fields will be written.
- *   <li>{@link #startField(FieldInfo, int, boolean, boolean, boolean)} is called for 
- *       each field in the document, informing the codec how many terms
- *       will be written for that field, and whether or not positions,
- *       offsets, or payloads are enabled.
- *   <li>Within each field, {@link #startTerm(BytesRef, int)} is called
- *       for each term.
- *   <li>If offsets and/or positions are enabled, then 
- *       {@link #addPosition(int, int, int, BytesRef)} will be called for each term
- *       occurrence.
- *   <li>After all documents have been written, {@link #finish(FieldInfos, int)} 
- *       is called for verification/sanity-checks.
- *   <li>Finally the writer is closed ({@link #close()})
- * </ol>
- * 
- * @lucene.experimental
- */
 public abstract class TermVectorsWriter implements Closeable {
   
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected TermVectorsWriter() {
   }
 
-  /** Called before writing the term vectors of the document.
-   *  {@link #startField(FieldInfo, int, boolean, boolean, boolean)} will 
-   *  be called <code>numVectorFields</code> times. Note that if term 
-   *  vectors are enabled, this is called even if the document 
-   *  has no vector fields, in this case <code>numVectorFields</code> 
-   *  will be zero. */
   public abstract void startDocument(int numVectorFields) throws IOException;
 
-  /** Called after a doc and all its fields have been added. */
   public void finishDocument() throws IOException {};
 
-  /** Called before writing the terms of the field.
-   *  {@link #startTerm(BytesRef, int)} will be called <code>numTerms</code> times. */
   public abstract void startField(FieldInfo info, int numTerms, boolean positions, boolean offsets, boolean payloads) throws IOException;
 
-  /** Called after a field and all its terms have been added. */
   public void finishField() throws IOException {};
 
-  /** Adds a term and its term frequency <code>freq</code>.
-   * If this field has positions and/or offsets enabled, then
-   * {@link #addPosition(int, int, int, BytesRef)} will be called 
-   * <code>freq</code> times respectively.
-   */
   public abstract void startTerm(BytesRef term, int freq) throws IOException;
 
-  /** Called after a term and all its positions have been added. */
   public void finishTerm() throws IOException {}
 
-  /** Adds a term position and offsets */
   public abstract void addPosition(int position, int startOffset, int endOffset, BytesRef payload) throws IOException;
 
-  /** Called before {@link #close()}, passing in the number
-   *  of documents that were written. Note that this is 
-   *  intentionally redundant (equivalent to the number of
-   *  calls to {@link #startDocument(int)}, but a Codec should
-   *  check that this is the case to detect the JRE bug described 
-   *  in LUCENE-1282. */
   public abstract void finish(FieldInfos fis, int numDocs) throws IOException;
 
-  /** 
-   * Called by IndexWriter when writing new segments.
-   * <p>
-   * This is an expert API that allows the codec to consume 
-   * positions and offsets directly from the indexer.
-   * <p>
-   * The default implementation calls {@link #addPosition(int, int, int, BytesRef)},
-   * but subclasses can override this if they want to efficiently write 
-   * all the positions, then all the offsets, for example.
-   * <p>
-   * NOTE: This API is extremely expert and subject to change or removal!!!
-   * @lucene.internal
-   */
   // TODO: we should probably nuke this and make a more efficient 4.x format
   // PreFlex-RW could then be slow and buffer (it's only used in tests...)
   public void addProx(int numProx, DataInput positions, DataInput offsets) throws IOException {
@@ -185,15 +126,6 @@ public abstract class TermVectorsWriter implements Closeable {
     }
   }
 
-  /** Merges in the term vectors from the readers in 
-   *  <code>mergeState</code>. The default implementation skips
-   *  over deleted documents, and uses {@link #startDocument(int)},
-   *  {@link #startField(FieldInfo, int, boolean, boolean, boolean)}, 
-   *  {@link #startTerm(BytesRef, int)}, {@link #addPosition(int, int, int, BytesRef)},
-   *  and {@link #finish(FieldInfos, int)},
-   *  returning the number of documents that were written.
-   *  Implementations can override this method for more sophisticated
-   *  merging (bulk-byte copying, etc). */
   public int merge(MergeState mergeState) throws IOException {
 
     List<TermVectorsMergeSub> subs = new ArrayList<>();
@@ -229,8 +161,6 @@ public abstract class TermVectorsWriter implements Closeable {
     return docCount;
   }
   
-  /** Safe (but, slowish) default method to write every
-   *  vector field in the document. */
   protected final void addAllDocVectors(Fields vectors, MergeState mergeState) throws IOException {
     if (vectors == null) {
       startDocument(0);

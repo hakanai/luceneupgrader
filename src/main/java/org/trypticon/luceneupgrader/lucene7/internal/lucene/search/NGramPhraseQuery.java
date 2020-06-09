@@ -23,23 +23,11 @@ import java.util.Objects;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.Term;
 
-/**
- * This is a {@link PhraseQuery} which is optimized for n-gram phrase query.
- * For example, when you query "ABCD" on a 2-gram field, you may want to use
- * NGramPhraseQuery rather than {@link PhraseQuery}, because NGramPhraseQuery
- * will {@link #rewrite(IndexReader)} the query to "AB/0 CD/2", while {@link PhraseQuery}
- * will query "AB/0 BC/1 CD/2" (where term/position).
- *
- */
 public class NGramPhraseQuery extends Query {
 
   private final int n;
   private final PhraseQuery phraseQuery;
   
-  /**
-   * Constructor that takes gram size.
-   * @param n n-gram size
-   */
   public NGramPhraseQuery(int n, PhraseQuery query) {
     super();
     this.n = n;
@@ -96,17 +84,14 @@ public class NGramPhraseQuery extends Query {
     return h;
   }
 
-  /** Return the n in n-gram */
   public int getN() {
     return n;
   }
 
-  /** Return the list of terms. */
   public Term[] getTerms() {
     return phraseQuery.getTerms();
   }
 
-  /** Return the list of relative positions that each term should appear at. */
   public int[] getPositions() {
     return phraseQuery.getPositions();
   }

@@ -15,7 +15,4 @@
  * limitations under the License.
  */
 
-/**
- * Binary i/o API, used for all index data.
- */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.store;

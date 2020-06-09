@@ -22,15 +22,9 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.TokenFilter;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.TokenStream;
 
-/**
- * Normalizes tokens extracted with {@link StandardTokenizer}.
- *
- * @deprecated StandardFilter is a no-op and can be removed from code
- */
 @Deprecated
 public class StandardFilter extends TokenFilter {
 
-  /** Sole constructor */
   public StandardFilter(TokenStream in) {
     super(in);
   }

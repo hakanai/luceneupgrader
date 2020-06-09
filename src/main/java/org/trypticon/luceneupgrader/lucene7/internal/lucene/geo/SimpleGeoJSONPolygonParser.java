@@ -44,8 +44,6 @@ import java.util.List;
    type: MultiPolygon (union of polygons) is also accepted.
 */
 
-/** Does minimal parsing of a GeoJSON object, to extract either Polygon or MultiPolygon, either directly as a the top-level type, or if
- *  the top-level type is Feature, as the geometry of that feature. */
 
 @SuppressWarnings("unchecked")
 class SimpleGeoJSONPolygonParser {
@@ -92,7 +90,6 @@ class SimpleGeoJSONPolygonParser {
     }
   }
 
-  /** path is the "address" by keys of where we are, e.g. geometry.coordinates */
   private void parseObject(String path) throws ParseException {
     scan('{');
     boolean first = true;
@@ -211,7 +208,6 @@ class SimpleGeoJSONPolygonParser {
     scan('}');
   }
 
-  /** Returns true if the object path is a valid location to see a Multi/Polygon geometry */
   private boolean isValidGeometryPath(String path) {
     return path.equals("") || path.equals("geometry") || path.equals("features.[].geometry");
   }
@@ -234,7 +230,6 @@ class SimpleGeoJSONPolygonParser {
     return new Polygon(polyPoints[0], polyPoints[1], holes.toArray(new Polygon[holes.size()]));
   }
 
-  /** Parses [[lat, lon], [lat, lon] ...] into 2d double array */
   private double[][] parsePoints(List<Object> o) throws ParseException {
     double[] lats = new double[o.size()];
     double[] lons = new double[o.size()];
@@ -379,7 +374,6 @@ class SimpleGeoJSONPolygonParser {
     throw newParseException("unexpected EOF");
   }
 
-  /** Scans across whitespace and consumes the expected character, or throws {@code ParseException} if the character is wrong */
   private void scan(char expected) throws ParseException {
     while (upto < input.length()) {
       char ch = input.charAt(upto);
@@ -406,7 +400,6 @@ class SimpleGeoJSONPolygonParser {
     }
   }
 
-  /** Scans the expected string, or throws {@code ParseException} */
   private void scan(String expected) throws ParseException {
     if (upto + expected.length() > input.length()) {
       throw newParseException("expected \"" + expected + "\" but hit EOF");
@@ -426,7 +419,6 @@ class SimpleGeoJSONPolygonParser {
       ch == 0x0d;  // newline
   }
 
-  /** When calling this, upto should be at the position of the incorrect character! */
   private ParseException newParseException(String details) throws ParseException {
     String fragment;
     int end = Math.min(input.length(), upto+1);

@@ -31,18 +31,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.InfoStream;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.ThreadInterruptedException;
 
-/**
- * This class controls {@link DocumentsWriterPerThread} flushing during
- * indexing. It tracks the memory consumption per
- * {@link DocumentsWriterPerThread} and uses a configured {@link FlushPolicy} to
- * decide if a {@link DocumentsWriterPerThread} must flush.
- * <p>
- * In addition to the {@link FlushPolicy} the flush control might set certain
- * {@link DocumentsWriterPerThread} as flush pending iff a
- * {@link DocumentsWriterPerThread} exceeds the
- * {@link IndexWriterConfig#getRAMPerThreadHardLimitMB()} to prevent address
- * space exhaustion.
- */
 final class DocumentsWriterFlushControl implements Accountable {
 
   private final long hardMaxBytesPerDWPT;
@@ -280,11 +268,6 @@ final class DocumentsWriterFlushControl implements Accountable {
     }
   }
 
-  /**
-   * Sets flush pending state on the given {@link ThreadState}. The
-   * {@link ThreadState} must have indexed at least on Document and must not be
-   * already pending.
-   */
   public synchronized void setFlushPending(ThreadState perThread) {
     assert !perThread.flushPending;
     if (perThread.dwpt.getNumDocsInRAM() > 0) {
@@ -400,9 +383,6 @@ final class DocumentsWriterFlushControl implements Accountable {
     this.closed = true;
   }
 
-  /**
-   * Returns an iterator that provides access to all currently active {@link ThreadState}s 
-   */
   public Iterator<ThreadState> allActiveThreadStates() {
     return getPerThreadsIterator(perThreadPool.getActiveThreadStateCount());
   }
@@ -433,9 +413,6 @@ final class DocumentsWriterFlushControl implements Accountable {
     flushPolicy.onDelete(this, null);
   }
 
-  /** Returns heap bytes currently consumed by buffered deletes/updates that would be
-   *  freed if we pushed all deletes.  This does not include bytes consumed by
-   *  already pushed delete/update packets. */
   public long getDeleteBytesUsed() {
     return documentsWriter.deleteQueue.ramBytesUsed();
   }
@@ -582,9 +559,6 @@ final class DocumentsWriterFlushControl implements Accountable {
     }
   }
   
-  /**
-   * Prunes the blockedQueue by removing all DWPT that are associated with the given flush queue. 
-   */
   private void pruneBlockedQueue(final DocumentsWriterDeleteQueue flushingQueue) {
     Iterator<BlockedFlush> iterator = blockedFlushes.iterator();
     while (iterator.hasNext()) {
@@ -661,26 +635,14 @@ final class DocumentsWriterFlushControl implements Accountable {
     }
   }
   
-  /**
-   * Returns <code>true</code> if a full flush is currently running
-   */
   synchronized boolean isFullFlush() {
     return fullFlush;
   }
 
-  /**
-   * Returns the number of flushes that are already checked out but not yet
-   * actively flushing
-   */
   synchronized int numQueuedFlushes() {
     return flushQueue.size();
   }
 
-  /**
-   * Returns the number of flushes that are checked out but not yet available
-   * for flushing. This only applies during a full flush if a DWPT needs
-   * flushing but must not be flushed until the full flush has finished.
-   */
   synchronized int numBlockedFlushes() {
     return blockedFlushes.size();
   }
@@ -695,24 +657,14 @@ final class DocumentsWriterFlushControl implements Accountable {
     }
   }
 
-  /**
-   * This method will block if too many DWPT are currently flushing and no
-   * checked out DWPT are available
-   */
   void waitIfStalled() {
     stallControl.waitIfStalled();
   }
 
-  /**
-   * Returns <code>true</code> iff stalled
-   */
   boolean anyStalledThreads() {
     return stallControl.anyStalledThreads();
   }
   
-  /**
-   * Returns the {@link IndexWriter} {@link InfoStream}
-   */
   public InfoStream getInfoStream() {
     return infoStream;
   }
@@ -744,9 +696,6 @@ final class DocumentsWriterFlushControl implements Accountable {
     return maxRamUsingThreadState;
   }
 
-  /**
-   * Returns the largest non-pending flushable DWPT or <code>null</code> if there is none.
-   */
   final DocumentsWriterPerThread checkoutLargestNonPendingWriter() {
     ThreadState largestNonPendingWriter = findLargestNonPendingWriter();
     if (largestNonPendingWriter != null) {

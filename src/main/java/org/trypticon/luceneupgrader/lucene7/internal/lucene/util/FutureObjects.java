@@ -16,28 +16,10 @@
  */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.util;
 
-/**
- * Additional methods from Java 9's <a href="https://docs.oracle.com/javase/9/docs/api/java/util/Objects.html">
- * {@code java.util.Objects}</a>.
- * <p>
- * This class will be removed when Java 9 is minimum requirement.
- * Currently any bytecode is patched to use the Java 9 native
- * classes through MR-JAR (Multi-Release JAR) mechanism.
- * In Java 8 it will use THIS implementation.
- * Because of patching, inside the Java source files we always
- * refer to the Lucene implementations, but the final Lucene
- * JAR files will use the native Java 9 class names when executed
- * with Java 9.
- * @lucene.internal
- */
 public final class FutureObjects {
   
   private FutureObjects() {} // no instance
 
-  /**
-   * Behaves like Java 9's Objects.checkIndex
-   * @see <a href="http://download.java.net/java/jdk9/docs/api/java/util/Objects.html#checkIndex-int-int-">Objects.checkIndex</a>
-   */
   public static int checkIndex(int index, int length) {
     if (index < 0 || index >= length) {
       throw new IndexOutOfBoundsException("Index " + index + " out-of-bounds for length " + length);
@@ -45,10 +27,6 @@ public final class FutureObjects {
     return index;
   }
   
-  /**
-   * Behaves like Java 9's Objects.checkFromToIndex
-   * @see <a href="http://download.java.net/java/jdk9/docs/api/java/util/Objects.html#checkFromToIndex-int-int-int-">Objects.checkFromToIndex</a>
-   */
   public static int checkFromToIndex(int fromIndex, int toIndex, int length) {
     if (fromIndex < 0 || fromIndex > toIndex || toIndex > length) {
       throw new IndexOutOfBoundsException("Range [" + fromIndex + ", " + toIndex + ") out-of-bounds for length " + length);
@@ -56,10 +34,6 @@ public final class FutureObjects {
     return fromIndex;
   }
   
-  /**
-   * Behaves like Java 9's Objects.checkFromIndexSize
-   * @see <a href="http://download.java.net/java/jdk9/docs/api/java/util/Objects.html#checkFromIndexSize-int-int-int-">Objects.checkFromIndexSize</a>
-   */
   public static int checkFromIndexSize(int fromIndex, int size, int length) {
     int end = fromIndex + size;
     if (fromIndex < 0 || fromIndex > end || end > length) {

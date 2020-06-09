@@ -35,52 +35,17 @@ import static org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoEncodi
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoEncodingUtils.encodeLongitude;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoEncodingUtils.encodeLongitudeCeil;
 
-/** 
- * An indexed location field.
- * <p>
- * Finding all documents within a range at search time is
- * efficient.  Multiple values for the same field in one document
- * is allowed. 
- * <p>
- * This field defines static factory methods for common operations:
- * <ul>
- *   <li>{@link #newBoxQuery newBoxQuery()} for matching points within a bounding box.
- *   <li>{@link #newDistanceQuery newDistanceQuery()} for matching points within a specified distance.
- *   <li>{@link #newPolygonQuery newPolygonQuery()} for matching points within an arbitrary polygon.
- * </ul>
- * <p>
- * If you also need per-document operations such as sort by distance, add a separate {@link LatLonDocValuesField} instance.
- * If you also need to store the value, you should add a separate {@link StoredField} instance.
- * <p>
- * <b>WARNING</b>: Values are indexed with some loss of precision from the
- * original {@code double} values (4.190951585769653E-8 for the latitude component
- * and 8.381903171539307E-8 for longitude).
- * @see PointValues
- * @see LatLonDocValuesField
- */
 // TODO ^^^ that is very sandy and hurts the API, usage, and tests tremendously, because what the user passes
 // to the field is not actually what gets indexed. Float would be 1E-5 error vs 1E-7, but it might be
 // a better tradeoff? then it would be completely transparent to the user and lucene would be "lossless".
 public class LatLonPoint extends Field {
-  /** LatLonPoint is encoded as integer values so number of bytes is 4 */
   public static final int BYTES = Integer.BYTES;
-  /**
-   * Type for an indexed LatLonPoint
-   * <p>
-   * Each point stores two dimensions with 4 bytes per dimension.
-   */
   public static final FieldType TYPE = new FieldType();
   static {
     TYPE.setDimensions(2, Integer.BYTES);
     TYPE.freeze();
   }
   
-  /**
-   * Change the values of this field
-   * @param latitude latitude value: must be within standard +/-90 coordinate bounds.
-   * @param longitude longitude value: must be within standard +/-180 coordinate bounds.
-   * @throws IllegalArgumentException if latitude or longitude are out of bounds
-   */
   public void setLocationValue(double latitude, double longitude) {
     final byte[] bytes;
 
@@ -97,13 +62,6 @@ public class LatLonPoint extends Field {
     NumericUtils.intToSortableBytes(longitudeEncoded, bytes, Integer.BYTES);
   }
 
-  /** 
-   * Creates a new LatLonPoint with the specified latitude and longitude
-   * @param name field name
-   * @param latitude latitude value: must be within standard +/-90 coordinate bounds.
-   * @param longitude longitude value: must be within standard +/-180 coordinate bounds.
-   * @throws IllegalArgumentException if the field name is null or latitude or longitude are out of bounds
-   */
   public LatLonPoint(String name, double latitude, double longitude) {
     super(name, TYPE);
     setLocationValue(latitude, longitude);
@@ -126,7 +84,6 @@ public class LatLonPoint extends Field {
     return result.toString();
   }
   
-  /** sugar encodes a single point as a byte array */
   private static byte[] encode(double latitude, double longitude) {
     byte[] bytes = new byte[2 * Integer.BYTES];
     NumericUtils.intToSortableBytes(encodeLatitude(latitude), bytes, 0);
@@ -134,7 +91,6 @@ public class LatLonPoint extends Field {
     return bytes;
   }
   
-  /** sugar encodes a single point as a byte array, rounding values up */
   private static byte[] encodeCeil(double latitude, double longitude) {
     byte[] bytes = new byte[2 * Integer.BYTES];
     NumericUtils.intToSortableBytes(encodeLatitudeCeil(latitude), bytes, 0);
@@ -142,7 +98,6 @@ public class LatLonPoint extends Field {
     return bytes;
   }
 
-  /** helper: checks a fieldinfo and throws exception if its definitely not a LatLonPoint */
   static void checkCompatible(FieldInfo fieldInfo) {
     // point/dv properties could be "unset", if you e.g. used only StoredField with this same name in the segment.
     if (fieldInfo.getPointDataDimensionCount() != 0 && fieldInfo.getPointDataDimensionCount() != TYPE.pointDataDimensionCount()) {
@@ -159,18 +114,6 @@ public class LatLonPoint extends Field {
 
   // static methods for generating queries
 
-  /**
-   * Create a query for matching a bounding box.
-   * <p>
-   * The box may cross over the dateline.
-   * @param field field name. must not be null.
-   * @param minLatitude latitude lower bound: must be within standard +/-90 coordinate bounds.
-   * @param maxLatitude latitude upper bound: must be within standard +/-90 coordinate bounds.
-   * @param minLongitude longitude lower bound: must be within standard +/-180 coordinate bounds.
-   * @param maxLongitude longitude upper bound: must be within standard +/-180 coordinate bounds.
-   * @return query matching points within this box
-   * @throws IllegalArgumentException if {@code field} is null, or the box has invalid coordinates.
-   */
   public static Query newBoxQuery(String field, double minLatitude, double maxLatitude, double minLongitude, double maxLongitude) {
     // exact double values of lat=90.0D and lon=180.0D must be treated special as they are not represented in the encoding
     // and should not drag in extra bogus junk! TODO: should encodeCeil just throw ArithmeticException to be less trappy here?
@@ -227,27 +170,10 @@ public class LatLonPoint extends Field {
     };
   }
   
-  /**
-   * Create a query for matching points within the specified distance of the supplied location.
-   * @param field field name. must not be null.
-   * @param latitude latitude at the center: must be within standard +/-90 coordinate bounds.
-   * @param longitude longitude at the center: must be within standard +/-180 coordinate bounds.
-   * @param radiusMeters maximum distance from the center in meters: must be non-negative and finite.
-   * @return query matching points within this distance
-   * @throws IllegalArgumentException if {@code field} is null, location has invalid coordinates, or radius is invalid.
-   */
   public static Query newDistanceQuery(String field, double latitude, double longitude, double radiusMeters) {
     return new LatLonPointDistanceQuery(field, latitude, longitude, radiusMeters);
   }
   
-  /** 
-   * Create a query for matching one or more polygons.
-   * @param field field name. must not be null.
-   * @param polygons array of polygons. must not be null or empty
-   * @return query matching points within this polygon
-   * @throws IllegalArgumentException if {@code field} is null, {@code polygons} is null or empty
-   * @see Polygon
-   */
   public static Query newPolygonQuery(String field, Polygon... polygons) {
     return new LatLonPointInPolygonQuery(field, polygons);
   }

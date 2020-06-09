@@ -23,31 +23,14 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.PointValues;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Accountable;
 
-/** Abstract API to visit point values.
- *
- * @lucene.experimental
- */
 public abstract class PointsReader implements Closeable, Accountable {
 
-  /** Sole constructor. (For invocation by subclass constructors, typically implicit.) */
   protected PointsReader() {}
 
-  /** 
-   * Checks consistency of this reader.
-   * <p>
-   * Note that this may be costly in terms of I/O, e.g. 
-   * may involve computing a checksum value against large data files.
-   * @lucene.internal
-   */
   public abstract void checkIntegrity() throws IOException;
 
-  /** Return {@link PointValues} for the given {@code field}. */
   public abstract PointValues getValues(String field) throws IOException;
 
-  /** 
-   * Returns an instance optimized for merging.
-   * <p>
-   * The default implementation returns {@code this} */
   public PointsReader getMergeInstance() throws IOException {
     return this;
   }

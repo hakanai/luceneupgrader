@@ -38,70 +38,8 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IndexOutput;
 
-/**
- * Lucene 5.0 Field Infos format.
- * <p>Field names are stored in the field info file, with suffix <tt>.fnm</tt>.
- * <p>FieldInfos (.fnm) --&gt; Header,FieldsCount, &lt;FieldName,FieldNumber,
- * FieldBits,DocValuesBits,DocValuesGen,Attributes&gt; <sup>FieldsCount</sup>,Footer
- * <p>Data types:
- * <ul>
- *   <li>Header --&gt; {@link CodecUtil#checkIndexHeader IndexHeader}</li>
- *   <li>FieldsCount --&gt; {@link DataOutput#writeVInt VInt}</li>
- *   <li>FieldName --&gt; {@link DataOutput#writeString String}</li>
- *   <li>FieldBits, IndexOptions, DocValuesBits --&gt; {@link DataOutput#writeByte Byte}</li>
- *   <li>FieldNumber --&gt; {@link DataOutput#writeInt VInt}</li>
- *   <li>Attributes --&gt; {@link DataOutput#writeMapOfStrings Map&lt;String,String&gt;}</li>
- *   <li>DocValuesGen --&gt; {@link DataOutput#writeLong(long) Int64}</li>
- *   <li>Footer --&gt; {@link CodecUtil#writeFooter CodecFooter}</li>
- * </ul>
- * Field Descriptions:
- * <ul>
- *   <li>FieldsCount: the number of fields in this file.</li>
- *   <li>FieldName: name of the field as a UTF-8 String.</li>
- *   <li>FieldNumber: the field's number. Note that unlike previous versions of
- *       Lucene, the fields are not numbered implicitly by their order in the
- *       file, instead explicitly.</li>
- *   <li>FieldBits: a byte containing field options.
- *     <ul>
- *       <li>The low order bit (0x1) is one for fields that have term vectors
- *           stored, and zero for fields without term vectors.</li>
- *       <li>If the second lowest order-bit is set (0x2), norms are omitted for the
- *           indexed field.</li>
- *       <li>If the third lowest-order bit is set (0x4), payloads are stored for the
- *           indexed field.</li>
- *     </ul>
- *   </li>
- *   <li>IndexOptions: a byte containing index options.
- *     <ul>
- *       <li>0: not indexed</li>
- *       <li>1: indexed as DOCS_ONLY</li>
- *       <li>2: indexed as DOCS_AND_FREQS</li>
- *       <li>3: indexed as DOCS_AND_FREQS_AND_POSITIONS</li>
- *       <li>4: indexed as DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS</li>
- *     </ul>
- *   </li>
- *   <li>DocValuesBits: a byte containing per-document value types. The type
- *       recorded as two four-bit integers, with the high-order bits representing
- *       <code>norms</code> options, and the low-order bits representing 
- *       {@code DocValues} options. Each four-bit integer can be decoded as such:
- *     <ul>
- *       <li>0: no DocValues for this field.</li>
- *       <li>1: NumericDocValues. ({@link DocValuesType#NUMERIC})</li>
- *       <li>2: BinaryDocValues. ({@code DocValuesType#BINARY})</li>
- *       <li>3: SortedDocValues. ({@code DocValuesType#SORTED})</li>
- *      </ul>
- *   </li>
- *   <li>DocValuesGen is the generation count of the field's DocValues. If this is -1,
- *       there are no DocValues updates to that field. Anything above zero means there 
- *       are updates stored by {@link DocValuesFormat}.</li>
- *   <li>Attributes: a key-value map of codec-private attributes.</li>
- * </ul>
- *
- * @lucene.experimental
- */
 public final class Lucene50FieldInfosFormat extends FieldInfosFormat {
 
-  /** Sole constructor. */
   public Lucene50FieldInfosFormat() {
   }
   
@@ -279,7 +217,6 @@ public final class Lucene50FieldInfosFormat extends FieldInfosFormat {
     }
   }
   
-  /** Extension of field infos */
   static final String EXTENSION = "fnm";
   
   // Codec header

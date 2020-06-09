@@ -44,11 +44,6 @@ import static org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoEncodi
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoEncodingUtils.encodeLatitude;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoEncodingUtils.encodeLongitude;
 
-/** Finds all previously indexed points that fall within the specified polygons.
- *
- *  <p>The field must be indexed with using {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.document.LatLonPoint} added per document.
- *
- *  @lucene.experimental */
 
 final class LatLonPointInPolygonQuery extends Query {
   final String field;
@@ -167,12 +162,10 @@ final class LatLonPointInPolygonQuery extends Query {
     };
   }
 
-  /** Returns the query field */
   public String getField() {
     return field;
   }
 
-  /** Returns a copy of the internal polygon array */
   public Polygon[] getPolygons() {
     return polygons.clone();
   }

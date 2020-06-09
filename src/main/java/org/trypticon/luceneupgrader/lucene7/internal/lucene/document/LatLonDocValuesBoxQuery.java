@@ -31,7 +31,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.Scorer;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.TwoPhaseIterator;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.Weight;
 
-/** Distance query for {@link LatLonDocValuesField}. */
 final class LatLonDocValuesBoxQuery extends Query {
 
   private final String field;

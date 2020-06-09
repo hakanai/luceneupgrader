@@ -16,26 +16,10 @@
  */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.util;
 
-/** Floating point numbers smaller than 32 bits.
- *
- * @lucene.internal
- */
 public class SmallFloat {
   
-  /** No instance */
   private SmallFloat() {}
 
-  /** Converts a 32 bit float to an 8 bit float.
-   * <br>Values less than zero are all mapped to zero.
-   * <br>Values are truncated (rounded down) to the nearest 8 bit value.
-   * <br>Values between zero and the smallest representable value
-   *  are rounded up.
-   *
-   * @param f the 32 bit float to be converted to an 8 bit float (byte)
-   * @param numMantissaBits the number of mantissa bits to use in the byte, with the remainder to be used in the exponent
-   * @param zeroExp the zero-point in the range of exponent values
-   * @return the 8 bit float representation
-   */
   public static byte floatToByte(float f, int numMantissaBits, int zeroExp) {
     // Adjustment from a float zero exponent to our zero exponent,
     // shifted over to our exponent position.
@@ -53,7 +37,6 @@ public class SmallFloat {
     }
   }
 
-  /** Converts an 8 bit float to a 32 bit float. */
   public static float byteToFloat(byte b, int numMantissaBits, int zeroExp) {
     // on Java1.5 & 1.6 JVMs, prebuilding a decoding array and doing a lookup
     // is only a little bit faster (anywhere from 0% to 7%)
@@ -70,11 +53,6 @@ public class SmallFloat {
   // -server JVMs, but still slower with client JVMs.
   //
 
-  /** floatToByte(b, mantissaBits=3, zeroExponent=15)
-   * <br>smallest non-zero value = 5.820766E-10
-   * <br>largest value = 7.5161928E9
-   * <br>epsilon = 0.125
-   */
   public static byte floatToByte315(float f) {
     int bits = Float.floatToRawIntBits(f);
     int smallfloat = bits >> (24-3);
@@ -87,7 +65,6 @@ public class SmallFloat {
     return (byte)(smallfloat - ((63-15)<<3));
  }
 
-  /** byteToFloat(b, mantissaBits=3, zeroExponent=15) */
   public static float byte315ToFloat(byte b) {
     // on Java1.5 & 1.6 JVMs, prebuilding a decoding array and doing a lookup
     // is only a little bit faster (anywhere from 0% to 7%)
@@ -97,7 +74,6 @@ public class SmallFloat {
     return Float.intBitsToFloat(bits);
   }
 
-  /** Float-like encoding for positive longs that preserves ordering and 4 significant bits. */
   public static int longToInt4(long i) {
     if (i < 0) {
       throw new IllegalArgumentException("Only supports positive values, got " + i);
@@ -119,9 +95,6 @@ public class SmallFloat {
     }
   }
 
-  /**
-   * Decode values encoded with {@link #longToInt4(long)}.
-   */
   public static final long int4ToLong(int i) {
     long bits = i & 0x07;
     int shift = (i >>> 3) - 1;
@@ -139,11 +112,6 @@ public class SmallFloat {
   private static final int MAX_INT4 = longToInt4(Integer.MAX_VALUE);
   private static final int NUM_FREE_VALUES = 255 - MAX_INT4;
 
-  /**
-   * Encode an integer to a byte. It is built upon {@link #longToInt4(long)}
-   * and leverages the fact that {@code longToInt4(Integer.MAX_VALUE)} is
-   * less than 255 to encode low values more accurately.
-   */
   public static byte intToByte4(int i) {
     if (i < 0) {
       throw new IllegalArgumentException("Only supports positive values, got " + i);
@@ -155,9 +123,6 @@ public class SmallFloat {
     }
   }
 
-  /**
-   * Decode values that have been encoded with {@link #intToByte4(int)}.
-   */
   public static int byte4ToInt(byte b) {
     int i = Byte.toUnsignedInt(b);
     if (i < NUM_FREE_VALUES) {

@@ -41,54 +41,20 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.spans.SpanQue
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.spans.SpanTermQuery;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.graph.GraphTokenStreamFiniteStrings;
 
-/**
- * Creates queries from the {@link Analyzer} chain.
- * <p>
- * Example usage:
- * <pre class="prettyprint">
- *   QueryBuilder builder = new QueryBuilder(analyzer);
- *   Query a = builder.createBooleanQuery("body", "just a test");
- *   Query b = builder.createPhraseQuery("body", "another test");
- *   Query c = builder.createMinShouldMatchQuery("body", "another test", 0.5f);
- * </pre>
- * <p>
- * This can also be used as a subclass for query parsers to make it easier
- * to interact with the analysis chain. Factory methods such as {@code newTermQuery} 
- * are provided so that the generated queries can be customized.
- */
 public class QueryBuilder {
   protected Analyzer analyzer;
   protected boolean enablePositionIncrements = true;
   protected boolean enableGraphQueries = true;
   protected boolean autoGenerateMultiTermSynonymsPhraseQuery = false;
 
-  /** Creates a new QueryBuilder using the given analyzer. */
   public QueryBuilder(Analyzer analyzer) {
     this.analyzer = analyzer;
   }
   
-  /** 
-   * Creates a boolean query from the query text.
-   * <p>
-   * This is equivalent to {@code createBooleanQuery(field, queryText, Occur.SHOULD)}
-   * @param field field name
-   * @param queryText text to be passed to the analyzer
-   * @return {@code TermQuery} or {@code BooleanQuery}, based on the analysis
-   *         of {@code queryText}
-   */
   public Query createBooleanQuery(String field, String queryText) {
     return createBooleanQuery(field, queryText, BooleanClause.Occur.SHOULD);
   }
   
-  /** 
-   * Creates a boolean query from the query text.
-   * <p>
-   * @param field field name
-   * @param queryText text to be passed to the analyzer
-   * @param operator operator used for clauses between analyzer tokens.
-   * @return {@code TermQuery} or {@code BooleanQuery}, based on the analysis 
-   *         of {@code queryText}
-   */
   public Query createBooleanQuery(String field, String queryText, BooleanClause.Occur operator) {
     if (operator != BooleanClause.Occur.SHOULD && operator != BooleanClause.Occur.MUST) {
       throw new IllegalArgumentException("invalid operator: only SHOULD or MUST are allowed");
@@ -96,41 +62,14 @@ public class QueryBuilder {
     return createFieldQuery(analyzer, operator, field, queryText, false, 0);
   }
   
-  /** 
-   * Creates a phrase query from the query text.
-   * <p>
-   * This is equivalent to {@code createPhraseQuery(field, queryText, 0)}
-   * @param field field name
-   * @param queryText text to be passed to the analyzer
-   * @return {@code TermQuery}, {@code BooleanQuery}, {@code PhraseQuery}, or
-   *         {@code MultiPhraseQuery}, based on the analysis of {@code queryText}
-   */
   public Query createPhraseQuery(String field, String queryText) {
     return createPhraseQuery(field, queryText, 0);
   }
   
-  /** 
-   * Creates a phrase query from the query text.
-   * <p>
-   * @param field field name
-   * @param queryText text to be passed to the analyzer
-   * @param phraseSlop number of other words permitted between words in query phrase
-   * @return {@code TermQuery}, {@code BooleanQuery}, {@code PhraseQuery}, or
-   *         {@code MultiPhraseQuery}, based on the analysis of {@code queryText}
-   */
   public Query createPhraseQuery(String field, String queryText, int phraseSlop) {
     return createFieldQuery(analyzer, BooleanClause.Occur.MUST, field, queryText, true, phraseSlop);
   }
   
-  /** 
-   * Creates a minimum-should-match query from the query text.
-   * <p>
-   * @param field field name
-   * @param queryText text to be passed to the analyzer
-   * @param fraction of query terms {@code [0..1]} that should match 
-   * @return {@code TermQuery} or {@code BooleanQuery}, based on the analysis 
-   *         of {@code queryText}
-   */
   public Query createMinShouldMatchQuery(String field, String queryText, float fraction) {
     if (Float.isNaN(fraction) || fraction < 0 || fraction > 1) {
       throw new IllegalArgumentException("fraction should be >= 0 and <= 1");
@@ -148,9 +87,6 @@ public class QueryBuilder {
     return query;
   }
 
-  /**
-   * Rebuilds a boolean query and sets a new minimum number should match value.
-   */
   private BooleanQuery addMinShouldMatchToBoolean(BooleanQuery query, float fraction) {
     BooleanQuery.Builder builder = new BooleanQuery.Builder();
     builder.setMinimumNumberShouldMatch((int) (fraction * query.clauses().size()));
@@ -161,76 +97,30 @@ public class QueryBuilder {
     return builder.build();
   }
 
-  /** 
-   * Returns the analyzer. 
-   * @see #setAnalyzer(Analyzer)
-   */
   public Analyzer getAnalyzer() {
     return analyzer;
   }
   
-  /** 
-   * Sets the analyzer used to tokenize text.
-   */
   public void setAnalyzer(Analyzer analyzer) {
     this.analyzer = analyzer;
   }
   
-  /**
-   * Returns true if position increments are enabled.
-   * @see #setEnablePositionIncrements(boolean)
-   */
   public boolean getEnablePositionIncrements() {
     return enablePositionIncrements;
   }
   
-  /**
-   * Set to <code>true</code> to enable position increments in result query.
-   * <p>
-   * When set, result phrase and multi-phrase queries will
-   * be aware of position increments.
-   * Useful when e.g. a StopFilter increases the position increment of
-   * the token that follows an omitted token.
-   * <p>
-   * Default: true.
-   */
   public void setEnablePositionIncrements(boolean enable) {
     this.enablePositionIncrements = enable;
   }
 
-  /**
-   * Returns true if phrase query should be automatically generated for multi terms synonyms.
-   * @see #setAutoGenerateMultiTermSynonymsPhraseQuery(boolean)
-   */
   public boolean getAutoGenerateMultiTermSynonymsPhraseQuery() {
     return autoGenerateMultiTermSynonymsPhraseQuery;
   }
 
-  /**
-   * Set to <code>true</code> if phrase queries should be automatically generated
-   * for multi terms synonyms.
-   * Default: false.
-   */
   public void setAutoGenerateMultiTermSynonymsPhraseQuery(boolean enable) {
     this.autoGenerateMultiTermSynonymsPhraseQuery = enable;
   }
 
-  /**
-   * Creates a query from the analysis chain.
-   * <p>
-   * Expert: this is more useful for subclasses such as queryparsers.
-   * If using this class directly, just use {@link #createBooleanQuery(String, String)}
-   * and {@link #createPhraseQuery(String, String)}.  This is a complex method and
-   * it is usually not necessary to override it in a subclass; instead, override
-   * methods like {@link #newBooleanQuery}, etc., if possible.
-   *
-   * @param analyzer   analyzer used for this query
-   * @param operator   default boolean operator used for this query
-   * @param field      field to create queries against
-   * @param queryText  text to be passed to the analysis chain
-   * @param quoted     true if phrases should be generated when terms occur at more than one position
-   * @param phraseSlop slop factor for phrase/multiphrase queries
-   */
   protected Query createFieldQuery(Analyzer analyzer, BooleanClause.Occur operator, String field, String queryText, boolean quoted, int phraseSlop) {
     assert operator == BooleanClause.Occur.SHOULD || operator == BooleanClause.Occur.MUST;
 
@@ -243,29 +133,14 @@ public class QueryBuilder {
     }
   }
 
-  /** Enable or disable graph TokenStream processing (enabled by default).
-   *
-   * @lucene.experimental */
   public void setEnableGraphQueries(boolean v) {
     enableGraphQueries = v;
   }
 
-  /** Returns true if graph TokenStream processing is enabled (default).
-   *
-   * @lucene.experimental */
   public boolean getEnableGraphQueries() {
     return enableGraphQueries;
   }
 
-  /**
-   * Creates a query from a token stream.
-   *
-   * @param source     the token stream to create the query from
-   * @param operator   default boolean operator used for this query
-   * @param field      field to create queries against
-   * @param quoted     true if phrases should be generated when terms occur at more than one position
-   * @param phraseSlop slop factor for phrase/multiphrase queries
-   */
   protected Query createFieldQuery(TokenStream source, BooleanClause.Occur operator, String field, boolean quoted, int phraseSlop) {
     assert operator == BooleanClause.Occur.SHOULD || operator == BooleanClause.Occur.MUST;
 
@@ -343,10 +218,6 @@ public class QueryBuilder {
     }
   }
 
-  /**
-   * Creates a span query from the tokenstream.  In the case of a single token, a simple <code>SpanTermQuery</code> is
-   * returned.  When multiple tokens, an ordered <code>SpanNearQuery</code> with slop 0 is returned.
-   */
   protected SpanQuery createSpanQuery(TokenStream in, String field) throws IOException {
     TermToBytesRefAttribute termAtt = in.getAttribute(TermToBytesRefAttribute.class);
     if (termAtt == null) {
@@ -367,9 +238,6 @@ public class QueryBuilder {
     }
   }
 
-  /** 
-   * Creates simple term query from the cached tokenstream contents 
-   */
   protected Query analyzeTerm(String field, TokenStream stream) throws IOException {
     TermToBytesRefAttribute termAtt = stream.getAttribute(TermToBytesRefAttribute.class);
     
@@ -381,9 +249,6 @@ public class QueryBuilder {
     return newTermQuery(new Term(field, termAtt.getBytesRef()));
   }
   
-  /** 
-   * Creates simple boolean query from the cached tokenstream contents 
-   */
   protected Query analyzeBoolean(String field, TokenStream stream) throws IOException {
     TermToBytesRefAttribute termAtt = stream.getAttribute(TermToBytesRefAttribute.class);
     
@@ -407,9 +272,6 @@ public class QueryBuilder {
     }
   }
 
-  /** 
-   * Creates complex boolean query from the cached tokenstream contents 
-   */
   protected Query analyzeMultiBoolean(String field, TokenStream stream, BooleanClause.Occur operator) throws IOException {
     BooleanQuery.Builder q = newBooleanQuery();
     List<Term> currentQuery = new ArrayList<>();
@@ -430,9 +292,6 @@ public class QueryBuilder {
     return q.build();
   }
   
-  /** 
-   * Creates simple phrase query from the cached tokenstream contents 
-   */
   protected Query analyzePhrase(String field, TokenStream stream, int slop) throws IOException {
     PhraseQuery.Builder builder = new PhraseQuery.Builder();
     builder.setSlop(slop);
@@ -454,9 +313,6 @@ public class QueryBuilder {
     return builder.build();
   }
   
-  /** 
-   * Creates complex phrase query from the cached tokenstream contents 
-   */
   protected Query analyzeMultiPhrase(String field, TokenStream stream, int slop) throws IOException {
     MultiPhraseQuery.Builder mpqb = newMultiPhraseQueryBuilder();
     mpqb.setSlop(slop);
@@ -491,10 +347,6 @@ public class QueryBuilder {
     return mpqb.build();
   }
 
-  /**
-   * Creates a boolean query from a graph token stream. The articulation points of the graph are visited in order and the queries
-   * created at each point are merged in the returned boolean query.
-   */
   protected Query analyzeGraphBoolean(String field, TokenStream source, BooleanClause.Occur operator) throws IOException {
     source.reset();
     GraphTokenStreamFiniteStrings graph = new GraphTokenStreamFiniteStrings(source);
@@ -540,18 +392,11 @@ public class QueryBuilder {
     return builder.build();
   }
 
-  /**
-   * Creates graph phrase query from the tokenstream contents
-   */
   protected Query analyzeGraphPhrase(TokenStream source, String field, int phraseSlop)
       throws IOException {
     source.reset();
     GraphTokenStreamFiniteStrings graph = new GraphTokenStreamFiniteStrings(source);
     if (phraseSlop > 0) {
-      /**
-       * Creates a boolean query from the graph token stream by extracting all the finite strings from the graph
-       * and using them to create phrase queries with the appropriate slop.
-       */
       BooleanQuery.Builder builder = new BooleanQuery.Builder();
       Iterator<TokenStream> it = graph.getFiniteStrings();
       while (it.hasNext()) {
@@ -563,11 +408,6 @@ public class QueryBuilder {
       return builder.build();
     }
 
-    /**
-     * Creates a span near (phrase) query from a graph token stream.
-     * The articulation points of the graph are visited in order and the queries
-     * created at each point are merged in the returned near query.
-     */
     List<SpanQuery> clauses = new ArrayList<>();
     int[] articulationPoints = graph.articulationPoints();
     int lastState = 0;
@@ -633,32 +473,14 @@ public class QueryBuilder {
     }
   }
 
-  /**
-   * Builds a new BooleanQuery instance.
-   * <p>
-   * This is intended for subclasses that wish to customize the generated queries.
-   * @return new BooleanQuery instance
-   */
   protected BooleanQuery.Builder newBooleanQuery() {
     return new BooleanQuery.Builder();
   }
   
-  /**
-   * Builds a new SynonymQuery instance.
-   * <p>
-   * This is intended for subclasses that wish to customize the generated queries.
-   * @return new Query instance
-   */
   protected Query newSynonymQuery(Term terms[]) {
     return new SynonymQuery(terms);
   }
 
-  /**
-   * Builds a new GraphQuery for multi-terms synonyms.
-   * <p>
-   * This is intended for subclasses that wish to customize the generated queries.
-   * @return new Query instance
-   */
   protected Query newGraphSynonymQuery(Iterator<Query> queries) {
     BooleanQuery.Builder builder = new BooleanQuery.Builder();
     while (queries.hasNext()) {
@@ -671,23 +493,10 @@ public class QueryBuilder {
     return bq;
   }
   
-  /**
-   * Builds a new TermQuery instance.
-   * <p>
-   * This is intended for subclasses that wish to customize the generated queries.
-   * @param term term
-   * @return new TermQuery instance
-   */
   protected Query newTermQuery(Term term) {
     return new TermQuery(term);
   }
   
-  /**
-   * Builds a new MultiPhraseQuery instance.
-   * <p>
-   * This is intended for subclasses that wish to customize the generated queries.
-   * @return new MultiPhraseQuery instance
-   */
   protected MultiPhraseQuery.Builder newMultiPhraseQueryBuilder() {
     return new MultiPhraseQuery.Builder();
   }

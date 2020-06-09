@@ -36,17 +36,6 @@ import java.util.zip.CRC32;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexFileNames;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BitUtil;
 
-/**
- * A {@link ByteBuffer}-based {@link Directory} implementation that
- * can be used to store index files on the heap.
- *
- * <p>Important: Note that {@link MMapDirectory} is nearly always a better choice as
- * it uses OS caches more effectively (through memory-mapped buffers).
- * A heap-based directory like this one can have the advantage in case of ephemeral, small,
- * short-lived indexes when disk syncs provide an additional overhead.</p>
- *
- * @lucene.experimental
- */
 public final class ByteBuffersDirectory extends BaseDirectory {
   public static final BiFunction<String, ByteBuffersDataOutput, IndexInput> OUTPUT_AS_MANY_BUFFERS = 
       (fileName, output) -> {
@@ -104,16 +93,8 @@ public final class ByteBuffersDirectory extends BaseDirectory {
 
   private final ConcurrentHashMap<String, FileEntry> files = new ConcurrentHashMap<>();
 
-  /**
-   * Conversion between a buffered index output and the corresponding index input
-   * for a given file.   
-   */
   private final BiFunction<String, ByteBuffersDataOutput, IndexInput> outputToInput;
 
-  /**
-   * A supplier of {@link ByteBuffersDataOutput} instances used to buffer up 
-   * the content of written files.
-   */
   private final Supplier<ByteBuffersDataOutput> bbOutputSupplier;
 
   public ByteBuffersDirectory() {

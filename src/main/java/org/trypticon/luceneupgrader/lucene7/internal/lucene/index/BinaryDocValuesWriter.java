@@ -35,11 +35,8 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PackedLo
 
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 
-/** Buffers up pending byte[] per doc, then flushes when
- *  segment flushes. */
 class BinaryDocValuesWriter extends DocValuesWriter {
 
-  /** Maximum length for a binary field. */
   private static final int MAX_LENGTH = ArrayUtil.MAX_ARRAY_LENGTH;
 
   // 32 KB block sizes for PagedBytes storage:

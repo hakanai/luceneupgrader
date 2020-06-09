@@ -19,11 +19,6 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.index;
 
 import java.io.IOException;
 
-/**
- * Wraps a {@link LegacySortedNumericDocValues} into a {@link SortedNumericDocValues}.
- *
- * @deprecated Implement {@link SortedNumericDocValues} directly.
- */
 @Deprecated
 public final class LegacySortedNumericDocValuesWrapper extends SortedNumericDocValues {
   private final LegacySortedNumericDocValues values;

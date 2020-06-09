@@ -22,11 +22,6 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 
-/**
- * Wraps a {@link LegacyBinaryDocValues} into a {@link BinaryDocValues}.
- *
- * @deprecated Implement {@link BinaryDocValues} directly.
- */
 @Deprecated
 public final class LegacyBinaryDocValuesWrapper extends BinaryDocValues {
   private final Bits docsWithField;

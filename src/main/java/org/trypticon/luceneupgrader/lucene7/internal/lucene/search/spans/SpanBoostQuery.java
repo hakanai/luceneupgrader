@@ -25,31 +25,20 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.BoostQuery;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.IndexSearcher;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.Query;
 
-/**
- * Counterpart of {@link BoostQuery} for spans.
- */
 public final class SpanBoostQuery extends SpanQuery {
 
   private final SpanQuery query;
   private final float boost;
 
-  /** Sole constructor: wrap {@code query} in such a way that the produced
-   *  scores will be boosted by {@code boost}. */
   public SpanBoostQuery(SpanQuery query, float boost) {
     this.query = Objects.requireNonNull(query);
     this.boost = boost;
   }
 
-  /**
-   * Return the wrapped {@link SpanQuery}.
-   */
   public SpanQuery getQuery() {
     return query;
   }
 
-  /**
-   * Return the applied boost.
-   */
   public float getBoost() {
     return boost;
   }

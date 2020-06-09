@@ -32,13 +32,10 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimat
 class TermVectorsConsumer extends TermsHash {
   TermVectorsWriter writer;
 
-  /** Scratch term used by TermVectorsConsumerPerField.finishDocument. */
   final BytesRef flushTerm = new BytesRef();
 
   final DocumentsWriterPerThread docWriter;
 
-  /** Used by TermVectorsConsumerPerField when serializing
-   *  the term vectors. */
   final ByteSliceReader vectorSliceReaderPos = new ByteSliceReader();
   final ByteSliceReader vectorSliceReaderOff = new ByteSliceReader();
 
@@ -71,8 +68,6 @@ class TermVectorsConsumer extends TermsHash {
     }
   }
 
-  /** Fills in no-term-vectors for all docs we haven't seen
-   *  since the last doc that had term vectors. */
   void fill(int docID) throws IOException {
     while(lastDocID < docID) {
       writer.startDocument(0);

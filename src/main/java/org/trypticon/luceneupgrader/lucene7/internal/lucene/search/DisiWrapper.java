@@ -19,10 +19,6 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.search;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.spans.Spans;
 
-/**
- * Wrapper used in {@link DisiPriorityQueue}.
- * @lucene.internal
- */
 public class DisiWrapper {
   public final DocIdSetIterator iterator;
   public final Scorer scorer;

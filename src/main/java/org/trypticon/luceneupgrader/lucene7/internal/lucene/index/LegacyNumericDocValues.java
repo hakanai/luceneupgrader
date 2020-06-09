@@ -17,22 +17,10 @@
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.index;
 
 
-/**
- * A per-document numeric value.
- *
- * @deprecated Use {@link NumericDocValues} instead.
- */
 @Deprecated
 public abstract class LegacyNumericDocValues {
   
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected LegacyNumericDocValues() {}
 
-  /**
-   * Returns the numeric value for the specified document ID.
-   * @param docID document ID to lookup
-   * @return numeric value
-   */
   public abstract long get(int docID);
 }

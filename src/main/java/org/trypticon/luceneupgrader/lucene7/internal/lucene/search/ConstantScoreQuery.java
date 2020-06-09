@@ -26,21 +26,13 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReaderContext;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Bits;
 
-/**
- * A query that wraps another query and simply returns a constant score equal to
- * 1 for every document that matches the query.
- * It therefore simply strips of all scores and always returns 1.
- */
 public final class ConstantScoreQuery extends Query {
   private final Query query;
 
-  /** Strips off scores from the passed in Query. The hits will get a constant score
-   * of 1. */
   public ConstantScoreQuery(Query query) {
     this.query = Objects.requireNonNull(query, "Query must not be null");
   }
 
-  /** Returns the encapsulated query. */
   public Query getQuery() {
     return query;
   }
@@ -64,10 +56,6 @@ public final class ConstantScoreQuery extends Query {
     return super.rewrite(reader);
   }
 
-  /** We return this as our {@link BulkScorer} so that if the CSQ
-   *  wraps a query with its own optimized top-level
-   *  scorer (e.g. BooleanScorer) we can use that
-   *  top-level scorer. */
   protected static class ConstantBulkScorer extends BulkScorer {
     final BulkScorer bulkScorer;
     final Weight weight;

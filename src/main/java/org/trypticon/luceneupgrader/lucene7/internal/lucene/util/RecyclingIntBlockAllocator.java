@@ -19,15 +19,6 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.util;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IntBlockPool.Allocator;
 
 
-/**
- * A {@link Allocator} implementation that recycles unused int
- * blocks in a buffer and reuses them in subsequent calls to
- * {@link #getIntBlock()}.
- * <p>
- * Note: This class is not thread-safe
- * </p>
- * @lucene.internal
- */
 public final class RecyclingIntBlockAllocator extends Allocator {
   private int[][] freeByteBlocks;
   private final int maxBufferedBlocks;
@@ -35,16 +26,6 @@ public final class RecyclingIntBlockAllocator extends Allocator {
   private final Counter bytesUsed;
   public static final int DEFAULT_BUFFERED_BLOCKS = 64;
 
-  /**
-   * Creates a new {@link RecyclingIntBlockAllocator}
-   * 
-   * @param blockSize
-   *          the block size in bytes
-   * @param maxBufferedBlocks
-   *          maximum number of buffered int block
-   * @param bytesUsed
-   *          {@link Counter} reference counting internally allocated bytes
-   */
   public RecyclingIntBlockAllocator(int blockSize, int maxBufferedBlocks,
       Counter bytesUsed) {
     super(blockSize);
@@ -53,24 +34,10 @@ public final class RecyclingIntBlockAllocator extends Allocator {
     this.bytesUsed = bytesUsed;
   }
 
-  /**
-   * Creates a new {@link RecyclingIntBlockAllocator}.
-   * 
-   * @param blockSize
-   *          the size of each block returned by this allocator
-   * @param maxBufferedBlocks
-   *          maximum number of buffered int blocks
-   */
   public RecyclingIntBlockAllocator(int blockSize, int maxBufferedBlocks) {
     this(blockSize, maxBufferedBlocks, Counter.newCounter(false));
   }
 
-  /**
-   * Creates a new {@link RecyclingIntBlockAllocator} with a block size of
-   * {@link IntBlockPool#INT_BLOCK_SIZE}, upper buffered docs limit of
-   * {@link #DEFAULT_BUFFERED_BLOCKS} ({@value #DEFAULT_BUFFERED_BLOCKS}).
-   * 
-   */
   public RecyclingIntBlockAllocator() {
     this(IntBlockPool.INT_BLOCK_SIZE, 64, Counter.newCounter(false));
   }
@@ -108,34 +75,18 @@ public final class RecyclingIntBlockAllocator extends Allocator {
     assert bytesUsed.get() >= 0;
   }
 
-  /**
-   * @return the number of currently buffered blocks
-   */
   public int numBufferedBlocks() {
     return freeBlocks;
   }
 
-  /**
-   * @return the number of bytes currently allocated by this {@link Allocator}
-   */
   public long bytesUsed() {
     return bytesUsed.get();
   }
 
-  /**
-   * @return the maximum number of buffered byte blocks
-   */
   public int maxBufferedBlocks() {
     return maxBufferedBlocks;
   }
 
-  /**
-   * Removes the given number of int blocks from the buffer if possible.
-   * 
-   * @param num
-   *          the number of int blocks to remove
-   * @return the number of actually removed buffers
-   */
   public int freeBlocks(int num) {
     assert num >= 0 : "free blocks must be >= 0 but was: "+ num;
     final int stop;

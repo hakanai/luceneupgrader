@@ -21,9 +21,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
-/** A Scorer for queries with a required subscorer
- * and an excluding (prohibited) sub {@link Scorer}.
- */
 class ReqExclScorer extends Scorer {
 
   private final Scorer reqScorer;
@@ -34,10 +31,6 @@ class ReqExclScorer extends Scorer {
   private final TwoPhaseIterator reqTwoPhaseIterator;
   private final TwoPhaseIterator exclTwoPhaseIterator;
 
-  /** Construct a <code>ReqExclScorer</code>.
-   * @param reqScorer The scorer that must match, except where
-   * @param exclScorer indicates exclusion.
-   */
   public ReqExclScorer(Scorer reqScorer, Scorer exclScorer) {
     super(reqScorer.weight);
     this.reqScorer = reqScorer;
@@ -55,8 +48,6 @@ class ReqExclScorer extends Scorer {
     }
   }
 
-  /** Confirms whether or not the given {@link TwoPhaseIterator}
-   *  matches on the current document. */
   private static boolean matchesOrNull(TwoPhaseIterator it) throws IOException {
     return it == null || it.matches();
   }
@@ -81,12 +72,6 @@ class ReqExclScorer extends Scorer {
     return Collections.singleton(new ChildScorer(reqScorer, "MUST"));
   }
 
-  /**
-   * Estimation of the number of operations required to call DISI.advance.
-   * This is likely completely wrong, especially given that the cost of
-   * this method usually depends on how far you want to advance, but it's
-   * probably better than nothing.
-   */
   private static final int ADVANCE_COST = 10;
 
   private static float matchCost(

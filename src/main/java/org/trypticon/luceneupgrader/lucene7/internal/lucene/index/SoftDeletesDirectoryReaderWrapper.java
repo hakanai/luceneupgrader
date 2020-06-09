@@ -32,21 +32,9 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocValuesFiel
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.FixedBitSet;
 
-/**
- * This reader filters out documents that have a doc values value in the given field and treat these
- * documents as soft deleted. Hard deleted documents will also be filtered out in the life docs of this reader.
- * @see IndexWriterConfig#setSoftDeletesField(String)
- * @see IndexWriter#softUpdateDocument(Term, Iterable, Field...)
- * @see SoftDeletesRetentionMergePolicy
- */
 public final class SoftDeletesDirectoryReaderWrapper extends FilterDirectoryReader {
   private final String field;
   private final CacheHelper readerCacheHelper;
-  /**
-   * Creates a new soft deletes wrapper.
-   * @param in the incoming directory reader
-   * @param field the soft deletes field
-   */
   public SoftDeletesDirectoryReaderWrapper(DirectoryReader in, String field) throws IOException {
     this(in, new SoftDeletesSubReaderWrapper(Collections.emptyMap(), field));
   }

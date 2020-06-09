@@ -25,29 +25,21 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.Scorer;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.TwoPhaseIterator;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.similarities.Similarity;
 
-/**
- * A basic {@link Scorer} over {@link Spans}.
- * @lucene.experimental
- */
 public class SpanScorer extends Scorer {
 
   protected final Spans spans;
   protected final Similarity.SimScorer docScorer;
 
-  /** accumulated sloppy freq (computed in setFreqCurrentDoc) */
   private float freq;
-  /** number of matches (computed in setFreqCurrentDoc) */
   private int numMatches;
   private int lastScoredDoc = -1; // last doc we called setFreqCurrentDoc() for
 
-  /** Sole constructor. */
   public SpanScorer(SpanWeight weight, Spans spans, Similarity.SimScorer docScorer) {
     super(weight);
     this.spans = Objects.requireNonNull(spans);
     this.docScorer = docScorer;
   }
 
-  /** return the Spans for this Scorer **/
   public Spans getSpans() {
     return spans;
   }
@@ -67,20 +59,11 @@ public class SpanScorer extends Scorer {
     return spans.asTwoPhaseIterator();
   }
 
-  /**
-   * Score the current doc. The default implementation scores the doc
-   * with the similarity using the slop-adjusted {@link #freq}.
-   */
   protected float scoreCurrentDoc() throws IOException {
     assert docScorer != null : getClass() + " has a null docScorer!";
     return docScorer.score(docID(), freq);
   }
 
-  /**
-   * Sets {@link #freq} and {@link #numMatches} for the current document.
-   * <p>
-   * This will be called at most once per document.
-   */
   protected final void setFreqCurrentDoc() throws IOException {
     freq = 0.0f;
     numMatches = 0;
@@ -117,9 +100,6 @@ public class SpanScorer extends Scorer {
     assert spans.endPosition() == Spans.NO_MORE_POSITIONS : "incorrect final end position, " + spans;
   }
 
-  /**
-   * Ensure setFreqCurrentDoc is called, if not already called for the current doc.
-   */
   private void ensureFreq() throws IOException {
     int currentDoc = docID();
     if (lastScoredDoc != currentDoc) {
@@ -134,8 +114,6 @@ public class SpanScorer extends Scorer {
     return scoreCurrentDoc();
   }
 
-  /** Returns the intermediate "sloppy freq" adjusted for edit distance
-   *  @lucene.internal */
   final float sloppyFreq() throws IOException {
     ensureFreq();
     return freq;

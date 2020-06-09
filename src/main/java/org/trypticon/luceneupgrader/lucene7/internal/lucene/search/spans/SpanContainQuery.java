@@ -68,9 +68,6 @@ abstract class SpanContainQuery extends SpanQuery implements Cloneable {
       this.littleWeight = littleWeight;
     }
 
-    /**
-     * Extract terms from both <code>big</code> and <code>little</code>.
-     */
     @Override
     public void extractTerms(Set<Term> terms) {
       bigWeight.extractTerms(terms);

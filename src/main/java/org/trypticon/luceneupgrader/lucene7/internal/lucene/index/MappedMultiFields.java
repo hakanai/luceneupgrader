@@ -23,16 +23,9 @@ import static org.trypticon.luceneupgrader.lucene7.internal.lucene.index.FilterL
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.index.FilterLeafReader.FilterTerms;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.index.FilterLeafReader.FilterTermsEnum;
 
-/** A {@link Fields} implementation that merges multiple
- *  Fields into one, and maps around deleted documents.
- *  This is used for merging. 
- *  @lucene.internal
- */
 public class MappedMultiFields extends FilterFields {
   final MergeState mergeState;
 
-  /** Create a new MappedMultiFields for merging, based on the supplied
-   * mergestate and merged view of terms. */
   public MappedMultiFields(MergeState mergeState, MultiFields multiFields) {
     super(multiFields);
     this.mergeState = mergeState;

@@ -21,44 +21,13 @@ import java.util.List;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.Explanation;
 
-/**
- * Axiomatic approaches for IR. From Hui Fang and Chengxiang Zhai
- * 2005. An Exploration of Axiomatic Approaches to Information Retrieval.
- * In Proceedings of the 28th annual international ACM SIGIR
- * conference on Research and development in information retrieval
- * (SIGIR '05). ACM, New York, NY, USA, 480-487.
- * <p>
- * There are a family of models. All of them are based on BM25,
- * Pivoted Document Length Normalization and Language model with
- * Dirichlet prior. Some components (e.g. Term Frequency,
- * Inverted Document Frequency) in the original models are modified
- * so that they follow some axiomatic constraints.
- * </p>
- *
- * @lucene.experimental
- */
 public abstract class Axiomatic extends SimilarityBase {
-  /**
-   * hyperparam for the growth function
-   */
   protected final float s;
 
-  /**
-   * hyperparam for the primitive weighthing function
-   */
   protected final float k;
 
-  /**
-   * the query length
-   */
   protected final int queryLen;
 
-  /**
-   * Constructor setting all Axiomatic hyperparameters
-   * @param s hyperparam for the growth function
-   * @param queryLen the query length
-   * @param k hyperparam for the primitive weighting function
-   */
   public Axiomatic(float s, int queryLen, float k) {
     if (Float.isFinite(s) == false || Float.isNaN(s) || s < 0 || s > 1) {
       throw new IllegalArgumentException("illegal s value: " + s + ", must be between 0 and 1");
@@ -75,26 +44,14 @@ public abstract class Axiomatic extends SimilarityBase {
     this.k = k;
   }
 
-  /**
-   * Constructor setting only s, letting k and queryLen to default
-   * @param s hyperparam for the growth function
-   */
   public Axiomatic(float s) {
     this(s, 1, 0.35f);
   }
 
-  /**
-   * Constructor setting s and queryLen, letting k to default
-   * @param s hyperparam for the growth function
-   * @param queryLen the query length
-   */
   public Axiomatic(float s, int queryLen) {
     this(s, queryLen, 0.35f);
   }
 
-  /**
-   * Default constructor
-   */
   public Axiomatic() {
     this(0.25f, 1, 0.35f);
   }
@@ -126,34 +83,16 @@ public abstract class Axiomatic extends SimilarityBase {
     super.explain(subs, stats, doc, freq, docLen);
   }
 
-  /**
-   * Name of the axiomatic method.
-   */
   @Override
   public abstract String toString();
 
-  /**
-   * compute the term frequency component
-   */
   protected abstract float tf(BasicStats stats, float freq, float docLen);
 
-  /**
-   * compute the document length component
-   */
   protected abstract float ln(BasicStats stats, float freq, float docLen);
 
-  /**
-   * compute the mixed term frequency and document length component
-   */
   protected abstract float tfln(BasicStats stats, float freq, float docLen);
 
-  /**
-   * compute the inverted document frequency component
-   */
   protected abstract float idf(BasicStats stats, float freq, float docLen);
 
-  /**
-   * compute the gamma component (only for F3EXp and F3LOG)
-   */
   protected abstract float gamma(BasicStats stats, float freq, float docLen);
 }

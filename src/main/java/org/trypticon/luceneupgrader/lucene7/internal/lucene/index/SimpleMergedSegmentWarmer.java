@@ -22,17 +22,9 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexWriter.IndexReaderWarmer;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.InfoStream;
 
-/** 
- * A very simple merged segment warmer that just ensures 
- * data structures are initialized.
- */
 public class SimpleMergedSegmentWarmer implements IndexReaderWarmer {
   private final InfoStream infoStream;
 
-  /**
-   * Creates a new SimpleMergedSegmentWarmer
-   * @param infoStream InfoStream to log statistics about warming.
-   */
   public SimpleMergedSegmentWarmer(InfoStream infoStream) {
     this.infoStream = infoStream;
   }

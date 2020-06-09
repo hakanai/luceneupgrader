@@ -21,12 +21,6 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.FrequencyTrackingRingBuffer;
 
-/**
- * A {@link QueryCachingPolicy} that tracks usage statistics of recently-used
- * filters in order to decide on which filters are worth caching.
- *
- * @lucene.experimental
- */
 public class UsageTrackingQueryCachingPolicy implements QueryCachingPolicy {
 
   // the hash code that we use as a sentinel in the ring buffer.
@@ -90,33 +84,14 @@ public class UsageTrackingQueryCachingPolicy implements QueryCachingPolicy {
 
   private final FrequencyTrackingRingBuffer recentlyUsedFilters;
 
-  /**
-   * Expert: Create a new instance with a configurable history size. Beware of
-   * passing too large values for the size of the history, either
-   * {@link #minFrequencyToCache} returns low values and this means some filters
-   * that are rarely used will be cached, which would hurt performance. Or
-   * {@link #minFrequencyToCache} returns high values that are function of the
-   * size of the history but then filters will be slow to make it to the cache.
-   *
-   * @param historySize               the number of recently used filters to track
-   */
   public UsageTrackingQueryCachingPolicy(int historySize) {
     this.recentlyUsedFilters = new FrequencyTrackingRingBuffer(historySize, SENTINEL);
   }
 
-  /** Create a new instance with an history size of 256. This should be a good
-   *  default for most cases. */
   public UsageTrackingQueryCachingPolicy() {
     this(256);
   }
 
-  /**
-   * For a given filter, return how many times it should appear in the history
-   * before being cached. The default implementation returns 2 for filters that
-   * need to evaluate against the entire index to build a {@link DocIdSetIterator},
-   * like {@link MultiTermQuery}, point-based queries or {@link TermInSetQuery},
-   * and 5 for other filters.
-   */
   protected int minFrequencyToCache(Query query) {
     if (isCostly(query)) {
       return 2;

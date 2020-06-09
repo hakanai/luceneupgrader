@@ -15,7 +15,4 @@
  * limitations under the License.
  */
  
-/** 
- * Top-level package.
- */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene;

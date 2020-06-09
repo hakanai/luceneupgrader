@@ -29,8 +29,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PackedLo
 
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 
-/** Buffers up pending long per doc, then flushes when
- *  segment flushes. */
 class NumericDocValuesWriter extends DocValuesWriter {
 
   private PackedLongValues.Builder pending;

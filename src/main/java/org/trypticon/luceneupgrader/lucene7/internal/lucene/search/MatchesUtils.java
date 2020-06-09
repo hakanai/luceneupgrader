@@ -28,18 +28,10 @@ import java.util.stream.StreamSupport;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOSupplier;
 
-/**
- * Contains static functions that aid the implementation of {@link Matches} and
- * {@link MatchesIterator} interfaces.
- */
 public final class MatchesUtils {
 
   private MatchesUtils() {}   // static functions only
 
-  /**
-   * Indicates a match with no term positions, for example on a Point or DocValues field,
-   * or a field indexed as docs and freqs only
-   */
   public static final Matches MATCH_WITH_NO_TERMS = new Matches() {
     @Override
     public Iterator<String> iterator() {
@@ -52,9 +44,6 @@ public final class MatchesUtils {
     }
   };
 
-  /**
-   * Amalgamate a collection of {@link Matches} into a single object
-   */
   public static Matches fromSubMatches(List<Matches> subMatches) {
     if (subMatches == null || subMatches.size() == 0) {
       return null;
@@ -88,9 +77,6 @@ public final class MatchesUtils {
     };
   }
 
-  /**
-   * Create a Matches for a single field
-   */
   public static Matches forField(String field, IOSupplier<MatchesIterator> mis) throws IOException {
 
     // The indirection here, using a Supplier object rather than a MatchesIterator
@@ -123,9 +109,6 @@ public final class MatchesUtils {
     };
   }
 
-  /**
-   * Create a MatchesIterator that iterates in order over all matches in a set of subiterators
-   */
   public static MatchesIterator disjunction(List<MatchesIterator> subMatches) throws IOException {
     return DisjunctionMatchesIterator.fromSubIterators(subMatches);
   }

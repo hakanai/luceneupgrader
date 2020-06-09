@@ -49,8 +49,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Counter;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimator;
 
-/** Default general purpose indexing chain, which handles
- *  indexing all types of fields. */
 final class DefaultIndexingChain extends DocConsumer {
   final Counter bytesUsed;
   final DocumentsWriterPerThread.DocState docState;
@@ -181,7 +179,6 @@ final class DefaultIndexingChain extends DocConsumer {
     return sortMap;
   }
 
-  /** Writes all buffered points. */
   private void writePoints(SegmentWriteState state, Sorter.DocMap sortMap) throws IOException {
     PointsWriter pointsWriter = null;
     boolean success = false;
@@ -225,7 +222,6 @@ final class DefaultIndexingChain extends DocConsumer {
     }
   }
 
-  /** Writes all buffered doc values (called from {@link #flush}). */
   private void writeDocValues(SegmentWriteState state, Sorter.DocMap sortMap) throws IOException {
     int maxDoc = state.segmentInfo.maxDoc();
     DocValuesConsumer dvConsumer = null;
@@ -348,8 +344,6 @@ final class DefaultIndexingChain extends DocConsumer {
     hashMask = newHashMask;
   }
 
-  /** Calls StoredFieldsWriter.startDocument, aborting the
-   *  segment if it hits any exception. */
   private void startStoredFields(int docID) throws IOException {
     try {
       storedFieldsConsumer.startDocument(docID);
@@ -359,8 +353,6 @@ final class DefaultIndexingChain extends DocConsumer {
     }
   }
 
-  /** Calls StoredFieldsWriter.finishDocument, aborting the
-   *  segment if it hits any exception. */
   private void finishStoredFields() throws IOException {
     try {
       storedFieldsConsumer.finishDocument();
@@ -495,7 +487,6 @@ final class DefaultIndexingChain extends DocConsumer {
     }
   }
 
-  /** Called from processDocument to index one field's point */
   private void indexPoint(PerField fp, IndexableField field) throws IOException {
     int pointDataDimensionCount = field.fieldType().pointDataDimensionCount();
     int pointIndexDimensionCount = field.fieldType().pointIndexDimensionCount();
@@ -558,7 +549,6 @@ final class DefaultIndexingChain extends DocConsumer {
     }
   }
 
-  /** Called from processDocument to index one field's doc value */
   private void indexDocValue(PerField fp, DocValuesType dvType, IndexableField field) throws IOException {
 
     if (fp.fieldInfo.getDocValuesType() == DocValuesType.NONE) {
@@ -621,8 +611,6 @@ final class DefaultIndexingChain extends DocConsumer {
     }
   }
 
-  /** Returns a previously created {@link PerField}, or null
-   *  if this field name wasn't seen yet. */
   private PerField getPerField(String name) {
     final int hashPos = name.hashCode() & hashMask;
     PerField fp = fieldHash[hashPos];
@@ -632,10 +620,6 @@ final class DefaultIndexingChain extends DocConsumer {
     return fp;
   }
 
-  /** Returns a previously created {@link PerField},
-   *  absorbing the type information from {@link FieldType},
-   *  and creates a new {@link PerField} if this field name
-   *  wasn't seen yet. */
   private PerField getOrAddField(String name, IndexableFieldType fieldType, boolean invert) {
 
     // Make sure we have a PerField allocated
@@ -686,7 +670,6 @@ final class DefaultIndexingChain extends DocConsumer {
     return fp;
   }
 
-  /** NOTE: not static: accesses at least docState, termsHash. */
   private final class PerField implements Comparable<PerField> {
 
     final int indexCreatedVersionMajor;
@@ -703,8 +686,6 @@ final class DefaultIndexingChain extends DocConsumer {
     // Non-null if this field ever had points in this segment:
     PointValuesWriter pointValuesWriter;
 
-    /** We use this to know when a PerField is seen for the
-     *  first time in the current document. */
     long fieldGen = -1;
 
     // Used by the hash table
@@ -757,9 +738,6 @@ final class DefaultIndexingChain extends DocConsumer {
       termsHashPerField.finish();
     }
 
-    /** Inverts one field for one document; first is true
-     *  if this is the first time we are seeing this field
-     *  name in this document. */
     public void invert(IndexableField field, boolean first) throws IOException {
       if (first) {
         // First time we're seeing this field (indexed) in

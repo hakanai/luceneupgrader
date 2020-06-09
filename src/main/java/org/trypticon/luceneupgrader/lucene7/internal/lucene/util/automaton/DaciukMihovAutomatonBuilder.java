@@ -24,78 +24,31 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.CharsRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.UnicodeUtil;
 
-/**
- * Builds a minimal, deterministic {@link Automaton} that accepts a set of 
- * strings. The algorithm requires sorted input data, but is very fast 
- * (nearly linear with the input size).
- * 
- * @see #build(Collection)
- * @see Automata#makeStringUnion(Collection)
- */
 public final class DaciukMihovAutomatonBuilder {
 
-  /**
-   * This builder rejects terms that are more than 1k chars long since it then
-   * uses recursion based on the length of the string, which might cause stack
-   * overflows.
-   */
   static final int MAX_TERM_LENGTH = 1_000;
 
-  /**
-   * The default constructor is private.  Use static methods directly.
-   */
   private DaciukMihovAutomatonBuilder() {
     super();
   }
 
-  /**
-   * DFSA state with <code>char</code> labels on transitions.
-   */
   private final static class State {
     
-    /** An empty set of labels. */
     private final static int[] NO_LABELS = new int[0];
     
-    /** An empty set of states. */
     private final static State[] NO_STATES = new State[0];
     
-    /**
-     * Labels of outgoing transitions. Indexed identically to {@link #states}.
-     * Labels must be sorted lexicographically.
-     */
     int[] labels = NO_LABELS;
     
-    /**
-     * States reachable from outgoing transitions. Indexed identically to
-     * {@link #labels}.
-     */
     State[] states = NO_STATES;
     
-    /**
-     * <code>true</code> if this state corresponds to the end of at least one
-     * input sequence.
-     */
     boolean is_final;
     
-    /**
-     * Returns the target state of a transition leaving this state and labeled
-     * with <code>label</code>. If no such transition exists, returns
-     * <code>null</code>.
-     */
     State getState(int label) {
       final int index = Arrays.binarySearch(labels, label);
       return index >= 0 ? states[index] : null;
     }
     
-    /**
-     * Two states are equal if:
-     * <ul>
-     * <li>they have an identical number of outgoing transitions, labeled with
-     * the same labels</li>
-     * <li>corresponding outgoing transitions lead to the same states (to states
-     * with an identical right-language).
-     * </ul>
-     */
     @Override
     public boolean equals(Object obj) {
       final State other = (State) obj;
@@ -104,9 +57,6 @@ public final class DaciukMihovAutomatonBuilder {
           && referenceEquals(this.states, other.states);
     }
     
-    /**
-     * Compute the hash code of the <i>current</i> status of this state.
-     */
     @Override
     public int hashCode() {
       int hash = is_final ? 1 : 0;
@@ -128,18 +78,10 @@ public final class DaciukMihovAutomatonBuilder {
       return hash;
     }
     
-    /**
-     * Return <code>true</code> if this state has any children (outgoing
-     * transitions).
-     */
     boolean hasChildren() {
       return labels.length > 0;
     }
 
-    /**
-     * Create a new outgoing transition labeled <code>label</code> and return
-     * the newly created target state for this transition.
-     */
     State newState(int label) {
       assert Arrays.binarySearch(labels, label) < 0 : "State already has transition labeled: "
           + label;
@@ -151,18 +93,11 @@ public final class DaciukMihovAutomatonBuilder {
       return states[states.length - 1] = new State();
     }
     
-    /**
-     * Return the most recent transitions's target state.
-     */
     State lastChild() {
       assert hasChildren() : "No outgoing transitions.";
       return states[states.length - 1];
     }
     
-    /**
-     * Return the associated state if the most recent transition is labeled with
-     * <code>label</code>.
-     */
     State lastChild(int label) {
       final int index = labels.length - 1;
       State s = null;
@@ -173,18 +108,11 @@ public final class DaciukMihovAutomatonBuilder {
       return s;
     }
     
-    /**
-     * Replace the last added outgoing transition's target state with the given
-     * state.
-     */
     void replaceLastChild(State state) {
       assert hasChildren() : "No outgoing transitions.";
       states[states.length - 1] = state;
     }
     
-    /**
-     * Compare two lists of objects for reference-equality.
-     */
     private static boolean referenceEquals(Object[] a1, Object[] a2) {
       if (a1.length != a2.length) { 
         return false;
@@ -200,32 +128,15 @@ public final class DaciukMihovAutomatonBuilder {
     }
   }
   
-  /**
-   * A "registry" for state interning.
-   */
   private HashMap<State,State> stateRegistry = new HashMap<>();
   
-  /**
-   * Root automaton state.
-   */
   private State root = new State();
   
-  /**
-   * Previous sequence added to the automaton in {@link #add(CharsRef)}.
-   */
   private CharsRef previous;
 
-  /**
-   * A comparator used for enforcing sorted UTF8 order, used in assertions only.
-   */
   @SuppressWarnings("deprecation")
   private static final Comparator<CharsRef> comparator = CharsRef.getUTF16SortedAsUTF8Comparator();
 
-  /**
-   * Add another character sequence to this automaton. The sequence must be
-   * lexicographically larger or equal compared to any previous sequences added
-   * to this automaton (the input must be sorted).
-   */
   public void add(CharsRef current) {
     if (current.length > MAX_TERM_LENGTH) {
       throw new IllegalArgumentException("This builder doesn't allow terms that are larger than 1,000 characters, got " + current);
@@ -250,12 +161,6 @@ public final class DaciukMihovAutomatonBuilder {
     addSuffix(state, current, pos);
   }
   
-  /**
-   * Finalize the automaton and return the root state. No more strings can be
-   * added to the builder after this call.
-   * 
-   * @return Root automaton state.
-   */
   public State complete() {
     if (this.stateRegistry == null) throw new IllegalStateException();
     
@@ -265,9 +170,6 @@ public final class DaciukMihovAutomatonBuilder {
     return root;
   }
   
-  /**
-   * Internal recursive traversal for conversion.
-   */
   private static int convert(Automaton.Builder a, State s,
       IdentityHashMap<State,Integer> visited) {
 
@@ -289,10 +191,6 @@ public final class DaciukMihovAutomatonBuilder {
     return converted;
   }
 
-  /**
-   * Build a minimal, deterministic automaton from a sorted list of {@link BytesRef} representing
-   * strings in UTF-8. These strings must be binary-sorted.
-   */
   public static Automaton build(Collection<BytesRef> input) {
     final DaciukMihovAutomatonBuilder builder = new DaciukMihovAutomatonBuilder();
     
@@ -314,9 +212,6 @@ public final class DaciukMihovAutomatonBuilder {
     return a.finish();
   }
 
-  /**
-   * Copy <code>current</code> into an internal buffer.
-   */
   private boolean setPrevious(CharsRef current) {
     // don't need to copy, once we fix https://issues.apache.org/jira/browse/LUCENE-3277
     // still, called only from assert
@@ -324,10 +219,6 @@ public final class DaciukMihovAutomatonBuilder {
     return true;
   }
   
-  /**
-   * Replace last child of <code>state</code> with an already registered state
-   * or stateRegistry the last child state.
-   */
   private void replaceOrRegister(State state) {
     final State child = state.lastChild();
     
@@ -341,10 +232,6 @@ public final class DaciukMihovAutomatonBuilder {
     }
   }
 
-  /**
-   * Add a suffix of <code>current</code> starting at <code>fromIndex</code>
-   * (inclusive) to state <code>state</code>.
-   */
   private void addSuffix(State state, CharSequence current, int fromIndex) {
     final int len = current.length();
     while (fromIndex < len) {

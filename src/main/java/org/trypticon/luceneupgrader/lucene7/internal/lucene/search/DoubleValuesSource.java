@@ -27,46 +27,12 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.IndexReader;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReaderContext;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.NumericDocValues;
 
-/**
- * Base class for producing {@link DoubleValues}
- *
- * To obtain a {@link DoubleValues} object for a leaf reader, clients should call
- * {@link #rewrite(IndexSearcher)} against the top-level searcher, and then
- * call {@link #getValues(LeafReaderContext, DoubleValues)} on the resulting
- * DoubleValuesSource.
- *
- * DoubleValuesSource objects for NumericDocValues fields can be obtained by calling
- * {@link #fromDoubleField(String)}, {@link #fromFloatField(String)}, {@link #fromIntField(String)}
- * or {@link #fromLongField(String)}, or from {@link #fromField(String, LongToDoubleFunction)} if
- * special long-to-double encoding is required.
- *
- * Scores may be used as a source for value calculations by wrapping a {@link Scorer} using
- * {@link #fromScorer(Scorer)} and passing the resulting DoubleValues to {@link #getValues(LeafReaderContext, DoubleValues)}.
- * The scores can then be accessed using the {@link #SCORES} DoubleValuesSource.
- */
 public abstract class DoubleValuesSource implements SegmentCacheable {
 
-  /**
-   * Returns a {@link DoubleValues} instance for the passed-in LeafReaderContext and scores
-   *
-   * If scores are not needed to calculate the values (ie {@link #needsScores() returns false}, callers
-   * may safely pass {@code null} for the {@code scores} parameter.
-   */
   public abstract DoubleValues getValues(LeafReaderContext ctx, DoubleValues scores) throws IOException;
 
-  /**
-   * Return true if document scores are needed to calculate values
-   */
   public abstract boolean needsScores();
 
-  /**
-   * An explanation of the value for the named document.
-   *
-   * @param ctx the readers context to create the {@link Explanation} for.
-   * @param docId the document's id relative to the given context's reader
-   * @return an Explanation for the value
-   * @throws IOException if an {@link IOException} occurs
-   */
   public Explanation explain(LeafReaderContext ctx, int docId, Explanation scoreExplanation) throws IOException {
     DoubleValues dv = getValues(ctx, DoubleValuesSource.constant(scoreExplanation.getValue()).getValues(ctx, null));
     if (dv.advanceExact(docId))
@@ -74,25 +40,8 @@ public abstract class DoubleValuesSource implements SegmentCacheable {
     return Explanation.noMatch(this.toString());
   }
 
-  /**
-   * Return a DoubleValuesSource specialised for the given IndexSearcher
-   *
-   * Implementations should assume that this will only be called once.
-   * IndexReader-independent implementations can just return {@code this}
-   *
-   * Queries that use DoubleValuesSource objects should call rewrite() during
-   * {@link Query#createWeight(IndexSearcher, boolean, float)} rather than during
-   * {@link Query#rewrite(IndexReader)} to avoid IndexReader reference leakage
-   *
-   * For the same reason, implementations that cache references to the IndexSearcher
-   * should return a new object from this method.
-   */
   public abstract DoubleValuesSource rewrite(IndexSearcher reader) throws IOException;
 
-  /**
-   * Create a sort field based on the value of this producer
-   * @param reverse true if the sort should be decreasing
-   */
   public SortField getSortField(boolean reverse) {
     return new DoubleValuesSortField(this, reverse);
   }
@@ -106,9 +55,6 @@ public abstract class DoubleValuesSource implements SegmentCacheable {
   @Override
   public abstract String toString();
 
-  /**
-   * Convert to a LongValuesSource by casting the double values to longs
-   */
   public final LongValuesSource toLongValuesSource() {
     return new LongDoubleValuesSource(this);
   }
@@ -172,50 +118,26 @@ public abstract class DoubleValuesSource implements SegmentCacheable {
 
   }
 
-  /**
-   * Creates a DoubleValuesSource that wraps a generic NumericDocValues field
-   *
-   * @param field the field to wrap, must have NumericDocValues
-   * @param decoder a function to convert the long-valued doc values to doubles
-   */
   public static DoubleValuesSource fromField(String field, LongToDoubleFunction decoder) {
     return new FieldValuesSource(field, decoder);
   }
 
-  /**
-   * Creates a DoubleValuesSource that wraps a double-valued field
-   */
   public static DoubleValuesSource fromDoubleField(String field) {
     return fromField(field, Double::longBitsToDouble);
   }
 
-  /**
-   * Creates a DoubleValuesSource that wraps a float-valued field
-   */
   public static DoubleValuesSource fromFloatField(String field) {
     return fromField(field, (v) -> (double)Float.intBitsToFloat((int)v));
   }
 
-  /**
-   * Creates a DoubleValuesSource that wraps a long-valued field
-   */
   public static DoubleValuesSource fromLongField(String field) {
     return fromField(field, (v) -> (double) v);
   }
 
-  /**
-   * Creates a DoubleValuesSource that wraps an int-valued field
-   */
   public static DoubleValuesSource fromIntField(String field) {
     return fromLongField(field);
   }
 
-  /**
-   * A DoubleValuesSource that exposes a document's score
-   *
-   * If this source is used as part of a values calculation, then callers must not
-   * pass {@code null} as the {@link DoubleValues} parameter on {@link #getValues(LeafReaderContext, DoubleValues)}
-   */
   public static final DoubleValuesSource SCORES = new DoubleValuesSource() {
     @Override
     public DoubleValues getValues(LeafReaderContext ctx, DoubleValues scores) throws IOException {
@@ -259,9 +181,6 @@ public abstract class DoubleValuesSource implements SegmentCacheable {
     }
   };
 
-  /**
-   * Creates a DoubleValuesSource that always returns a constant value
-   */
   public static DoubleValuesSource constant(double value) {
     return new ConstantValuesSource(value);
   }
@@ -331,9 +250,6 @@ public abstract class DoubleValuesSource implements SegmentCacheable {
 
   }
 
-  /**
-   * Returns a DoubleValues instance that wraps scores returned by a Scorer
-   */
   public static DoubleValues fromScorer(Scorer scorer) {
     return new DoubleValues() {
       @Override
@@ -515,9 +431,6 @@ public abstract class DoubleValuesSource implements SegmentCacheable {
     };
   }
 
-  /**
-   * Create a DoubleValuesSource that returns the score of a particular query
-   */
   public static DoubleValuesSource fromQuery(Query query) {
     return new QueryDoubleValuesSource(query);
   }

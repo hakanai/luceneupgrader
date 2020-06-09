@@ -15,7 +15,4 @@
  * limitations under the License.
  */
 
-/**
- * Utility classes for working with token streams as graphs.
- */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.util.graph;

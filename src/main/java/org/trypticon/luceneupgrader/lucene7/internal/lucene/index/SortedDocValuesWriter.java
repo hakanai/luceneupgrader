@@ -33,8 +33,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PackedLo
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.util.ByteBlockPool.BYTE_BLOCK_SIZE;
 
-/** Buffers up pending byte[] per doc, deref and sorting via
- *  int ord, then flushes when segment flushes. */
 class SortedDocValuesWriter extends DocValuesWriter {
   final BytesRefHash hash;
   private PackedLongValues.Builder pending;

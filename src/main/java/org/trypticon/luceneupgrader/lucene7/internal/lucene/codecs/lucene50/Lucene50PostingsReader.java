@@ -47,12 +47,6 @@ import static org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.lucene
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.lucene50.Lucene50PostingsFormat.VERSION_CURRENT;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.lucene50.Lucene50PostingsFormat.VERSION_START;
 
-/**
- * Concrete class that reads docId(maybe frq,pos,offset,payloads) list
- * with postings format.
- *
- * @lucene.experimental
- */
 public final class Lucene50PostingsReader extends PostingsReaderBase {
 
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(Lucene50PostingsReader.class);
@@ -64,7 +58,6 @@ public final class Lucene50PostingsReader extends PostingsReaderBase {
   final ForUtil forUtil;
   private int version;
 
-  /** Sole constructor. */
   public Lucene50PostingsReader(SegmentReadState state) throws IOException {
     boolean success = false;
     IndexInput docIn = null;
@@ -118,9 +111,6 @@ public final class Lucene50PostingsReader extends PostingsReaderBase {
     }
   }
 
-  /**
-   * Read values that have been written using variable-length encoding instead of bit-packing.
-   */
   static void readVIntBlock(IndexInput docIn, int[] docBuffer,
       int[] freqBuffer, int num, boolean indexHasFreq) throws IOException {
     if (indexHasFreq) {

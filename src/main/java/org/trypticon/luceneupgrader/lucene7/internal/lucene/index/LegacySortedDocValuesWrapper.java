@@ -21,11 +21,6 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 
-/**
- * Wraps a {@link LegacySortedDocValues} into a {@link SortedDocValues}.
- *
- * @deprecated Implement {@link SortedDocValues} directly.
- */
 @Deprecated
 public final class LegacySortedDocValuesWrapper extends SortedDocValues {
   private final LegacySortedDocValues values;

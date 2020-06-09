@@ -23,31 +23,10 @@ import java.util.List;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PackedInts;
 
-/**
- * A wrapper for CompositeIndexReader providing access to DocValues.
- * 
- * <p><b>NOTE</b>: for multi readers, you'll get better
- * performance by gathering the sub readers using
- * {@link IndexReader#getContext()} to get the
- * atomic leaves and then operate per-LeafReader,
- * instead of using this class.
- * 
- * <p><b>NOTE</b>: This is very costly.
- *
- * @lucene.experimental
- * @lucene.internal
- */
 public class MultiDocValues {
   
-  /** No instantiation */
   private MultiDocValues() {}
   
-  /** Returns a NumericDocValues for a reader's norms (potentially merging on-the-fly).
-   * <p>
-   * This is a slow way to access normalization values. Instead, access them per-segment
-   * with {@link LeafReader#getNormValues(String)}
-   * </p> 
-   */
   public static NumericDocValues getNormValues(final IndexReader r, final String field) throws IOException {
     final List<LeafReaderContext> leaves = r.leaves();
     final int size = leaves.size();
@@ -161,7 +140,6 @@ public class MultiDocValues {
     };
   }
 
-  /** Returns a NumericDocValues for a reader's docvalues (potentially merging on-the-fly) */
   public static NumericDocValues getNumericValues(final IndexReader r, final String field) throws IOException {
     final List<LeafReaderContext> leaves = r.leaves();
     final int size = leaves.size();
@@ -286,7 +264,6 @@ public class MultiDocValues {
     };
   }
 
-  /** Returns a BinaryDocValues for a reader's docvalues (potentially merging on-the-fly) */
   public static BinaryDocValues getBinaryValues(final IndexReader r, final String field) throws IOException {
     final List<LeafReaderContext> leaves = r.leaves();
     final int size = leaves.size();
@@ -411,12 +388,6 @@ public class MultiDocValues {
     };
   }
 
-  /** Returns a SortedNumericDocValues for a reader's docvalues (potentially merging on-the-fly) 
-   * <p>
-   * This is a slow way to access sorted numeric values. Instead, access them per-segment
-   * with {@link LeafReader#getSortedNumericDocValues(String)}
-   * </p> 
-   * */
   public static SortedNumericDocValues getSortedNumericValues(final IndexReader r, final String field) throws IOException {
     final List<LeafReaderContext> leaves = r.leaves();
     final int size = leaves.size();
@@ -550,12 +521,6 @@ public class MultiDocValues {
     };
   }
   
-  /** Returns a SortedDocValues for a reader's docvalues (potentially doing extremely slow things).
-   * <p>
-   * This is an extremely slow way to access sorted values. Instead, access them per-segment
-   * with {@link LeafReader#getSortedDocValues(String)}
-   * </p>  
-   */
   public static SortedDocValues getSortedValues(final IndexReader r, final String field) throws IOException {
     final List<LeafReaderContext> leaves = r.leaves();
     final int size = leaves.size();
@@ -594,12 +559,6 @@ public class MultiDocValues {
     }
   }
   
-  /** Returns a SortedSetDocValues for a reader's docvalues (potentially doing extremely slow things).
-   * <p>
-   * This is an extremely slow way to access sorted values. Instead, access them per-segment
-   * with {@link LeafReader#getSortedSetDocValues(String)}
-   * </p>  
-   */
   public static SortedSetDocValues getSortedSetValues(final IndexReader r, final String field) throws IOException {
     final List<LeafReaderContext> leaves = r.leaves();
     final int size = leaves.size();
@@ -638,16 +597,9 @@ public class MultiDocValues {
     }
   }
 
-  /** 
-   * Implements SortedDocValues over n subs, using an OrdinalMap
-   * @lucene.internal
-   */
   public static class MultiSortedDocValues extends SortedDocValues {
-    /** docbase for each leaf: parallel with {@link #values} */
     public final int docStarts[];
-    /** leaf values */
     public final SortedDocValues values[];
-    /** ordinal map mapping ords from <code>values</code> to global ord space */
     public final OrdinalMap mapping;
     private final long totalCost;
 
@@ -656,7 +608,6 @@ public class MultiDocValues {
     private int currentDocStart;
     private int docID = -1;    
   
-    /** Creates a new MultiSortedDocValues over <code>values</code> */
     public MultiSortedDocValues(SortedDocValues values[], int docStarts[], OrdinalMap mapping, long totalCost) throws IOException {
       assert docStarts.length == values.length + 1;
       this.values = values;
@@ -765,16 +716,9 @@ public class MultiDocValues {
     }
   }
   
-  /** 
-   * Implements MultiSortedSetDocValues over n subs, using an OrdinalMap 
-   * @lucene.internal
-   */
   public static class MultiSortedSetDocValues extends SortedSetDocValues {
-    /** docbase for each leaf: parallel with {@link #values} */
     public final int docStarts[];
-    /** leaf values */
     public final SortedSetDocValues values[];
-    /** ordinal map mapping ords from <code>values</code> to global ord space */
     public final OrdinalMap mapping;
     private final long totalCost;
 
@@ -783,7 +727,6 @@ public class MultiDocValues {
     private int currentDocStart;
     private int docID = -1;    
 
-    /** Creates a new MultiSortedSetDocValues over <code>values</code> */
     public MultiSortedSetDocValues(SortedSetDocValues values[], int docStarts[], OrdinalMap mapping, long totalCost) throws IOException {
       assert docStarts.length == values.length + 1;
       this.values = values;

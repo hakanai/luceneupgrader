@@ -21,112 +21,26 @@ import java.io.Reader;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.AttributeFactory;
 
-/**
- * Extension to {@link Analyzer} suitable for Analyzers which wrap
- * other Analyzers.
- * 
- * <p>{@link #getWrappedAnalyzer(String)} allows the Analyzer
- * to wrap multiple Analyzers which are selected on a per field basis.
- * 
- * <p>{@link #wrapComponents(String, Analyzer.TokenStreamComponents)} allows the
- * TokenStreamComponents of the wrapped Analyzer to then be wrapped
- * (such as adding a new {@link TokenFilter} to form new TokenStreamComponents.
- *
- * <p>{@link #wrapReader(String, Reader)} allows the Reader of the wrapped
- * Analyzer to then be wrapped (such as adding a new {@link CharFilter}.
- *
- * <p><b>Important:</b> If you do not want to wrap the TokenStream
- * using {@link #wrapComponents(String, Analyzer.TokenStreamComponents)}
- * or the Reader using {@link #wrapReader(String, Reader)} and just delegate
- * to other analyzers (like by field name), use {@link DelegatingAnalyzerWrapper}
- * as superclass!
- *
- * @see DelegatingAnalyzerWrapper
- *
- * @since 4.0.0
- */
 public abstract class AnalyzerWrapper extends Analyzer {
 
-  /**
-   * Creates a new AnalyzerWrapper with the given reuse strategy.
-   * <p>If you want to wrap a single delegate Analyzer you can probably
-   * reuse its strategy when instantiating this subclass:
-   * {@code super(delegate.getReuseStrategy());}.
-   * <p>If you choose different analyzers per field, use
-   * {@link #PER_FIELD_REUSE_STRATEGY}.
-   * @see #getReuseStrategy()
-   */
   protected AnalyzerWrapper(ReuseStrategy reuseStrategy) {
     super(reuseStrategy);
   }
 
-  /**
-   * Retrieves the wrapped Analyzer appropriate for analyzing the field with
-   * the given name
-   *
-   * @param fieldName Name of the field which is to be analyzed
-   * @return Analyzer for the field with the given name.  Assumed to be non-null
-   */
   protected abstract Analyzer getWrappedAnalyzer(String fieldName);
 
-  /**
-   * Wraps / alters the given TokenStreamComponents, taken from the wrapped
-   * Analyzer, to form new components. It is through this method that new
-   * TokenFilters can be added by AnalyzerWrappers. By default, the given
-   * components are returned.
-   * 
-   * @param fieldName
-   *          Name of the field which is to be analyzed
-   * @param components
-   *          TokenStreamComponents taken from the wrapped Analyzer
-   * @return Wrapped / altered TokenStreamComponents.
-   */
   protected TokenStreamComponents wrapComponents(String fieldName, TokenStreamComponents components) {
     return components;
   }
 
-  /**
-   * Wraps / alters the given TokenStream for normalization purposes, taken
-   * from the wrapped Analyzer, to form new components. It is through this
-   * method that new TokenFilters can be added by AnalyzerWrappers. By default,
-   * the given token stream are returned.
-   * 
-   * @param fieldName
-   *          Name of the field which is to be analyzed
-   * @param in
-   *          TokenStream taken from the wrapped Analyzer
-   * @return Wrapped / altered TokenStreamComponents.
-   */
   protected TokenStream wrapTokenStreamForNormalization(String fieldName, TokenStream in) {
     return in;
   }
 
-  /**
-   * Wraps / alters the given Reader. Through this method AnalyzerWrappers can
-   * implement {@link #initReader(String, Reader)}. By default, the given reader
-   * is returned.
-   * 
-   * @param fieldName
-   *          name of the field which is to be analyzed
-   * @param reader
-   *          the reader to wrap
-   * @return the wrapped reader
-   */
   protected Reader wrapReader(String fieldName, Reader reader) {
     return reader;
   }
 
-  /**
-   * Wraps / alters the given Reader. Through this method AnalyzerWrappers can
-   * implement {@link #initReaderForNormalization(String, Reader)}. By default,
-   * the given reader  is returned.
-   * 
-   * @param fieldName
-   *          name of the field which is to be analyzed
-   * @param reader
-   *          the reader to wrap
-   * @return the wrapped reader
-   */
   protected Reader wrapReaderForNormalization(String fieldName, Reader reader) {
     return reader;
   }

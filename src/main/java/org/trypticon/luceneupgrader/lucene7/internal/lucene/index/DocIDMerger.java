@@ -25,29 +25,21 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.PriorityQueue;
 
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 
-/** Utility class to help merging documents from sub-readers according to either simple
- *  concatenated (unsorted) order, or by a specified index-time sort, skipping
- *  deleted documents and remapping non-deleted documents. */
 
 public abstract class DocIDMerger<T extends DocIDMerger.Sub> {
 
-  /** Represents one sub-reader being merged */
   public static abstract class Sub {
-    /** Mapped doc ID */
     public int mappedDocID;
 
     final MergeState.DocMap docMap;
 
-    /** Sole constructor */
     public Sub(MergeState.DocMap docMap) {
       this.docMap = docMap;
     }
 
-    /** Returns the next document ID from this sub reader, and {@link DocIdSetIterator#NO_MORE_DOCS} when done */
     public abstract int nextDoc() throws IOException;
   }
 
-  /** Construct this from the provided subs, specifying the maximum sub count */
   public static <T extends DocIDMerger.Sub> DocIDMerger<T> of(List<T> subs, int maxCount, boolean indexIsSorted) throws IOException {
     if (indexIsSorted && maxCount > 1) {
       return new SortedDocIDMerger<>(subs, maxCount);
@@ -56,17 +48,12 @@ public abstract class DocIDMerger<T extends DocIDMerger.Sub> {
     }
   }
 
-  /** Construct this from the provided subs */
   public static <T extends DocIDMerger.Sub> DocIDMerger<T> of(List<T> subs, boolean indexIsSorted) throws IOException {
     return of(subs, subs.size(), indexIsSorted);
   }
 
-  /** Reuse API, currently only used by postings during merge */
   public abstract void reset() throws IOException;
 
-  /** Returns null when done.
-   *  <b>NOTE:</b> after the iterator has exhausted you should not call this
-   *  method, as it may result in unpredicted behavior. */
   public abstract T next() throws IOException;
 
   private DocIDMerger() {}

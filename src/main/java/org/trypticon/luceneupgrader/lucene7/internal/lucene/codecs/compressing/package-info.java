@@ -15,7 +15,4 @@
  * limitations under the License.
  */
  
-/**
- * StoredFieldsFormat that allows cross-document and cross-field compression of stored fields.
- */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.compressing;

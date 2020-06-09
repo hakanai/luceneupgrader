@@ -28,14 +28,6 @@ import java.util.Random;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.SuppressForbidden;
 
-/**
- * Simple standalone tool that forever acquires and releases a
- * lock using a specific LockFactory.  Run without any args
- * to see usage.
- *
- * @see VerifyingLockFactory
- * @see LockVerifyServer
- */ 
 
 public class LockStressTest {
   

@@ -25,9 +25,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.DocumentsWriterPerThread.FlushedSegment;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 
-/**
- * @lucene.internal 
- */
 final class DocumentsWriterFlushQueue {
   private final Queue<FlushTicket> queue = new LinkedList<>();
   // we track tickets separately since count must be present even before the ticket is
@@ -185,17 +182,10 @@ final class DocumentsWriterFlushQueue {
       failed = true;
     }
 
-    /**
-     * Returns the flushed segment or <code>null</code> if this flush ticket doesn't have a segment. This can be the
-     * case if this ticket represents a flushed global frozen updates package.
-     */
     FlushedSegment getFlushedSegment() {
       return segment;
     }
 
-    /**
-     * Returns a frozen global deletes package.
-     */
     FrozenBufferedUpdates getFrozenUpdates() {
       return frozenUpdates;
     }

@@ -34,12 +34,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimat
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PackedInts;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PackedLongValues;
 
-/** Maps per-segment ordinals to/from global ordinal space, using a compact packed-ints representation.
- *
- *  <p><b>NOTE</b>: this is a costly operation, as it must merge sort all terms, and may require non-trivial RAM once done.  It's better to operate in
- *  segment-private ordinal space instead when possible.
- *
- * @lucene.internal */
 public class OrdinalMap implements Accountable {
   // TODO: we could also have a utility method to merge Terms[] and use size() as a weight when we need it
   // TODO: use more efficient packed ints structures?
@@ -64,7 +58,6 @@ public class OrdinalMap implements Accountable {
   private static class SegmentMap implements Accountable {
     private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(SegmentMap.class);
 
-    /** Build a map from an index into a sorted view of `weights` to an index into `weights`. */
     private static int[] map(final long[] weights) {
       final int[] newToOld = new int[weights.length];
       for (int i = 0; i < weights.length; ++i) {
@@ -86,7 +79,6 @@ public class OrdinalMap implements Accountable {
       return newToOld;
     }
 
-    /** Inverse the map. */
     private static int[] inverse(int[] map) {
       final int[] inverse = new int[map.length];
       for (int i = 0; i < map.length; ++i) {
@@ -117,11 +109,6 @@ public class OrdinalMap implements Accountable {
     }
   }
 
-  /**
-   * Create an ordinal map that uses the number of unique values of each
-   * {@link SortedDocValues} instance as a weight.
-   * @see #build(IndexReader.CacheKey, TermsEnum[], long[], float)
-   */
   public static OrdinalMap build(IndexReader.CacheKey owner, SortedDocValues[] values, float acceptableOverheadRatio) throws IOException {
     final TermsEnum[] subs = new TermsEnum[values.length];
     final long[] weights = new long[values.length];
@@ -132,11 +119,6 @@ public class OrdinalMap implements Accountable {
     return build(owner, subs, weights, acceptableOverheadRatio);
   }
 
-  /**
-   * Create an ordinal map that uses the number of unique values of each
-   * {@link SortedSetDocValues} instance as a weight.
-   * @see #build(IndexReader.CacheKey, TermsEnum[], long[], float)
-   */
   public static OrdinalMap build(IndexReader.CacheKey owner, SortedSetDocValues[] values, float acceptableOverheadRatio) throws IOException {
     final TermsEnum[] subs = new TermsEnum[values.length];
     final long[] weights = new long[values.length];
@@ -147,17 +129,6 @@ public class OrdinalMap implements Accountable {
     return build(owner, subs, weights, acceptableOverheadRatio);
   }
 
-  /** 
-   * Creates an ordinal map that allows mapping ords to/from a merged
-   * space from <code>subs</code>.
-   * @param owner a cache key
-   * @param subs TermsEnums that support {@link TermsEnum#ord()}. They need
-   *             not be dense (e.g. can be FilteredTermsEnums}.
-   * @param weights a weight for each sub. This is ideally correlated with
-   *             the number of unique terms that each sub introduces compared
-   *             to the other subs
-   * @throws IOException if an I/O error occurred.
-   */
   public static OrdinalMap build(IndexReader.CacheKey owner, TermsEnum subs[], long[] weights, float acceptableOverheadRatio) throws IOException {
     if (subs.length != weights.length) {
       throw new IllegalArgumentException("subs and weights must have the same length");
@@ -170,7 +141,6 @@ public class OrdinalMap implements Accountable {
 
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(OrdinalMap.class);
 
-  /** Cache key of whoever asked for this awful thing */
   public final IndexReader.CacheKey owner;
   // globalOrd -> (globalOrd - segmentOrd) where segmentOrd is the the ordinal in the first segment that contains this term
   final PackedLongValues globalOrdDeltas;
@@ -320,33 +290,18 @@ public class OrdinalMap implements Accountable {
     this.ramBytesUsed = ramBytesUsed;
   }
 
-  /** 
-   * Given a segment number, return a {@link LongValues} instance that maps
-   * segment ordinals to global ordinals.
-   */
   public LongValues getGlobalOrds(int segmentIndex) {
     return segmentToGlobalOrds[segmentMap.oldToNew(segmentIndex)];
   }
 
-  /**
-   * Given global ordinal, returns the ordinal of the first segment which contains
-   * this ordinal (the corresponding to the segment return {@link #getFirstSegmentNumber}).
-   */
   public long getFirstSegmentOrd(long globalOrd) {
     return globalOrd - globalOrdDeltas.get(globalOrd);
   }
     
-  /** 
-   * Given a global ordinal, returns the index of the first
-   * segment that contains this term.
-   */
   public int getFirstSegmentNumber(long globalOrd) {
     return segmentMap.newToOld((int) firstSegments.get(globalOrd));
   }
     
-  /**
-   * Returns the total number of unique terms in global ord space.
-   */
   public long getValueCount() {
     return globalOrdDeltas.size();
   }

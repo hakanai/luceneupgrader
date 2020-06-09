@@ -27,12 +27,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.Terms;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.TermsEnum;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.LongBitSet;
 
-/**
- * Rewrites MultiTermQueries into a filter, using DocValues for term enumeration.
- * <p>
- * This can be used to perform these queries against an unindexed docvalues field.
- * @lucene.experimental
- */
 public final class DocValuesRewriteMethod extends MultiTermQuery.RewriteMethod {
   
   @Override
@@ -44,9 +38,6 @@ public final class DocValuesRewriteMethod extends MultiTermQuery.RewriteMethod {
     
     protected final MultiTermQuery query;
     
-    /**
-     * Wrap a {@link MultiTermQuery} as a Filter.
-     */
     protected MultiTermQueryDocValuesWrapper(MultiTermQuery query) {
       this.query = query;
     }
@@ -68,7 +59,6 @@ public final class DocValuesRewriteMethod extends MultiTermQuery.RewriteMethod {
       return 31 * classHash() + query.hashCode();
     }
     
-    /** Returns the field name for this query */
     public final String getField() { return query.getField(); }
     
     @Override

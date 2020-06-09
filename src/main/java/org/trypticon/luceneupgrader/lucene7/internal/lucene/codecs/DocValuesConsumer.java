@@ -45,82 +45,20 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.PackedIn
 
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 
-/** 
- * Abstract API that consumes numeric, binary and
- * sorted docvalues.  Concrete implementations of this
- * actually do "something" with the docvalues (write it into
- * the index in a specific format).
- * <p>
- * The lifecycle is:
- * <ol>
- *   <li>DocValuesConsumer is created by 
- *       {@link NormsFormat#normsConsumer(SegmentWriteState)}.
- *   <li>{@link #addNumericField}, {@link #addBinaryField},
- *       {@link #addSortedField}, {@link #addSortedSetField},
- *       or {@link #addSortedNumericField} are called for each Numeric,
- *       Binary, Sorted, SortedSet, or SortedNumeric docvalues field. 
- *       The API is a "pull" rather than "push", and the implementation 
- *       is free to iterate over the values multiple times 
- *       ({@link Iterable#iterator()}).
- *   <li>After all fields are added, the consumer is {@link #close}d.
- * </ol>
- *
- * @lucene.experimental
- */
 public abstract class DocValuesConsumer implements Closeable {
   
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected DocValuesConsumer() {}
 
-  /**
-   * Writes numeric docvalues for a field.
-   * @param field field information
-   * @param valuesProducer Numeric values to write.
-   * @throws IOException if an I/O error occurred.
-   */
   public abstract void addNumericField(FieldInfo field, DocValuesProducer valuesProducer) throws IOException;    
 
-  /**
-   * Writes binary docvalues for a field.
-   * @param field field information
-   * @param valuesProducer Binary values to write.
-   * @throws IOException if an I/O error occurred.
-   */
   public abstract void addBinaryField(FieldInfo field, DocValuesProducer valuesProducer) throws IOException;
 
-  /**
-   * Writes pre-sorted binary docvalues for a field.
-   * @param field field information
-   * @param valuesProducer produces the values and ordinals to write
-   * @throws IOException if an I/O error occurred.
-   */
   public abstract void addSortedField(FieldInfo field, DocValuesProducer valuesProducer) throws IOException;
   
-  /**
-   * Writes pre-sorted numeric docvalues for a field
-   * @param field field information
-   * @param valuesProducer produces the values to write
-   * @throws IOException if an I/O error occurred.
-   */
   public abstract void addSortedNumericField(FieldInfo field, DocValuesProducer valuesProducer) throws IOException;
 
-  /**
-   * Writes pre-sorted set docvalues for a field
-   * @param field field information
-   * @param valuesProducer produces the values to write
-   * @throws IOException if an I/O error occurred.
-   */
   public abstract void addSortedSetField(FieldInfo field, DocValuesProducer valuesProducer) throws IOException;
   
-  /** Merges in the fields from the readers in 
-   *  <code>mergeState</code>. The default implementation 
-   *  calls {@link #mergeNumericField}, {@link #mergeBinaryField},
-   *  {@link #mergeSortedField}, {@link #mergeSortedSetField},
-   *  or {@link #mergeSortedNumericField} for each field,
-   *  depending on its type.
-   *  Implementations can override this method 
-   *  for more sophisticated merging (bulk-byte copying, etc). */
   public void merge(MergeState mergeState) throws IOException {
     for(DocValuesProducer docValuesProducer : mergeState.docValuesProducers) {
       if (docValuesProducer != null) {
@@ -148,7 +86,6 @@ public abstract class DocValuesConsumer implements Closeable {
     }
   }
 
-  /** Tracks state of one numeric sub-reader that we are merging */
   private static class NumericDocValuesSub extends DocIDMerger.Sub {
 
     final NumericDocValues values;
@@ -165,12 +102,6 @@ public abstract class DocValuesConsumer implements Closeable {
     }
   }
   
-  /**
-   * Merges the numeric docvalues from <code>MergeState</code>.
-   * <p>
-   * The default implementation calls {@link #addNumericField}, passing
-   * a DocValuesProducer that merges and filters deleted documents on the fly.
-   */
   public void mergeNumericField(final FieldInfo mergeFieldInfo, final MergeState mergeState) throws IOException {
     addNumericField(mergeFieldInfo,
                     new EmptyDocValuesProducer() {
@@ -246,7 +177,6 @@ public abstract class DocValuesConsumer implements Closeable {
                     });
   }
   
-  /** Tracks state of one binary sub-reader that we are merging */
   private static class BinaryDocValuesSub extends DocIDMerger.Sub {
 
     final BinaryDocValues values;
@@ -263,12 +193,6 @@ public abstract class DocValuesConsumer implements Closeable {
     }
   }
 
-  /**
-   * Merges the binary docvalues from <code>MergeState</code>.
-   * <p>
-   * The default implementation calls {@link #addBinaryField}, passing
-   * a DocValuesProducer that merges and filters deleted documents on the fly.
-   */
   public void mergeBinaryField(FieldInfo mergeFieldInfo, final MergeState mergeState) throws IOException {
     addBinaryField(mergeFieldInfo,
                    new EmptyDocValuesProducer() {
@@ -343,7 +267,6 @@ public abstract class DocValuesConsumer implements Closeable {
                    });
   }
 
-  /** Tracks state of one sorted numeric sub-reader that we are merging */
   private static class SortedNumericDocValuesSub extends DocIDMerger.Sub {
 
     final SortedNumericDocValues values;
@@ -360,12 +283,6 @@ public abstract class DocValuesConsumer implements Closeable {
     }
   }
 
-  /**
-   * Merges the sorted docvalues from <code>toMerge</code>.
-   * <p>
-   * The default implementation calls {@link #addSortedNumericField}, passing
-   * iterables that filter deleted documents.
-   */
   public void mergeSortedNumericField(FieldInfo mergeFieldInfo, final MergeState mergeState) throws IOException {
     
     addSortedNumericField(mergeFieldInfo,
@@ -450,7 +367,6 @@ public abstract class DocValuesConsumer implements Closeable {
                           });
   }
 
-  /** Tracks state of one sorted sub-reader that we are merging */
   private static class SortedDocValuesSub extends DocIDMerger.Sub {
 
     final SortedDocValues values;
@@ -469,12 +385,6 @@ public abstract class DocValuesConsumer implements Closeable {
     }
   }
 
-  /**
-   * Merges the sorted docvalues from <code>toMerge</code>.
-   * <p>
-   * The default implementation calls {@link #addSortedField}, passing
-   * an Iterable that merges ordinals and values and filters deleted documents .
-   */
   public void mergeSortedField(FieldInfo fieldInfo, final MergeState mergeState) throws IOException {
     List<SortedDocValues> toMerge = new ArrayList<>();
     for (int i=0;i<mergeState.docValuesProducers.length;i++) {
@@ -615,7 +525,6 @@ public abstract class DocValuesConsumer implements Closeable {
                    });
   }
   
-  /** Tracks state of one sorted set sub-reader that we are merging */
   private static class SortedSetDocValuesSub extends DocIDMerger.Sub {
 
     final SortedSetDocValues values;
@@ -639,12 +548,6 @@ public abstract class DocValuesConsumer implements Closeable {
     }
   }
 
-  /**
-   * Merges the sortedset docvalues from <code>toMerge</code>.
-   * <p>
-   * The default implementation calls {@link #addSortedSetField}, passing
-   * an Iterable that merges ordinals and values and filters deleted documents .
-   */
   public void mergeSortedSetField(FieldInfo mergeFieldInfo, final MergeState mergeState) throws IOException {
 
     List<SortedSetDocValues> toMerge = new ArrayList<>();
@@ -806,7 +709,6 @@ public abstract class DocValuesConsumer implements Closeable {
     }
   }
   
-  /** Helper: returns true if the given docToValue count contains only at most one value */
   public static boolean isSingleValued(Iterable<Number> docToValueCount) {
     for (Number count : docToValueCount) {
       if (count.longValue() > 1) {
@@ -816,7 +718,6 @@ public abstract class DocValuesConsumer implements Closeable {
     return true;
   }
   
-  /** Helper: returns single-valued view, using {@code missingValue} when count is zero */
   public static Iterable<Number> singletonView(final Iterable<Number> docToValueCount, final Iterable<Number> values, final Number missingValue) {
     assert isSingleValued(docToValueCount);
     return new Iterable<Number>() {

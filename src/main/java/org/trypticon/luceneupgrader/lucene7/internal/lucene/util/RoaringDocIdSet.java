@@ -22,17 +22,6 @@ import java.io.IOException;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSet;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSetIterator;
 
-/**
- * {@link DocIdSet} implementation inspired from http://roaringbitmap.org/
- *
- * The space is divided into blocks of 2^16 bits and each block is encoded
- * independently. In each block, if less than 2^12 bits are set, then
- * documents are simply stored in a short[]. If more than 2^16-2^12 bits are
- * set, then the inverse of the set is encoded in a simple short[]. Otherwise
- * a {@link FixedBitSet} is used.
- *
- * @lucene.internal
- */
 public class RoaringDocIdSet extends DocIdSet {
 
   // Number of documents in a block
@@ -41,7 +30,6 @@ public class RoaringDocIdSet extends DocIdSet {
   private static final int MAX_ARRAY_LENGTH = 1 << 12;
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(RoaringDocIdSet.class);
 
-  /** A builder of {@link RoaringDocIdSet}s. */
   public static class Builder {
 
     private final int maxDoc;
@@ -57,7 +45,6 @@ public class RoaringDocIdSet extends DocIdSet {
     private final short[] buffer;
     private FixedBitSet denseBuffer;
 
-    /** Sole constructor. */
     public Builder(int maxDoc) {
       this.maxDoc = maxDoc;
       sets = new DocIdSet[(maxDoc + (1 << 16) - 1) >>> 16];
@@ -101,10 +88,6 @@ public class RoaringDocIdSet extends DocIdSet {
       currentBlockCardinality = 0;
     }
 
-    /**
-     * Add a new doc-id to this builder.
-     * NOTE: doc ids must be added in order.
-     */
     public Builder add(int docId) {
       if (docId <= lastDocId) {
         throw new IllegalArgumentException("Doc ids must be added in-order, got " + docId + " which is <= lastDocID=" + lastDocId);
@@ -135,7 +118,6 @@ public class RoaringDocIdSet extends DocIdSet {
       return this;
     }
 
-    /** Add the content of the provided {@link DocIdSetIterator}. */
     public Builder add(DocIdSetIterator disi) throws IOException {
       for (int doc = disi.nextDoc(); doc != DocIdSetIterator.NO_MORE_DOCS; doc = disi.nextDoc()) {
         add(doc);
@@ -143,7 +125,6 @@ public class RoaringDocIdSet extends DocIdSet {
       return this;
     }
 
-    /** Build an instance. */
     public RoaringDocIdSet build() {
       flush();
       return new RoaringDocIdSet(sets, cardinality);
@@ -151,9 +132,6 @@ public class RoaringDocIdSet extends DocIdSet {
 
   }
 
-  /**
-   * {@link DocIdSet} implementation that can store documents up to 2^16-1 in a short[].
-   */
   private static class ShortArrayDocIdSet extends DocIdSet {
 
     private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(ShortArrayDocIdSet.class);
@@ -323,7 +301,6 @@ public class RoaringDocIdSet extends DocIdSet {
 
   }
 
-  /** Return the exact number of documents that are contained in this set. */
   public int cardinality() {
     return cardinality;
   }

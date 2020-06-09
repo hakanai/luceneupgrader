@@ -23,49 +23,15 @@ import java.util.Arrays;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimator;
 
-/**
- * Space optimized random access capable array of values with a fixed number of
- * bits/value. Values are packed contiguously.
- * <p>
- * The implementation strives to perform as fast as possible under the
- * constraint of contiguous bits, by avoiding expensive operations. This comes
- * at the cost of code clarity.
- * <p>
- * Technical details: This implementation is a refinement of a non-branching
- * version. The non-branching get and set methods meant that 2 or 4 atomics in
- * the underlying array were always accessed, even for the cases where only
- * 1 or 2 were needed. Even with caching, this had a detrimental effect on
- * performance.
- * Related to this issue, the old implementation used lookup tables for shifts
- * and masks, which also proved to be a bit slower than calculating the shifts
- * and masks on the fly.
- * See https://issues.apache.org/jira/browse/LUCENE-4062 for details.
- *
- */
 class Packed64 extends PackedInts.MutableImpl {
   static final int BLOCK_SIZE = 64; // 32 = int, 64 = long
   static final int BLOCK_BITS = 6; // The #bits representing BLOCK_SIZE
   static final int MOD_MASK = BLOCK_SIZE - 1; // x % BLOCK_SIZE
 
-  /**
-   * Values are stores contiguously in the blocks array.
-   */
   private final long[] blocks;
-  /**
-   * A right-aligned mask of width BitsPerValue used by {@link #get(int)}.
-   */
   private final long maskRight;
-  /**
-   * Optimization: Saves one lookup in {@link #get(int)}.
-   */
   private final int bpvMinusBlockSize;
 
-  /**
-   * Creates an array with the internal structures adjusted for the given
-   * limits and initialized to 0.
-   * @param valueCount   the number of elements.
-   * @param bitsPerValue the number of bits available for any given value.
-   */
   public Packed64(int valueCount, int bitsPerValue) {
     super(valueCount, bitsPerValue);
     final PackedInts.Format format = PackedInts.Format.PACKED;
@@ -75,14 +41,6 @@ class Packed64 extends PackedInts.MutableImpl {
     bpvMinusBlockSize = bitsPerValue - BLOCK_SIZE;
   }
 
-  /**
-   * Creates an array with content retrieved from the given DataInput.
-   * @param in       a DataInput, positioned at the start of Packed64-content.
-   * @param valueCount  the number of elements.
-   * @param bitsPerValue the number of bits available for any given value.
-   * @throws java.io.IOException if the values for the backing array could not
-   *                             be retrieved.
-   */
   public Packed64(int packedIntsVersion, DataInput in, int valueCount, int bitsPerValue)
                                                             throws IOException {
     super(valueCount, bitsPerValue);
@@ -107,10 +65,6 @@ class Packed64 extends PackedInts.MutableImpl {
     bpvMinusBlockSize = bitsPerValue - BLOCK_SIZE;
   }
 
-  /**
-   * @param index the position of the value.
-   * @return the value at the given index.
-   */
   @Override
   public long get(final int index) {
     // The abstract index in a bit stream

@@ -30,23 +30,6 @@ import java.util.Set;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 
-/**
- * Expert: A Directory instance that switches files between
- * two other Directory instances.
-
- * <p>Files with the specified extensions are placed in the
- * primary directory; others are placed in the secondary
- * directory.  The provided Set must not change once passed
- * to this class, and must allow multiple threads to call
- * contains at once.</p>
- *
- * <p>Locks with a name having the specified extensions are
- * delegated to the primary directory; others are delegated
- * to the secondary directory. Ideally, both Directory
- * instances should use the same lock factory.</p>
- *
- * @lucene.experimental
- */
 
 public class FileSwitchDirectory extends Directory {
   private final Directory secondaryDir;
@@ -61,12 +44,10 @@ public class FileSwitchDirectory extends Directory {
     this.doClose = doClose;
   }
 
-  /** Return the primary directory */
   public Directory getPrimaryDir() {
     return primaryDir;
   }
   
-  /** Return the secondary directory */
   public Directory getSecondaryDir() {
     return secondaryDir;
   }
@@ -125,7 +106,6 @@ public class FileSwitchDirectory extends Directory {
     return result;
   }
 
-  /** Utility method to return a file's extension. */
   public static String getExtension(String name) {
     int i = name.lastIndexOf('.');
     if (i == -1) {

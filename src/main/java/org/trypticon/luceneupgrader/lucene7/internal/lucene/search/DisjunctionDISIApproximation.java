@@ -18,11 +18,6 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.search;
 
 import java.io.IOException;
 
-/**
- * A {@link DocIdSetIterator} which is a disjunction of the approximations of
- * the provided iterators.
- * @lucene.internal
- */
 public class DisjunctionDISIApproximation extends DocIdSetIterator {
 
   final DisiPriorityQueue subIterators;

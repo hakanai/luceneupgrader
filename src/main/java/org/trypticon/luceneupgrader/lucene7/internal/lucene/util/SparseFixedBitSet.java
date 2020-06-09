@@ -21,17 +21,6 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSetIterator;
 
-/**
- * A bit set that only stores longs that have at least one bit which is set.
- * The way it works is that the space of bits is divided into blocks of
- * 4096 bits, which is 64 longs. Then for each block, we have:<ul>
- * <li>a long[] which stores the non-zero longs for that block</li>
- * <li>a long so that bit <tt>i</tt> being set means that the <code>i-th</code>
- *     long of the block is non-null, and its offset in the array of longs is
- *     the number of one bits on the right of the <code>i-th</code> bit.</li></ul>
- *
- * @lucene.internal
- */
 public class SparseFixedBitSet extends BitSet implements Bits, Accountable {
 
   private static final long BASE_RAM_BYTES_USED = RamUsageEstimator.shallowSizeOfInstance(SparseFixedBitSet.class);
@@ -53,8 +42,6 @@ public class SparseFixedBitSet extends BitSet implements Bits, Accountable {
   int nonZeroLongCount;
   long ramBytesUsed;
 
-  /** Create a {@link SparseFixedBitSet} that can contain bits between
-   *  <code>0</code> included and <code>length</code> excluded. */
   public SparseFixedBitSet(int length) {
     if (length < 1) {
       throw new IllegalArgumentException("length needs to be >= 1");
@@ -131,9 +118,6 @@ public class SparseFixedBitSet extends BitSet implements Bits, Accountable {
     return newSize;
   }
 
-  /**
-   * Set the bit at index <tt>i</tt>.
-   */
   public void set(int i) {
     assert consistent(i);
     final int i4096 = i >>> 12;
@@ -188,9 +172,6 @@ public class SparseFixedBitSet extends BitSet implements Bits, Accountable {
     ++nonZeroLongCount;
   }
 
-  /**
-   * Clear the bit at index <tt>i</tt>.
-   */
   public void clear(int i) {
     assert consistent(i);
     final int i4096 = i >>> 12;
@@ -270,7 +251,6 @@ public class SparseFixedBitSet extends BitSet implements Bits, Accountable {
     }
   }
 
-  /** Return the first document that occurs on or after the provided block index. */
   private int firstDoc(int i4096) {
     long index = 0;
     while (i4096 < indices.length) {
@@ -312,7 +292,6 @@ public class SparseFixedBitSet extends BitSet implements Bits, Accountable {
     return (i64 << 6) | Long.numberOfTrailingZeros(bits);
   }
 
-  /** Return the last document that occurs on or before the provided block index. */
   private int lastDoc(int i4096) {
     long index;
     while (i4096 >= 0) {
@@ -355,7 +334,6 @@ public class SparseFixedBitSet extends BitSet implements Bits, Accountable {
     return (i4096 << 12) | (i64 << 6) | (63 - Long.numberOfLeadingZeros(bits));
   }
 
-  /** Return the long bits at the given <code>i64</code> index. */
   private long longBits(long index, long[] bits, int i64) {
     if ((index & (1L << i64)) == 0) {
       return 0L;
@@ -408,9 +386,6 @@ public class SparseFixedBitSet extends BitSet implements Bits, Accountable {
     }
   }
 
-  /**
-   * {@link #or(DocIdSetIterator)} impl that works best when <code>it</code> is dense
-   */
   private void orDense(DocIdSetIterator it) throws IOException {
     checkUnpositioned(it);
     // The goal here is to try to take advantage of the ordering of documents

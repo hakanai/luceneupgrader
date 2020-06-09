@@ -44,36 +44,15 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Accountables;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 
-/**
- * Enables per field docvalues support.
- * <p>
- * Note, when extending this class, the name ({@link #getName}) is 
- * written into the index. In order for the field to be read, the
- * name must resolve to your implementation via {@link #forName(String)}.
- * This method uses Java's 
- * {@link ServiceLoader Service Provider Interface} to resolve format names.
- * <p>
- * Files written by each docvalues format have an additional suffix containing the 
- * format name. For example, in a per-field configuration instead of <tt>_1.dat</tt> 
- * filenames would look like <tt>_1_Lucene40_0.dat</tt>.
- * @see ServiceLoader
- * @lucene.experimental
- */
 
 public abstract class PerFieldDocValuesFormat extends DocValuesFormat {
-  /** Name of this {@link PostingsFormat}. */
   public static final String PER_FIELD_NAME = "PerFieldDV40";
 
-  /** {@link FieldInfo} attribute name used to store the
-   *  format name for each field. */
   public static final String PER_FIELD_FORMAT_KEY = PerFieldDocValuesFormat.class.getSimpleName() + ".format";
 
-  /** {@link FieldInfo} attribute name used to store the
-   *  segment suffix name for each field. */
   public static final String PER_FIELD_SUFFIX_KEY = PerFieldDocValuesFormat.class.getSimpleName() + ".suffix";
 
   
-  /** Sole constructor. */
   public PerFieldDocValuesFormat() {
     super(PER_FIELD_NAME);
   }
@@ -160,13 +139,6 @@ public abstract class PerFieldDocValuesFormat extends DocValuesFormat {
       return getInstance(field, false);
     }
 
-    /**
-     * DocValuesConsumer for the given field.
-     * @param field - FieldInfo object.
-     * @param ignoreCurrentFormat - ignore the existing format attributes.
-     * @return DocValuesConsumer for the field.
-     * @throws IOException if there is a low-level IO error
-     */
     private DocValuesConsumer getInstance(FieldInfo field, boolean ignoreCurrentFormat) throws IOException {
       DocValuesFormat format = null;
       if (field.getDocValuesGen() != -1) {
@@ -383,11 +355,5 @@ public abstract class PerFieldDocValuesFormat extends DocValuesFormat {
     return new FieldsReader(state);
   }
 
-  /** 
-   * Returns the doc values format that should be used for writing 
-   * new segments of <code>field</code>.
-   * <p>
-   * The field to format mapping is written to the index, so
-   * this method is only invoked when writing, not when reading. */
   public abstract DocValuesFormat getDocValuesFormatForField(String field);
 }

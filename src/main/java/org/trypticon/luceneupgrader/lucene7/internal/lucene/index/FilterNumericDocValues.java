@@ -19,15 +19,10 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.index;
 
 import java.io.IOException;
 
-/**
- * Delegates all methods to a wrapped {@link NumericDocValues}.
- */
 public abstract class FilterNumericDocValues extends NumericDocValues {
 
-  /** Wrapped values */
   protected final NumericDocValues in;
   
-  /** Sole constructor */
   protected FilterNumericDocValues(NumericDocValues in) {
     this.in = in;
   }

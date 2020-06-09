@@ -21,10 +21,6 @@ import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * An {@link IndexInput} implementing {@link RandomAccessInput} and backed
- * by a {@link ByteBuffersDataInput}.
- */
 public final class ByteBuffersIndexInput extends IndexInput implements RandomAccessInput {
   private ByteBuffersDataInput in;
 

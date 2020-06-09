@@ -21,10 +21,8 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.DocValuesProducer;
 
-/** Abstrast base class implementing a {@link DocValuesProducer} that has no doc values. */
 public abstract class EmptyDocValuesProducer extends DocValuesProducer {
 
-  /** Sole constructor */
   protected EmptyDocValuesProducer() {
   }
   
@@ -58,7 +56,6 @@ public abstract class EmptyDocValuesProducer extends DocValuesProducer {
     throw new UnsupportedOperationException();
   }
 
-  /** Closes this doc values producer. */
   @Override
   public void close() {
     throw new UnsupportedOperationException();

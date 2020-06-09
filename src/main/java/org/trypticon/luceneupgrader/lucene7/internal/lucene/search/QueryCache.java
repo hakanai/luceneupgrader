@@ -17,20 +17,8 @@
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.search;
 
 
-/**
- * A cache for queries.
- *
- * @see LRUQueryCache
- * @lucene.experimental
- */
 public interface QueryCache {
 
-  /**
-   * Return a wrapper around the provided <code>weight</code> that will cache
-   * matching docs per-segment accordingly to the given <code>policy</code>.
-   * NOTE: The returned weight will only be equivalent if scores are not needed.
-   * @see Collector#needsScores()
-   */
   Weight doCache(Weight weight, QueryCachingPolicy policy);
 
 }

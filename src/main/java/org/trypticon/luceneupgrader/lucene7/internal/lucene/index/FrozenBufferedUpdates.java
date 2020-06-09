@@ -43,12 +43,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.InfoStream;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimator;
 
-/**
- * Holds buffered deletes and updates by term or query, once pushed. Pushed
- * deletes/updates are write-once, so we shift to more memory efficient data
- * structure to hold them.  We don't hold docIDs because these are applied on
- * flush.
- */
 final class FrozenBufferedUpdates {
 
   /* NOTE: we now apply this frozen packet immediately on creation, yet this process is heavy, and runs
@@ -65,12 +59,10 @@ final class FrozenBufferedUpdates {
   final Query[] deleteQueries;
   final int[] deleteQueryLimits;
   
-  /** Counts down once all deletes/updates have been applied */
   public final CountDownLatch applied = new CountDownLatch(1);
   private final ReentrantLock applyLock = new ReentrantLock();
   private final Map<String, FieldUpdatesBuffer> fieldUpdates;
 
-  /** How many total documents were deleted/updated. */
   public long totalDelCount;
   private final int fieldUpdatesCount;
   
@@ -124,8 +116,6 @@ final class FrozenBufferedUpdates {
     }
   }
 
-  /** Returns the {@link SegmentCommitInfo} that this packet is supposed to apply its deletes to, or null
-   *  if the private segment was already merged away. */
   private List<SegmentCommitInfo> getInfosToApply(IndexWriter writer) {
     assert Thread.holdsLock(writer);
     final List<SegmentCommitInfo> infos;
@@ -144,13 +134,6 @@ final class FrozenBufferedUpdates {
     return infos;
   }
 
-  /** Translates a frozen packet of delete term/query, or doc values
-   *  updates, into their actual docIDs in the index, and applies the change.  This is a heavy
-   *  operation and is done concurrently by incoming indexing threads.
-   *  This method will return immediately without blocking if another thread is currently
-   *  applying the package. In order to ensure the packet has been applied, {@link #forceApply(IndexWriter)}
-   *  must be called.
-   *  */
   @SuppressWarnings("try")
   boolean tryApply(IndexWriter writer) throws IOException {
     if (applyLock.tryLock()) {
@@ -164,10 +147,6 @@ final class FrozenBufferedUpdates {
     return false;
   }
 
-  /** Translates a frozen packet of delete term/query, or doc values
-   *  updates, into their actual docIDs in the index, and applies the change.  This is a heavy
-   *  operation and is done concurrently by incoming indexing threads.
-   *  */
   void forceApply(IndexWriter writer) throws IOException {
     applyLock.lock();
     try {
@@ -317,7 +296,6 @@ final class FrozenBufferedUpdates {
     }
   }
 
-  /** Opens SegmentReader and inits SegmentState for each segment. */
   private static BufferedUpdatesStream.SegmentState[] openSegmentStates(IndexWriter writer, List<SegmentCommitInfo> infos,
                                                                        Set<SegmentCommitInfo> alreadySeenSegments, long delGen) throws IOException {
     List<BufferedUpdatesStream.SegmentState> segStates = new ArrayList<>();
@@ -340,7 +318,6 @@ final class FrozenBufferedUpdates {
     return segStates.toArray(new BufferedUpdatesStream.SegmentState[0]);
   }
 
-  /** Close segment states previously opened with openSegmentStates. */
   public static BufferedUpdatesStream.ApplyDeletesResult closeSegmentStates(IndexWriter writer, BufferedUpdatesStream.SegmentState[] segStates, boolean success) throws IOException {
     List<SegmentCommitInfo> allDeleted = null;
     long totDelCount = 0;
@@ -399,8 +376,6 @@ final class FrozenBufferedUpdates {
     }
   }
 
-  /** Applies pending delete-by-term, delete-by-query and doc values updates to all segments in the index, returning
-   *  the number of new deleted or updated documents. */
   private long apply(BufferedUpdatesStream.SegmentState[] segStates) throws IOException {
     assert applyLock.isHeldByCurrentThread();
     if (delGen == -1) {
@@ -761,12 +736,6 @@ final class FrozenBufferedUpdates {
     return deleteTerms.size() > 0 || deleteQueries.length > 0 || fieldUpdatesCount > 0 ;
   }
 
-  /**
-   * This class helps iterating a term dictionary and consuming all the docs for each terms.
-   * It accepts a field, value tuple and returns a {@link DocIdSetIterator} if the field has an entry
-   * for the given value. It has an optimized way of iterating the term dictionary if the terms are
-   * passed in sorted order and makes sure terms and postings are reused as much as possible.
-   */
   static final class TermDocsIterator {
     private final TermsProvider provider;
     private String field;

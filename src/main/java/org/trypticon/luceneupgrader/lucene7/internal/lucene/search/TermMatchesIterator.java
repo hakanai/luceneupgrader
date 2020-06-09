@@ -21,9 +21,6 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.PostingsEnum;
 
-/**
- * A {@link MatchesIterator} over a single term's postings list
- */
 class TermMatchesIterator implements MatchesIterator {
 
   private int upto;
@@ -31,9 +28,6 @@ class TermMatchesIterator implements MatchesIterator {
   private final PostingsEnum pe;
   private final Query query;
 
-  /**
-   * Create a new {@link TermMatchesIterator} for the given term and postings list
-   */
   TermMatchesIterator(Query query, PostingsEnum pe) throws IOException {
     this.pe = pe;
     this.query = query;

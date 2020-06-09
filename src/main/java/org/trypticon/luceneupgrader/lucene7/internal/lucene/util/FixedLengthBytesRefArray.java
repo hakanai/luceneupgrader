@@ -18,30 +18,17 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.util;
 
 import java.util.Comparator;
 
-/**
- * Just like {@link BytesRefArray} except all values have the same length.
- * 
- * <b>Note: This class is not Thread-Safe!</b>
- * 
- * @lucene.internal
- * @lucene.experimental
- */
 final class FixedLengthBytesRefArray implements SortableBytesRefArray {
   private final int valueLength;
   private final int valuesPerBlock;
 
-  /** How many values have been appended */
   private int size;
 
-  /** How many blocks are used */
   private int currentBlock = -1;
   private int nextEntry;
   
   private byte[][] blocks;
 
-  /**
-   * Creates a new {@link BytesRefArray} with a counter to track allocated bytes
-   */
   public FixedLengthBytesRefArray(int valueLength) {
     this.valueLength = valueLength;
 
@@ -51,9 +38,6 @@ final class FixedLengthBytesRefArray implements SortableBytesRefArray {
     blocks = new byte[0][];
   }
  
-  /**
-   * Clears this {@link BytesRefArray}
-   */
   @Override
   public void clear() {
     size = 0;
@@ -62,11 +46,6 @@ final class FixedLengthBytesRefArray implements SortableBytesRefArray {
     nextEntry = valuesPerBlock;
   }
   
-  /**
-   * Appends a copy of the given {@link BytesRef} to this {@link BytesRefArray}.
-   * @param bytes the bytes to append
-   * @return the index of the appended bytes
-   */
   @Override
   public int append(BytesRef bytes) {
     if (bytes.length != valueLength) {
@@ -90,10 +69,6 @@ final class FixedLengthBytesRefArray implements SortableBytesRefArray {
     return size++;
   }
   
-  /**
-   * Returns the current size of this {@link FixedLengthBytesRefArray}
-   * @return the current size of this {@link FixedLengthBytesRefArray}
-   */
   @Override
   public int size() {
     return size;
@@ -181,18 +156,6 @@ final class FixedLengthBytesRefArray implements SortableBytesRefArray {
     return orderedEntries;
   }
   
-  /**
-   * <p>
-   * Returns a {@link BytesRefIterator} with point in time semantics. The
-   * iterator provides access to all so far appended {@link BytesRef} instances.
-   * </p>
-   * <p>
-   * The iterator will iterate the byte values in the order specified by the comparator.
-   * </p>
-   * <p>
-   * This is a non-destructive operation.
-   * </p>
-   */
   @Override
   public BytesRefIterator iterator(final Comparator<BytesRef> comp) {
     final BytesRef result = new BytesRef();

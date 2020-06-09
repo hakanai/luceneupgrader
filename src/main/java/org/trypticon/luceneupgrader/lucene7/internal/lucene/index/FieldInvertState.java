@@ -24,13 +24,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.tokenattrib
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.tokenattributes.TermToBytesRefAttribute;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.AttributeSource;
 
-/**
- * This class tracks the number and position / offset parameters of terms
- * being added to the index. The information collected in this class is
- * also used to calculate the normalization factor for a field.
- * 
- * @lucene.experimental
- */
 public final class FieldInvertState {
   final int indexCreatedVersionMajor;
   final String name;
@@ -51,15 +44,11 @@ public final class FieldInvertState {
   TermToBytesRefAttribute termAttribute;
   TermFrequencyAttribute termFreqAttribute;
 
-  /** Creates {code FieldInvertState} for the specified
-   *  field name. */
   public FieldInvertState(int indexCreatedVersionMajor, String name) {
     this.indexCreatedVersionMajor = indexCreatedVersionMajor;
     this.name = name;
   }
   
-  /** Creates {code FieldInvertState} for the specified
-   *  field name and values for all fields. */
   public FieldInvertState(int indexCreatedVersionMajor, String name, int position, int length, int numOverlap, int offset) {
     this(indexCreatedVersionMajor, name);
     this.position = position;
@@ -68,9 +57,6 @@ public final class FieldInvertState {
     this.offset = offset;
   }
 
-  /**
-   * Re-initialize the state
-   */
   void reset() {
     position = -1;
     length = 0;
@@ -83,9 +69,6 @@ public final class FieldInvertState {
   }
   
   // TODO: better name?
-  /**
-   * Sets attributeSource to a new instance.
-   */
   void setAttributeSource(AttributeSource attributeSource) {
     if (this.attributeSource != attributeSource) {
       this.attributeSource = attributeSource;
@@ -97,82 +80,46 @@ public final class FieldInvertState {
     }
   }
 
-  /**
-   * Get the last processed term position.
-   * @return the position
-   */
   public int getPosition() {
     return position;
   }
 
-  /**
-   * Get total number of terms in this field.
-   * @return the length
-   */
   public int getLength() {
     return length;
   }
 
-  /** Set length value. */
   public void setLength(int length) {
     this.length = length;
   }
   
-  /**
-   * Get the number of terms with <code>positionIncrement == 0</code>.
-   * @return the numOverlap
-   */
   public int getNumOverlap() {
     return numOverlap;
   }
 
-  /** Set number of terms with {@code positionIncrement ==
-   *  0}. */
   public void setNumOverlap(int numOverlap) {
     this.numOverlap = numOverlap;
   }
   
-  /**
-   * Get end offset of the last processed term.
-   * @return the offset
-   */
   public int getOffset() {
     return offset;
   }
 
-  /**
-   * Get the maximum term-frequency encountered for any term in the field.  A
-   * field containing "the quick brown fox jumps over the lazy dog" would have
-   * a value of 2, because "the" appears twice.
-   */
   public int getMaxTermFrequency() {
     return maxTermFrequency;
   }
   
-  /**
-   * Return the number of unique terms encountered in this field.
-   */
   public int getUniqueTermCount() {
     return uniqueTermCount;
   }
 
-  /** Returns the {@link AttributeSource} from the {@link
-   *  TokenStream} that provided the indexed tokens for this
-   *  field. */
   public AttributeSource getAttributeSource() {
     return attributeSource;
   }
   
-  /**
-   * Return the field's name
-   */
   public String getName() {
     return name;
   }
 
-  /**
-   * Return the version that was used to create the index, or 6 if it was created before 7.0.
-   */
   public int getIndexCreatedVersionMajor() {
     return indexCreatedVersionMajor;
   }

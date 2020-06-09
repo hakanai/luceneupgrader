@@ -15,9 +15,4 @@
  * limitations under the License.
  */
 
-/**
- * Components from the Lucene 5.0 index format
- * See {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.lucene50} for an overview
- * of the index format.
- */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs.lucene50;

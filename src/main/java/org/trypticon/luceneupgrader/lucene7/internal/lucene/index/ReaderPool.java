@@ -38,12 +38,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.CollectionUtil;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.InfoStream;
 
-/** Holds shared SegmentReader instances. IndexWriter uses
- *  SegmentReaders for 1) applying deletes/DV updates, 2) doing
- *  merges, 3) handing out a real-time reader.  This pool
- *  reuses instances of the SegmentReaders in all these
- *  places if it is in "near real-time mode" (getReader()
- *  has been called on this instance). */
 final class ReaderPool implements Closeable {
 
   private final Map<SegmentCommitInfo,ReadersAndUpdates> readerMap = new HashMap<>();
@@ -96,7 +90,6 @@ final class ReaderPool implements Closeable {
     }
   }
 
-  /** Asserts this info still exists in IW's segment infos */
   synchronized boolean assertInfoIsLive(SegmentCommitInfo info) {
     int idx = segmentInfos.indexOf(info);
     assert idx != -1: "info=" + info + " isn't live";
@@ -104,10 +97,6 @@ final class ReaderPool implements Closeable {
     return true;
   }
 
-  /**
-   * Drops reader for the given {@link SegmentCommitInfo} if it's pooled
-   * @return <code>true</code> if a reader is pooled
-   */
   synchronized boolean drop(SegmentCommitInfo info) throws IOException {
     final ReadersAndUpdates rld = readerMap.get(info);
     if (rld != null) {
@@ -119,9 +108,6 @@ final class ReaderPool implements Closeable {
     return false;
   }
 
-  /**
-   * Returns the sum of the ram used by all the buffered readers and updates in MB
-   */
   synchronized long ramBytesUsed() {
     long bytes = 0;
     for (ReadersAndUpdates rld : readerMap.values()) {
@@ -130,9 +116,6 @@ final class ReaderPool implements Closeable {
     return bytes;
   }
 
-  /**
-   * Returns <code>true</code> iff any of the buffered readers and updates has at least one pending delete
-   */
   synchronized boolean anyDeletions() {
     for(ReadersAndUpdates rld : readerMap.values()) {
       if (rld.getDelCount() > 0) {
@@ -142,13 +125,6 @@ final class ReaderPool implements Closeable {
     return false;
   }
 
-  /**
-   * Enables reader pooling for this pool. This should be called once the readers in this pool are shared with an
-   * outside resource like an NRT reader. Once reader pooling is enabled a {@link ReadersAndUpdates} will be kept around
-   * in the reader pool on calling {@link #release(ReadersAndUpdates, boolean)} until the segment get dropped via calls
-   * to {@link #drop(SegmentCommitInfo)} or {@link #dropAll()} or {@link #close()}.
-   * Reader pooling is disabled upon construction but can't be disabled again once it's enabled.
-   */
   void enableReaderPooling() {
     poolReaders = true;
   }
@@ -157,11 +133,6 @@ final class ReaderPool implements Closeable {
     return poolReaders;
   }
 
-  /**
-   * Releases the {@link ReadersAndUpdates}. This should only be called if the {@link #get(SegmentCommitInfo, boolean)}
-   * is called with the create paramter set to true.
-   * @return <code>true</code> if any files were written by this release call.
-   */
   synchronized boolean release(ReadersAndUpdates rld, boolean assertInfoLive) throws IOException {
     boolean changed = false;
     // Matches incRef in get:
@@ -213,10 +184,6 @@ final class ReaderPool implements Closeable {
     }
   }
 
-  /**
-   * Writes all doc values updates to disk if there are any.
-   * @return <code>true</code> iff any files where written
-   */
   boolean writeAllDocValuesUpdates() throws IOException {
     Collection<ReadersAndUpdates> copy;
     synchronized (this) {
@@ -230,10 +197,6 @@ final class ReaderPool implements Closeable {
     return any;
   }
 
-  /**
-   * Writes all doc values updates to disk if there are any.
-   * @return <code>true</code> iff any files where written
-   */
   boolean writeDocValuesUpdatesForMerge(List<SegmentCommitInfo> infos) throws IOException {
     boolean any = false;
     for (SegmentCommitInfo info : infos) {
@@ -246,10 +209,6 @@ final class ReaderPool implements Closeable {
     return any;
   }
 
-  /**
-   * Returns a list of all currently maintained ReadersAndUpdates sorted by it's ram consumption largest to smallest.
-   * This list can also contain readers that don't consume any ram at this point ie. don't have any updates buffered.
-   */
   synchronized List<ReadersAndUpdates> getReadersByRam() {
     class RamRecordingHolder {
       final ReadersAndUpdates updates;
@@ -279,8 +238,6 @@ final class ReaderPool implements Closeable {
   }
 
 
-  /** Remove all our references to readers, and commits
-   *  any pending changes. */
   synchronized void dropAll() throws IOException {
     Throwable priorE = null;
     final Iterator<Map.Entry<SegmentCommitInfo,ReadersAndUpdates>> it = readerMap.entrySet().iterator();
@@ -309,12 +266,6 @@ final class ReaderPool implements Closeable {
     }
   }
 
-  /**
-   * Commit live docs changes for the segment readers for
-   * the provided infos.
-   *
-   * @throws IOException If there is a low-level I/O error
-   */
   synchronized boolean commit(SegmentInfos infos) throws IOException {
     boolean atLeastOneChange = false;
     for (SegmentCommitInfo info : infos) {
@@ -342,9 +293,6 @@ final class ReaderPool implements Closeable {
     return atLeastOneChange;
   }
 
-  /**
-   * Returns <code>true</code> iff there are any buffered doc values updates. Otherwise <code>false</code>.
-   */
   synchronized boolean anyDocValuesChanges() {
     for (ReadersAndUpdates rld : readerMap.values()) {
       // NOTE: we don't check for pending deletes because deletes carry over in RAM to NRT readers
@@ -355,11 +303,6 @@ final class ReaderPool implements Closeable {
     return false;
   }
 
-  /**
-   * Obtain a ReadersAndLiveDocs instance from the
-   * readerPool.  If create is true, you must later call
-   * {@link #release(ReadersAndUpdates, boolean)}.
-   */
   synchronized ReadersAndUpdates get(SegmentCommitInfo info, boolean create) {
     assert info.info.dir ==  originalDirectory: "info.dir=" + info.info.dir + " vs " + originalDirectory;
     if (closed.get()) {

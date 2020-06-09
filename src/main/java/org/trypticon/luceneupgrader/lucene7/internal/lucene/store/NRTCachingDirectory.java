@@ -34,37 +34,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 //   - let subclass dictate policy...?
 //   - rename to MergeCacheingDir?  NRTCachingDir
 
-/**
- * Wraps a {@link RAMDirectory}
- * around any provided delegate directory, to
- * be used during NRT search.
- *
- * <p>This class is likely only useful in a near-real-time
- * context, where indexing rate is lowish but reopen
- * rate is highish, resulting in many tiny files being
- * written.  This directory keeps such segments (as well as
- * the segments produced by merging them, as long as they
- * are small enough), in RAM.</p>
- *
- * <p>This is safe to use: when your app calls {IndexWriter#commit},
- * all cached files will be flushed from the cached and sync'd.</p>
- *
- * <p>Here's a simple example usage:
- *
- * <pre class="prettyprint">
- *   Directory fsDir = FSDirectory.open(new File("/path/to/index").toPath());
- *   NRTCachingDirectory cachedFSDir = new NRTCachingDirectory(fsDir, 5.0, 60.0);
- *   IndexWriterConfig conf = new IndexWriterConfig(analyzer);
- *   IndexWriter writer = new IndexWriter(cachedFSDir, conf);
- * </pre>
- *
- * <p>This will cache all newly flushed segments, all merges
- * whose expected segment size is {@code <= 5 MB}, unless the net
- * cached bytes exceeds 60 MB at which point all writes will
- * not be cached (until the net bytes falls below 60 MB).</p>
- *
- * @lucene.experimental
- */
 
 public class NRTCachingDirectory extends FilterDirectory implements Accountable {
 
@@ -76,11 +45,6 @@ public class NRTCachingDirectory extends FilterDirectory implements Accountable 
 
   private static final boolean VERBOSE = false;
 
-  /**
-   *  We will cache a newly created output if 1) it's a
-   *  flush or a merge and the estimated size of the merged segment is 
-   *  {@code <= maxMergeSizeMB}, and 2) the total cached bytes is 
-   *  {@code <= maxCachedMB} */
   public NRTCachingDirectory(Directory delegate, double maxMergeSizeMB, double maxCachedMB) {
     super(delegate);
     maxMergeSizeBytes = (long) (maxMergeSizeMB*1024*1024);
@@ -182,8 +146,6 @@ public class NRTCachingDirectory extends FilterDirectory implements Accountable 
     }
   }
   
-  /** Close this directory, which flushes any cached files
-   *  to the delegate and then closes the delegate. */
   @Override
   public void close() throws IOException {
     // NOTE: technically we shouldn't have to do this, ie,
@@ -208,8 +170,6 @@ public class NRTCachingDirectory extends FilterDirectory implements Accountable 
     }
   }
 
-  /** Subclass can override this to customize logic; return
-   *  true if this file should be written to the RAMDirectory. */
   protected boolean doCacheWrite(String name, IOContext context) {
     //System.out.println(Thread.currentThread().getName() + ": CACHE check merge=" + merge + " size=" + (merge==null ? 0 : merge.estimatedMergeBytes));
 
@@ -269,10 +229,6 @@ public class NRTCachingDirectory extends FilterDirectory implements Accountable 
     return out;
   }
 
-  /** Returns true if the file exists
-   *  (can be opened), false if it cannot be opened, and
-   *  (unlike Java's File.exists) throws IOException if
-   *  there's some unexpected error. */
   static boolean slowFileExists(Directory dir, String fileName) throws IOException {
     try {
       dir.openInput(fileName, IOContext.DEFAULT).close();

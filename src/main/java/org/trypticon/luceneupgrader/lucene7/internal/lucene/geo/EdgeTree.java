@@ -25,32 +25,17 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.ArrayUtil;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoUtils.lineRelateLine;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.geo.GeoUtils.orient;
 
-/**
- * 2D line/polygon geometry implementation represented as a balanced interval tree of edges.
- * <p>
- * Construction takes {@code O(n log n)} time for sorting and tree construction.
- * {@link #relate relate()} are {@code O(n)}, but for most
- * practical lines and polygons are much faster than brute force.
- * @lucene.internal
- */
 public abstract class EdgeTree {
-  /** minimum latitude of this geometry's bounding box area */
   public final double minLat;
-  /** maximum latitude of this geometry's bounding box area */
   public final double maxLat;
-  /** minimum longitude of this geometry's bounding box area */
   public final double minLon;
-  /** maximum longitude of this geometry's bounding box area */
   public final double maxLon;
 
   // each component is a node in an augmented 2d kd-tree: we alternate splitting between latitude/longitude,
   // and pull up max values for both dimensions to each parent node (regardless of split).
 
-  /** maximum latitude of this component or any of its children */
   protected double maxY;
-  /** maximum longitude of this component or any of its children */
   protected double maxX;
-  /** which dimension was this node split on */
   // TODO: its implicit based on level, but boolean keeps code simple
   protected boolean splitX;
 
@@ -58,7 +43,6 @@ public abstract class EdgeTree {
   protected EdgeTree left;
   protected EdgeTree right;
 
-  /** root node of edge tree */
   protected final Edge tree;
 
   protected EdgeTree(final double minLat, final double maxLat, final double minLon, final double maxLon, double[] lats, double[] lons) {
@@ -73,7 +57,6 @@ public abstract class EdgeTree {
     this.tree = createTree(lats, lons);
   }
 
-  /** Returns relation to the provided triangle */
   public Relation relateTriangle(double ax, double ay, double bx, double by, double cx, double cy) {
     // compute bounding box of triangle
     double minLat = StrictMath.min(StrictMath.min(ay, by), cy);
@@ -101,7 +84,6 @@ public abstract class EdgeTree {
     return Relation.CELL_OUTSIDE_QUERY;
   }
 
-  /** Returns relation to the provided rectangle */
   public Relation relate(double minLat, double maxLat, double minLon, double maxLon) {
     if (minLat <= maxY && minLon <= maxX) {
       Relation relation = internalComponentRelate(minLat, maxLat, minLon, maxLon);
@@ -159,7 +141,6 @@ public abstract class EdgeTree {
   }
 
 
-  /** Returns relation to the provided rectangle for this component */
   protected Relation internalComponentRelate(double minLat, double maxLat, double minLon, double maxLon) {
     // if the bounding boxes are disjoint then the shape does not cross
     if (maxLon < this.minLon || minLon > this.maxLon || maxLat < this.minLat || minLat > this.maxLat) {
@@ -183,7 +164,6 @@ public abstract class EdgeTree {
     return Relation.CELL_OUTSIDE_QUERY;
   }
 
-  /** Creates tree from sorted components (with range low and high inclusive) */
   protected static EdgeTree createTree(EdgeTree components[], int low, int high, boolean splitX) {
     if (low > high) {
       return null;
@@ -228,23 +208,14 @@ public abstract class EdgeTree {
     return newNode;
   }
 
-  /**
-   * Internal tree node: represents geometry edge from lat1,lon1 to lat2,lon2.
-   * The sort value is {@code low}, which is the minimum latitude of the edge.
-   * {@code max} stores the maximum latitude of this edge or any children.
-   */
   static class Edge {
     // lat-lon pair (in original order) of the two vertices
     final double lat1, lat2;
     final double lon1, lon2;
-    /** min of this edge */
     final double low;
-    /** max latitude of this edge or any children */
     double max;
 
-    /** left child edge, or null */
     Edge left;
-    /** right child edge, or null */
     Edge right;
 
     Edge(double lat1, double lon1, double lat2, double lon2, double low, double max) {
@@ -256,7 +227,6 @@ public abstract class EdgeTree {
       this.max = max;
     }
 
-    /** Returns true if the triangle crosses any edge in this edge subtree */
     Relation relateTriangle(double ax, double ay, double bx, double by, double cx, double cy) {
       // compute bounding box of triangle
       double minLat = StrictMath.min(StrictMath.min(ay, by), cy);
@@ -327,7 +297,6 @@ public abstract class EdgeTree {
       return r;
     }
 
-    /** Returns true if the box crosses any edge in this edge subtree */
     boolean crosses(double minLat, double maxLat, double minLon, double maxLon) {
       // we just have to cross one edge to answer the question, so we descend the tree and return when we do.
       if (minLat <= max) {
@@ -400,8 +369,6 @@ public abstract class EdgeTree {
   }
 
   //This should be moved when LatLonShape is moved from sandbox!
-  /**
-   * Compute whether the given x, y point is in a triangle; uses the winding order method */
   private static boolean pointInTriangle (double x, double y, double ax, double ay, double bx, double by, double cx, double cy) {
     double minX = StrictMath.min(ax, StrictMath.min(bx, cx));
     double minY = StrictMath.min(ay, StrictMath.min(by, cy));
@@ -422,10 +389,6 @@ public abstract class EdgeTree {
     }
   }
 
-  /**
-   * Creates an edge interval tree from a set of geometry vertices.
-   * @return root node of the tree.
-   */
   private static Edge createTree(double[] lats, double[] lons) {
     Edge edges[] = new Edge[lats.length - 1];
     for (int i = 1; i < lats.length; i++) {
@@ -446,7 +409,6 @@ public abstract class EdgeTree {
     return createTree(edges, 0, edges.length - 1);
   }
 
-  /** Creates tree from sorted edges (with range low and high inclusive) */
   private static Edge createTree(Edge edges[], int low, int high) {
     if (low > high) {
       return null;

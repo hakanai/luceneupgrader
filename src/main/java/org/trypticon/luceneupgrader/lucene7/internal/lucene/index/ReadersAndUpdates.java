@@ -95,9 +95,6 @@ final class ReadersAndUpdates {
     this.indexCreatedVersionMajor = indexCreatedVersionMajor;
   }
 
-  /** Init from a previously opened SegmentReader.
-   *
-   * <p>NOTE: steals incoming ref from reader. */
   ReadersAndUpdates(int indexCreatedVersionMajor, SegmentReader reader, PendingDeletes pendingDeletes) throws IOException {
     this(indexCreatedVersionMajor, reader.getOriginalSegmentInfo(), pendingDeletes);
     this.reader = reader;
@@ -133,8 +130,6 @@ final class ReadersAndUpdates {
     return true;
   }
 
-  /** Adds a new resolved (meaning it maps docIDs to new values) doc values packet.  We buffer these in RAM and write to disk when too much
-   *  RAM is used or when a merge needs to kick off, or a commit/refresh. */
   public synchronized void addDVUpdate(DocValuesFieldUpdates update) throws IOException {
     if (update.getFinished() == false) {
       throw new IllegalArgumentException("call finish first");
@@ -165,7 +160,6 @@ final class ReadersAndUpdates {
   }
   
 
-  /** Returns a {@link SegmentReader}. */
   public synchronized SegmentReader getReader(IOContext context) throws IOException {
     if (reader == null) {
       // We steal returned ref:
@@ -205,10 +199,6 @@ final class ReadersAndUpdates {
     decRef();
   }
 
-  /**
-   * Returns a ref to a clone. NOTE: you should decRef() the reader when you're
-   * done (ie do not call close()).
-   */
   public synchronized SegmentReader getReadOnlyClone(IOContext context) throws IOException {
     if (reader == null) {
       getReader(context).decRef();
@@ -242,16 +232,10 @@ final class ReadersAndUpdates {
     return reader;
   }
 
-  /**
-   * Returns a snapshot of the live docs.
-   */
   public synchronized Bits getLiveDocs() {
     return pendingDeletes.getLiveDocs();
   }
 
-  /**
-   * Returns the live-docs bits excluding documents that are not live due to soft-deletes
-   */
   public synchronized Bits getHardLiveDocs() {
     return pendingDeletes.getHardLiveDocs();
   }
@@ -409,11 +393,6 @@ final class ReadersAndUpdates {
     }
   }
 
-  /**
-   * This class merges the current on-disk DV with an incoming update DV instance and merges the two instances
-   * giving the incoming update precedence in terms of values, in other words the values of the update always
-   * wins over the on-disk version.
-   */
   static final class MergedDocValues<DocValuesInstance extends DocValuesIterator> extends DocValuesIterator {
     private final DocValuesFieldUpdates.Iterator updateIterator;
     // merged docID
@@ -706,7 +685,6 @@ final class ReadersAndUpdates {
     }
   }
 
-  /** Returns a reader for merge, with the latest doc values updates and deletions. */
   synchronized MergeReader getReaderForMerge(IOContext context) throws IOException {
 
     // We must carry over any still-pending DV updates because they were not
@@ -732,10 +710,6 @@ final class ReadersAndUpdates {
     return new MergeReader(reader, pendingDeletes.getHardLiveDocs());
   }
   
-  /**
-   * Drops all merging updates. Called from IndexWriter after this segment
-   * finished merging (whether successfully or not).
-   */
   public synchronized void dropMergingUpdates() {
     mergingDVUpdates.clear();
     isMerging = false;

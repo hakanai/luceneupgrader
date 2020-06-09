@@ -19,24 +19,16 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.PointValues;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 
-/** {@link PointValues} whose order of points can be changed.
- *  This class is useful for codecs to optimize flush.
- *  @lucene.internal */
 public abstract class MutablePointValues extends PointValues {
 
-  /** Sole constructor. */
   protected MutablePointValues() {}
 
-  /** Set {@code packedValue} with a reference to the packed bytes of the i-th value. */
   public abstract void getValue(int i, BytesRef packedValue);
 
-  /** Get the k-th byte of the i-th value. */
   public abstract byte getByteAt(int i, int k);
 
-  /** Return the doc ID of the i-th value. */
   public abstract int getDocID(int i);
 
-  /** Swap the i-th and j-th values. */
   public abstract void swap(int i, int j);
 
 }

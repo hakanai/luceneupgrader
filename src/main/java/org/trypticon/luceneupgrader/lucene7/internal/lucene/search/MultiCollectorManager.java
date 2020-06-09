@@ -23,10 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * A {@link CollectorManager} implements which wrap a set of {@link CollectorManager}
- * as {@link MultiCollector} acts for {@link Collector}.
- */
 public class MultiCollectorManager implements CollectorManager<MultiCollectorManager.Collectors, Object[]> {
 
   final private CollectorManager<Collector, ?>[] collectorManagers;

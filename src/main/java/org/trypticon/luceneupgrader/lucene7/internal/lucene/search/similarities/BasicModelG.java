@@ -19,15 +19,8 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.search.similarities
 
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.similarities.SimilarityBase.log2;
 
-/**
- * Geometric as limiting form of the Bose-Einstein model.  The formula used in Lucene differs
- * slightly from the one in the original paper: {@code F} is increased by {@code 1}
- * and {@code N} is increased by {@code F}.
- * @lucene.experimental
- */
 public class BasicModelG extends BasicModel {
   
-  /** Sole constructor: parameter-free */
   public BasicModelG() {}
 
   @Override

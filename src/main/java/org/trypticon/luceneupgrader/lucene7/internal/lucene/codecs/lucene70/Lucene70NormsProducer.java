@@ -37,9 +37,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.RandomAccessInput;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 
-/**
- * Reader for {@link Lucene70NormsFormat}
- */
 final class Lucene70NormsProducer extends NormsProducer {
   // metadata maps (just file pointers and minimal stuff)
   private final Map<Integer,NormsEntry> norms = new HashMap<>();

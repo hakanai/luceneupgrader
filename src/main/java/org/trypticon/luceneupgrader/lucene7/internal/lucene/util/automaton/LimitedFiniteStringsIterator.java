@@ -19,36 +19,11 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.util.automaton;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IntsRef;
 
-/**
- * {@link FiniteStringsIterator} which limits the number of iterated accepted strings.
- * If more than <code>limit</code> strings are accepted,
- * the first <code>limit</code> strings found are returned.
- *
- * <p>If the {@link Automaton} has cycles then this iterator may throw an {@code
- * IllegalArgumentException}, but this is not guaranteed!
- *
- * <p>Be aware that the iteration order is implementation dependent
- * and may change across releases.
- *
- * @lucene.experimental
- */
 public class LimitedFiniteStringsIterator extends FiniteStringsIterator {
-  /**
-   * Maximum number of finite strings to create.
-   */
   private int limit = Integer.MAX_VALUE;
 
-  /**
-   * Number of generated finite strings.
-   */
   private int count = 0;
 
-  /**
-   * Constructor.
-   *
-   * @param a Automaton to create finite string from.
-   * @param limit Maximum number of finite strings to create, or -1 for infinite.
-   */
   public LimitedFiniteStringsIterator(Automaton a, int limit) {
     super(a);
 
@@ -74,9 +49,6 @@ public class LimitedFiniteStringsIterator extends FiniteStringsIterator {
     return result;
   }
 
-  /**
-   * Number of iterated finite strings.
-   */
   public int size() {
     return count;
   }

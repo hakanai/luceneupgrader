@@ -23,13 +23,6 @@ import java.util.Set;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReaderContext;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.Term;
 
-/**
- * A Weight that has a constant score equal to the boost of the wrapped query.
- * This is typically useful when building queries which do not produce
- * meaningful scores and are mostly useful for filtering.
- *
- * @lucene.internal
- */
 public abstract class ConstantScoreWeight extends Weight {
 
   private final float score;
@@ -46,7 +39,6 @@ public abstract class ConstantScoreWeight extends Weight {
     // override if your constant-score query does wrap terms
   }
 
-  /** Return the score produced by this {@link Weight}. */
   protected final float score() {
     return score;
   }

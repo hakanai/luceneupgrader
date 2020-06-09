@@ -32,13 +32,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IOContext;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.InfoStream;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Version;
 
-/**
- * The SegmentMerger class combines two or more Segments, represented by an
- * IndexReader, into a single Segment.  Call the merge method to combine the
- * segments.
- *
- * @see #merge
- */
 final class SegmentMerger {
   private final Directory directory;
 
@@ -81,17 +74,10 @@ final class SegmentMerger {
     }
   }
   
-  /** True if any merging should happen */
   boolean shouldMerge() {
     return mergeState.segmentInfo.maxDoc() > 0;
   }
 
-  /**
-   * Merges the readers into the directory passed to the constructor
-   * @return The number of documents that were merged
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
   MergeState merge() throws IOException {
     if (!shouldMerge()) {
       throw new IllegalStateException("Merge would result in 0 document segment");
@@ -204,22 +190,12 @@ final class SegmentMerger {
     mergeState.mergeFieldInfos = fieldInfosBuilder.finish();
   }
 
-  /**
-   * Merge stored fields from each of the segments into the new one.
-   * @return The number of documents in all of the readers
-   * @throws CorruptIndexException if the index is corrupt
-   * @throws IOException if there is a low-level IO error
-   */
   private int mergeFields() throws IOException {
     try (StoredFieldsWriter fieldsWriter = codec.storedFieldsFormat().fieldsWriter(directory, mergeState.segmentInfo, context)) {
       return fieldsWriter.merge(mergeState);
     }
   }
 
-  /**
-   * Merge the TermVectors from each of the segments into the new one.
-   * @throws IOException if there is a low-level IO error
-   */
   private int mergeVectors() throws IOException {
     try (TermVectorsWriter termVectorsWriter = codec.termVectorsFormat().vectorsWriter(directory, mergeState.segmentInfo, context)) {
       return termVectorsWriter.merge(mergeState);

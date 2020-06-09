@@ -31,20 +31,8 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRefIterator;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.PriorityQueue;
 
-/**
- * A {@link MatchesIterator} that combines matches from a set of sub-iterators
- *
- * Matches are sorted by their start positions, and then by their end positions, so that
- * prefixes sort first.  Matches may overlap, or be duplicated if they appear in more
- * than one of the sub-iterators.
- */
 final class DisjunctionMatchesIterator implements MatchesIterator {
 
-  /**
-   * Create a {@link DisjunctionMatchesIterator} over a list of terms
-   *
-   * Only terms that have at least one match in the given document will be included
-   */
   static MatchesIterator fromTerms(LeafReaderContext context, int doc, Query query, String field, List<Term> terms) throws IOException {
     Objects.requireNonNull(field);
     for (Term term : terms) {
@@ -67,11 +55,6 @@ final class DisjunctionMatchesIterator implements MatchesIterator {
     };
   }
 
-  /**
-   * Create a {@link DisjunctionMatchesIterator} over a list of terms extracted from a {@link BytesRefIterator}
-   *
-   * Only terms that have at least one match in the given document will be included
-   */
   static MatchesIterator fromTermsEnum(LeafReaderContext context, int doc, Query query, String field, BytesRefIterator terms) throws IOException {
     Objects.requireNonNull(field);
     List<MatchesIterator> mis = new ArrayList<>();

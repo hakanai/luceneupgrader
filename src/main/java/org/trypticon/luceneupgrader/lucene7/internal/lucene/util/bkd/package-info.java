@@ -15,9 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Block KD-tree, implementing the generic spatial data structure described in
- * <a href="https://www.cs.duke.edu/~pankaj/publications/papers/bkd-sstd.pdf">this paper</a>.
- */
 
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.util.bkd;

@@ -47,7 +47,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimat
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.DirectMonotonicReader;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.packed.DirectReader;
 
-/** reader for {@link Lucene70DocValuesFormat} */
 final class Lucene70DocValuesProducer extends DocValuesProducer implements Closeable {
   private final Map<String,NumericEntry> numerics = new HashMap<>();
   private final Map<String,BinaryEntry> binaries = new HashMap<>();
@@ -58,7 +57,6 @@ final class Lucene70DocValuesProducer extends DocValuesProducer implements Close
   private final IndexInput data;
   private final int maxDoc;
 
-  /** expert: instantiates a new reader */
   Lucene70DocValuesProducer(SegmentReadState state, String dataCodec, String dataExtension, String metaCodec, String metaExtension) throws IOException {
     String metaName = IndexFileNames.segmentFileName(state.segmentInfo.name, state.segmentSuffix, metaExtension);
     this.maxDoc = state.segmentInfo.maxDoc();

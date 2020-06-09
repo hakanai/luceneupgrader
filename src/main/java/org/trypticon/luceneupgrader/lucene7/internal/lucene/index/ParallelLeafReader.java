@@ -32,24 +32,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.Sort;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Version;
 
-/** An {@link LeafReader} which reads multiple, parallel indexes.  Each index
- * added must have the same number of documents, but typically each contains
- * different fields. Deletions are taken from the first reader.
- * Each document contains the union of the fields of all documents
- * with the same document number.  When searching, matches for a
- * query term are from the first index added that has the field.
- *
- * <p>This is useful, e.g., with collections that have large fields which
- * change rarely and small fields that change more frequently.  The smaller
- * fields may be re-indexed in a new index and both indexes may be searched
- * together.
- * 
- * <p><strong>Warning:</strong> It is up to you to make sure all indexes
- * are created and modified the same way. For example, if you add
- * documents to one index, you need to add the same documents in the
- * same order to the other indexes. <em>Failure to do so will result in
- * undefined behavior</em>.
- */
 public class ParallelLeafReader extends LeafReader {
   private final FieldInfos fieldInfos;
   private final LeafReader[] parallelReaders, storedFieldsReaders;
@@ -63,21 +45,14 @@ public class ParallelLeafReader extends LeafReader {
   private final SortedMap<String,LeafReader> fieldToReader = new TreeMap<>();//TODO needn't sort?
   private final Map<String,LeafReader> termsFieldToReader = new HashMap<>();
 
-  /** Create a ParallelLeafReader based on the provided
-   *  readers; auto-closes the given readers on {@link #close()}. */
   public ParallelLeafReader(LeafReader... readers) throws IOException {
     this(true, readers);
   }
 
-  /** Create a ParallelLeafReader based on the provided
-   *  readers. */
   public ParallelLeafReader(boolean closeSubReaders, LeafReader... readers) throws IOException {
     this(closeSubReaders, readers, readers);
   }
 
-  /** Expert: create a ParallelLeafReader based on the provided
-   *  readers and storedFieldReaders; when a document is
-   *  loaded, only storedFieldsReaders will be used. */
   public ParallelLeafReader(boolean closeSubReaders, LeafReader[] readers, LeafReader[] storedFieldsReaders) throws IOException {
     this.closeSubReaders = closeSubReaders;
     if (readers.length == 0 && storedFieldsReaders.length > 0)
@@ -211,14 +186,6 @@ public class ParallelLeafReader extends LeafReader {
     }
   }
   
-  /**
-   * {@inheritDoc}
-   * <p>
-   * NOTE: the returned field numbers will likely not
-   * correspond to the actual field numbers in the underlying
-   * readers, and codec metadata ({@link FieldInfo#getAttribute(String)}
-   * will be unavailable.
-   */
   @Override
   public FieldInfos getFieldInfos() {
     return fieldInfos;
@@ -377,7 +344,6 @@ public class ParallelLeafReader extends LeafReader {
     }
   }
 
-  /** Returns the {@link LeafReader}s that were passed on init. */
   public LeafReader[] getParallelReaders() {
     ensureOpen();
     return parallelReaders;

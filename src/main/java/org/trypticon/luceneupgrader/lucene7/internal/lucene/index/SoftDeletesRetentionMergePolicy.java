@@ -34,23 +34,9 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.FixedBitSet;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOSupplier;
 
-/**
- * This {@link MergePolicy} allows to carry over soft deleted documents across merges. The policy wraps
- * the merge reader and marks documents as "live" that have a value in the soft delete field and match the
- * provided query. This allows for instance to keep documents alive based on time or any other constraint in the index.
- * The main purpose for this merge policy is to implement retention policies for document modification to vanish in the
- * index. Using this merge policy allows to control when soft deletes are claimed by merges.
- * @lucene.experimental
- */
 public final class SoftDeletesRetentionMergePolicy extends OneMergeWrappingMergePolicy {
   private final String field;
   private final Supplier<Query> retentionQuerySupplier;
-  /**
-   * Creates a new {@link SoftDeletesRetentionMergePolicy}
-   * @param field the soft deletes field
-   * @param retentionQuerySupplier a query supplier for the retention query
-   * @param in the wrapped MergePolicy
-   */
   public SoftDeletesRetentionMergePolicy(String field, Supplier<Query> retentionQuerySupplier, MergePolicy in) {
     super(in, toWrap -> new MergePolicy.OneMerge(toWrap.segments) {
       @Override

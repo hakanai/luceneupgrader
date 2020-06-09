@@ -110,13 +110,6 @@ final class PendingSoftDeletes extends PendingDeletes {
     hardDeletes.dropChanges();
   }
 
-  /**
-   * Clears all bits in the given bitset that are set and are also in the given DocIdSetIterator.
-   *
-   * @param iterator the doc ID set iterator for apply
-   * @param bits the bit set to apply the deletes to
-   * @return the number of bits changed by this function
-   */
   static int applySoftDeletes(DocIdSetIterator iterator, FixedBitSet bits) throws IOException {
     assert iterator != null;
     int newDeletes = 0;

@@ -39,72 +39,33 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Sorter;
 //   - could use packed int arrays instead
 //   - could encode dest w/ delta from to?
 
-/** Represents an automaton and all its states and transitions.  States
- *  are integers and must be created using {@link #createState}.  Mark a
- *  state as an accept state using {@link #setAccept}.  Add transitions
- *  using {@link #addTransition}.  Each state must have all of its
- *  transitions added at once; if this is too restrictive then use
- *  {@link Automaton.Builder} instead.  State 0 is always the
- *  initial state.  Once a state is finished, either
- *  because you've starting adding transitions to another state or you
- *  call {@link #finishState}, then that states transitions are sorted
- *  (first by min, then max, then dest) and reduced (transitions with
- *  adjacent labels going to the same dest are combined).
- *
- * @lucene.experimental */
 
 public class Automaton implements Accountable {
 
-  /** Where we next write to the int[] states; this increments by 2 for
-   *  each added state because we pack a pointer to the transitions
-   *  array and a count of how many transitions leave the state.  */
   private int nextState;
 
-  /** Where we next write to in int[] transitions; this
-   *  increments by 3 for each added transition because we
-   *  pack min, max, dest in sequence. */
   private int nextTransition;
 
-  /** Current state we are adding transitions to; the caller
-   *  must add all transitions for this state before moving
-   *  onto another state. */
   private int curState = -1;
 
-  /** Index in the transitions array, where this states
-   *  leaving transitions are stored, or -1 if this state
-   *  has not added any transitions yet, followed by number
-   *  of transitions. */
   private int[] states;
 
   private final BitSet isAccept;
   
-  /** Holds toState, min, max for each transition. */
   private int[] transitions;
 
-  /** True if no state has two transitions leaving with the same label. */
   private boolean deterministic = true;
 
-  /** Sole constructor; creates an automaton with no states. */
   public Automaton() {
      this(2, 2);
   }
 
-  /**
-   * Constructor which creates an automaton with enough space for the given
-   * number of states and transitions.
-   * 
-   * @param numStates
-   *           Number of states.
-   * @param numTransitions
-   *           Number of transitions.
-   */
   public Automaton(int numStates, int numTransitions) {
      states = new int[numStates * 2];
      isAccept = new BitSet(numStates);
      transitions = new int[numTransitions * 3];
   }
 
-  /** Create a new state. */
   public int createState() {
     growStates();
     int state = nextState/2;
@@ -113,14 +74,11 @@ public class Automaton implements Accountable {
     return state;
   }
 
-  /** Set or clear this state as an accept state. */
   public void setAccept(int state, boolean accept) {
     FutureObjects.checkIndex(state, getNumStates());
     isAccept.set(state, accept);
   }
 
-  /** Sugar to get all transitions for all states.  This is
-   *  object-heavy; it's better to iterate state by state instead. */
   public Transition[][] getSortedTransitions() {
     int numStates = getNumStates();
     Transition[][] transitions = new Transition[numStates][];
@@ -137,22 +95,18 @@ public class Automaton implements Accountable {
     return transitions;
   }
 
-  /** Returns accept states.  If the bit is set then that state is an accept state. */
   BitSet getAcceptStates() {
     return isAccept;
   }
 
-  /** Returns true if this state is an accept state. */
   public boolean isAccept(int state) {
     return isAccept.get(state);
   }
 
-  /** Add a new transition with min = max = label. */
   public void addTransition(int source, int dest, int label) {
     addTransition(source, dest, label, label);
   }
 
-  /** Add a new transition with the specified source, dest, min, max. */
   public void addTransition(int source, int dest, int min, int max) {
     assert nextTransition%3 == 0;
 
@@ -183,9 +137,6 @@ public class Automaton implements Accountable {
     states[2*curState+1]++;
   }
 
-  /** Add a [virtual] epsilon transition between source and dest.
-   *  Dest state must already have all transitions added because this
-   *  method simply copies those same transitions over to source. */
   public void addEpsilon(int source, int dest) {
     Transition t = new Transition();
     int count = initTransition(dest, t);
@@ -198,8 +149,6 @@ public class Automaton implements Accountable {
     }
   }
 
-  /** Copies over all states/transitions from other.  The states numbers
-   *  are sequentially assigned (appended). */
   public void copy(Automaton other) {
 
     // Bulk copy and then fixup the state pointers:
@@ -233,7 +182,6 @@ public class Automaton implements Accountable {
     }
   }
 
-  /** Freezes the last state, sorting and reducing the transitions. */
   private void finishCurrentState() {
     int numTransitions = states[2*curState+1];
     assert numTransitions > 0;
@@ -308,16 +256,10 @@ public class Automaton implements Accountable {
     }
   }
 
-  /** Returns true if this automaton is deterministic (for ever state
-   *  there is only one transition for each label). */
   public boolean isDeterministic() {
     return deterministic;
   }
 
-  /** Finishes the current state; call this once you are done adding
-   *  transitions for a state.  This is automatically called if you
-   *  start adding transitions to a new source state, but for the last
-   *  state you add you need to this method yourself. */
   public void finishState() {
     if (curState != -1) {
       finishCurrentState();
@@ -327,17 +269,14 @@ public class Automaton implements Accountable {
 
   // TODO: add finish() to shrink wrap the arrays?
 
-  /** How many states this automaton has. */
   public int getNumStates() {
     return nextState/2;
   }
 
-  /** How many transitions this automaton has. */
   public int getNumTransitions() {
     return nextTransition / 3;   
   }
   
-  /** How many transitions this state has. */
   public int getNumTransitions(int state) {
     assert state >= 0;
     int count = states[2*state+1];
@@ -360,7 +299,6 @@ public class Automaton implements Accountable {
     }
   }
 
-  /** Sorts transitions by dest, ascending, then min label ascending, then max label ascending */
   private final Sorter destMinMaxSorter = new InPlaceMergeSorter() {
 
       private void swapOne(int i, int j) {
@@ -414,7 +352,6 @@ public class Automaton implements Accountable {
       }
     };
 
-  /** Sorts transitions by min label, ascending, then max label ascending, then dest ascending */
   private final Sorter minMaxDestSorter = new InPlaceMergeSorter() {
 
       private void swapOne(int i, int j) {
@@ -468,10 +405,6 @@ public class Automaton implements Accountable {
       }
     };
 
-  /** Initialize the provided Transition to iterate through all transitions
-   *  leaving the specified state.  You must call {@link #getNextTransition} to
-   *  get each transition.  Returns the number of transitions
-   *  leaving this state. */
   public int initTransition(int state, Transition t) {
     assert state < nextState/2: "state=" + state + " nextState=" + nextState;
     t.source = state;
@@ -479,7 +412,6 @@ public class Automaton implements Accountable {
     return getNumTransitions(state);
   }
 
-  /** Iterate to the next transition after the provided one */
   public void getNextTransition(Transition t) {
     // Make sure there is still a transition left:
     assert (t.transitionUpto+3 - states[2*t.source]) <= 3*states[2*t.source+1];
@@ -527,8 +459,6 @@ public class Automaton implements Accountable {
     return false;
   }
 
-  /** Fill the provided {@link Transition} with the index'th
-   *  transition leaving the specified state. */
   public void getTransition(int state, int index, Transition t) {
     int i = states[2*state] + 3*index;
     t.source = state;
@@ -568,8 +498,6 @@ public class Automaton implements Accountable {
   }
   */
 
-  /** Returns the dot (graphviz) representation of this automaton.
-   *  This is extremely useful for visualizing the automaton. */
   public String toDot() {
     // TODO: breadth first search so we can get layered output...
 
@@ -617,9 +545,6 @@ public class Automaton implements Accountable {
     return b.toString();
   }
 
-  /**
-   * Returns sorted array of all interval start points.
-   */
   int[] getStartPoints() {
     Set<Integer> pointset = new HashSet<>();
     pointset.add(Character.MIN_CODE_POINT);
@@ -648,13 +573,6 @@ public class Automaton implements Accountable {
     return points;
   }
 
-  /**
-   * Performs lookup in transitions, assuming determinism.
-   * 
-   * @param state starting state
-   * @param label codepoint to look up
-   * @return destination state, -1 if no matching outgoing transition
-   */
   public int step(int state, int label) {
     assert state >= 0;
     assert label >= 0;
@@ -674,42 +592,25 @@ public class Automaton implements Accountable {
     return -1;
   }
 
-  /** Records new states and transitions and then {@link
-   *  #finish} creates the {@link Automaton}.  Use this
-   *  when you cannot create the Automaton directly because
-   *  it's too restrictive to have to add all transitions
-   *  leaving each state at once. */
   public static class Builder {
     private int nextState = 0;
     private final BitSet isAccept;
     private int[] transitions;
     private int nextTransition = 0;
 
-    /** Default constructor, pre-allocating for 16 states and transitions. */
     public Builder() {
        this(16, 16);
     }
 
-    /**
-     * Constructor which creates a builder with enough space for the given
-     * number of states and transitions.
-     * 
-     * @param numStates
-     *           Number of states.
-     * @param numTransitions
-     *           Number of transitions.
-     */
     public Builder(int numStates, int numTransitions) {
        isAccept = new BitSet(numStates);
        transitions = new int[numTransitions * 4];
     }
 
-    /** Add a new transition with min = max = label. */
     public void addTransition(int source, int dest, int label) {
       addTransition(source, dest, label, label);
     }
 
-    /** Add a new transition with the specified source, dest, min, max. */
     public void addTransition(int source, int dest, int min, int max) {
       if (transitions.length < nextTransition+4) {
         transitions = ArrayUtil.grow(transitions, nextTransition+4);
@@ -720,9 +621,6 @@ public class Automaton implements Accountable {
       transitions[nextTransition++] = max;
     }
 
-    /** Add a [virtual] epsilon transition between source and dest.
-     *  Dest state must already have all transitions added because this
-     *  method simply copies those same transitions over to source. */
     public void addEpsilon(int source, int dest) {
       for (int upto = 0; upto < nextTransition; upto += 4) {
          if (transitions[upto] == dest) {
@@ -734,8 +632,6 @@ public class Automaton implements Accountable {
       }
     }
 
-    /** Sorts transitions first then min label ascending, then
-     *  max label ascending, then dest ascending */
     private final Sorter sorter = new InPlaceMergeSorter() {
 
         private void swapOne(int i, int j) {
@@ -799,8 +695,6 @@ public class Automaton implements Accountable {
         }
       };
 
-    /** Compiles all added states and transitions into a new {@code Automaton}
-     *  and returns it. */
     public Automaton finish() {
       // Create automaton with the correct size.
       int numStates = nextState;
@@ -827,28 +721,23 @@ public class Automaton implements Accountable {
       return a;
     }
 
-    /** Create a new state. */
     public int createState() {
       return nextState++;
     }
 
-    /** Set or clear this state as an accept state. */
     public void setAccept(int state, boolean accept) {
       FutureObjects.checkIndex(state, getNumStates());      
       this.isAccept.set(state, accept);
     }
 
-    /** Returns true if this state is an accept state. */
     public boolean isAccept(int state) {
       return this.isAccept.get(state);
     }
 
-    /** How many states this automaton has. */
     public int getNumStates() {
       return nextState;
     }
 
-    /** Copies over all states/transitions from other. */
     public void copy(Automaton other) {
       int offset = getNumStates();
       int otherNumStates = other.getNumStates();
@@ -867,7 +756,6 @@ public class Automaton implements Accountable {
       }
     }
 
-    /** Copies over all states from other. */
     public void copyStates(Automaton other) {
       int otherNumStates = other.getNumStates();
       for (int s = 0; s < otherNumStates; s++) {

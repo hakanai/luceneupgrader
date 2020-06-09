@@ -20,12 +20,10 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.tokenattri
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.AttributeImpl;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.AttributeReflector;
 
-/** Default implementation of {@link OffsetAttribute}. */
 public class OffsetAttributeImpl extends AttributeImpl implements OffsetAttribute, Cloneable {
   private int startOffset;
   private int endOffset;
   
-  /** Initialize this attribute with startOffset and endOffset of 0. */
   public OffsetAttributeImpl() {}
 
   @Override

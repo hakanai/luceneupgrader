@@ -37,8 +37,6 @@ import static org.trypticon.luceneupgrader.lucene7.internal.lucene.index.SortedS
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.util.ByteBlockPool.BYTE_BLOCK_SIZE;
 
-/** Buffers up pending byte[]s per doc, deref and sorting via
- *  int ord, then flushes when segment flushes. */
 class SortedSetDocValuesWriter extends DocValuesWriter {
   final BytesRefHash hash;
   private PackedLongValues.Builder pending; // stream of all termIDs

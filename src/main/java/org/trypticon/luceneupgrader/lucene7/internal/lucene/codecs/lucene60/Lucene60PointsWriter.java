@@ -41,13 +41,10 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOUtils;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.bkd.BKDReader;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.bkd.BKDWriter;
 
-/** Writes dimensional values */
 public class Lucene60PointsWriter extends PointsWriter implements Closeable {
 
-  /** Output used to write the BKD tree data file */
   protected final IndexOutput dataOut;
 
-  /** Maps field name to file pointer in the data file where the BKD index is located. */
   protected final Map<String,Long> indexFPs = new HashMap<>();
 
   final SegmentWriteState writeState;
@@ -55,7 +52,6 @@ public class Lucene60PointsWriter extends PointsWriter implements Closeable {
   final double maxMBSortInHeap;
   private boolean finished;
 
-  /** Full constructor */
   public Lucene60PointsWriter(SegmentWriteState writeState, int maxPointsInLeafNode, double maxMBSortInHeap) throws IOException {
     assert writeState.fieldInfos.hasPointValues();
     this.writeState = writeState;
@@ -80,7 +76,6 @@ public class Lucene60PointsWriter extends PointsWriter implements Closeable {
     }
   }
 
-  /** Uses the defaults values for {@code maxPointsInLeafNode} (1024) and {@code maxMBSortInHeap} (16.0) */
   public Lucene60PointsWriter(SegmentWriteState writeState) throws IOException {
     this(writeState, BKDWriter.DEFAULT_MAX_POINTS_IN_LEAF_NODE, BKDWriter.DEFAULT_MAX_MB_SORT_IN_HEAP);
   }
@@ -135,10 +130,6 @@ public class Lucene60PointsWriter extends PointsWriter implements Closeable {
 
   @Override
   public void merge(MergeState mergeState) throws IOException {
-    /**
-     * If indexSort is activated and some of the leaves are not sorted the next test will catch that and the non-optimized merge will run.
-     * If the readers are all sorted then it's safe to perform a bulk merge of the points.
-     **/
     for(PointsReader reader : mergeState.pointsReaders) {
       if (reader instanceof Lucene60PointsReader == false) {
         // We can only bulk merge when all to-be-merged segments use our format:

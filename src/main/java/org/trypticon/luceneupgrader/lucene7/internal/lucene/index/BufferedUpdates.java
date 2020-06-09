@@ -30,12 +30,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Accountable;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Counter;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimator;
 
-/** Holds buffered deletes and updates, by docID, term or query for a
- *  single segment. This is used to hold buffered pending
- *  deletes and updates against the to-be-flushed segment.  Once the
- *  deletes and updates are pushed (on flush in DocumentsWriter), they
- *  are converted to a {@link FrozenBufferedUpdates} instance and
- *  pushed to the {@link BufferedUpdatesStream}. */
 
 // NOTE: instances of this class are accessed either via a private
 // instance on DocumentWriterPerThread, or via sync'd code by

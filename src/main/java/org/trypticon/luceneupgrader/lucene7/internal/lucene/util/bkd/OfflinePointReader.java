@@ -27,9 +27,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IndexOutput;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.LongBitSet;
 
-/** Reads points from disk in a fixed-with format, previously written with {@link OfflinePointWriter}.
- *
- * @lucene.internal */
 public final class OfflinePointReader extends PointReader {
   long countLeft;
   final IndexInput in;

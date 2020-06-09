@@ -40,13 +40,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.automaton.Compi
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.index.SortedSetDocValues.NO_MORE_ORDS;
 import static org.trypticon.luceneupgrader.lucene7.internal.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 
-/**
- * An {@link org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReader} which supports sorting documents by a given
- * {@link Sort}. This is package private and is only used by Lucene for BWC when it needs to merge
- * an unsorted flushed segment built by an older version (newly flushed segments are sorted since version 7.0).
- *
- * @lucene.experimental
- */
 class SortingLeafReader extends FilterLeafReader {
 
   //TODO remove from here; move to FreqProxTermsWriter or FreqProxFields?
@@ -757,7 +750,6 @@ class SortingLeafReader extends FilterLeafReader {
       return docs[docIt];
     }
 
-    /** Returns the wrapped {@link PostingsEnum}. */
     PostingsEnum getWrapped() {
       return in;
     }
@@ -787,11 +779,6 @@ class SortingLeafReader extends FilterLeafReader {
 
   static class SortingPostingsEnum extends FilterPostingsEnum {
 
-    /**
-     * A {@link TimSorter} which sorts two parallel arrays of doc IDs and
-     * offsets in one go. Everytime a doc ID is 'swapped', its corresponding offset
-     * is swapped too.
-     */
     private static final class DocOffsetSorter extends TimSorter {
 
       private int[] docs;
@@ -1009,20 +996,15 @@ class SortingLeafReader extends FilterLeafReader {
       return startOffset;
     }
 
-    /** Returns the wrapped {@link PostingsEnum}. */
     PostingsEnum getWrapped() {
       return in;
     }
   }
 
-  /** Return a sorted view of <code>reader</code> according to the order
-   *  defined by <code>sort</code>. If the reader is already sorted, this
-   *  method might return the reader as-is. */
   public static LeafReader wrap(LeafReader reader, Sort sort) throws IOException {
     return wrap(reader, new Sorter(sort).sort(reader));
   }
 
-  /** Expert: same as {@link #wrap(org.trypticon.luceneupgrader.lucene7.internal.lucene.index.LeafReader, Sort)} but operates directly on a {@link Sorter.DocMap}. */
   static LeafReader wrap(LeafReader reader, Sorter.DocMap docMap) {
     if (docMap == null) {
       // the reader is already sorted

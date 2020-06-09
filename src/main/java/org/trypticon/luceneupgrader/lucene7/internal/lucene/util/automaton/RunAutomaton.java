@@ -31,11 +31,6 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.util.automaton;
 
 import java.util.Arrays;
 
-/**
- * Finite-state automaton with fast run operation.  The initial state is always 0.
- * 
- * @lucene.experimental
- */
 public abstract class RunAutomaton {
   final Automaton automaton;
   final int alphabetSize;
@@ -46,24 +41,10 @@ public abstract class RunAutomaton {
   final int[] points; // char interval start points
   final int[] classmap; // map from char number to class
   
-  /**
-   * Constructs a new <code>RunAutomaton</code> from a deterministic
-   * <code>Automaton</code>.
-   * 
-   * @param a an automaton
-   */
   protected RunAutomaton(Automaton a, int alphabetSize) {
     this(a, alphabetSize, Operations.DEFAULT_MAX_DETERMINIZED_STATES);
   }
 
-  /**
-   * Constructs a new <code>RunAutomaton</code> from a deterministic
-   * <code>Automaton</code>.
-   * 
-   * @param a an automaton
-   * @param maxDeterminizedStates maximum number of states that can be created
-   *   while determinizing a
-   */
   protected RunAutomaton(Automaton a, int alphabetSize, int maxDeterminizedStates) {
     this.alphabetSize = alphabetSize;
     a = Operations.determinize(a, maxDeterminizedStates);
@@ -95,9 +76,6 @@ public abstract class RunAutomaton {
     }
   }
   
-  /**
-   * Returns a string representation of this automaton.
-   */
   @Override
   public String toString() {
     StringBuilder b = new StringBuilder();
@@ -126,31 +104,18 @@ public abstract class RunAutomaton {
     return b.toString();
   }
   
-  /**
-   * Returns number of states in automaton.
-   */
   public final int getSize() {
     return size;
   }
   
-  /**
-   * Returns acceptance status for given state.
-   */
   public final boolean isAccept(int state) {
     return accept[state];
   }
   
-  /**
-   * Returns array of codepoint class interval start points. The array should
-   * not be modified by the caller.
-   */
   public final int[] getCharIntervals() {
     return points.clone();
   }
   
-  /**
-   * Gets character class of given codepoint
-   */
   final int getCharClass(int c) {
 
     // binary search
@@ -165,13 +130,6 @@ public abstract class RunAutomaton {
     return a;
   }
 
-  /**
-   * Returns the state obtained by reading the given char from the given state.
-   * Returns -1 if not obtaining any such state. (If the original
-   * <code>Automaton</code> had no dead states, -1 is returned here if and only
-   * if a dead state is entered in an equivalent automaton with a total
-   * transition function.)
-   */
   public final int step(int state, int c) {
     assert c < alphabetSize;
     if (c >= classmap.length) {

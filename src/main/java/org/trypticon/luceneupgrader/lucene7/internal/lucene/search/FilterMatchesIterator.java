@@ -19,20 +19,10 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.search;
 
 import java.io.IOException;
 
-/**
- * A MatchesIterator that delegates all calls to another MatchesIterator
- */
 public abstract class FilterMatchesIterator implements MatchesIterator {
 
-  /**
-   * The delegate
-   */
   protected final MatchesIterator in;
 
-  /**
-   * Create a new FilterMatchesIterator
-   * @param in the delegate
-   */
   protected FilterMatchesIterator(MatchesIterator in) {
     this.in = in;
   }

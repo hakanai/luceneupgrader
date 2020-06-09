@@ -19,12 +19,6 @@ package org.trypticon.luceneupgrader.lucene7.internal.lucene.index;
 import java.io.IOException;
 
 
-/** 
- * Exposes multi-valued view over a single-valued instance.
- * <p>
- * This can be used if you want to have one multi-valued implementation
- * that works for single or multi-valued types.
- */
 final class SingletonSortedNumericDocValues extends SortedNumericDocValues {
   private final NumericDocValues in;
   
@@ -35,7 +29,6 @@ final class SingletonSortedNumericDocValues extends SortedNumericDocValues {
     this.in = in;
   }
 
-  /** Return the wrapped {@link NumericDocValues} */
   public NumericDocValues getNumericDocValues() {
     if (in.docID() != -1) {
       throw new IllegalStateException("iterator has already been used: docID=" + in.docID());

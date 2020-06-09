@@ -24,10 +24,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimat
 import java.io.IOException;
 import java.util.Arrays;
 
-/**
- * Direct wrapping of 32-bits values to a backing array.
- * @lucene.internal
- */
 final class Direct32 extends PackedInts.MutableImpl {
   final int[] values;
 

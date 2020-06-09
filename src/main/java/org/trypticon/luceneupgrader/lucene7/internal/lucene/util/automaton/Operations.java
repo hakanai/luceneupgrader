@@ -47,40 +47,17 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IntsRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IntsRefBuilder;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimator;
 
-/**
- * Automata operations.
- * 
- * @lucene.experimental
- */
 final public class Operations {
-  /**
-   * Default maximum number of states that {@link Operations#determinize} should create.
-   */
   public static final int DEFAULT_MAX_DETERMINIZED_STATES = 10000;
 
-  /**
-   * Maximum level of recursion allowed in recursive operations.
-   */
   public static final int MAX_RECURSION_LEVEL = 1000;
 
   private Operations() {}
 
-  /**
-   * Returns an automaton that accepts the concatenation of the languages of the
-   * given automata.
-   * <p>
-   * Complexity: linear in total number of states.
-   */
   static public Automaton concatenate(Automaton a1, Automaton a2) {
     return concatenate(Arrays.asList(a1, a2));
   }
 
-  /**
-   * Returns an automaton that accepts the concatenation of the languages of the
-   * given automata.
-   * <p>
-   * Complexity: linear in total number of states.
-   */
   static public Automaton concatenate(List<Automaton> l) {
     Automaton result = new Automaton();
 
@@ -153,12 +130,6 @@ final public class Operations {
     return result;
   }
 
-  /**
-   * Returns an automaton that accepts the union of the empty string and the
-   * language of the given automaton.  This may create a dead state.
-   * <p>
-   * Complexity: linear in number of states.
-   */
   static public Automaton optional(Automaton a) {
     Automaton result = new Automaton();
     result.createState();
@@ -171,13 +142,6 @@ final public class Operations {
     return result;
   }
   
-  /**
-   * Returns an automaton that accepts the Kleene star (zero or more
-   * concatenated repetitions) of the language of the given automaton. Never
-   * modifies the input automaton language.
-   * <p>
-   * Complexity: linear in number of states.
-   */
   static public Automaton repeat(Automaton a) {
     if (a.getNumStates() == 0) {
       // Repeating the empty automata will still only accept the empty automata.
@@ -209,12 +173,6 @@ final public class Operations {
     return builder.finish();
   }
 
-  /**
-   * Returns an automaton that accepts <code>min</code> or more concatenated
-   * repetitions of the language of the given automaton.
-   * <p>
-   * Complexity: linear in number of states and in <code>min</code>.
-   */
   static public Automaton repeat(Automaton a, int count) {
     if (count == 0) {
       return repeat(a);
@@ -227,14 +185,6 @@ final public class Operations {
     return concatenate(as);
   }
   
-  /**
-   * Returns an automaton that accepts between <code>min</code> and
-   * <code>max</code> (including both) concatenated repetitions of the language
-   * of the given automaton.
-   * <p>
-   * Complexity: linear in number of states and in <code>min</code> and
-   * <code>max</code>.
-   */
   static public Automaton repeat(Automaton a, int min, int max) {
     if (min > max) {
       return Automata.makeEmpty();
@@ -282,16 +232,6 @@ final public class Operations {
     return result;
   }
   
-  /**
-   * Returns a (deterministic) automaton that accepts the complement of the
-   * language of the given automaton.
-   * <p>
-   * Complexity: linear in number of states if already deterministic and
-   *  exponential otherwise.
-   * @param maxDeterminizedStates maximum number of states determinizing the
-   *  automaton can result in.  Set higher to allow more complex queries and
-   *  lower to prevent memory exhaustion.
-   */
   static public Automaton complement(Automaton a, int maxDeterminizedStates) {
     a = totalize(determinize(a, maxDeterminizedStates));
     int numStates = a.getNumStates();
@@ -301,15 +241,6 @@ final public class Operations {
     return removeDeadStates(a);
   }
   
-  /**
-   * Returns a (deterministic) automaton that accepts the intersection of the
-   * language of <code>a1</code> and the complement of the language of
-   * <code>a2</code>. As a side-effect, the automata may be determinized, if not
-   * already deterministic.
-   * <p>
-   * Complexity: quadratic in number of states if a2 already deterministic and
-   *  exponential in number of a2's states otherwise.
-   */
   static public Automaton minus(Automaton a1, Automaton a2, int maxDeterminizedStates) {
     if (Operations.isEmpty(a1) || a1 == a2) {
       return Automata.makeEmpty();
@@ -320,12 +251,6 @@ final public class Operations {
     return intersection(a1, complement(a2, maxDeterminizedStates));
   }
   
-  /**
-   * Returns an automaton that accepts the intersection of the languages of the
-   * given automata. Never modifies the input automata languages.
-   * <p>
-   * Complexity: quadratic in number of states.
-   */
   static public Automaton intersection(Automaton a1, Automaton a2) {
     if (a1 == a2) {
       return a1;
@@ -374,9 +299,6 @@ final public class Operations {
     return removeDeadStates(c);
   }
 
-  /** Returns true if these two automata accept exactly the
-   *  same language.  This is a costly computation!  Both automata
-   *  must be determinized and have no dead states! */
   public static boolean sameLanguage(Automaton a1, Automaton a2) {
     if (a1 == a2) {
       return true;
@@ -385,9 +307,6 @@ final public class Operations {
   }
 
   // TODO: move to test-framework?
-  /** Returns true if this automaton has any states that cannot
-   *  be reached from the initial state or cannot reach an accept state.
-   *  Cost is O(numTransitions+numStates). */
   public static boolean hasDeadStates(Automaton a) {
     BitSet liveStates = getLiveStates(a);
     int numLive = liveStates.cardinality();
@@ -397,7 +316,6 @@ final public class Operations {
   }
 
   // TODO: move to test-framework?
-  /** Returns true if there are dead states reachable from an initial state. */
   public static boolean hasDeadStatesFromInitial(Automaton a) {
     BitSet reachableFromInitial = getLiveStatesFromInitial(a);
     BitSet reachableFromAccept = getLiveStatesToAccept(a);
@@ -406,7 +324,6 @@ final public class Operations {
   }
 
   // TODO: move to test-framework?
-  /** Returns true if there are dead states that reach an accept state. */
   public static boolean hasDeadStatesToAccept(Automaton a) {
     BitSet reachableFromInitial = getLiveStatesFromInitial(a);
     BitSet reachableFromAccept = getLiveStatesToAccept(a);
@@ -414,13 +331,6 @@ final public class Operations {
     return reachableFromAccept.isEmpty() == false;
   }
 
-  /**
-   * Returns true if the language of <code>a1</code> is a subset of the language
-   * of <code>a2</code>. Both automata must be determinized and must have no dead
-   * states.
-   * <p>
-   * Complexity: quadratic in number of states.
-   */
   public static boolean subsetOf(Automaton a1, Automaton a2) {
     if (a1.isDeterministic() == false) {
       throw new IllegalArgumentException("a1 must be deterministic");
@@ -482,22 +392,10 @@ final public class Operations {
     return true;
   }
 
-  /**
-   * Returns an automaton that accepts the union of the languages of the given
-   * automata.
-   * <p>
-   * Complexity: linear in number of states.
-   */
   public static Automaton union(Automaton a1, Automaton a2) {
     return union(Arrays.asList(a1, a2));
   }
 
-  /**
-   * Returns an automaton that accepts the union of the languages of the given
-   * automata.
-   * <p>
-   * Complexity: linear in number of states.
-   */
   public static Automaton union(Collection<Automaton> l) {
     Automaton result = new Automaton();
 
@@ -654,18 +552,6 @@ final public class Operations {
     }
   }
 
-  /**
-   * Determinizes the given automaton.
-   * <p>
-   * Worst case complexity: exponential in number of states.
-   * @param maxDeterminizedStates Maximum number of states created when
-   *   determinizing.  Higher numbers allow this operation to consume more
-   *   memory but allow more complex automatons.  Use
-   *   DEFAULT_MAX_DETERMINIZED_STATES as a decent default if you don't know
-   *   how many to allow.
-   * @throws TooComplexToDeterminizeException if determinizing a creates an
-   *   automaton with more than maxDeterminizedStates
-   */
   public static Automaton determinize(Automaton a, int maxDeterminizedStates) {
     if (a.isDeterministic()) {
       // Already determinized
@@ -792,9 +678,6 @@ final public class Operations {
     return result;
   }
 
-  /**
-   * Returns true if the given automaton accepts no strings.
-   */
   public static boolean isEmpty(Automaton a) {
     if (a.getNumStates() == 0) {
       // Common case: no states
@@ -833,17 +716,10 @@ final public class Operations {
     return true;
   }
   
-  /**
-   * Returns true if the given automaton accepts all strings.  The automaton must be minimized.
-   */
   public static boolean isTotal(Automaton a) {
     return isTotal(a, Character.MIN_CODE_POINT, Character.MAX_CODE_POINT);
   }
 
-  /**
-   * Returns true if the given automaton accepts all strings for the specified min/max
-   * range of the alphabet.  The automaton must be minimized.
-   */
   public static boolean isTotal(Automaton a, int minAlphabet, int maxAlphabet) {
     if (a.isAccept(0) && a.getNumTransitions(0) == 1) {
       Transition t = new Transition();
@@ -855,13 +731,6 @@ final public class Operations {
     return false;
   }
   
-  /**
-   * Returns true if the given string is accepted by the automaton.  The input must be deterministic.
-   * <p>
-   * Complexity: linear in the length of the string.
-   * <p>
-   * <b>Note:</b> for full performance, use the {@link RunAutomaton} class.
-   */
   public static boolean run(Automaton a, String s) {
     assert a.isDeterministic();
     int state = 0;
@@ -875,13 +744,6 @@ final public class Operations {
     return a.isAccept(state);
   }
 
-  /**
-   * Returns true if the given string (expressed as unicode codepoints) is accepted by the automaton.  The input must be deterministic.
-   * <p>
-   * Complexity: linear in the length of the string.
-   * <p>
-   * <b>Note:</b> for full performance, use the {@link RunAutomaton} class.
-   */
   public static boolean run(Automaton a, IntsRef s) {
     assert a.isDeterministic();
     int state = 0;
@@ -895,17 +757,12 @@ final public class Operations {
     return a.isAccept(state);
   }
 
-  /**
-   * Returns the set of live states. A state is "live" if an accept state is
-   * reachable from it and if it is reachable from the initial state.
-   */
   private static BitSet getLiveStates(Automaton a) {
     BitSet live = getLiveStatesFromInitial(a);
     live.and(getLiveStatesToAccept(a));
     return live;
   }
 
-  /** Returns bitset marking states reachable from the initial state. */
   private static BitSet getLiveStatesFromInitial(Automaton a) {
     int numStates = a.getNumStates();
     BitSet live = new BitSet(numStates);
@@ -932,7 +789,6 @@ final public class Operations {
     return live;
   }
 
-  /** Returns bitset marking states that can reach an accept state. */
   private static BitSet getLiveStatesToAccept(Automaton a) {
     Automaton.Builder builder = new Automaton.Builder();
 
@@ -976,10 +832,6 @@ final public class Operations {
     return live;
   }
 
-  /**
-   * Removes transitions to dead states (a state is "dead" if it is not
-   * reachable from the initial state or no accept state is reachable from it.)
-   */
   public static Automaton removeDeadStates(Automaton a) {
     int numStates = a.getNumStates();
     BitSet liveSet = getLiveStates(a);
@@ -1015,10 +867,6 @@ final public class Operations {
     return result;
   }
 
-  /**
-   * Returns true if the language of this automaton is finite.  The
-   * automaton must not have any dead states.
-   */
   public static boolean isFinite(Automaton a) {
     if (a.getNumStates() == 0) {
       return true;
@@ -1026,10 +874,6 @@ final public class Operations {
     return isFinite(new Transition(), a, 0, new BitSet(a.getNumStates()), new BitSet(a.getNumStates()), 0);
   }
   
-  /**
-   * Checks whether there is a loop containing state. (This is sufficient since
-   * there are never transitions to dead states.)
-   */
   // TODO: not great that this is recursive... in theory a
   // large automata could exceed java's stack so the maximum level of recursion is bounded to 1000
   private static boolean isFinite(Transition scratch, Automaton a, int state, BitSet path, BitSet visited, int level) {
@@ -1049,12 +893,6 @@ final public class Operations {
     return true;
   }
   
-  /**
-   * Returns the longest string that is a prefix of all accepted strings and
-   * visits each state at most once.  The automaton must be deterministic.
-   * 
-   * @return common prefix, which can be an empty (length 0) String (never null)
-   */
   public static String getCommonPrefix(Automaton a) {
     if (a.isDeterministic() == false) {
       throw new IllegalArgumentException("input automaton must be deterministic");
@@ -1083,12 +921,6 @@ final public class Operations {
   // TODO: this currently requites a determinized machine,
   // but it need not -- we can speed it up by walking the
   // NFA instead.  it'd still be fail fast.
-  /**
-   * Returns the longest BytesRef that is a prefix of all accepted strings and
-   * visits each state at most once.  The automaton must be deterministic.
-   * 
-   * @return common prefix, which can be an empty (length 0) BytesRef (never null)
-   */
   public static BytesRef getCommonPrefixBytesRef(Automaton a) {
     BytesRefBuilder builder = new BytesRefBuilder();
     HashSet<Integer> visited = new HashSet<>();
@@ -1111,8 +943,6 @@ final public class Operations {
     return builder.get();
   }
 
-  /** If this automaton accepts a single input, return it.  Else, return null.
-   *  The automaton must be deterministic. */
   public static IntsRef getSingleton(Automaton a) {
     if (a.isDeterministic() == false) {
       throw new IllegalArgumentException("input automaton must be deterministic");
@@ -1141,15 +971,6 @@ final public class Operations {
     }
   }
 
-  /**
-   * Returns the longest BytesRef that is a suffix of all accepted strings.
-   * Worst case complexity: exponential in number of states (this calls
-   * determinize).
-   * @param maxDeterminizedStates maximum number of states determinizing the
-   *  automaton can result in.  Set higher to allow more complex queries and
-   *  lower to prevent memory exhaustion.
-   * @return common suffix, which can be an empty (length 0) BytesRef (never null)
-   */
   public static BytesRef getCommonSuffixBytesRef(Automaton a, int maxDeterminizedStates) {
     // reverse the language of the automaton, then reverse its common prefix.
     Automaton r = Operations.determinize(reverse(a), maxDeterminizedStates);
@@ -1168,12 +989,10 @@ final public class Operations {
     }
   }
 
-  /** Returns an automaton accepting the reverse language. */
   public static Automaton reverse(Automaton a) {
     return reverse(a, null);
   }
 
-  /** Reverses the automaton, returning the new initial states. */
   static Automaton reverse(Automaton a, Set<Integer> initialStates) {
 
     if (Operations.isEmpty(a)) {
@@ -1222,9 +1041,6 @@ final public class Operations {
     return result;
   }
 
-  /** Returns a new automaton accepting the same language with added
-   *  transitions to a dead state so that from every state and every label
-   *  there is a transition. */
   static Automaton totalize(Automaton a) {
     Automaton result = new Automaton();
     int numStates = a.getNumStates();
@@ -1260,11 +1076,6 @@ final public class Operations {
     return result;
   }
 
-  /** Returns the topological sort of all states reachable from
-   *  the initial state.  Behavior is undefined if this
-   *  automaton has cycles.  CPU cost is O(numTransitions),
-   *  and the implementation is recursive so an automaton
-   *  matching long strings may exhaust the java stack. */
   public static int[] topoSortStates(Automaton a) {
     if (a.getNumStates() == 0) {
       return new int[0];

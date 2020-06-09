@@ -37,15 +37,10 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.TwoPhaseItera
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.search.Weight;
 
 
-/** Matches the union of its clauses.
- */
 public final class SpanOrQuery extends SpanQuery {
   private List<SpanQuery> clauses;
   private String field;
 
-  /** Construct a SpanOrQuery merging the provided clauses.
-   * All clauses must have the same field.
-   */
   public SpanOrQuery(SpanQuery... clauses) {
     this.clauses = new ArrayList<>(clauses.length);
     for (SpanQuery seq : clauses) {
@@ -53,7 +48,6 @@ public final class SpanOrQuery extends SpanQuery {
     }
   }
 
-  /** Adds a clause to this query */
   private final void addClause(SpanQuery clause) {
     if (field == null) {
       field = clause.getField();
@@ -63,7 +57,6 @@ public final class SpanOrQuery extends SpanQuery {
     this.clauses.add(clause);
   }
 
-  /** Return the clauses whose spans are matched. */
   public SpanQuery[] getClauses() {
     return clauses.toArray(new SpanQuery[clauses.size()]);
   }

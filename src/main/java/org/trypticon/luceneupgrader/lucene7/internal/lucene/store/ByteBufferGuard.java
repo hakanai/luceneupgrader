@@ -20,21 +20,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * A guard that is created for every {@link ByteBufferIndexInput} that tries on best effort
- * to reject any access to the {@link ByteBuffer} behind, once it is unmapped. A single instance
- * of this is used for the original and all clones, so once the original is closed and unmapped
- * all clones also throw {@link AlreadyClosedException}, triggered by a {@link NullPointerException}.
- * <p>
- * This code tries to hopefully flush any CPU caches using a store-store barrier. It also yields the
- * current thread to give other threads a chance to finish in-flight requests...
- */
 final class ByteBufferGuard {
   
-  /**
-   * Pass in an implementation of this interface to cleanup ByteBuffers.
-   * MMapDirectory implements this to allow unmapping of bytebuffers with private Java APIs.
-   */
   @FunctionalInterface
   static interface BufferCleaner {
     void freeBuffer(String resourceDescription, ByteBuffer b) throws IOException;
@@ -43,24 +30,15 @@ final class ByteBufferGuard {
   private final String resourceDescription;
   private final BufferCleaner cleaner;
   
-  /** Not volatile; see comments on visibility below! */
   private boolean invalidated = false;
   
-  /** Used as a store-store barrier; see comments below! */
   private final AtomicInteger barrier = new AtomicInteger();
   
-  /**
-   * Creates an instance to be used for a single {@link ByteBufferIndexInput} which
-   * must be shared by all of its clones.
-   */
   public ByteBufferGuard(String resourceDescription, BufferCleaner cleaner) {
     this.resourceDescription = resourceDescription;
     this.cleaner = cleaner;
   }
   
-  /**
-   * Invalidates this guard and unmaps (if supported).
-   */
   public void invalidateAndUnmap(ByteBuffer... bufs) throws IOException {
     if (cleaner != null) {
       invalidated = true;

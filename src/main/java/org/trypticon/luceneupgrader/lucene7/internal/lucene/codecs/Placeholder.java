@@ -16,7 +16,6 @@
  */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.codecs;
 
-/** Remove this file when adding back compat codecs */
 public class Placeholder {
   
 }

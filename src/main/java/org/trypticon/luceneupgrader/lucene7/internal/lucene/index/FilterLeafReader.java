@@ -24,24 +24,8 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.AttributeSource
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Bits;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 
-/**  A <code>FilterLeafReader</code> contains another LeafReader, which it
- * uses as its basic source of data, possibly transforming the data along the
- * way or providing additional functionality. The class
- * <code>FilterLeafReader</code> itself simply implements all abstract methods
- * of <code>IndexReader</code> with versions that pass all requests to the
- * contained index reader. Subclasses of <code>FilterLeafReader</code> may
- * further override some of these methods and may also provide additional
- * methods and fields.
- * <p><b>NOTE</b>: If you override {@link #getLiveDocs()}, you will likely need
- * to override {@link #numDocs()} as well and vice-versa.
- * <p><b>NOTE</b>: If this {@link FilterLeafReader} does not change the
- * content the contained reader, you could consider delegating calls to
- * {@link #getCoreCacheHelper()} and {@link #getReaderCacheHelper()}.
- */
 public abstract class FilterLeafReader extends LeafReader {
 
-  /** Get the wrapped instance by <code>reader</code> as long as this reader is
-   *  an instance of {@link FilterLeafReader}.  */
   public static LeafReader unwrap(LeafReader reader) {
     while (reader instanceof FilterLeafReader) {
       reader = ((FilterLeafReader) reader).getDelegate();
@@ -49,16 +33,9 @@ public abstract class FilterLeafReader extends LeafReader {
     return reader;
   }
 
-  /** Base class for filtering {@link Fields}
-   *  implementations. */
   public abstract static class FilterFields extends Fields {
-    /** The underlying Fields instance. */
     protected final Fields in;
 
-    /**
-     * Creates a new FilterFields.
-     * @param in the underlying Fields instance.
-     */
     public FilterFields(Fields in) {
       if (in == null) {
         throw new NullPointerException("incoming Fields must not be null");
@@ -82,19 +59,9 @@ public abstract class FilterLeafReader extends LeafReader {
     }
   }
 
-  /** Base class for filtering {@link Terms} implementations.
-   * <p><b>NOTE</b>: If the order of terms and documents is not changed, and if
-   * these terms are going to be intersected with automata, you could consider
-   * overriding {@link #intersect} for better performance.
-   */
   public abstract static class FilterTerms extends Terms {
-    /** The underlying Terms instance. */
     protected final Terms in;
 
-    /**
-     * Creates a new FilterTerms
-     * @param in the underlying Terms instance.
-     */
     public FilterTerms(Terms in) {
       if (in == null) {
         throw new NullPointerException("incoming Terms must not be null");
@@ -153,15 +120,9 @@ public abstract class FilterLeafReader extends LeafReader {
     }
   }
 
-  /** Base class for filtering {@link TermsEnum} implementations. */
   public abstract static class FilterTermsEnum extends TermsEnum {
-    /** The underlying TermsEnum instance. */
     protected final TermsEnum in;
 
-    /**
-     * Creates a new FilterTermsEnum
-     * @param in the underlying TermsEnum instance.
-     */
     public FilterTermsEnum(TermsEnum in) {
       if (in == null) {
         throw new NullPointerException("incoming TermsEnum must not be null");
@@ -216,15 +177,9 @@ public abstract class FilterLeafReader extends LeafReader {
 
   }
 
-  /** Base class for filtering {@link PostingsEnum} implementations. */
   public abstract static class FilterPostingsEnum extends PostingsEnum {
-    /** The underlying PostingsEnum instance. */
     protected final PostingsEnum in;
 
-    /**
-     * Create a new FilterPostingsEnum
-     * @param in the underlying PostingsEnum instance.
-     */
     public FilterPostingsEnum(PostingsEnum in) {
       if (in == null) {
         throw new NullPointerException("incoming PostingsEnum must not be null");
@@ -283,14 +238,8 @@ public abstract class FilterLeafReader extends LeafReader {
     }
   }
 
-  /** The underlying LeafReader. */
   protected final LeafReader in;
 
-  /**
-   * <p>Construct a FilterLeafReader based on the specified base reader.
-   * <p>Note that base reader is closed if this FilterLeafReader is closed.</p>
-   * @param in specified base reader.
-   */
   public FilterLeafReader(LeafReader in) {
     super();
     if (in == null) {
@@ -408,7 +357,6 @@ public abstract class FilterLeafReader extends LeafReader {
     in.checkIntegrity();
   }
 
-  /** Returns the wrapped {@link LeafReader}. */
   public LeafReader getDelegate() {
     return in;
   }

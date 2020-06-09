@@ -22,13 +22,8 @@ import java.util.Map;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.IOSupplier;
 
-/**
- * A {@link MergePolicy} which never returns merges to execute. Use it if you
- * want to prevent segment merges.
- */
 public final class NoMergePolicy extends MergePolicy {
 
-  /** Singleton instance. */
   public static final MergePolicy INSTANCE = new NoMergePolicy();
 
   private NoMergePolicy() {

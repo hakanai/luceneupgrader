@@ -17,16 +17,9 @@
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.search;
 
 
-/** Throw this exception in {@link LeafCollector#collect(int)} to prematurely
- *  terminate collection of the current leaf.
- *  <p>Note: IndexSearcher swallows this exception and never re-throws it.
- *  As a consequence, you should not catch it when calling
- *  {@link IndexSearcher#search} as it is unnecessary and might hide misuse
- *  of this exception. */
 @SuppressWarnings("serial")
 public final class CollectionTerminatedException extends RuntimeException {
 
-  /** Sole constructor. */
   public CollectionTerminatedException() {
     super();
   }

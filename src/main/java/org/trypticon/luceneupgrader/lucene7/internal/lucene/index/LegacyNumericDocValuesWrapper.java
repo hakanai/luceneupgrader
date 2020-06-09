@@ -21,11 +21,6 @@ import java.io.IOException;
 
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Bits;
 
-/**
- * Wraps a {@link LegacyNumericDocValues} into a {@link NumericDocValues}.
- *
- * @deprecated Implement {@link NumericDocValues} directly.
- */
 @Deprecated
 public final class LegacyNumericDocValuesWrapper extends NumericDocValues {
   private final Bits docsWithField;

@@ -16,9 +16,6 @@
  */
 package org.trypticon.luceneupgrader.lucene7.internal.lucene.util;
 
-/**
- * Immutable twin of FixedBitSet.
- */
 final class FixedBits implements Bits {
 
   final long[] bits;

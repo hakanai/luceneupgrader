@@ -24,20 +24,11 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.SegmentInfo;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IOContext;
 
-/**
- * Controls the format of stored fields
- */
 public abstract class StoredFieldsFormat {
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected StoredFieldsFormat() {
   }
 
-  /** Returns a {@link StoredFieldsReader} to load stored
-   *  fields. */
   public abstract StoredFieldsReader fieldsReader(Directory directory, SegmentInfo si, FieldInfos fn, IOContext context) throws IOException;
 
-  /** Returns a {@link StoredFieldsWriter} to write stored
-   *  fields. */
   public abstract StoredFieldsWriter fieldsWriter(Directory directory, SegmentInfo si, IOContext context) throws IOException;
 }

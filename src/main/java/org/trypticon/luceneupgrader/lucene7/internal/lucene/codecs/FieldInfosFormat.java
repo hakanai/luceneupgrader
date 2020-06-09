@@ -24,20 +24,11 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.SegmentInfo;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IOContext;
 
-/**
- * Encodes/decodes {@link FieldInfos}
- * @lucene.experimental
- */
 public abstract class FieldInfosFormat {
-  /** Sole constructor. (For invocation by subclass 
-   *  constructors, typically implicit.) */
   protected FieldInfosFormat() {
   }
   
-  /** Read the {@link FieldInfos} previously written with {@link #write}. */
   public abstract FieldInfos read(Directory directory, SegmentInfo segmentInfo, String segmentSuffix, IOContext iocontext) throws IOException;
 
-  /** Writes the provided {@link FieldInfos} to the
-   *  directory. */
   public abstract void write(Directory directory, SegmentInfo segmentInfo, String segmentSuffix, FieldInfos infos, IOContext context) throws IOException;
 }

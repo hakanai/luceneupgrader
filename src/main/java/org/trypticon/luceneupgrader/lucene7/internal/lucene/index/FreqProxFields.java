@@ -28,10 +28,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.AttributeSource
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRefBuilder;
 
-/** Implements limited (iterators only, no stats) {@link
- *  Fields} interface over the in-RAM buffered
- *  fields/terms/postings, to flush postings through the
- *  PostingsFormat. */
 
 class FreqProxFields extends Fields {
   final Map<String,FreqProxTermsWriterPerField> fields = new LinkedHashMap<>();
@@ -273,17 +269,6 @@ class FreqProxFields extends Fields {
       return docsEnum;
     }
 
-    /**
-     * Expert: Returns the TermsEnums internal state to position the TermsEnum
-     * without re-seeking the term dictionary.
-     * <p>
-     * NOTE: A seek by {@link TermState} might not capture the
-     * {@link AttributeSource}'s state. Callers must maintain the
-     * {@link AttributeSource} states separately
-     * 
-     * @see TermState
-     * @see #seekExact(BytesRef, TermState)
-     */
     public TermState termState() throws IOException {
       return new TermState() {
         @Override

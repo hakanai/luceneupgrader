@@ -32,11 +32,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.DataInput;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.IndexInput;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.LongsRef;
 
-/**
- * Reader for sequences of longs written with {@link BlockPackedWriter}.
- * @see BlockPackedWriter
- * @lucene.internal
- */
 public final class BlockPackedReaderIterator {
 
   // same as DataInput.readVLong but supports negative values
@@ -80,11 +75,6 @@ public final class BlockPackedReaderIterator {
   int off;
   long ord;
 
-  /** Sole constructor.
-   * @param blockSize the number of values of a block, must be equal to the
-   *                  block size of the {@link BlockPackedWriter} which has
-   *                  been used to write the stream
-   */
   public BlockPackedReaderIterator(DataInput in, int packedIntsVersion, int blockSize, long valueCount) {
     checkBlockSize(blockSize, MIN_BLOCK_SIZE, MAX_BLOCK_SIZE);
     this.packedIntsVersion = packedIntsVersion;
@@ -94,8 +84,6 @@ public final class BlockPackedReaderIterator {
     reset(in, valueCount);
   }
 
-  /** Reset the current reader to wrap a stream of <code>valueCount</code>
-   * values contained in <code>in</code>. The block size remains unchanged. */
   public void reset(DataInput in, long valueCount) {
     this.in = in;
     assert valueCount >= 0;
@@ -104,7 +92,6 @@ public final class BlockPackedReaderIterator {
     ord = 0;
   }
 
-  /** Skip exactly <code>count</code> values. */
   public void skip(long count) throws IOException {
     assert count >= 0;
     if (ord + count > valueCount || ord + count < 0) {
@@ -164,7 +151,6 @@ public final class BlockPackedReaderIterator {
     }
   }
 
-  /** Read the next value. */
   public long next() throws IOException {
     if (ord == valueCount) {
       throw new EOFException();
@@ -177,7 +163,6 @@ public final class BlockPackedReaderIterator {
     return value;
   }
 
-  /** Read between <tt>1</tt> and <code>count</code> values. */
   public LongsRef next(int count) throws IOException {
     assert count > 0;
     if (ord == valueCount) {
@@ -232,7 +217,6 @@ public final class BlockPackedReaderIterator {
     off = 0;
   }
 
-  /** Return the offset of the next value to read. */
   public long ord() {
     return ord;
   }

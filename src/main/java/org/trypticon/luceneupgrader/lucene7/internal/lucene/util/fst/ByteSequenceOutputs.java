@@ -25,12 +25,6 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.BytesRef;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.RamUsageEstimator;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.StringHelper;
 
-/**
- * An FST {@link Outputs} implementation where each output
- * is a sequence of bytes.
- *
- * @lucene.experimental
- */
 
 public final class ByteSequenceOutputs extends Outputs<BytesRef> {
 

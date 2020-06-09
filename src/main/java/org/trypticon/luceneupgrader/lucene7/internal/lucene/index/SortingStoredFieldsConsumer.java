@@ -90,9 +90,6 @@ final class SortingStoredFieldsConsumer extends StoredFieldsConsumer {
     }
   }
 
-  /**
-   * A visitor that copies every field it sees in the provided {@link StoredFieldsWriter}.
-   */
   private static class CopyVisitor extends StoredFieldVisitor implements IndexableField {
     final StoredFieldsWriter writer;
     BytesRef binaryValue;
