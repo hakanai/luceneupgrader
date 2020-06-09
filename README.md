@@ -9,10 +9,10 @@ Lucene and using the IndexUpgrader tool from each version in turn.
 Usage
 -----
 
-To upgrade an index all the way to version 7:
+To upgrade an index all the way to version 8:
 
     new IndexUpgrader(textIndexPath, null)
-        .upgradeTo(LuceneVersion.VERSION_7);
+        .upgradeTo(LuceneVersion.VERSION_8);
 
 The upgrade will be a no-op if the index is already at that version.
 
@@ -30,3 +30,9 @@ To build and run all tests:
 To build the jar and pom files for a distribution:
 
     buildr package
+
+To generate test Lucene indices, e.g. from one of the `lucene` subdirectories
+under `testgen/`:
+
+    buildr run
+

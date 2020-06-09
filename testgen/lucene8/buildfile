@@ -1,0 +1,25 @@
+
+repositories.remote << 'https://oss.sonatype.org/content/repositories/releases'
+repositories.remote << 'https://repository.apache.org/content/repositories/releases'
+repositories.remote << 'http://mirrors.ibiblio.org/pub/mirrors/maven2/'
+
+LUCENE = [ '8.0.0',
+           '8.1.0', '8.1.1',
+           '8.2.0',
+           '8.3.0', '8.3.1',
+           '8.4.0', '8.4.1',
+           '8.5.0', '8.5.1', '8.5.2',
+           ].map { |version| [version, [ artifact("org.apache.lucene:lucene-core:jar:#{version}"),
+                                         artifact("org.apache.lucene:lucene-analyzers-common:jar:#{version}")
+                                       ]] }
+
+define 'lucene8' do
+
+  LUCENE.each do |version, artifacts|
+    run.with(artifacts)
+    task :run do
+      system "jjs -classpath \"#{artifacts.join(':')}\" test-gen.js -- #{version}"
+    end
+  end
+
+end

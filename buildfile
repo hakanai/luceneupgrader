@@ -21,7 +21,7 @@ else
   require 'buildr/gpg'
 end
 
-LUCENE_VERSION = '7.5.0'
+LUCENE_VERSION = '8.5.1'
 
 require 'buildr/custom_pom'
 
@@ -30,6 +30,7 @@ define 'luceneupgrader' do
   project.version=VERSION_NUMBER
   project.group = 'org.trypticon.luceneupgrader'
   compile.options.source = compile.options.target = '1.8'
+  compile.options.other = ['-encoding', 'UTF-8']
   compile.with 'com.google.code.findbugs:jsr305:jar:3.0.1'
   compile.with "org.apache.lucene:lucene-core:jar:#{LUCENE_VERSION}"
   test.with 'junit:junit:jar:4.12'

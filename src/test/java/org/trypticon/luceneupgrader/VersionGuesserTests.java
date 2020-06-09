@@ -61,6 +61,8 @@ public class VersionGuesserTests {
                 expected = LuceneVersion.VERSION_6;
             } else if (version.startsWith("7.")) {
                 expected = LuceneVersion.VERSION_7;
+            } else if (version.startsWith("8.")) {
+                expected = LuceneVersion.VERSION_8;
             } else {
                 throw new IllegalStateException("Didn't add a new case when you added a new version");
             }

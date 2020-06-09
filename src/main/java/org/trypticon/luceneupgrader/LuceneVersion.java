@@ -5,6 +5,7 @@ import org.trypticon.luceneupgrader.lucene4.VersionUpgrader4;
 import org.trypticon.luceneupgrader.lucene5.VersionUpgrader5;
 import org.trypticon.luceneupgrader.lucene6.VersionUpgrader6;
 import org.trypticon.luceneupgrader.lucene7.VersionUpgrader7;
+import org.trypticon.luceneupgrader.lucene8.VersionUpgrader8;
 
 import javax.annotation.Nonnull;
 import java.nio.file.Path;
@@ -61,8 +62,22 @@ public enum LuceneVersion {
         protected VersionUpgrader createUpgrader(@Nonnull Path directory, @Nonnull InfoStream infoStream) {
             return new VersionUpgrader7(directory, infoStream);
         }
+    },
+
+    VERSION_8 {
+        @Override
+        protected VersionUpgrader createUpgrader(@Nonnull Path directory, @Nonnull InfoStream infoStream) {
+            return new VersionUpgrader8(directory, infoStream);
+        }
     };
 
+    /**
+     * Tests whether this version is older than the given version.
+     * 
+     * @param version the version to compare against.
+     * @return {@code true} if this version is older than the given version,
+     *         {@code false} otherwise.
+     */
     public boolean isOlderThan(LuceneVersion version) {
         return compareTo(version) < 0; // because we order them in the enum
     }

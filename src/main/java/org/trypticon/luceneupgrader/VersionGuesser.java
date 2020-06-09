@@ -14,12 +14,27 @@ import java.nio.file.Path;
  * Tries to guess the version of a Lucene text index with minimal effort.
  */
 public class VersionGuesser {
+
+    /**
+     * Tries to guess the version of a Lucene text index with minimal effort.
+     * 
+     * @param path the directory containing the index.
+     * @return the determined version.
+     * @throws IOException if an I/O error occurs reading data.
+     */
     public LuceneVersion guess(@Nonnull Path path) throws IOException {
         try (Directory directory = FSDirectory.open(path)) {
             return guess(directory);
         }
     }
 
+    /**
+     * Tries to guess the version of a Lucene text index with minimal effort.
+     * 
+     * @param directory the directory containing the index.
+     * @return the determined version.
+     * @throws IOException if an I/O error occurs reading data.
+     */
     public LuceneVersion guess(@Nonnull Directory directory) throws IOException {
         IOContext context = IOContext.DEFAULT;
 
@@ -48,8 +63,6 @@ public class VersionGuesser {
                 } else if (actualVersion >= 4 && actualVersion < 6) {       // VERSION_50 thru VERSION_52
                     return LuceneVersion.VERSION_5;
                 } else if (actualVersion == 6) {                            // VERSION_53
-                    // Have to dig further into the file to disambiguate...
-
                     // Skip over 16-byte ID.
                     segments.skipBytes(16);
 
@@ -67,10 +80,32 @@ public class VersionGuesser {
                             throw new UnknownFormatException("Appears to be like version 5-6 but major version " +
                                     "is unrecognised: " + majorVersion);
                     }
+                } else if (actualVersion >= 7 && actualVersion <= 9) {      // VERSION_70 thru VERSION_74
+                    // Skip over 16-byte ID.
+                    segments.skipBytes(16);
 
-                    /* ---- */
-                } else if (actualVersion >= 7 && actualVersion <= 9) {
-                    return LuceneVersion.VERSION_7;
+                    // Skip over "index header suffix"
+                    int suffixLength = segments.readByte() & 255;
+                    segments.skipBytes(suffixLength);
+
+                    // Skip over last saved Lucene version -
+                    // The created version is what Lucene now uses to determine compatibility.
+                    segments.readVInt(); // major
+                    segments.readVInt(); // minor
+                    segments.readVInt(); // patch
+
+                    int createdVersion = segments.readVInt();
+                    switch (createdVersion) {
+                        case 6:
+                            return LuceneVersion.VERSION_6;
+                        case 7:
+                            return LuceneVersion.VERSION_7;
+                        case 8:
+                            return LuceneVersion.VERSION_8;
+                        default:
+                            throw new UnknownFormatException("Appears to be like version 6-8 but major version " +
+                                    "is unrecognised: " + createdVersion);
+                    }
                 } else {
                     throw new UnknownFormatException("Appears to be like version 4+ but actual version " +
                             "is unrecognised: " + actualVersion);
@@ -113,6 +148,24 @@ public class VersionGuesser {
                 throw new UnknownFormatException("Appears to be like version 1 but file length is unusual");
             }
         }
+    }
+
+    /**
+     * Digs further into the file to get the major version.
+     * 
+     * @param segments the segments file.
+     * @return the major version found.
+     * @throws IOException if an I/O error occurs reading data.
+     */
+    private int digForMajorVersion(IndexInput segments) throws IOException {
+        // Skip over 16-byte ID.
+        segments.skipBytes(16);
+
+        // Skip over "index header suffix"
+        int suffixLength = segments.readByte() & 255;
+        segments.skipBytes(suffixLength);
+
+        return segments.readVInt();
     }
 
     private String genToSegmentsFileName(long gen) {
