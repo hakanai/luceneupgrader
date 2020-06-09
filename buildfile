@@ -33,6 +33,7 @@ define 'luceneupgrader' do
   compile.options.other = ['-encoding', 'UTF-8']
   compile.with 'com.google.code.findbugs:jsr305:jar:3.0.1'
   compile.with "org.apache.lucene:lucene-core:jar:#{LUCENE_VERSION}"
+  javadoc.options['encoding'] = 'UTF-8'
   test.with 'junit:junit:jar:4.12'
   test.with 'org.hamcrest:hamcrest-library:jar:1.3'
   test.with "org.apache.lucene:lucene-backward-codecs:jar:#{LUCENE_VERSION}"
