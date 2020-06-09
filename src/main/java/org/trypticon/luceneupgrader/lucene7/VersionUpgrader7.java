@@ -4,11 +4,14 @@ import org.trypticon.luceneupgrader.lucene7.internal.lucene.analysis.Analyzer;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.index.*;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.Directory;
 import org.trypticon.luceneupgrader.lucene7.internal.lucene.store.FSDirectory;
+import org.trypticon.luceneupgrader.lucene7.internal.lucene.util.Version;
+import org.trypticon.luceneupgrader.FileUtils;
 import org.trypticon.luceneupgrader.InfoStream;
 import org.trypticon.luceneupgrader.VersionUpgrader;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -29,15 +32,34 @@ public class VersionUpgrader7 implements VersionUpgrader {
 
     @Override
     public void upgrade() throws IOException {
-        try (Directory directory = FSDirectory.open(path)) {
-            org.trypticon.luceneupgrader.lucene7.internal.lucene.util.InfoStream adaptedInfoStream = new AdaptedInfoStream(infoStream);
-            IndexWriterConfig indexWriterConfig = new IndexWriterConfig(new FailAnalyzer());
-            indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
-            indexWriterConfig.setMergeScheduler(new SerialMergeScheduler());
-            indexWriterConfig.setInfoStream(adaptedInfoStream);
-            IndexUpgrader upgrader = new IndexUpgrader(directory, indexWriterConfig, true);
-            upgrader.upgrade();
+        Path oldPath = path.resolveSibling(path.getFileName() + ".old");
+        Path tempPath = path.resolveSibling(path.getFileName() + ".tmp");
+
+        FileUtils.insecureRecursiveDelete(tempPath);
+        Files.createDirectory(tempPath);
+
+        IndexWriterConfig indexWriterConfig = new IndexWriterConfig(new FailAnalyzer());
+        indexWriterConfig.setMergePolicy(new LogByteSizeMergePolicy());
+        indexWriterConfig.setMergeScheduler(new SerialMergeScheduler());
+        indexWriterConfig.setInfoStream(new AdaptedInfoStream(infoStream));
+        indexWriterConfig.setIndexCreatedVersionMajor(7);
+
+        try (Directory sourceDirectory = FSDirectory.open(path);
+             Directory destinationDirectory = FSDirectory.open(tempPath);
+             IndexReader reader = DirectoryReader.open(sourceDirectory);
+             IndexWriter writer = new IndexWriter(destinationDirectory, indexWriterConfig)) {
+
+            CodecReader[] codecReaders = reader.leaves().stream()
+                .map(context -> new VersionOverridingCodecReader((CodecReader) context.reader()))
+                .toArray(CodecReader[]::new);
+
+            writer.addIndexes(codecReaders);
+            writer.commit();
         }
+
+        Files.move(path, oldPath);
+        Files.move(tempPath, path);
+        FileUtils.insecureRecursiveDelete(oldPath);
     }
 
     /**
@@ -63,6 +85,32 @@ public class VersionUpgrader7 implements VersionUpgrader {
         @Override
         public void close() throws IOException {
             //
+        }
+    }
+
+    private static class VersionOverridingCodecReader extends FilterCodecReader {
+        private final LeafMetaData metadata;
+
+        private VersionOverridingCodecReader(CodecReader in) {
+            super(in);
+
+            LeafMetaData superMetadata = super.getMetaData();
+            metadata = new LeafMetaData(7, Version.LUCENE_7_0_0, superMetadata.getSort());
+        }
+
+        @Override
+        public LeafMetaData getMetaData() {
+            return metadata;
+        }
+
+        @Override
+        public CacheHelper getReaderCacheHelper() {
+            return in.getReaderCacheHelper();
+        }
+
+        @Override
+        public CacheHelper getCoreCacheHelper() {
+            return in.getCoreCacheHelper();
         }
     }
 

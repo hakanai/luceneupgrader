@@ -63,7 +63,14 @@ public class VersionGuesser {
                 } else if (actualVersion >= 4 && actualVersion < 6) {       // VERSION_50 thru VERSION_52
                     return LuceneVersion.VERSION_5;
                 } else if (actualVersion == 6) {                            // VERSION_53
-                    int majorVersion = digForMajorVersion(segments);
+                    // Skip over 16-byte ID.
+                    segments.skipBytes(16);
+
+                    // Skip over "index header suffix"
+                    int suffixLength = segments.readByte() & 255;
+                    segments.skipBytes(suffixLength);
+
+                    int majorVersion = segments.readVInt();
                     switch (majorVersion) {
                         case 5:
                             return LuceneVersion.VERSION_5;
@@ -73,18 +80,31 @@ public class VersionGuesser {
                             throw new UnknownFormatException("Appears to be like version 5-6 but major version " +
                                     "is unrecognised: " + majorVersion);
                     }
-                } else if (actualVersion >= 7 && actualVersion < 9) {
-                    return LuceneVersion.VERSION_7;
-                } else if (actualVersion == 9) {
-                    int majorVersion = digForMajorVersion(segments);
-                    switch (majorVersion) {
+                } else if (actualVersion >= 7 && actualVersion <= 9) {      // VERSION_70 thru VERSION_74
+                    // Skip over 16-byte ID.
+                    segments.skipBytes(16);
+
+                    // Skip over "index header suffix"
+                    int suffixLength = segments.readByte() & 255;
+                    segments.skipBytes(suffixLength);
+
+                    // Skip over last saved Lucene version -
+                    // The created version is what Lucene now uses to determine compatibility.
+                    segments.readVInt(); // major
+                    segments.readVInt(); // minor
+                    segments.readVInt(); // patch
+
+                    int createdVersion = segments.readVInt();
+                    switch (createdVersion) {
+                        case 6:
+                            return LuceneVersion.VERSION_6;
                         case 7:
                             return LuceneVersion.VERSION_7;
                         case 8:
                             return LuceneVersion.VERSION_8;
                         default:
-                            throw new UnknownFormatException("Appears to be like version 7-8 but major version " +
-                                    "is unrecognised: " + majorVersion);
+                            throw new UnknownFormatException("Appears to be like version 6-8 but major version " +
+                                    "is unrecognised: " + createdVersion);
                     }
                 } else {
                     throw new UnknownFormatException("Appears to be like version 4+ but actual version " +
