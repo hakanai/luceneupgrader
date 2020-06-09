@@ -29,6 +29,15 @@ desc 'Lucene Index Upgrader'
 define 'luceneupgrader' do
   project.version=VERSION_NUMBER
   project.group = 'org.trypticon.luceneupgrader'
+
+  pom.licenses['The Apache Software License, Version 2.0'] = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+  pom.scm_connection = pom.scm_developer_connection = 'scm:git:git@github.com:trejkaz/luceneupgrader'
+  pom.scm_url = 'git@github.com:trejkaz/luceneupgrader'
+  pom.url = 'https://github.com/trejkaz/luceneupgrader'
+  pom.issues_url = 'https://github.com/trejkaz/luceneupgrader/issues'
+  pom.issues_system = 'GitHub Issues'
+  pom.add_developer('trejkaz', 'Trejkaz (pen name)', 'trejkaz@trypticon.org', ['Project Lead'])
+
   compile.options.source = compile.options.target = '1.8'
   compile.options.other = ['-encoding', 'UTF-8']
   compile.with 'com.google.code.findbugs:jsr305:jar:3.0.1'
