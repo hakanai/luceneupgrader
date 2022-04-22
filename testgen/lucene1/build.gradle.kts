@@ -1,5 +1,13 @@
+plugins {
+    application
+}
+
 repositories {
     mavenCentral()
+}
+
+dependencies {
+    implementation(project(":testgen:common"))
 }
 
 val luceneVersions = listOf(
@@ -12,13 +20,18 @@ val luceneVersions = listOf(
 val runAll by tasks.registering
 
 luceneVersions.forEach { (version, artifact) ->
-    val configuration = configurations.register("runtimeLucene$version")
+    val configuration = configurations.register("runtimeLucene$version") {
+        extendsFrom(configurations.runtimeClasspath.get())
+    }
+
     dependencies {
         add("runtimeLucene$version", artifact)
     }
-    val runTask = tasks.register("runLucene$version", Exec::class) {
-        executable = "jjs"
-        args("-classpath", configuration.get().asPath, "test-gen.js", "--", version)
+
+    val runTask = tasks.register("runLucene$version", JavaExec::class) {
+        classpath = configuration.get()
+        mainClass.set("RunScript")
+        args("test-gen.js", version)
         doFirst {
             mkdir(buildDir)
         }

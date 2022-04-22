@@ -1,4 +1,5 @@
 rootProject.name = "luceneupgrader"
+include("testgen:common")
 include("testgen:lucene1")
 include("testgen:lucene2")
 include("testgen:lucene3")
