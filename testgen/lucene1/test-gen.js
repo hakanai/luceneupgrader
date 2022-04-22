@@ -1,25 +1,23 @@
-
 'use strict';
 
-var File                = Java.type("java.io.File");
-var Files               = Java.type("java.nio.file.Files");
-var Analyzer            = Java.type("org.apache.lucene.analysis.Analyzer");
-var WhitespaceAnalyzer  = Java.type("org.apache.lucene.analysis.WhitespaceAnalyzer");
-var Document            = Java.type("org.apache.lucene.document.Document");
-var Field               = Java.type("org.apache.lucene.document.Field");
-var IndexWriter         = Java.type("org.apache.lucene.index.IndexWriter");
+const File                = Java.type("java.io.File");
+const WhitespaceAnalyzer  = Java.type("org.apache.lucene.analysis.WhitespaceAnalyzer");
+const Document            = Java.type("org.apache.lucene.document.Document");
+const Field               = Java.type("org.apache.lucene.document.Field");
+const IndexWriter         = Java.type("org.apache.lucene.index.IndexWriter");
 
-var version = arguments[0];
+const version = arguments[0];
 
 load("../common/common.js");
 
 function createIndex(variant, writerFunction) {
-  var name = "target/lucene-" + version + "-" + variant;
-  var path = new File(name);
+  const name = "build/lucene-" + version + "-" + variant;
+  const path = new File(name);
   recursiveDelete(path.toPath());
 
+
   print("Creating " + name + " ...");
-  var writer = new IndexWriter(path, new WhitespaceAnalyzer(), true);
+  const writer = new IndexWriter(path, new WhitespaceAnalyzer(), true);
   try {
     writerFunction(writer);
   } finally {
@@ -35,8 +33,7 @@ createIndex("empty", function(writer) {
 });
 
 createIndex("nonempty", function(writer) {
-  var document = new Document();
+  const document = new Document();
   document.add(new Field("field", "value", true, true, true));
   writer.addDocument(document);
 });
-

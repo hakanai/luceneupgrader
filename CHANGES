@@ -1,4 +1,12 @@
 
+Unreleased
+- Build modernisation:
+    - Updated to Java 11.
+    - Changed build system to Gradle.
+    - Changed JavaScript engine (used to generate test data) to GraalVM.
+- Commented out Lucene 5 code which was using illegal reflective access
+  to unmap buffers.
+
 v0.5.0 (9 Jun 2020)
 - Support versions up to Lucene 8.5.0.
 
