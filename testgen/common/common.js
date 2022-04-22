@@ -1,9 +1,13 @@
 
 var FileOutputStream  = Java.type("java.io.FileOutputStream");
 var Files             = Java.type("java.nio.file.Files");
+var FileVisitResult   = Java.type("java.nio.file.FileVisitResult");
 var Paths             = Java.type("java.nio.file.Paths");
+var SimpleFileVisitor = Java.type("java.nio.file.SimpleFileVisitor");
 var ZipEntry          = Java.type("java.util.zip.ZipEntry");
 var ZipOutputStream   = Java.type("java.util.zip.ZipOutputStream");
+
+var SimpleFileVisitorExtender = Java.extend(SimpleFileVisitor);
 
 /**
  * Deletes a file or directory, including descendants.
@@ -11,17 +15,19 @@ var ZipOutputStream   = Java.type("java.util.zip.ZipOutputStream");
  * @param file [Path] the path to the item to delete..
  */
 function recursiveDelete(file) {
-  if (Files.isDirectory(file)) {
-    var directoryStream = Files.newDirectoryStream(file);
-    try {
-      for each (child in directoryStream) {
-        recursiveDelete(child);
+  Files.walkFileTree(file, new SimpleFileVisitorExtender({
+    postVisitDirectory: function(dir, exception) {
+      if (exception != null) {
+        throw exception;
       }
-    } finally {
-      directoryStream.close();
+      Files.deleteIfExists(dir);
+      return FileVisitResult.CONTINUE;
+    },
+    visitFile: function(file, _attributes) {
+      Files.deleteIfExists(file);
+      return FileVisitResult.CONTINUE;
     }
-  }
-  Files.deleteIfExists(file);
+  }));
 }
 
 /**
@@ -33,26 +39,15 @@ function zip(relativePath) {
   var zipStream = new ZipOutputStream(new FileOutputStream(relativePath + ".zip"));
   var dir = Paths.get(relativePath);
   try {
-    var recurse = function(name, file) {
-      if (Files.isDirectory(file)) {
-        var directoryStream = Files.newDirectoryStream(file);
-        try {
-          for each (child in directoryStream) {
-            var childName = child.getFileName().toString();
-            var childPath = name.isEmpty() ? childName : (name + "/" + childName);
-            recurse(childPath, child);
-          }
-        } finally {
-          directoryStream.close();
-        }
-      } else { // regular file
-        var entry = new ZipEntry(name);
+    Files.walkFileTree(dir, new SimpleFileVisitorExtender({
+      visitFile: function(file, _attributes) {
+        var entry = new ZipEntry(file.getFileName().toString());
         zipStream.putNextEntry(entry);
         Files.copy(file, zipStream);
         zipStream.closeEntry();
+        return FileVisitResult.CONTINUE;
       }
-    }
-    recurse("", dir);
+    }))
   } finally {
     zipStream.close();
   }
