@@ -1,31 +1,27 @@
-
 'use strict';
 
-var Files               = Java.type("java.nio.file.Files");
-var Paths               = Java.type("java.nio.file.Paths");
-var Analyzer            = Java.type("org.apache.lucene.analysis.Analyzer");
-var WhitespaceAnalyzer  = Java.type("org.apache.lucene.analysis.core.WhitespaceAnalyzer");
-var Document            = Java.type("org.apache.lucene.document.Document");
-var Field               = Java.type("org.apache.lucene.document.Field");
-var TextField           = Java.type("org.apache.lucene.document.TextField");
-var IndexWriter         = Java.type("org.apache.lucene.index.IndexWriter");
-var IndexWriterConfig   = Java.type("org.apache.lucene.index.IndexWriterConfig");
-var FSDirectory         = Java.type("org.apache.lucene.store.FSDirectory");
+const WhitespaceAnalyzer  = Java.type("org.apache.lucene.analysis.core.WhitespaceAnalyzer");
+const Document            = Java.type("org.apache.lucene.document.Document");
+const Field               = Java.type("org.apache.lucene.document.Field");
+const TextField           = Java.type("org.apache.lucene.document.TextField");
+const IndexWriter         = Java.type("org.apache.lucene.index.IndexWriter");
+const IndexWriterConfig   = Java.type("org.apache.lucene.index.IndexWriterConfig");
+const FSDirectory         = Java.type("org.apache.lucene.store.FSDirectory");
 
-var version = arguments[0];
+const version = arguments[0];
 
 load("../common/common.js");
 
 function createIndex(variant, writerFunction) {
-  var name = "build/lucene-" + version + "-" + variant;
-  var path = Paths.get(name);
+  const name = "build/lucene-" + version + "-" + variant;
+  const path = Paths.get(name);
   recursiveDelete(path);
 
   print("Creating " + name + " ...");
-  var directory = FSDirectory.open(path);
+  const directory = FSDirectory.open(path);
   try {
-    var writerConfig = new IndexWriterConfig(new WhitespaceAnalyzer());
-    var writer = new IndexWriter(directory, writerConfig);
+    const writerConfig = new IndexWriterConfig(new WhitespaceAnalyzer());
+    const writer = new IndexWriter(directory, writerConfig);
     try {
       writerFunction(writer);
       writer.commit();
@@ -45,8 +41,7 @@ createIndex("empty", function(writer) {
 });
 
 createIndex("nonempty", function(writer) {
-  var document = new Document();
+  const document = new Document();
   document.add(new TextField("field", "value", Field.Store.YES));
   writer.addDocument(document);
 });
-

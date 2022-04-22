@@ -1,17 +1,16 @@
-
 'use strict';
 
-var File                = Java.type("java.io.File");
-var Thread              = Java.type("java.lang.Thread");
-var WhitespaceAnalyzer  = Java.type("org.apache.lucene.analysis.core.WhitespaceAnalyzer");
-var Document            = Java.type("org.apache.lucene.document.Document");
-var Field               = Java.type("org.apache.lucene.document.Field");
-var IndexWriter         = Java.type("org.apache.lucene.index.IndexWriter");
-var IndexWriterConfig   = Java.type("org.apache.lucene.index.IndexWriterConfig");
-var FSDirectory         = Java.type("org.apache.lucene.store.FSDirectory");
-var Version             = Java.type("org.apache.lucene.util.Version");
+const File                = Java.type("java.io.File");
+const Thread              = Java.type("java.lang.Thread");
+const WhitespaceAnalyzer  = Java.type("org.apache.lucene.analysis.core.WhitespaceAnalyzer");
+const Document            = Java.type("org.apache.lucene.document.Document");
+const Field               = Java.type("org.apache.lucene.document.Field");
+const IndexWriter         = Java.type("org.apache.lucene.index.IndexWriter");
+const IndexWriterConfig   = Java.type("org.apache.lucene.index.IndexWriterConfig");
+const FSDirectory         = Java.type("org.apache.lucene.store.FSDirectory");
+const Version             = Java.type("org.apache.lucene.util.Version");
 
-var version = arguments[0];
+const version = arguments[0];
 
 load("../common/common.js");
 
@@ -22,15 +21,15 @@ Thread.currentThread().setContextClassLoader(IndexWriter.class.getClassLoader())
 
 
 function createIndex(variant, writerFunction) {
-  var name = "build/lucene-" + version + "-" + variant;
-  var path = new File(name);
+  const name = "build/lucene-" + version + "-" + variant;
+  const path = new File(name);
   recursiveDelete(path.toPath());
 
   print("Creating " + name + " ...");
-  var directory = FSDirectory.open(path);
+  const directory = FSDirectory.open(path);
   try {
-    var writerConfig = new IndexWriterConfig(Version.LUCENE_CURRENT, new WhitespaceAnalyzer(Version.LUCENE_CURRENT));
-    var writer = new IndexWriter(directory, writerConfig);
+    const writerConfig = new IndexWriterConfig(Version.LUCENE_CURRENT, new WhitespaceAnalyzer(Version.LUCENE_CURRENT));
+    const writer = new IndexWriter(directory, writerConfig);
     try {
       writerFunction(writer);
       writer.commit();
@@ -50,8 +49,7 @@ createIndex("empty", function(writer) {
 });
 
 createIndex("nonempty", function(writer) {
-  var document = new Document();
+  const document = new Document();
   document.add(new Field("field", "value", Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
   writer.addDocument(document);
 });
-
