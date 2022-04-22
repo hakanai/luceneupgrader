@@ -1,6 +1,8 @@
 Lucene Upgrader Release Process
 ===============================
 
+**TODO: Check and update or rewrite as part of next release**
+
 This lives here as a cheat sheet, because releases are so infrequent that I
 forget by the time I want to do it again.
 

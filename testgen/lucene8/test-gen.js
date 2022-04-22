@@ -18,7 +18,7 @@ var version = arguments[0];
 load("../common/common.js");
 
 function createIndex(variant, writerFunction) {
-  var name = "target/lucene-" + version + "-" + variant;
+  var name = "build/lucene-" + version + "-" + variant;
   var path = Paths.get(name);
   recursiveDelete(path);
 

@@ -1,4 +1,7 @@
 
+Unreleased
+- Changed build system to Gradle.
+
 v0.5.0 (9 Jun 2020)
 - Support versions up to Lucene 8.5.0.
 

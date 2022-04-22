@@ -11,6 +11,7 @@ var TextField           = Java.type("org.apache.lucene.document.TextField");
 var IndexWriter         = Java.type("org.apache.lucene.index.IndexWriter");
 var IndexWriterConfig   = Java.type("org.apache.lucene.index.IndexWriterConfig");
 var FSDirectory         = Java.type("org.apache.lucene.store.FSDirectory");
+var MMapDirectory       = Java.type("org.apache.lucene.store.MMapDirectory");
 var Version             = Java.type("org.apache.lucene.util.Version");
 
 var version = arguments[0];
@@ -18,12 +19,16 @@ var version = arguments[0];
 load("../common/common.js");
 
 function createIndex(variant, writerFunction) {
-  var name = "target/lucene-" + version + "-" + variant;
+  var name = "build/lucene-" + version + "-" + variant;
   var path = Paths.get(name);
   recursiveDelete(path);
 
   print("Creating " + name + " ...");
   var directory = FSDirectory.open(path);
+  if (directory instanceof MMapDirectory) {
+    // noinspection JSUnresolvedFunction
+    directory.setUseUnmap(false)
+  }
   try {
     var writerConfig = new IndexWriterConfig(new WhitespaceAnalyzer());
     var writer = new IndexWriter(directory, writerConfig);
