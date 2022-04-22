@@ -67,8 +67,9 @@ public class MMapDirectory extends FSDirectory {
     this.chunkSizePower = 31 - Integer.numberOfLeadingZeros(maxChunkSize);
     assert this.chunkSizePower >= 0 && this.chunkSizePower <= 30;
   }
-  
-  public static final boolean UNMAP_SUPPORTED = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+  // luceneupgrader commented out to avoid illegal reflective access
+  public static final boolean UNMAP_SUPPORTED = false; /* AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
     @Override
     @SuppressForbidden(reason = "Needs access to private APIs in DirectBuffer and sun.misc.Cleaner to enable hack")
     public Boolean run() {
@@ -86,7 +87,7 @@ public class MMapDirectory extends FSDirectory {
         return false;
       }
     }
-  });
+  }); */
   
   public void setUseUnmap(final boolean useUnmapHack) {
     if (useUnmapHack && !UNMAP_SUPPORTED)
