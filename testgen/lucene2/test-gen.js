@@ -2,8 +2,6 @@
 'use strict';
 
 var File                = Java.type("java.io.File");
-var Files               = Java.type("java.nio.file.Files");
-var Analyzer            = Java.type("org.apache.lucene.analysis.Analyzer");
 var WhitespaceAnalyzer  = Java.type("org.apache.lucene.analysis.WhitespaceAnalyzer");
 var Document            = Java.type("org.apache.lucene.document.Document");
 var Field               = Java.type("org.apache.lucene.document.Field");

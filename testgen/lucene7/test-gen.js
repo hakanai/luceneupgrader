@@ -1,9 +1,7 @@
 
 'use strict';
 
-var Files               = Java.type("java.nio.file.Files");
 var Paths               = Java.type("java.nio.file.Paths");
-var Analyzer            = Java.type("org.apache.lucene.analysis.Analyzer");
 var WhitespaceAnalyzer  = Java.type("org.apache.lucene.analysis.core.WhitespaceAnalyzer");
 var Document            = Java.type("org.apache.lucene.document.Document");
 var Field               = Java.type("org.apache.lucene.document.Field");
@@ -11,7 +9,6 @@ var TextField           = Java.type("org.apache.lucene.document.TextField");
 var IndexWriter         = Java.type("org.apache.lucene.index.IndexWriter");
 var IndexWriterConfig   = Java.type("org.apache.lucene.index.IndexWriterConfig");
 var FSDirectory         = Java.type("org.apache.lucene.store.FSDirectory");
-var Version             = Java.type("org.apache.lucene.util.Version");
 
 var version = arguments[0];
 

@@ -1,7 +1,9 @@
 
 Unreleased
-- Changed build system to Gradle.
-- Updated to Java 11.
+- Build modernisation:
+    - Updated to Java 11.
+    - Changed build system to Gradle.
+    - Changed JavaScript engine (used to generate test data) to GraalVM.
 - Commented out Lucene 5 code which was using illegal reflective access
   to unmap buffers.
 

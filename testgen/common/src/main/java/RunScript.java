@@ -17,7 +17,10 @@ public class RunScript {
     }
 
     public void run() throws IOException, ScriptException {
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+        System.setProperty("polyglot.js.nashorn-compat", "true");
+        System.setProperty("polyglot.engine.WarnInterpreterOnly", "false");
+
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName("graal.js");
         try (Reader reader = Files.newBufferedReader(scriptFile)) {
             engine.put("arguments", new String[] { version });
             engine.eval(reader);

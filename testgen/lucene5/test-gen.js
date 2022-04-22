@@ -1,9 +1,7 @@
 
 'use strict';
 
-var Files               = Java.type("java.nio.file.Files");
 var Paths               = Java.type("java.nio.file.Paths");
-var Analyzer            = Java.type("org.apache.lucene.analysis.Analyzer");
 var WhitespaceAnalyzer  = Java.type("org.apache.lucene.analysis.core.WhitespaceAnalyzer");
 var Document            = Java.type("org.apache.lucene.document.Document");
 var Field               = Java.type("org.apache.lucene.document.Field");
@@ -12,7 +10,6 @@ var IndexWriter         = Java.type("org.apache.lucene.index.IndexWriter");
 var IndexWriterConfig   = Java.type("org.apache.lucene.index.IndexWriterConfig");
 var FSDirectory         = Java.type("org.apache.lucene.store.FSDirectory");
 var MMapDirectory       = Java.type("org.apache.lucene.store.MMapDirectory");
-var Version             = Java.type("org.apache.lucene.util.Version");
 
 var version = arguments[0];
 
@@ -25,10 +22,6 @@ function createIndex(variant, writerFunction) {
 
   print("Creating " + name + " ...");
   var directory = FSDirectory.open(path);
-  if (directory instanceof MMapDirectory) {
-    // noinspection JSUnresolvedFunction
-    directory.setUseUnmap(false)
-  }
   try {
     var writerConfig = new IndexWriterConfig(new WhitespaceAnalyzer());
     var writer = new IndexWriter(directory, writerConfig);

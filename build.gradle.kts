@@ -12,10 +12,6 @@ plugins {
     `utf8-workarounds`
 }
 
-repositories {
-    mavenCentral()
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     withJavadocJar()

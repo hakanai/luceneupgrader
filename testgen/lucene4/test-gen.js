@@ -2,10 +2,7 @@
 'use strict';
 
 var File                = Java.type("java.io.File");
-var ClassLoader         = Java.type("java.lang.ClassLoader");
 var Thread              = Java.type("java.lang.Thread");
-var Files               = Java.type("java.nio.file.Files");
-var Analyzer            = Java.type("org.apache.lucene.analysis.Analyzer");
 var WhitespaceAnalyzer  = Java.type("org.apache.lucene.analysis.core.WhitespaceAnalyzer");
 var Document            = Java.type("org.apache.lucene.document.Document");
 var Field               = Java.type("org.apache.lucene.document.Field");
