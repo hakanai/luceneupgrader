@@ -1,10 +1,10 @@
 package org.trypticon.luceneupgrader.lucene8;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.*;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
+import org.trypticon.luceneupgrader.lucene8.internal.lucene.analysis.Analyzer;
+import org.trypticon.luceneupgrader.lucene8.internal.lucene.index.*;
+import org.trypticon.luceneupgrader.lucene8.internal.lucene.store.Directory;
+import org.trypticon.luceneupgrader.lucene8.internal.lucene.store.FSDirectory;
+import org.trypticon.luceneupgrader.lucene8.internal.lucene.util.Version;
 import org.trypticon.luceneupgrader.FileUtils;
 import org.trypticon.luceneupgrader.InfoStream;
 import org.trypticon.luceneupgrader.VersionUpgrader;
@@ -65,7 +65,8 @@ public class VersionUpgrader8 implements VersionUpgrader {
     /**
      * Adapts Lucene's info stream to pass messages to ours.
      */
-    private static class AdaptedInfoStream extends org.apache.lucene.util.InfoStream {
+    private static class AdaptedInfoStream
+            extends org.trypticon.luceneupgrader.lucene8.internal.lucene.util.InfoStream {
         private final InfoStream infoStream;
 
         private AdaptedInfoStream(InfoStream infoStream) {

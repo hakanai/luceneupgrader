@@ -1,10 +1,10 @@
 package org.trypticon.luceneupgrader;
 
-import org.apache.lucene.index.SegmentInfos;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.store.IOContext;
-import org.apache.lucene.store.IndexInput;
+import org.trypticon.luceneupgrader.lucene8.internal.lucene.index.SegmentInfos;
+import org.trypticon.luceneupgrader.lucene8.internal.lucene.store.Directory;
+import org.trypticon.luceneupgrader.lucene8.internal.lucene.store.FSDirectory;
+import org.trypticon.luceneupgrader.lucene8.internal.lucene.store.IOContext;
+import org.trypticon.luceneupgrader.lucene8.internal.lucene.store.IndexInput;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;

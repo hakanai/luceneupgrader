@@ -3,8 +3,6 @@ version = "0.5.2-SNAPSHOT"
 group = "org.trypticon.luceneupgrader"
 description = "Lucene Index Upgrader"
 
-val luceneVersion = "8.11.2"
-
 plugins {
     `java-library`
     `maven-publish`
@@ -20,11 +18,9 @@ java {
 
 dependencies {
     implementation("com.google.code.findbugs:jsr305:3.0.2")
-    implementation("org.apache.lucene:lucene-core:$luceneVersion")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.hamcrest:hamcrest-library:2.2")
-    testImplementation("org.apache.lucene:lucene-backward-codecs:$luceneVersion")
 }
 
 publishing {

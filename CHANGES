@@ -1,5 +1,9 @@
 
 Unreleased
+- Freezing off Lucene 8.11.2 into internal code so the dependency is no
+  longer required. It should now be possible to use this library if you're
+  stuck on an earlier major version of Lucene.
+- Support versions up to Lucene 8.11.2.
 - Build modernisation:
     - Updated to Java 11.
     - Changed build system to Gradle.
