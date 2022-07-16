@@ -80,7 +80,7 @@ public class VersionGuesser {
                             throw new UnknownFormatException("Appears to be like version 5-6 but major version " +
                                     "is unrecognised: " + majorVersion);
                     }
-                } else if (actualVersion >= 7 && actualVersion <= 9) {      // VERSION_70 thru VERSION_74
+                } else if (actualVersion >= 7 && actualVersion <= 10) {      // VERSION_70 thru VERSION_86
                     // Skip over 16-byte ID.
                     segments.skipBytes(16);
 

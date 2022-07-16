@@ -17,6 +17,12 @@ val luceneVersions = listOf(
     "8.3.0", "8.3.1",
     "8.4.0", "8.4.1",
     "8.5.0", "8.5.1", "8.5.2",
+    "8.6.0", "8.6.1", "8.6.2", "8.6.3",
+    "8.7.0",
+    "8.8.0", "8.8.1", "8.8.2",
+    "8.9.0",
+    "8.10.0", "8.10.1",
+    "8.11.0", "8.11.1", "8.11.2"
 ).associateWith { version -> listOf(
     "org.apache.lucene:lucene-core:$version",
     "org.apache.lucene:lucene-analyzers-common:$version"

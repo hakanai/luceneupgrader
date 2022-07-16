@@ -3,7 +3,7 @@ version = "0.5.2-SNAPSHOT"
 group = "org.trypticon.luceneupgrader"
 description = "Lucene Index Upgrader"
 
-val luceneVersion = "8.5.1"
+val luceneVersion = "8.11.2"
 
 plugins {
     `java-library`

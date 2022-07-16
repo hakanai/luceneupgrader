@@ -16,6 +16,9 @@ const SimpleFileVisitorExtender = Java.extend(SimpleFileVisitor);
  * @param file [Path] the path to the item to delete..
  */
 function recursiveDelete(file) {
+  if (!Files.exists(file)) {
+    return;
+  }
   Files.walkFileTree(file, new SimpleFileVisitorExtender({
     postVisitDirectory: function(dir, exception) {
       if (exception != null) {
