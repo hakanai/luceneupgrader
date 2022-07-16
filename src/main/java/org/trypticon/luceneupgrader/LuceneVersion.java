@@ -15,61 +15,91 @@ import java.nio.file.Path;
  */
 public enum LuceneVersion {
 
-    VERSION_1 {
+    VERSION_1(1) {
         @Override
         protected VersionUpgrader createUpgrader(@Nonnull Path directory, @Nonnull InfoStream infoStream) {
             throw new UnsupportedOperationException("Upgrade from what?");
         }
     },
 
-    VERSION_2 {
+    VERSION_2(2) {
         @Override
         protected VersionUpgrader createUpgrader(@Nonnull Path directory, @Nonnull InfoStream infoStream) {
             throw new UnsupportedOperationException("TODO");
         }
     },
 
-    VERSION_3 {
+    VERSION_3(3) {
         @Override
         protected VersionUpgrader createUpgrader(@Nonnull Path directory, @Nonnull InfoStream infoStream) {
             return new VersionUpgrader3(directory, infoStream);
         }
     },
 
-    VERSION_4 {
+    VERSION_4(4) {
         @Override
         protected VersionUpgrader createUpgrader(@Nonnull Path directory, @Nonnull InfoStream infoStream) {
             return new VersionUpgrader4(directory, infoStream);
         }
     },
 
-    VERSION_5 {
+    VERSION_5(5) {
         @Override
         protected VersionUpgrader createUpgrader(@Nonnull Path directory, @Nonnull InfoStream infoStream) {
             return new VersionUpgrader5(directory, infoStream);
         }
     },
 
-    VERSION_6 {
+    VERSION_6(6) {
         @Override
         protected VersionUpgrader createUpgrader(@Nonnull Path directory, @Nonnull InfoStream infoStream) {
             return new VersionUpgrader6(directory, infoStream);
         }
     },
 
-    VERSION_7 {
+    VERSION_7(7) {
         @Override
         protected VersionUpgrader createUpgrader(@Nonnull Path directory, @Nonnull InfoStream infoStream) {
             return new VersionUpgrader7(directory, infoStream);
         }
     },
 
-    VERSION_8 {
+    VERSION_8(8) {
         @Override
         protected VersionUpgrader createUpgrader(@Nonnull Path directory, @Nonnull InfoStream infoStream) {
             return new VersionUpgrader8(directory, infoStream);
         }
     };
+
+    private final int number;
+
+    LuceneVersion(int number) {
+        this.number = number;
+    }
+
+    /**
+     * Gets the number for this version.
+     *
+     * @return the version number.
+     */
+    public int getNumber() {
+        return number;
+    }
+
+    /**
+     * Tries to find a Lucene version by its number.
+     *
+     * @param number the version number.
+     * @return the Lucene version enum value. Returns {@code null} if not found.
+     */
+    public static LuceneVersion findByNumber(int number) {
+        for (LuceneVersion version : values()) {
+            if (version.number == number) {
+                return version;
+            }
+        }
+        return null;
+    }
 
     /**
      * Tests whether this version is older than the given version.

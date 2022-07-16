@@ -1,5 +1,6 @@
 package org.trypticon.luceneupgrader;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,6 +78,11 @@ public class VersionGuesserTests {
     @Before
     public void setUp() throws Exception {
         temp = Files.createTempDirectory("test");
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        Utils.recursiveDeleteIfExists(temp);
     }
 
     @Test

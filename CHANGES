@@ -1,5 +1,6 @@
 
 Unreleased
+- Added a basic command-line interface for standalone use.
 - Freezing off Lucene 8.11.2 into internal code so the dependency is no
   longer required. It should now be possible to use this library if you're
   stuck on an earlier major version of Lucene.

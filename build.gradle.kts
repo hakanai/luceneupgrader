@@ -4,7 +4,7 @@ group = "org.trypticon.luceneupgrader"
 description = "Lucene Index Upgrader"
 
 plugins {
-    `java-library`
+    application
     `maven-publish`
     signing
     `utf8-workarounds`
@@ -21,6 +21,10 @@ dependencies {
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.hamcrest:hamcrest-library:2.2")
+}
+
+application {
+    mainClass.set("org.trypticon.luceneupgrader.cli.Main")
 }
 
 publishing {

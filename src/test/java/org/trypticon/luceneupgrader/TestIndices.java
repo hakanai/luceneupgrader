@@ -11,7 +11,7 @@ import java.util.zip.ZipInputStream;
 /**
  * Common information about what versions we have test data for.
  */
-class TestIndices {
+public class TestIndices {
 
     /**
      * Gets a list of all text index versions we have available.
@@ -84,7 +84,7 @@ class TestIndices {
      * @param destination the destination to put the files.
      * @throws Exception if an error occurs.
      */
-    static void explodeZip(String version, String variant, Path destination) throws Exception {
+    public static void explodeZip(String version, String variant, Path destination) throws Exception {
         try (InputStream stream = IndexUpgraderTests.class.getResourceAsStream("/lucene-" + version + "-" + variant + ".zip");
              ZipInputStream zipStream = new ZipInputStream(stream)) {
             ZipEntry entry;

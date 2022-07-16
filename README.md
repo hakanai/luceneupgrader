@@ -6,8 +6,8 @@ way through multiple versions. It does this by repackaging older versions of
 Lucene and using the IndexUpgrader tool from each version in turn.
 
 
-Usage
------
+Usage as a Library
+------------------
 
 Getting the dependency:
 
@@ -27,6 +27,18 @@ new IndexUpgrader(textIndexPath, null)
 The upgrade will be a no-op if the index is already at that version.
 
 Upgrades can be done one step at a time by passing a different target version.
+
+
+Usage of Command-Line Interface
+-------------------------------
+
+Running the tool:
+
+```shell
+java -jar luceneupgrader-VERSION.jar
+```
+
+Given no additional arguments, the tool will output the available commands.
 
 
 Building
