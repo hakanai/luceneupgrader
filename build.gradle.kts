@@ -27,6 +27,13 @@ application {
     mainClass.set("org.trypticon.luceneupgrader.cli.Main")
 }
 
+tasks.jar {
+    manifest {
+        // Gradle's application plugin doesn't add this for us :(
+        attributes["Main-Class"] = application.mainClass.get()
+    }
+}
+
 publishing {
     publications {
         register("mavenJava", MavenPublication::class) {

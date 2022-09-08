@@ -15,7 +15,7 @@ public class Main {
      *
      * @param args the command-line arguments.
      */
-    static void main(String[] args) {
+    public static void main(String[] args) {
         int result = new Main().run(Arrays.asList(args), System.out, System.err);
         System.exit(result);
     }
