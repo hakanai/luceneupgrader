@@ -44,6 +44,8 @@ publishing {
             from(components["java"])
 
             pom {
+                name.set(project.name)
+                url.set("https://github.com/trejkaz/luceneupgrader")
                 description.set(project.description)
 
                 licenses {
