@@ -31,7 +31,9 @@ jobs:
         (echo "signing.secretKeyRingFile=$HOME/.gnupg/secring.gpg"
          echo "signing.keyId=${{ secrets.GPG_SECRET_KEY_ID }}"
          echo "signing.password="
-        ) > ~/.gradle/gradle.properties
+         echo "sonatypeUsername=${{ DEPLOY_USER }}"
+         echo "sonatypePassword=${{ DEPLOY_PASS }}"
+         ) > ~/.gradle/gradle.properties
 
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2.3.3

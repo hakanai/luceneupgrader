@@ -82,9 +82,13 @@ publishing {
             "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
         }
         maven(repoUrl) {
-            credentials {
-                username = System.getenv("DEPLOY_USER")
-                password = System.getenv("DEPLOY_PASS")
+            val user = System.getenv("DEPLOY_USER") ?: project.findProperty("sonatypeUsername") as String?
+            val pass = System.getenv("DEPLOY_PASS") ?: project.findProperty("sonatypePassword") as String?
+            if (user != null && pass != null) {
+                credentials {
+                    username = user
+                    password = pass
+                }
             }
         }
     }
