@@ -30,7 +30,7 @@ jobs:
          echo "signing.keyId=${{ secrets.GPG_SECRET_KEY_ID }}"
          echo "signing.password="
         ) > ~/.gradle/gradle.properties
-        cat ~/.gradle/gradle.properties
+        ls -la $HOME/.gnupg/
 
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2.3.3
