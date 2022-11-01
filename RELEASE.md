@@ -39,8 +39,6 @@ I have to set this up in.)
 * Borrow a `.github/workflows/gradle-publish.yml` from another project where it's
   already working, commit it and push to main branch
 
-**TODO: CHECK EVERYTHING BELOW THIS POINT!**
-
 Release process:
 
 1. Check that the version number makes sense for the kind of changes documented
@@ -48,7 +46,12 @@ Release process:
 2. Check that `CHANGES` includes the version number you're about to release,
    and the current date.
 3. Commit those changes if you haven't already.
-4. Run:
+4. Push those changes to master
+5. Tag the release version.
+
+   **TODO: CHECK EVERYTHING BELOW THIS POINT!**
+
+6. Run:
 
     ```sh
     DEPLOY_USER=<YOUR USERNAME> DEPLOY_PASS=<YOUR PASSWORD> \
@@ -56,11 +59,11 @@ Release process:
     buildr release
     ```
 
-5. Go to the [staging repository](https://oss.sonatype.org/#stagingRepositories)
+7. Go to the [staging repository](https://oss.sonatype.org/#stagingRepositories)
    and manually inspect the repository contents.
-6. Once satisfied that everything is present, Close the staging repository.
+8. Once satisfied that everything is present, Close the staging repository.
    All of their checks should pass at this point.
-7. Smoke test the new artifacts by pointing some other build at the staging
+9. Smoke test the new artifacts by pointing some other build at the staging
    repository and checking that it still builds.
-8. Release the staging repository, and the artifact should become visible
-   in the public repository.
+10. Release the staging repository, and the artifact should become visible
+    in the public repository.

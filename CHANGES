@@ -1,5 +1,5 @@
 
-Unreleased
+v0.6.0 (1 Nov 2022)
 - Added a basic command-line interface for standalone use.
 - Freezing off Lucene 8.11.2 into internal code so the dependency is no
   longer required. It should now be possible to use this library if you're
@@ -11,6 +11,9 @@ Unreleased
     - Changed JavaScript engine (used to generate test data) to GraalVM.
 - Commented out Lucene 5 code which was using illegal reflective access
   to unmap buffers.
+
+v0.5.1 (9 Jun 2020)
+- POM metadata changes only
 
 v0.5.0 (9 Jun 2020)
 - Support versions up to Lucene 8.5.0.
