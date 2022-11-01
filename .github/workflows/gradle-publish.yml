@@ -26,6 +26,7 @@ jobs:
       run: |
         cat <(echo -e "${{ secrets.GPG_SECRET_KEY }}") | gpg --batch --import
         gpg --list-secret-keys --keyid-format LONG
+        mkdir ~/.gradle
         (echo "signing.secretKeyRingFile=~/.gnupg/secring.gpg"
          echo "signing.keyId=${{ secrets.GPG_SECRET_KEY_ID }}"
          echo "signing.password="
