@@ -13,7 +13,7 @@ import org.trypticon.luceneupgrader.LuceneVersion;
  */
 class UpgradeCommand extends Command {
     UpgradeCommand() {
-        super("upgrade", "Upgrades a text index", "<version>");
+        super("upgrade", "Upgrades a text index", "<index dir> <version>");
     }
 
     @Override
