@@ -59,23 +59,8 @@ Release process:
    - Publish the release
 9. In Sonatype:
    - Go to Staging Repositories
-   - Select the repository and click Close
-
-**TODO: CHECK EVERYTHING BELOW THIS POINT!**
-
-1. Run:
-
-    ```sh
-    DEPLOY_USER=<YOUR USERNAME> DEPLOY_PASS=<YOUR PASSWORD> \
-    GPG_USER=<YOUR GPG MAIL ADDRESS> \
-    buildr release
-    ```
-
-2. Go to the [staging repository](https://oss.sonatype.org/#stagingRepositories)
-   and manually inspect the repository contents.
-3. Once satisfied that everything is present, Close the staging repository.
-   All of their checks should pass at this point.
-4. Smoke test the new artifacts by pointing some other build at the staging
-   repository and checking that it still builds.
-5. Release the staging repository, and the artifact should become visible
-   in the public repository.
+   - Select the repository and click Close.
+     All of their checks should pass at this point.
+10. Smoke test the new artifacts by pointing some other build at the staging
+    repository and checking that it still builds.
+11. Click Release
