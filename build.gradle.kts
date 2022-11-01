@@ -1,6 +1,6 @@
 
 version = "0.5.2-SNAPSHOT"
-group = "org.trypticon.luceneupgrader"
+group = "garden.ephemeral.luceneupgrader"
 description = "Lucene Index Upgrader"
 
 plugins {
@@ -27,6 +27,10 @@ application {
     mainClass.set("org.trypticon.luceneupgrader.cli.Main")
 }
 
+tasks.javadoc {
+    exclude("**/internal/**/*.java")
+}
+
 tasks.jar {
     manifest {
         // Gradle's application plugin doesn't add this for us :(
@@ -37,6 +41,12 @@ tasks.jar {
 publishing {
     publications {
         register("mavenJava", MavenPublication::class) {
+//            groupId = project.group.toString()
+//            artifactId = project.name
+//            version = project.version.toString()
+
+            from(components["java"])
+
             pom {
                 licenses {
                     name.set("The Apache Software License, Version 2.0")
@@ -67,9 +77,9 @@ publishing {
 
     repositories {
         val repoUrl = if (version.toString().contains("SNAPSHOT")) {
-            "https://oss.sonatype.org/content/repositories/snapshots"
+            "https://s01.oss.sonatype.org/content/repositories/snapshots/"
         } else {
-            "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
         }
         maven(repoUrl) {
             credentials {
@@ -78,4 +88,8 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign(publishing.publications["mavenJava"])
 }
