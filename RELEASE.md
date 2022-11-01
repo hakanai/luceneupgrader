@@ -33,7 +33,7 @@ I have to set this up in.)
   * Secrets section
   * New repository secret: DEPLOY_USER (value from earlier)
   * New repository secret: DEPLOY_PASS (value from earlier)
-  * New repository secret: GPG_SECRET_KEY_ID (FIRST 8 CHARS of secret key ID from earlier)
+  * New repository secret: GPG_SECRET_KEY_ID (LAST 8 CHARS of secret key ID from earlier)
   * New repository secret: GPG_SECRET_KEY (output from running export-secret-keys)
 
 * Borrow a `.github/workflows/gradle-publish.yml` from another project where it's
