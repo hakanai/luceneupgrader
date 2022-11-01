@@ -41,16 +41,16 @@ tasks.jar {
 publishing {
     publications {
         register("mavenJava", MavenPublication::class) {
-//            groupId = project.group.toString()
-//            artifactId = project.name
-//            version = project.version.toString()
-
             from(components["java"])
 
             pom {
+                description.set(project.description)
+
                 licenses {
-                    name.set("The Apache Software License, Version 2.0")
-                    url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                    license {
+                        name.set("The Apache Software License, Version 2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
                 }
 
                 scm {

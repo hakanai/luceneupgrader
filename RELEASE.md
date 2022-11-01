@@ -51,11 +51,15 @@ Release process:
 4. Commit those changes if you haven't already.
 5. Push those changes to master
 6. Tag the release version.
-7. In GitHub:
+7. Push the release tag to origin - GitHub will start the build at this point.
+8. In GitHub:
    - In Releases, create a new release
    - Name the release with the version of the tag
    - Paste the changes for the version into the description
-   - Save the new release. GitHub will automatically publish the release.
+   - Publish the release
+9. In Sonatype:
+   - Go to Staging Repositories
+   - Select the repository and click Close
 
 **TODO: CHECK EVERYTHING BELOW THIS POINT!**
 
