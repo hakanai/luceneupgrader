@@ -41,17 +41,25 @@ I have to set this up in.)
 
 Release process:
 
-1. Check that the version number makes sense for the kind of changes documented
-   in the changelog ([Semantic Versioning](https://semver.org/)).
-2. Check that `CHANGES` includes the version number you're about to release,
+**Open issue: Some or all of this could potentially be automated.**
+
+1. Check that the version number you're about to use makes sense for the kind of changes
+   documented in the changelog ([Semantic Versioning](https://semver.org/)).
+2. Edit `build.gradle.kts` to update the version number.
+3. Check that `CHANGES` includes the version number you're about to release,
    and the current date.
-3. Commit those changes if you haven't already.
-4. Push those changes to master
-5. Tag the release version.
+4. Commit those changes if you haven't already.
+5. Push those changes to master
+6. Tag the release version.
+7. In GitHub:
+   - In Releases, create a new release
+   - Name the release with the version of the tag
+   - Paste the changes for the version into the description
+   - Save the new release. GitHub will automatically publish the release.
 
-   **TODO: CHECK EVERYTHING BELOW THIS POINT!**
+**TODO: CHECK EVERYTHING BELOW THIS POINT!**
 
-6. Run:
+1. Run:
 
     ```sh
     DEPLOY_USER=<YOUR USERNAME> DEPLOY_PASS=<YOUR PASSWORD> \
@@ -59,11 +67,11 @@ Release process:
     buildr release
     ```
 
-7. Go to the [staging repository](https://oss.sonatype.org/#stagingRepositories)
+2. Go to the [staging repository](https://oss.sonatype.org/#stagingRepositories)
    and manually inspect the repository contents.
-8. Once satisfied that everything is present, Close the staging repository.
+3. Once satisfied that everything is present, Close the staging repository.
    All of their checks should pass at this point.
-9. Smoke test the new artifacts by pointing some other build at the staging
+4. Smoke test the new artifacts by pointing some other build at the staging
    repository and checking that it still builds.
-10. Release the staging repository, and the artifact should become visible
-    in the public repository.
+5. Release the staging repository, and the artifact should become visible
+   in the public repository.
