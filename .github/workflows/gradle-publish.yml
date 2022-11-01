@@ -35,7 +35,7 @@ jobs:
     - name: Publish artifacts with Gradle
       uses: gradle/gradle-build-action@v2.3.3
       with:
-        arguments: publish
+        arguments: publish -Psigning.keyId=${{ secrets.GPG_SECRET_KEY_ID }}
       env:
         DEPLOY_USER: ${{ github.actor }}
         DEPLOY_PASS: ${{ secrets.GITHUB_TOKEN }}

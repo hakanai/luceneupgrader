@@ -23,11 +23,18 @@ I have to set this up in.)
   * Set env vars DEPLOY_USER and DEPLOY_PASS to the two values you just got
   * Test publishing a snapshot: `.\gradlew publish`
 
+* In a local terminal:
+    * `gpg --list-secret-keys --keyid-format=long`
+    * Find the key ID you want to use in the output
+    * `gpg --export-secret-keys --armor <key id>`
+
 * In GitHub project:
   * Settings tab
   * Secrets section
   * New repository secret: DEPLOY_USER (value from earlier)
   * New repository secret: DEPLOY_PASS (value from earlier)
+  * New repository secret: GPG_SECRET_KEY_ID (secret key ID from earlier)
+  * New repository secret: GPG_SECRET_KEY (output from running export-secret-keys)
 
 **TODO: CHECK EVERYTHING BELOW THIS POINT!**
 
