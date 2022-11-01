@@ -1,8 +1,6 @@
 Lucene Upgrader Release Process
 ===============================
 
-**TODO: Check and update or rewrite as part of next release**
-
 This lives here as a cheat sheet, because releases are so infrequent that I
 forget by the time I want to do it again.
 
@@ -11,7 +9,29 @@ Prerequisites:
 * You have credentials to publish to the project on sonatype.
 * You have a working GnuPG public/private key pair for signing the release.
 
-Process:
+Setup process:
+
+(Once per project - still listed here so that I can find it for the next project
+I have to set this up in.)
+
+* Go into [Sonatype](https://s01.oss.sonatype.org/):
+  * Click top-right menu: "Profile"
+  * Click "User Token"
+  * Click "Access User Token"
+  * Copy the two values from there and put them somewhere safe
+* In a local terminal:
+  * Set env vars DEPLOY_USER and DEPLOY_PASS to the two values you just got
+  * Test publishing a snapshot: `.\gradlew publish`
+
+* In GitHub project:
+  * Settings tab
+  * Secrets section
+  * New repository secret: DEPLOY_USER (value from earlier)
+  * New repository secret: DEPLOY_PASS (value from earlier)
+
+**TODO: CHECK EVERYTHING BELOW THIS POINT!**
+
+Release process:
 
 1. Check that the version number makes sense for the kind of changes documented
    in the changelog ([Semantic Versioning](https://semver.org/)).
