@@ -26,7 +26,7 @@ jobs:
       run: |
         cat <(echo -e "${{ secrets.GPG_SECRET_KEY }}") | gpg --batch --import
         # Workaround for Gradle not liking gpg's new private key layout
-        gpg --export-secret-keys > secring.gpg
+        gpg --export-secret-keys > $HOME/.gnupg/secring.gpg
         mkdir ~/.gradle
         (echo "signing.secretKeyRingFile=$HOME/.gnupg/secring.gpg"
          echo "signing.keyId=${{ secrets.GPG_SECRET_KEY_ID }}"
