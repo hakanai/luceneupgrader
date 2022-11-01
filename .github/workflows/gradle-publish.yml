@@ -26,6 +26,11 @@ jobs:
       run: |
         cat <(echo -e "${{ secrets.GPG_SECRET_KEY }}") | gpg --batch --import
         gpg --list-secret-keys --keyid-format LONG
+        (echo "signing.secretKeyRingFile=~/.gnupg/secring.gpg"
+         echo "signing.keyId=${{ secrets.GPG_SECRET_KEY_ID }}"
+         echo "signing.password="
+        ) > ~/.gradle/gradle.properties
+        ls -l ~/.gradle
 
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2.3.3
@@ -35,7 +40,7 @@ jobs:
     - name: Publish artifacts with Gradle
       uses: gradle/gradle-build-action@v2.3.3
       with:
-        arguments: publish -Psigning.keyId=${{ secrets.GPG_SECRET_KEY_ID }}
+        arguments: publish
       env:
         DEPLOY_USER: ${{ github.actor }}
         DEPLOY_PASS: ${{ secrets.GITHUB_TOKEN }}

@@ -36,6 +36,9 @@ I have to set this up in.)
   * New repository secret: GPG_SECRET_KEY_ID (secret key ID from earlier)
   * New repository secret: GPG_SECRET_KEY (output from running export-secret-keys)
 
+* Borrow a `.github/workflows/gradle-publish.yml` from another project where it's
+  already working, commit it and push to main branch
+
 **TODO: CHECK EVERYTHING BELOW THIS POINT!**
 
 Release process:
