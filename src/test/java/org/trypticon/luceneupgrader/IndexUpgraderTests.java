@@ -52,13 +52,13 @@ public class IndexUpgraderTests {
     public void testEmpty() throws Exception {
         TestIndices.explodeZip(version, "empty", temp);
         IndexUpgrader upgrader = new IndexUpgrader(temp);
-        upgrader.upgradeTo(LuceneVersion.VERSION_8);
+        upgrader.upgradeTo(LuceneVersion.VERSION_9);
     }
 
     @Test
     public void testNonEmpty() throws Exception {
         TestIndices.explodeZip(version, "nonempty", temp);
         IndexUpgrader upgrader = new IndexUpgrader(temp);
-        upgrader.upgradeTo(LuceneVersion.VERSION_8);
+        upgrader.upgradeTo(LuceneVersion.VERSION_9);
     }
 }
