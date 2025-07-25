@@ -1,6 +1,6 @@
 # Lucene Upgrader Release Process
 
-This lives here as a cheat sheet, because releases are so infrequent that I
+This lives here as a cheat sheet because releases are so infrequent that I
 forget by the time I want to do it again.
 
 ## Prerequisites
@@ -76,6 +76,8 @@ I have to set this up in.)
    - In the **Deployments** tab, find the deployment created by the build which
      just ran. It should be in "Validated" state.
    - Click **Publish**. It should move to "Publishing" state.
-10. Bump to the next version number and put the -SNAPSHOT suffix back on.
+10. Bump to the next version number and put the "-SNAPSHOT" suffix back on.
 11. Commit those changes.
 12. Push those changes to master.
+13. By now, the publishing should have finished, and you can verify
+    that it is available in Maven Central.
