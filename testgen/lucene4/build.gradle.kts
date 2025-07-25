@@ -43,7 +43,7 @@ luceneVersions.forEach { (version, artifacts) ->
         mainClass.set("RunScript")
         args("test-gen.js", version)
         doFirst {
-            mkdir(buildDir)
+            mkdir(layout.buildDirectory)
         }
     }
     runAll.configure {

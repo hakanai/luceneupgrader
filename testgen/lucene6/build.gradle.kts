@@ -41,7 +41,7 @@ luceneVersions.forEach { (version, artifacts) ->
         // Some 6.x versions of Lucene access NIO classes; not an issue in lower or higher versions.
         jvmArgs("--add-opens", "java.base/java.nio=ALL-UNNAMED")
         doFirst {
-            mkdir(buildDir)
+            mkdir(layout.buildDirectory)
         }
     }
     runAll.configure {
