@@ -1,10 +1,12 @@
 package org.trypticon.luceneupgrader;
 
+import javax.annotation.Nonnull;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -103,7 +105,9 @@ public class TestIndices {
      * @throws Exception if an error occurs.
      */
     public static void explodeZip(String version, String variant, Path destination) throws Exception {
-        try (InputStream stream = IndexUpgraderTests.class.getResourceAsStream("/lucene-" + version + "-" + variant + ".zip");
+        String majorVersion = version.substring(0, version.indexOf("."));
+        String resourcePath = "/lucene" + majorVersion + "/lucene-" + version + "-" + variant + ".zip";
+        try (InputStream stream = requireResource(resourcePath);
              ZipInputStream zipStream = new ZipInputStream(stream)) {
             ZipEntry entry;
             while ((entry = zipStream.getNextEntry()) != null) {
@@ -116,4 +120,10 @@ public class TestIndices {
         }
     }
 
+    @Nonnull
+    private static InputStream requireResource(String resourcePath) {
+        InputStream stream = TestIndices.class.getResourceAsStream(resourcePath);
+        Objects.requireNonNull(stream, "Resource not found: " + resourcePath);
+        return stream;
+    }
 }
