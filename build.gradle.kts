@@ -4,7 +4,7 @@ plugins {
     id("com.vanniktech.maven.publish") version "0.34.0"
 }
 
-version = "0.6.1-SNAPSHOT"
+version = "0.8.0"
 group = "garden.ephemeral.luceneupgrader"
 description = "Lucene Index Upgrader"
 
