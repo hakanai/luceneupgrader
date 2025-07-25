@@ -1,19 +1,15 @@
+plugins {
+    application
+    `utf8-workarounds`
+    id("com.vanniktech.maven.publish") version "0.34.0"
+}
 
 version = "0.6.1-SNAPSHOT"
 group = "garden.ephemeral.luceneupgrader"
 description = "Lucene Index Upgrader"
 
-plugins {
-    application
-    `maven-publish`
-    signing
-    `utf8-workarounds`
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_11
-    withJavadocJar()
-    withSourcesJar()
 }
 
 dependencies {
@@ -38,64 +34,48 @@ tasks.jar {
     }
 }
 
-publishing {
-    publications {
-        register("mavenJava", MavenPublication::class) {
-            from(components["java"])
+mavenPublishing {
+    pom {
+        name.set(project.name)
+        url.set("https://github.com/trejkaz/luceneupgrader")
+        description.set(project.description)
 
-            pom {
-                name.set(project.name)
-                url.set("https://github.com/trejkaz/luceneupgrader")
-                description.set(project.description)
+        licenses {
+            license {
+                name.set("The Apache Software License, Version 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+            }
+        }
 
-                licenses {
-                    license {
-                        name.set("The Apache Software License, Version 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
+        scm {
+            url.set("https://github.com/trejkaz/luceneupgrader")
+            connection.set("git@github.com:trejkaz/luceneupgrader")
+            developerConnection.set("scm:git:git@github.com:trejkaz/luceneupgrader")
+        }
 
-                scm {
-                    url.set("https://github.com/trejkaz/luceneupgrader")
-                    connection.set("git@github.com:trejkaz/luceneupgrader")
-                    developerConnection.set("scm:git:git@github.com:trejkaz/luceneupgrader")
-                }
+        issueManagement {
+            system.set("GitHub Issues")
+            url.set("https://github.com/trejkaz/luceneupgrader/issues")
+        }
 
-                issueManagement {
-                    system.set("GitHub Issues")
-                    url.set("https://github.com/trejkaz/luceneupgrader/issues")
-                }
-
-                developers {
-                    developer {
-                        name.set("Hakanai")
-                        email.set("hakanai@ephemeral.garden")
-                        roles.add("Project Lead")
-                    }
-                }
+        developers {
+            developer {
+                name.set("Hakanai")
+                email.set("hakanai@ephemeral.garden")
+                roles.add("Project Lead")
             }
         }
     }
 
-    repositories {
-        val repoUrl = if (version.toString().contains("SNAPSHOT")) {
-            "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-        } else {
-            "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-        }
-        maven(repoUrl) {
-            val user = System.getenv("DEPLOY_USER")
-            val pass = System.getenv("DEPLOY_PASS")
-            if (user != null && pass != null) {
-                credentials {
-                    username = user
-                    password = pass
-                }
-            }
-        }
-    }
-}
+    // Copy env vars from the previous publishing plugin to the new settings.
+    // XXX: Once we're sure this publishing plugin works, update the build process
+    //      to use the new env vars.
+    project.ext.set("mavenCentralUsername", System.getenv("DEPLOY_USER"))
+    project.ext.set("mavenCentralPassword", System.getenv("DEPLOY_PASS"))
+    project.ext.set("signingInMemoryKeyId", System.getenv("GPG_SECRET_KEY_ID"))
+    project.ext.set("signingInMemoryKey", System.getenv("GPG_SECRET_KEY"))
 
-signing {
-    sign(publishing.publications["mavenJava"])
+    publishToMavenCentral()
+
+    signAllPublications()
 }

@@ -6,27 +6,53 @@ forget by the time I want to do it again.
 
 Prerequisites:
 
-* You have credentials to publish to the project on sonatype.
+* You have credentials to publish to the project on Maven Central.
 * You have a working GnuPG public/private key pair for signing the release.
 
 Setup process:
 
-(Once per project - still listed here so that I can find it for the next project
+(Once per project—still listed here so that I can find it for the next project
 I have to set this up in.)
 
-* Go into [Sonatype](https://s01.oss.sonatype.org/):
-  * Click top-right menu: "Profile"
-  * Click "User Token"
-  * Click "Access User Token"
-  * Copy the two values from there and put them somewhere safe
-* In a local terminal:
-  * Set env vars DEPLOY_USER and DEPLOY_PASS to the two values you just got
-  * Test publishing a snapshot: `.\gradlew publish`
+1. Locate a working GnuPG public/private key pair for signing the release.
+   - In a local terminal:
+      - `gpg --list-secret-keys --keyid-format=long`
+      - Find the key ID you want to use in the output.
+      - Export a copy for use on GitHub:
+         - `gpg --export-secret-keys --armor (key id) > ~/.gnupg/my-secring.asc`
+      - Export a copy for local testing:
+         - `cat ~/.gnupg/my-secring.asc | gpg --dearmor > ~/.gnupg/my-secring.gpg`
 
-* In a local terminal:
-    * `gpg --list-secret-keys --keyid-format=long`
-    * Find the key ID you want to use in the output
-    * `gpg --export-secret-keys --armor <key id>`
+2. Get a user token for publishing to Maven Central.
+   - Go into [Maven Central Portal](https://central.sonatype.com/):
+      - From the top right of the page, **Sign In**.
+      - From the top right of the page, open the user menu, then **View Account**.
+      - Click **Generate User Token**.
+      - Copy **Username** and **Password** from there and put them somewhere safe.
+
+3. Test publishing a snapshot.
+    - Edit some values into your local user's `~/.gradle/gradle.properties`:
+      ```
+      mavenCentralUsername=(publishing username)
+      mavenCentralPassword=(publishing password)
+      signing.keyId=(the secret key ID)
+      signing.password=(the password for the secret key)
+      signing.secretKeyRingFile=/(path to home)/.gnupg/secring.gpg
+      ```
+    - `.\gradlew publishAllPublicationsToMavenCentralRepository`
+
+**TODO: Update everything below for the new publishing plugin**
+
+    - In a local terminal:
+       - Set environment variables:
+          ```
+          ORG_GRADLE_PROJECT_signingInMemoryKey=(the secret key text)
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId=(the secret key ID)
+          ORG_GRADLE_PROJECT_mavenCentralUsername=(publishing username)
+          ORG_GRADLE_PROJECT_mavenCentralPassword=(publishing password)
+          ```
+       - `.\gradlew publishToMavenCentral`
+
 
 * In GitHub project:
   * Settings tab
