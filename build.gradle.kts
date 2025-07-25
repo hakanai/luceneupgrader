@@ -67,14 +67,6 @@ mavenPublishing {
         }
     }
 
-    // Copy env vars from the previous publishing plugin to the new settings.
-    // XXX: Once we're sure this publishing plugin works, update the build process
-    //      to use the new env vars.
-    project.ext.set("mavenCentralUsername", System.getenv("DEPLOY_USER"))
-    project.ext.set("mavenCentralPassword", System.getenv("DEPLOY_PASS"))
-    project.ext.set("signingInMemoryKeyId", System.getenv("GPG_SECRET_KEY_ID"))
-    project.ext.set("signingInMemoryKey", System.getenv("GPG_SECRET_KEY"))
-
     publishToMavenCentral()
 
     signAllPublications()

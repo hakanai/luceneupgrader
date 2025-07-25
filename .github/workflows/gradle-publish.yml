@@ -22,7 +22,7 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-    - name: Install GPG secret key
+    - name: Install GPG secret key and set local Gradle config
       run: |
         cat <(echo -e "${{ secrets.GPG_SECRET_KEY }}") | gpg --batch --import
         # Workaround for Gradle not liking gpg's new private key layout
@@ -31,6 +31,8 @@ jobs:
         (echo "signing.secretKeyRingFile=$HOME/.gnupg/secring.gpg"
          echo "signing.keyId=${{ secrets.GPG_SECRET_KEY_ID }}"
          echo "signing.password="
+         echo "mavenCentralUsername=${{ secrets.DEPLOY_USER }}"
+         echo "mavenCentralPassword=${{ secrets.DEPLOY_PASS }}"
          ) > ~/.gradle/gradle.properties
 
     - name: Build with Gradle
@@ -42,6 +44,3 @@ jobs:
       uses: gradle/gradle-build-action@v2.3.3
       with:
         arguments: publish
-      env:
-        DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-        DEPLOY_PASS: ${{ secrets.DEPLOY_PASS }}
