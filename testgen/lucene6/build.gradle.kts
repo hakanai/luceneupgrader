@@ -17,7 +17,7 @@ val luceneVersions = listOf(
     "6.3.0",
     "6.4.0", "6.4.1", "6.4.2",
     "6.5.0", "6.5.1",
-    "6.6.0", "6.6.1", "6.6.2", "6.6.3", "6.6.4", "6.6.5",
+    "6.6.0", "6.6.1", "6.6.2", "6.6.3", "6.6.4", "6.6.5", "6.6.6",
 ).associateWith { version -> listOf(
     "org.apache.lucene:lucene-core:$version",
     "org.apache.lucene:lucene-analyzers-common:$version"
@@ -38,6 +38,8 @@ luceneVersions.forEach { (version, artifacts) ->
         classpath = configuration.get()
         mainClass.set("RunScript")
         args("test-gen.js", version)
+        // Some 6.x versions of Lucene access NIO classes; not an issue in lower or higher versions.
+        jvmArgs("--add-opens", "java.base/java.nio=ALL-UNNAMED")
         doFirst {
             mkdir(buildDir)
         }
