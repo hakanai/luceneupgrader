@@ -1,15 +1,14 @@
-Lucene Upgrader Release Process
-===============================
+# Lucene Upgrader Release Process
 
 This lives here as a cheat sheet, because releases are so infrequent that I
 forget by the time I want to do it again.
 
-Prerequisites:
+## Prerequisites
 
 * You have credentials to publish to the project on Maven Central.
 * You have a working GnuPG public/private key pair for signing the release.
 
-Setup process:
+## One-time setup
 
 (Once per project—still listed here so that I can find it for the next project
 I have to set this up in.)
@@ -31,7 +30,7 @@ I have to set this up in.)
       - Copy **Username** and **Password** from there and put them somewhere safe.
 
 3. Test publishing a snapshot.
-    - Edit some values into your local user's `~/.gradle/gradle.properties`:
+   - Edit some values into your local user's `~/.gradle/gradle.properties`:
       ```
       mavenCentralUsername=(publishing username)
       mavenCentralPassword=(publishing password)
@@ -39,54 +38,44 @@ I have to set this up in.)
       signing.password=(the password for the secret key)
       signing.secretKeyRingFile=/(path to home)/.gnupg/secring.gpg
       ```
-    - `.\gradlew publishAllPublicationsToMavenCentralRepository`
+   - `.\gradlew publishAllPublicationsToMavenCentralRepository`
 
-**TODO: Update everything below for the new publishing plugin**
+4. Configure GitHub Actions.
+   - In the GitHub project:
+      - **Settings** tab
+      - **Secrets** section
+      - New repository secret: DEPLOY_USER (value from earlier)
+      - New repository secret: DEPLOY_PASS (value from earlier)
+      - New repository secret: GPG_SECRET_KEY_ID (LAST 8 CHARS of secret key ID from earlier)
+      - New repository secret: GPG_SECRET_KEY (output from running export-secret-keys)
+   - Borrow a `.github/workflows/gradle-publish.yml` from another project where it's
+     already working, commit it and push to the main branch.
 
-    - In a local terminal:
-       - Set environment variables:
-          ```
-          ORG_GRADLE_PROJECT_signingInMemoryKey=(the secret key text)
-          ORG_GRADLE_PROJECT_signingInMemoryKeyId=(the secret key ID)
-          ORG_GRADLE_PROJECT_mavenCentralUsername=(publishing username)
-          ORG_GRADLE_PROJECT_mavenCentralPassword=(publishing password)
-          ```
-       - `.\gradlew publishToMavenCentral`
-
-
-* In GitHub project:
-  * Settings tab
-  * Secrets section
-  * New repository secret: DEPLOY_USER (value from earlier)
-  * New repository secret: DEPLOY_PASS (value from earlier)
-  * New repository secret: GPG_SECRET_KEY_ID (LAST 8 CHARS of secret key ID from earlier)
-  * New repository secret: GPG_SECRET_KEY (output from running export-secret-keys)
-
-* Borrow a `.github/workflows/gradle-publish.yml` from another project where it's
-  already working, commit it and push to main branch
-
-Release process:
+## Release process
 
 **Open issue: Some or all of this could potentially be automated.**
 
 1. Check that the version number you're about to use makes sense for the kind of changes
    documented in the changelog ([Semantic Versioning](https://semver.org/)).
 2. Edit `build.gradle.kts` to update the version number.
+   The version number should _not_ be a snapshot!
 3. Check that `CHANGES` includes the version number you're about to release,
    and the current date.
 4. Commit those changes if you haven't already.
 5. Push those changes to master
 6. Tag the release version.
-7. Push the release tag to origin - GitHub will start the build at this point.
+7. Push the release tag to origin—GitHub will now start the build.
 8. In GitHub:
-   - In Releases, create a new release
-   - Name the release with the version of the tag
-   - Paste the changes for the version into the description
-   - Publish the release
-9. In Sonatype:
-   - Go to Staging Repositories
-   - Select the repository and click Close.
-     All of their checks should pass at this point.
-10. Smoke test the new artifacts by pointing some other build at the staging
-    repository and checking that it still builds.
-11. Click Release
+   - In **Releases**, in the **Tags** tab, find the tag you just pushed.
+   - "Create release" from that tag
+      - Title is usually just the version number. 
+      - Paste the changes for the version into the description
+      - Publish the release
+9. In Maven Central Portal:
+   - Go to **Publish**
+   - In the **Deployments** tab, find the deployment created by the build which
+     just ran. It should be in "Validated" state.
+   - Click **Publish**. It should move to "Publishing" state.
+10. Bump to the next version number and put the -SNAPSHOT suffix back on.
+11. Commit those changes.
+12. Push those changes to master.
