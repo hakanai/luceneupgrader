@@ -80,7 +80,7 @@ public class VersionGuesser {
                             throw new UnknownFormatException("Appears to be like version 5-6 but major version " +
                                     "is unrecognised: " + majorVersion);
                     }
-                } else if (actualVersion >= 7 && actualVersion <= 10) {      // VERSION_70 thru VERSION_86
+                } else if (actualVersion >= 7 && actualVersion <= 11) {      // VERSION_70 thru VERSION_9.
                     // Skip over 16-byte ID.
                     segments.skipBytes(16);
 
@@ -102,8 +102,10 @@ public class VersionGuesser {
                             return LuceneVersion.VERSION_7;
                         case 8:
                             return LuceneVersion.VERSION_8;
+                        case 9:
+                            return LuceneVersion.VERSION_9;
                         default:
-                            throw new UnknownFormatException("Appears to be like version 6-8 but major version " +
+                            throw new UnknownFormatException("Appears to be like version 6-9 but major version " +
                                     "is unrecognised: " + createdVersion);
                     }
                 } else {

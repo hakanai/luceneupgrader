@@ -6,6 +6,7 @@ import org.trypticon.luceneupgrader.lucene5.VersionUpgrader5;
 import org.trypticon.luceneupgrader.lucene6.VersionUpgrader6;
 import org.trypticon.luceneupgrader.lucene7.VersionUpgrader7;
 import org.trypticon.luceneupgrader.lucene8.VersionUpgrader8;
+import org.trypticon.luceneupgrader.lucene9.VersionUpgrader9;
 
 import javax.annotation.Nonnull;
 import java.nio.file.Path;
@@ -68,6 +69,13 @@ public enum LuceneVersion {
         @Override
         protected VersionUpgrader createUpgrader(@Nonnull Path directory, @Nonnull InfoStream infoStream) {
             return new VersionUpgrader8(directory, infoStream);
+        }
+    },
+
+    VERSION_9(9) {
+        @Override
+        protected VersionUpgrader createUpgrader(@Nonnull Path directory, @Nonnull InfoStream infoStream) {
+            return new VersionUpgrader9(directory, infoStream);
         }
     };
 
