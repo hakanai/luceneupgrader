@@ -440,7 +440,12 @@ public class FieldInfos implements Iterable<FieldInfo> {
       this.omitNorms = new HashMap<>();
       this.storeTermVectors = new HashMap<>();
       this.softDeletesFieldName = softDeletesFieldName;
-      this.strictlyConsistent = indexCreatedVersionMajor >= 9;
+
+      // Don't perform "strictly consistent" checking as Lucene 8/9 semantics differ.  Lucene 8 sets "term vectors" to false
+      // even if a field was declared to use "term vectors", but it emitted no terms in the entire segment.
+      // Lucene 9 seems to rely on the declared field.  Disabling this check to avoid these headaches.
+      this.strictlyConsistent = false;
+      // this.strictlyConsistent = indexCreatedVersionMajor >= 9;
       this.parentFieldName = parentFieldName;
       if (softDeletesFieldName != null
           && parentFieldName != null

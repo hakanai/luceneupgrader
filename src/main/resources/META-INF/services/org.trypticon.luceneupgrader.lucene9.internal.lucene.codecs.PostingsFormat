@@ -15,6 +15,7 @@
 
 org.trypticon.luceneupgrader.lucene9.internal.lucene.codecs.lucene912.Lucene912PostingsFormat
 
+org.trypticon.luceneupgrader.lucene9.internal.lucene.backward_codecs.lucene99.Lucene99PostingsFormat
 org.trypticon.luceneupgrader.lucene9.internal.lucene.backward_codecs.lucene90.Lucene90PostingsFormat
 org.trypticon.luceneupgrader.lucene9.internal.lucene.backward_codecs.lucene84.Lucene84PostingsFormat
 org.trypticon.luceneupgrader.lucene9.internal.lucene.backward_codecs.lucene50.Lucene50PostingsFormat

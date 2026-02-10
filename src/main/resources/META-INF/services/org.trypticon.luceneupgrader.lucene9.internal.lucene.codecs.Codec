@@ -15,6 +15,7 @@
 
 org.trypticon.luceneupgrader.lucene9.internal.lucene.codecs.lucene912.Lucene912Codec
 
+org.trypticon.luceneupgrader.lucene9.internal.lucene.backward_codecs.lucene99.Lucene99Codec
 org.trypticon.luceneupgrader.lucene9.internal.lucene.backward_codecs.lucene95.Lucene95Codec
 org.trypticon.luceneupgrader.lucene9.internal.lucene.backward_codecs.lucene80.Lucene80Codec
 org.trypticon.luceneupgrader.lucene9.internal.lucene.backward_codecs.lucene84.Lucene84Codec
